@@ -9,7 +9,7 @@
 export default {
   prod:{
     "/api/":{
-      target: 'https://yunsuo.zh.city:50015',
+      target: 'http://yunsuo.zh.city:50015',
       changeOrigin: true,
       pathRewrite: { '^': '' },
     },
