@@ -1,0 +1,51 @@
+{
+  "private": true,
+  "author": "guoxf <guoxf@swtsoft.com>",
+  "scripts": {
+    "dev": "max dev",
+    "build": "max build",
+    "format": "prettier --cache --write .",
+    "postinstall": "max setup",
+    "setup": "max setup",
+    "start": "npm run dev"
+  },
+  "dependencies": {
+    "@swiftease/atali-curd": "^0.0.3",
+    "@swiftease/atali-form": "^0.0.3",
+    "@swiftease/atali-pkg": "^0.0.3",
+    "@swiftease/atali-components": "^0.0.3",
+    "@swiftease/atali-graph": "^0.0.3",
+    "@swiftease/designable-core": "^0.0.1",
+    "@swiftease/designable-formily-antd": "^0.0.1",
+    "@swiftease/designable-formily-transformer": "^0.0.1",
+    "@swiftease/designable-react": "^0.0.1",
+    "@swiftease/designable-react-settings-form": "^0.0.1",
+    "@swiftease/designable-shared": "^0.0.1",
+    "@swiftease/formily-antd-v5": "^0.0.1",
+    "@ant-design/icons": "^5.2.6",
+    "@ant-design/pro-chat": "^1.13.3",
+    "@ant-design/pro-components": "^2.6.43",
+    "@antv/x6-react-shape": "^2.2.2",
+    "@blocksuite/presets": "nightly",
+    "@lobehub/ui": "^1.128.4",
+    "@toeverything/theme": "latest",
+    "@uiw/react-baidu-map": "^2.7.0",
+    "@umijs/max": "^4.0.89",
+    "antd": "5.12.4",
+    "antd-style": "^3",
+    "query-string": "^8.1.0",
+    "react-intl": "^6.5.5",
+    "react-resizable-panels": "^2.0.19",
+    "ua-parser-js": "^1",
+    "yjs": "latest"
+  },
+  "devDependencies": {
+    "@types/react": "^18.2.45",
+    "@types/react-dom": "^18.2.18",
+    "lint-staged": "^15.2.0",
+    "prettier": "^3.1.1",
+    "prettier-plugin-organize-imports": "^3.2.4",
+    "prettier-plugin-packagejson": "^2.4.7",
+    "typescript": "^5.3.3"
+  }
+}
