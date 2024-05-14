@@ -50,6 +50,15 @@
 - **高效稳定：** 通过选用高性能的编程语言和框架，保证了系统的高效稳定运行。
 - **易扩展和易维护：** 采用微服务架构，使得系统具有更好的可扩展性和可维护性。
 
+## 截图
+![1](/images/screen1.png)
+![2](/images/screen2.png)
+![3](/images/screen3.png)
+![4](/images/screen4.png)
+![2](/images/screen5.png)
+![3](/images/screen6.png)
+![4](/images/screen7.png)
+
 ## 社区
 
 如果微信群二维码过期，请添加社区助手的微信，备注云梭。
