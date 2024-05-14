@@ -55,9 +55,8 @@
 ![2](/images/screen2.png)
 ![3](/images/screen3.png)
 ![4](/images/screen4.png)
-![2](/images/screen5.png)
-![3](/images/screen6.png)
-![4](/images/screen7.png)
+![5](/images/screen5.png)
+![6](/images/screen6.png)
 
 ## 社区
 
