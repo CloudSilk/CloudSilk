@@ -17,7 +17,7 @@ func CreateProductOrder(m *model.ProductOrder) (string, error) {
 	// }
 
 	// model.DB.DB().Find(&model.SystemConfigs{}, "", "")
-
+	//
 	duplication, err := model.DB.CreateWithCheckDuplication(m, "receipt_note_no=?", m.ReceiptNoteNo)
 	if err != nil {
 		return "", err
