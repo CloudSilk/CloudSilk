@@ -23,5 +23,5 @@ log
 cache
 # dubbogo.yaml
 .DS_Store
-mom.s3db
+*.s3db
 dubbogo*.yaml

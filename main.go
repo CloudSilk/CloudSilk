@@ -52,7 +52,7 @@ func StartAll(webPath, dbType string, port int) {
 	fmt.Println("数据库类型：", dbType)
 	var dbClient db.DBClientInterface
 	if dbType == "sqlite" {
-		dbClient = sqlite.NewSqlite2("", "", "./mom.s3db", "mom", ucconfig.DefaultConfig.Debug)
+		dbClient = sqlite.NewSqlite2("", "", "./CloudSilk.s3db", "CloudSilk", ucconfig.DefaultConfig.Debug)
 	} else {
 		dbClient = mysql.NewMysql(ucconfig.DefaultConfig.Mysql, ucconfig.DefaultConfig.Debug)
 	}
