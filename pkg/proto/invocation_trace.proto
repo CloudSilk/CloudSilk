@@ -1,0 +1,76 @@
+syntax="proto3";
+
+package proto;
+option go_package = "./;proto";
+
+import "mom_common.proto";
+
+message InvocationTraceInfo {
+	//ID 
+ 	string id=2;
+	//IP地址 
+    string iPAddress=3;
+	//控制器 
+    string controllerName=4;
+	//路由 
+ 	string actionName=5;
+	//请求地址 
+ 	string requestUrl=6;
+	//请求时间 
+ 	string requestTime=7;
+	//耗时 
+ 	int32 duration=8;
+	//请求文本 
+    string requestText=9;
+	//响应文本 
+    string responseText=10;
+	//响应码 
+ 	int32 responseCode=11;
+	//注释 
+ 	string annotation=12;
+}
+
+message QueryInvocationTraceRequest{
+    // @inject_tag: uri:"pageIndex" form:"pageIndex"
+    int64 pageIndex=1;
+    // @inject_tag: uri:"pageSize" form:"pageSize"
+    int64 pageSize=2;
+    // @inject_tag: uri:"sortConfig" form:"sortConfig"
+    string sortConfig=3;
+    //请求时间开始
+    //@inject_tag: uri:"requestTime0" form:"requestTime0"
+    string requestTime0=4;
+    //请求时间结束
+    //@inject_tag: uri:"requestTime1" form:"requestTime1"
+    string requestTime1=5;
+    //路由
+    //@inject_tag: uri:"actionName" form:"actionName"
+    string actionName=6;
+    //IP地址
+    //@inject_tag: uri:"iPAddress" form:"iPAddress"
+    string iPAddress=7;
+    //请求文本或响应文本
+    //@inject_tag: uri:"requestText" form:"requestText"
+    string requestText=8;
+}
+
+message QueryInvocationTraceResponse{
+    Code code=1;
+    string message=2;
+    repeated InvocationTraceInfo data=3;
+    int64 pages=4;
+    int64 records=5;
+    int64 total=6;
+}
+
+message GetAllInvocationTraceResponse{
+    Code code=1;
+    string message=2;
+    repeated InvocationTraceInfo data=3;
+}
+
+message GetInvocationTraceDetailResponse{
+    Code code=1;
+    string message=2;
+    InvocationTraceInfo data=3;
+}

@@ -1,0 +1,175 @@
+syntax="proto3";
+
+package proto;
+option go_package = "./;proto";
+
+import "mom_common.proto";
+import "production_crossway.proto";
+
+service ProductionLine{
+    rpc Add(ProductionLineInfo)returns(CommonResponse){}
+    rpc Update(ProductionLineInfo)returns(CommonResponse){}
+    rpc Delete(DelRequest)returns(CommonResponse){}
+    rpc Query(QueryProductionLineRequest)returns(QueryProductionLineResponse){}
+    rpc GetAll(GetAllRequest)returns(GetAllProductionLineResponse){}
+    rpc GetDetail(GetDetailRequest)returns(GetProductionLineDetailResponse){}
+}
+
+message ProductionLineInfo {
+	//ID 
+	string id=2;
+	//代号 
+	string code=3;
+	//描述  
+	string description=4;
+	//识别码 
+	string identifier=5;
+	//账号管控 
+ 	bool accountControl=6;
+	//物料管控 
+ 	bool materialControl=7;
+	//效率统计 
+ 	bool efficiencyStatistic=8;
+	//备注 
+	string remark=9;
+	//生产工厂ID 
+	string productionFactoryID=10;
+	//当前型号ID 
+	string productModelID=11;
+	//工站 
+ 	repeated ProductionStationInfo productionStations=12;
+	//产线路口 
+ 	repeated ProductionCrosswayInfo productionCrossways=13;
+    //产线支持产品类别 
+ 	repeated ProductionLineSupportableCategoryInfo productionLineSupportableCategorys=14;
+}
+
+message ProductionLineSupportableCategoryInfo {
+    string id=4;
+	//产线ID 
+	string productionLineID=2;
+	//产品类别ID 
+	string productCategoryID=3;
+}
+
+message QueryProductionLineRequest{
+    // @inject_tag: uri:"pageIndex" form:"pageIndex"
+    int64 pageIndex=1;
+    // @inject_tag: uri:"pageSize" form:"pageSize"
+    int64 pageSize=2;
+    // @inject_tag: uri:"sortConfig" form:"sortConfig"
+    string sortConfig=3;
+	//代号或描述
+    // @inject_tag: uri:"code" form:"code"
+    string code=5;
+	//生产工厂ID
+	// @inject_tag: uri:"productionFactoryID" form:"productionFactoryID"
+	string productionFactoryID=6;
+}
+
+message QueryProductionLineResponse{
+    Code code=1;
+    string message=2;
+    repeated ProductionLineInfo data=3;
+    int64 pages=4;
+    int64 records=5;
+    int64 total=6;
+}
+
+message GetAllProductionLineResponse{
+    Code code=1;
+    string message=2;
+    repeated ProductionLineInfo data=3;
+}
+
+message GetProductionLineDetailResponse{
+    Code code=1;
+    string message=2;
+    ProductionLineInfo data=3;
+}
+
+
+service ProductionStation{
+    rpc Add(ProductionStationInfo)returns(CommonResponse){}
+    rpc Update(ProductionStationInfo)returns(CommonResponse){}
+    rpc Delete(DelRequest)returns(CommonResponse){}
+    rpc Query(QueryProductionStationRequest)returns(QueryProductionStationResponse){}
+    rpc GetAll(GetAllRequest)returns(GetAllProductionStationResponse){}
+    rpc GetDetail(GetDetailRequest)returns(GetProductionStationDetailResponse){}
+    rpc Get(GetProductionStationRequest)returns(GetProductionStationDetailResponse){}
+}
+
+message GetProductionStationRequest{
+    string code=1;
+}
+
+message ProductionStationInfo {
+	//ID 
+ 	string id=2;
+	//代号 
+ 	string code=3;
+	//描述 
+ 	string description=4;
+	//工位类型 
+ 	string stationType=5;
+	//账号管控 
+ 	bool accountControl=6;
+	//物料管控 
+ 	bool materialControl=7;
+	//允许报工 
+ 	bool allowReport=8;
+	//允许返工 
+ 	bool allowRework=9;
+	//当前状态 
+ 	string currentState=10;
+	//更新时间 
+ 	string lastUpdateTime=11;
+	//备注 
+ 	string remark=12;
+	//生产产线ID 
+    string productionLineID=13;
+    ProductionLineInfo productionLine=15;
+	//登录人员ID 
+    string currentUserID=14;
+    string currentUserName=17;
+    string productInfoID=16;
+}
+
+message QueryProductionStationRequest{
+    // @inject_tag: uri:"pageIndex" form:"pageIndex"
+    int64 pageIndex=1;
+    // @inject_tag: uri:"pageSize" form:"pageSize"
+    int64 pageSize=2;
+    // @inject_tag: uri:"sortConfig" form:"sortConfig"
+    string sortConfig=3;
+	//代号或描述
+    // @inject_tag: uri:"code" form:"code"
+    string code=5;
+	//工位类型 
+    // @inject_tag: uri:"stationType" form:"stationType"
+    string stationType=6;
+    //生产产线ID
+    // @inject_tag: uri:"productionLineID" form:"productionLineID"
+    string productionLineID=7;
+}
+
+message QueryProductionStationResponse{
+    Code code=1;
+    string message=2;
+    repeated ProductionStationInfo data=3;
+    int64 pages=4;
+    int64 records=5;
+    int64 total=6;
+}
+
+message GetAllProductionStationResponse{
+    Code code=1;
+    string message=2;
+    repeated ProductionStationInfo data=3;
+}
+
+message GetProductionStationDetailResponse{
+    Code code=1;
+    string message=2;
+    ProductionStationInfo data=3;
+}

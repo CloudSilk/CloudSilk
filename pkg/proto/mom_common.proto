@@ -1,0 +1,53 @@
+syntax="proto3";
+
+package proto;
+option go_package = "./;proto";
+
+message CommonResponse{
+    Code code=1;
+    string message=2;
+}
+
+message DelRequest{
+    string id=1;
+    string tenantID=2;
+}
+
+message EnableRequest{
+    string id=1;
+    string tenantID=2;
+    bool enable=3;
+}
+
+message GetAllRequest{}
+
+message GetDetailRequest{
+    string id=1;
+    string tenantID=2;
+}
+
+enum Code{
+    None=0;
+    //成功
+    Success=20000;
+    //服务端错误
+	InternalServerError       = 50000;
+    //错误请求参数
+	BadRequest                = 40000;
+    //未授权
+	Unauthorized              = 40001;
+    //资源不存在
+	ErrRecordNotFound         = 40002;
+    //用户名或者密码错误
+	UserNameOrPasswordIsWrong = 41001;
+    //用户不存在
+	UserIsNotExist            = 41002;
+    //没有权限
+	NoPermission              = 41003;
+    //无效Token
+	TokenInvalid              = 41004;
+    //Token过期
+	TokenExpired              = 41005;
+    //已禁用用户
+	UserDisabled              = 41006;
+}

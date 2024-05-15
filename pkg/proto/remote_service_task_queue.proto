@@ -1,0 +1,85 @@
+syntax="proto3";
+
+package proto;
+option go_package = "./;proto";
+
+import "mom_common.proto";
+
+message RemoteServiceTaskQueueInfo {
+	//ID 
+ 	string id=2;
+	//任务编号 
+ 	string taskNo=3;
+	//创建时间 
+ 	string createTime=4;
+	//请求路径 
+ 	string requestURL=5;
+	//请求内容 
+ 	string requestText=6;
+	//响应内容 
+ 	string responseText=7;
+	//完成时间 
+ 	string finishTime=8;
+	//调用计数 
+ 	int32 invokeCount=9;
+	//当前状态 
+ 	string currentState=10;
+	//事务状态 
+ 	string transactionState=11;
+	//远程任务ID 
+    string remoteServiceTaskID=12;
+    // 远程任务
+ 	string remoteServiceTaskName=13;
+    // 远程服务
+ 	string remoteServiceName=14;
+    //远程任务队列参数
+    repeated RemoteServiceTaskQueueParameterInfo remoteServiceTaskQueueParameters=15;
+}
+
+message RemoteServiceTaskQueueParameterInfo{
+    string id=1;
+    string dataType=2;
+    string name=3;
+    string description=4;
+    string value=5;
+    string remoteServiceTaskQueueID=6;
+}
+
+message QueryRemoteServiceTaskQueueRequest{
+    // @inject_tag: uri:"pageIndex" form:"pageIndex"
+    int64 pageIndex=1;
+    // @inject_tag: uri:"pageSize" form:"pageSize"
+    int64 pageSize=2;
+    // @inject_tag: uri:"sortConfig" form:"sortConfig"
+    string sortConfig=3;
+    //任务编号或请求内容或响应内容
+    // @inject_tag: uri:"taskNo" form:"taskNo"
+    string taskNo=4;
+    //创建时间开始
+    // @inject_tag: uri:"createTime0" form:"createTime0"
+    string createTime0=5;
+    //创建时间结束
+    // @inject_tag: uri:"createTime1" form:"createTime1"
+    string createTime1=6;
+}
+
+message QueryRemoteServiceTaskQueueResponse{
+    Code code=1;
+    string message=2;
+    repeated RemoteServiceTaskQueueInfo data=3;
+    int64 pages=4;
+    int64 records=5;
+    int64 total=6;
+}
+
+message GetAllRemoteServiceTaskQueueResponse{
+    Code code=1;
+    string message=2;
+    repeated RemoteServiceTaskQueueInfo data=3;
+}
+
+message GetRemoteServiceTaskQueueDetailResponse{
+    Code code=1;
+    string message=2;
+    RemoteServiceTaskQueueInfo data=3;
+}

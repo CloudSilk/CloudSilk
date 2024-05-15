@@ -1,0 +1,78 @@
+syntax="proto3";
+
+package proto;
+option go_package = "./;proto";
+
+import "mom_common.proto";
+
+service ProductionCrossway{
+    rpc Add(ProductionCrosswayInfo)returns(CommonResponse){}
+    rpc Update(ProductionCrosswayInfo)returns(CommonResponse){}
+    rpc Delete(DelRequest)returns(CommonResponse){}
+    rpc Query(QueryProductionCrosswayRequest)returns(QueryProductionCrosswayResponse){}
+    rpc GetAll(GetAllRequest)returns(GetAllProductionCrosswayResponse){}
+    rpc GetDetail(GetDetailRequest)returns(GetProductionCrosswayDetailResponse){}
+}
+
+message ProductionCrosswayInfo {
+	//ID 
+    string id=2;
+	//代号 
+ 	string code=3;
+	//描述 
+ 	string description=4;
+	//默认走向 
+ 	int32 defaultTurn=5;
+	//备注 
+ 	string remark=6;
+	//生产产线ID 
+    string productionLineID=7;
+    //产线路口左转工站
+    repeated ProductionCrosswayStationInfo productionCrosswayLeftTurnStations=8;
+    //产线路口右转工站
+    repeated ProductionCrosswayStationInfo productionCrosswayRightTurnStations=9;
+    //产线路口交叉工站
+    repeated ProductionCrosswayStationInfo productionCrosswayStraightStations=10;
+}
+
+message ProductionCrosswayStationInfo {
+    string id=4;
+    string productionCrosswayID=2;
+    string productionStationID=3;
+}
+
+message QueryProductionCrosswayRequest{
+    // @inject_tag: uri:"pageIndex" form:"pageIndex"
+    int64 pageIndex=1;
+    // @inject_tag: uri:"pageSize" form:"pageSize"
+    int64 pageSize=2;
+    // @inject_tag: uri:"sortConfig" form:"sortConfig"
+    string sortConfig=3;
+	//代号或描述
+    // @inject_tag: uri:"code" form:"code"
+    string code=5;
+	//生产产线ID 
+    // @inject_tag: uri:"productionLineID" form:"productionLineID"
+    string productionLineID=6;
+}
+
+message QueryProductionCrosswayResponse{
+    Code code=1;
+    string message=2;
+    repeated ProductionCrosswayInfo data=3;
+    int64 pages=4;
+    int64 records=5;
+    int64 total=6;
+}
+
+message GetAllProductionCrosswayResponse{
+    Code code=1;
+    string message=2;
+    repeated ProductionCrosswayInfo data=3;
+}
+
+message GetProductionCrosswayDetailResponse{
+    Code code=1;
+    string message=2;
+    ProductionCrosswayInfo data=3;
+}

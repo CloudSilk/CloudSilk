@@ -1,0 +1,65 @@
+syntax="proto3";
+
+package proto;
+option go_package="./;proto";
+
+import "mom_common.proto";
+import "material_category.proto";
+
+message MaterialInfoInfo{
+    string id=1;
+    //物料类别ID
+    string materialCategoryID=2;
+    //物料类别
+    MaterialCategoryInfo materialCategory=3;
+    //物料号
+    string materialNo=4;
+	//物料描述
+    string materialDescription=5;
+    //单位
+    string unit=6;
+    //识别码
+    string identifier=7;
+    //索引
+    int32 startIndex=8;
+	//是否管控
+    bool enableControl=9;
+    //管控类型
+    int32 controlType=10;
+    //物料仓库
+    string warehouse=11;
+    //备注
+    string remark=12;
+}
+
+message QueryMaterialInfoRequest{
+    // @inject_tag: uri:"pageIndex" form:"pageIndex"
+    int64 pageIndex=1;
+    // @inject_tag: uri:"pageSize" form:"pageSize"
+    int64 pageSize=2;
+    // @inject_tag: uri:"sortConfig" form:"sortConfig"
+    string sortConfig=3;
+    // @inject_tag: uri:"identifier" form:"identifier"
+    string identifier=4;
+}
+
+message QueryMaterialInfoResponse{
+    Code code=1;
+    string message=2;
+    repeated MaterialInfoInfo data=3;
+    int64 pages=4;
+    int64 records=5;
+    int64 total=6;
+}
+
+message GetAllMaterialInfoResponse{
+    Code code=1;
+    string message=2;
+    repeated MaterialInfoInfo data=3;
+}
+
+message GetMaterialInfoDetailResponse{
+    Code code=1;
+    string message=2;
+    MaterialInfoInfo data=3;
+}

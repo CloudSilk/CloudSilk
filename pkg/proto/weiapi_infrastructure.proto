@@ -1,0 +1,18 @@
+syntax="proto3";
+
+package proto;
+option go_package = "./;proto";
+
+message RetrieveProductionStationRequest{
+    string productionLine=1;
+	string stationType=2;
+}
+
+message RetrieveProductAttributeRequest{
+    string Code=1;
+	string Description=2;
+}
+
+message RetrieveProductionCrosswayRequest{
+    string ProductionLine=1;
+}

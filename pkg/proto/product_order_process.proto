@@ -1,0 +1,82 @@
+syntax="proto3";
+
+package proto;
+option go_package = "./;proto";
+
+import "mom_common.proto";
+import "production_process.proto";
+
+service ProductOrderProcess{
+    rpc Query(QueryProductOrderProcessRequest)returns(QueryProductOrderProcessResponse){}
+}
+
+message ProductOrderProcessInfo {
+	//ID 
+ 	string id=2;
+	//工序顺序 
+ 	int32 sortIndex=3;
+	//创建时间 
+ 	string createTime=4;
+	//创建人员ID 
+    string createUserID=5;
+    string createUserName=13;
+	//是否启用 
+ 	bool enable=6;
+	//更新时间 
+ 	string lastUpdateTime=7;
+	//备注 
+ 	string remark=8;
+	//生产工序ID 
+    string productionProcessID=9;
+	//隶属工单ID 
+    string productOrderID=10;
+    //生产工单号
+    string productOrderNo=11;
+    //生产工序
+    ProductionProcessInfo productionProcess=12;
+}
+
+message QueryProductOrderProcessRequest{
+    // @inject_tag: uri:"pageIndex" form:"pageIndex"
+    int64 pageIndex=1;
+    // @inject_tag: uri:"pageSize" form:"pageSize"
+    int64 pageSize=2;
+    // @inject_tag: uri:"sortConfig" form:"sortConfig"
+    string sortConfig=3;
+    //工单号
+    // @inject_tag: uri:"productOrderNo" form:"productOrderNo"
+    string productOrderNo=4;
+    //创建时间开始
+    // @inject_tag: uri:"createTime0" form:"createTime0"
+    string createTime0=5;
+    //创建时间结束
+    // @inject_tag: uri:"createTime1" form:"createTime1"
+    string createTime1=6;
+    // @inject_tag: uri:"productOrderID" form:"productOrderID"
+    string productOrderID=7;
+    // @inject_tag: uri:"enable" form:"enable"
+    bool enable=8;
+    // @inject_tag: uri:"sortIndex" form:"sortIndex"
+    int32 sortIndex=9;
+}
+
+message QueryProductOrderProcessResponse{
+    Code code=1;
+    string message=2;
+    repeated ProductOrderProcessInfo data=3;
+    int64 pages=4;
+    int64 records=5;
+    int64 total=6;
+}
+
+message GetAllProductOrderProcessResponse{
+    Code code=1;
+    string message=2;
+    repeated ProductOrderProcessInfo data=3;
+}
+
+message GetProductOrderProcessDetailResponse{
+    Code code=1;
+    string message=2;
+    ProductOrderProcessInfo data=3;
+}

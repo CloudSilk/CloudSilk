@@ -1,0 +1,83 @@
+syntax="proto3";
+
+package proto;
+option go_package = "./;proto";
+
+import "mom_common.proto";
+import "production_line.proto";
+
+service ProductionStationSignup{
+    rpc Add(ProductionStationSignupInfo)returns(CommonResponse){}
+    rpc Update(ProductionStationSignupInfo)returns(CommonResponse){}
+    rpc Delete(DelRequest)returns(CommonResponse){}
+    rpc Query(QueryProductionStationSignupRequest)returns(QueryProductionStationSignupResponse){}
+    rpc GetAll(GetAllRequest)returns(GetAllProductionStationSignupResponse){}
+    rpc GetDetail(GetDetailRequest)returns(GetProductionStationSignupDetailResponse){}
+    rpc GetByID(GetProductionStationSignupRequest)returns(GetProductionStationSignupDetailResponse){}
+}
+
+message GetProductionStationSignupRequest{
+    string productionStationID=1;
+    string loginUserID=2;
+    bool hasLogoutTime=3;
+}
+
+message ProductionStationSignupInfo {
+	//ID 
+ 	string id=2;
+	//登入时间 
+ 	string loginTime=3;
+	//最后心跳时间 
+ 	string lastHeartbeatTime=4;
+	//注销时间 
+ 	string logoutTime=5;
+	//上机时长 
+ 	int32 duration=6;
+	//生产工站ID 
+    string productionStationID=7;
+    ProductionStationInfo productionStation=10;
+	//登录人员ID 
+    string loginUserID=8;
+    string loginUserName=11;
+	//备注信息 
+ 	string remark=9;
+}
+
+message QueryProductionStationSignupRequest{
+    // @inject_tag: uri:"pageIndex" form:"pageIndex"
+    int64 pageIndex=1;
+    // @inject_tag: uri:"pageSize" form:"pageSize"
+    int64 pageSize=2;
+    // @inject_tag: uri:"sortConfig" form:"sortConfig"
+    string sortConfig=3;
+	//登入时间开始
+    // @inject_tag: uri:"loginTime0" form:"loginTime0"
+    string loginTime0=5;
+    //登入时间结束
+    // @inject_tag: uri:"loginTime1" form:"loginTime1"
+    string loginTime1=6;
+	// 生产产线ID
+    // @inject_tag: uri:"productionLineID" form:"productionLineID"
+    string productionLineID=7;
+}
+
+message QueryProductionStationSignupResponse{
+    Code code=1;
+    string message=2;
+    repeated ProductionStationSignupInfo data=3;
+    int64 pages=4;
+    int64 records=5;
+    int64 total=6;
+}
+
+message GetAllProductionStationSignupResponse{
+    Code code=1;
+    string message=2;
+    repeated ProductionStationSignupInfo data=3;
+}
+
+message GetProductionStationSignupDetailResponse{
+    Code code=1;
+    string message=2;
+    ProductionStationSignupInfo data=3;
+}

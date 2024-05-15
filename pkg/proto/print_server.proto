@@ -1,0 +1,78 @@
+
+
+syntax="proto3";
+
+option java_multiple_files = true;
+option java_package = "cn.atali.mom.PrintServer";
+option java_outer_classname = "PrintServerProto";
+option objc_class_prefix = "PrintServerSRV";
+
+package proto;
+option go_package = "./;proto";
+
+import "mom_common.proto";
+
+
+
+service PrintServer{
+    rpc Add(PrintServerInfo)returns(CommonResponse){}
+    rpc Update(PrintServerInfo)returns(CommonResponse){}
+    rpc Delete(DelRequest)returns(CommonResponse){}
+    rpc Query(QueryPrintServerRequest)returns(QueryPrintServerResponse){}
+    rpc GetAll(GetAllRequest)returns(GetAllPrintServerResponse){}
+    rpc GetDetail(GetDetailRequest)returns(GetPrintServerDetailResponse){}
+}
+
+message PrintServerInfo {
+    //打印机 
+ 	repeated PrinterInfo printers=1;
+	//ID 
+ 	string id=2;
+	//名称 
+    string name=3;
+	//身份标识 
+    string identity=4;
+	//运行状态 
+    string runningState=5;
+}
+
+message PrinterInfo {
+	//ID 
+ 	string id=2;
+	//名称 
+    string name=3;
+	//是否启用 
+    bool enable=4;
+	//打印服务器ID 
+ 	string printServerID=5;
+}
+
+message QueryPrintServerRequest{
+    // @inject_tag: uri:"pageIndex" form:"pageIndex"
+    int64 pageIndex=1;
+    // @inject_tag: uri:"pageSize" form:"pageSize"
+    int64 pageSize=2;
+    // @inject_tag: uri:"sortConfig" form:"sortConfig"
+    string sortConfig=3;
+}
+
+message QueryPrintServerResponse{
+    Code code=1;
+    string message=2;
+    repeated PrintServerInfo data=3;
+    int64 pages=4;
+    int64 records=5;
+    int64 total=6;
+}
+
+message GetAllPrintServerResponse{
+    Code code=1;
+    string message=2;
+    repeated PrintServerInfo data=3;
+}
+
+message GetPrintServerDetailResponse{
+    Code code=1;
+    string message=2;
+    PrintServerInfo data=3;
+}

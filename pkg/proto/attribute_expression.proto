@@ -1,0 +1,58 @@
+syntax="proto3";
+
+package proto;
+option go_package = "./;proto";
+
+import "mom_common.proto";
+import "product_attribute.proto";
+
+message AttributeExpressionInfo {
+	//ID 
+ 	string id=1;
+    //优先级
+    int32 sortIndex=2;
+    //产品特性
+    string productAttributeID=3;
+    //产品特性
+    ProductAttributeInfo productAttribute=4;
+    //运算符
+    string mathOperator=5;
+    //特性值
+    string attributeValue=6;
+    //备注
+    string remark=7;
+    //归属规则
+    string ruleID=8;
+    //规则名称
+    string ruleType=9;
+}
+
+message QueryAttributeExpressionRequest{
+    // @inject_tag: uri:"pageIndex" form:"pageIndex"
+    int64 pageIndex=1;
+    // @inject_tag: uri:"pageSize" form:"pageSize"
+    int64 pageSize=2;
+    // @inject_tag: uri:"sortConfig" form:"sortConfig"
+    string sortConfig=3;
+}
+
+message QueryAttributeExpressionResponse{
+    Code code=1;
+    string message=2;
+    repeated AttributeExpressionInfo data=3;
+    int64 pages=4;
+    int64 records=5;
+    int64 total=6;
+}
+
+message GetAllAttributeExpressionResponse{
+    Code code=1;
+    string message=2;
+    repeated AttributeExpressionInfo data=3;
+}
+
+message GetAttributeExpressionDetailResponse{
+    Code code=1;
+    string message=2;
+    AttributeExpressionInfo data=3;
+}

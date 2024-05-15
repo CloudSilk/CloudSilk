@@ -1,0 +1,101 @@
+syntax="proto3";
+
+package proto;
+option go_package = "./;proto";
+
+import "mom_common.proto";
+
+message ProductOrderProcessStepInfo {
+	//ID 
+    string id=2;
+	//排序 
+ 	int32 sortIndex=3;
+	//作业描述 
+ 	string workDescription=4;
+	//作业图示 
+    string workGraphic=5;
+	//创建时间 
+ 	string createTime=6;
+	//创建人员ID 
+    string createUserID=7;
+    string createUserName=14;
+	//备注 
+    string remark=8;
+	//作业类型ID 
+    string processStepTypeID=9;
+	//工单工序ID 
+    string productOrderProcessID=10;
+    //工步附件
+    repeated ProductOrderProcessStepAttachmentInfo productOrderProcessStepAttachments=11;
+    //工布参数
+    repeated ProductOrderProcessStepTypeParameterInfo productOrderProcessStepTypeParameters=12;
+	//作业类型
+	string processStepType=13;
+}
+
+message ProductOrderProcessStepAttachmentInfo {
+	//ID 
+    string id=2;
+	//文件名 
+    string fileName=3;
+	//文件类型 
+    string fileType=4;
+	//文件大小 
+ 	float fileSize=5;
+	//保存文件名 
+    string savedFileName=6;
+	//文件状态 
+    string fileStatus=7;
+	//创建时间 
+ 	string createTime=8;
+	//创建人员ID 
+    string createUserID=9;
+	//隶属工步ID 
+    string productOrderProcessStepID=10;
+}
+
+message ProductOrderProcessStepTypeParameterInfo {
+	//ID 
+    string id=2;
+	//参数值 
+    string value=3;
+	//备注 
+    string remark=4;
+	//工单工步ID 
+    string productOrderProcessStepID=5;
+	//作业参数ID 
+    string processStepTypeParameterID=6;
+}
+
+message QueryProductOrderProcessStepRequest{
+    // @inject_tag: uri:"pageIndex" form:"pageIndex"
+    int64 pageIndex=1;
+    // @inject_tag: uri:"pageSize" form:"pageSize"
+    int64 pageSize=2;
+    // @inject_tag: uri:"sortConfig" form:"sortConfig"
+    string sortConfig=3;
+	//工单工序ID
+	// @inject_tag: uri:"productOrderProcessID" form:"productOrderProcessID"
+	string productOrderProcessID=4;
+}
+
+message QueryProductOrderProcessStepResponse{
+    Code code=1;
+    string message=2;
+    repeated ProductOrderProcessStepInfo data=3;
+    int64 pages=4;
+    int64 records=5;
+    int64 total=6;
+}
+
+message GetAllProductOrderProcessStepResponse{
+    Code code=1;
+    string message=2;
+    repeated ProductOrderProcessStepInfo data=3;
+}
+
+message GetProductOrderProcessStepDetailResponse{
+    Code code=1;
+    string message=2;
+    ProductOrderProcessStepInfo data=3;
+}

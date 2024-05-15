@@ -1,0 +1,55 @@
+syntax="proto3";
+
+package proto;
+option go_package = "./;proto";
+
+import "mom_common.proto";
+
+service SystemEventTriggerParameter{
+    rpc Add(SystemEventTriggerParameterInfo)returns(CommonResponse){}
+}
+
+message SystemEventTriggerParameterInfo {
+	//ID 
+ 	string id=2;
+	//数据类型 
+ 	string dataType=3;
+	//名称 
+ 	string name=4;
+	//描述 
+ 	string description=5;
+	//参数值 
+ 	string value=6;
+	//系统事件触发ID 
+    string systemEventTriggerID=7;
+}
+
+message QuerySystemEventTriggerParameterRequest{
+    // @inject_tag: uri:"pageIndex" form:"pageIndex"
+    int64 pageIndex=1;
+    // @inject_tag: uri:"pageSize" form:"pageSize"
+    int64 pageSize=2;
+    // @inject_tag: uri:"sortConfig" form:"sortConfig"
+    string sortConfig=3;
+}
+
+message QuerySystemEventTriggerParameterResponse{
+    Code code=1;
+    string message=2;
+    repeated SystemEventTriggerParameterInfo data=3;
+    int64 pages=4;
+    int64 records=5;
+    int64 total=6;
+}
+
+message GetAllSystemEventTriggerParameterResponse{
+    Code code=1;
+    string message=2;
+    repeated SystemEventTriggerParameterInfo data=3;
+}
+
+message GetSystemEventTriggerParameterDetailResponse{
+    Code code=1;
+    string message=2;
+    SystemEventTriggerParameterInfo data=3;
+}

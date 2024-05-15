@@ -1,0 +1,73 @@
+syntax="proto3";
+
+package proto;
+option go_package = "./;proto";
+
+import "mom_common.proto";
+
+message ProductCategoryAttributeInfo {
+	//ID 
+ 	string id=2;
+	//允许空缺 
+ 	bool allowNullOrBlank=3;
+	//预设值 
+    string defaultValue=4;
+	//产品类别ID 
+    string productCategoryID=5;
+	//产品特性ID 
+    string productAttributeID=6;
+    string productAttributeCode=8;
+    string productAttributeDescription=9;
+	//产品类别特征值 
+ 	repeated ProductCategoryAttributeValueInfo productCategoryAttributeValue=7;
+}
+
+message ProductCategoryAttributeValueInfo {
+	//ID 
+    string id=2;
+	//值 
+    string value=3;
+	//描述 
+    string description=4;
+	//产品类别特性ID 
+    string productCategoryAttributeID=5;
+} 
+
+message QueryProductCategoryAttributeRequest{
+    // @inject_tag: uri:"pageIndex" form:"pageIndex"
+    int64 pageIndex=1;
+    // @inject_tag: uri:"pageSize" form:"pageSize"
+    int64 pageSize=2;
+    // @inject_tag: uri:"sortConfig" form:"sortConfig"
+    string sortConfig=3;
+    //产品类别ID
+    // @inject_tag: uri:"productCategoryID" form:"productCategoryID"
+    string productCategoryID=4;
+    //特性或描述
+    // @inject_tag: uri:"productAtribute" form:"productAtribute"
+    string productAtribute=5;
+    // 产品特性ID
+    // @inject_tag: uri:"productAttributeID" form:"productAttributeID"
+    string productAttributeID=6;
+}
+
+message QueryProductCategoryAttributeResponse{
+    Code code=1;
+    string message=2;
+    repeated ProductCategoryAttributeInfo data=3;
+    int64 pages=4;
+    int64 records=5;
+    int64 total=6;
+}
+
+message GetAllProductCategoryAttributeResponse{
+    Code code=1;
+    string message=2;
+    repeated ProductCategoryAttributeInfo data=3;
+}
+
+message GetProductCategoryAttributeDetailResponse{
+    Code code=1;
+    string message=2;
+    ProductCategoryAttributeInfo data=3;
+}

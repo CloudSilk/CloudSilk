@@ -1,0 +1,60 @@
+syntax="proto3";
+
+package proto;
+option go_package = "./;proto";
+
+import "mom_common.proto";
+
+message RemoteServiceInfo {
+	//ID 
+ 	string id=2;
+	//名称 
+ 	string name=3;
+	//是否启用 
+ 	bool enable=4;
+	//服务地址 
+ 	string address=5;
+	//请求头 
+ 	string headers=6;
+	//超时时间 
+ 	int32 timeout=7;
+	//使用凭证 
+ 	bool useCredential=8;
+	//用户名 
+ 	string userName=9;
+	//密码 
+ 	string password=10;
+}
+
+message QueryRemoteServiceRequest{
+    // @inject_tag: uri:"pageIndex" form:"pageIndex"
+    int64 pageIndex=1;
+    // @inject_tag: uri:"pageSize" form:"pageSize"
+    int64 pageSize=2;
+    // @inject_tag: uri:"sortConfig" form:"sortConfig"
+    string sortConfig=3;
+    //名称
+    // @inject_tag: uri:"name" form:"name"
+    string name=4;
+}
+
+message QueryRemoteServiceResponse{
+    Code code=1;
+    string message=2;
+    repeated RemoteServiceInfo data=3;
+    int64 pages=4;
+    int64 records=5;
+    int64 total=6;
+}
+
+message GetAllRemoteServiceResponse{
+    Code code=1;
+    string message=2;
+    repeated RemoteServiceInfo data=3;
+}
+
+message GetRemoteServiceDetailResponse{
+    Code code=1;
+    string message=2;
+    RemoteServiceInfo data=3;
+}

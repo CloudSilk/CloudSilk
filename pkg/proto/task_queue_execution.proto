@@ -1,0 +1,65 @@
+syntax="proto3";
+
+package proto;
+option go_package = "./;proto";
+
+import "mom_common.proto";
+
+message TaskQueueExecutionInfo {
+	//ID 
+    string id=2;
+	//数据跟踪 
+ 	string dataTrace=3;
+	//是否成功 
+ 	bool success=4;
+	//失败原因 
+ 	string failureReason=5;
+	//创建时间 
+ 	string createTime=6;
+	//任务队列ID 
+    string taskQueueID=7;
+    //任务队列
+    string taskQueueDescription=8;
+}
+
+message QueryTaskQueueExecutionRequest{
+    // @inject_tag: uri:"pageIndex" form:"pageIndex"
+    int64 pageIndex=1;
+    // @inject_tag: uri:"pageSize" form:"pageSize"
+    int64 pageSize=2;
+    // @inject_tag: uri:"sortConfig" form:"sortConfig"
+    string sortConfig=3;
+    //创建时间开始 
+    // @inject_tag: uri:"createTime0" form:"createTime0"
+    string createTime0=8;
+    //创建时间结束 
+    // @inject_tag: uri:"createTime1" form:"createTime1"
+    string createTime1=9;
+    //任务队列ID 
+    // @inject_tag: uri:"taskQueueID" form:"taskQueueID"
+    string taskQueueID=10;
+    // 数据跟踪或失败原因
+    // @inject_tag: uri:"dataTrace" form:"dataTrace"
+    string dataTrace=11;
+}
+
+message QueryTaskQueueExecutionResponse{
+    Code code=1;
+    string message=2;
+    repeated TaskQueueExecutionInfo data=3;
+    int64 pages=4;
+    int64 records=5;
+    int64 total=6;
+}
+
+message GetAllTaskQueueExecutionResponse{
+    Code code=1;
+    string message=2;
+    repeated TaskQueueExecutionInfo data=3;
+}
+
+message GetTaskQueueExecutionDetailResponse{
+    Code code=1;
+    string message=2;
+    TaskQueueExecutionInfo data=3;
+}

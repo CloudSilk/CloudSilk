@@ -1,0 +1,42 @@
+syntax="proto3";
+
+package proto;
+option go_package = "./;proto";
+
+message GetTestProjectWithParameterRequest{
+    //工位代号
+    string productionStation=1;
+    //托盘号
+    string trayNo=2;
+    //产品序列号
+    string productSerialNo=3;
+}
+
+message GetTestProjectWithParameterResponse{
+    int32 code=1;
+    string message=2;
+    TestProjectWithParameterInfo data=3;
+}
+
+message TestProjectWithParameterInfo{
+    repeated TestProjectInfo TestProjects=1;
+    repeated ParameterInfo InputParameters=2;
+    repeated ParameterInfo OutputParameters=3;
+}
+
+message TestProjectInfo {
+    string id=1;
+    string code=2;
+    string description=3;
+}
+
+message ParameterInfo {
+    string projectCode=1;
+    string code=2;
+    string description=3;
+    string standardValue=4;
+    string minimumValue=5;
+    string maximumValue=6;
+    string unit=7;
+    string groupCode=8;
+}

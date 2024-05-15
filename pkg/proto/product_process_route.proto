@@ -1,0 +1,103 @@
+syntax="proto3";
+
+package proto;
+option go_package = "./;proto";
+
+import "mom_common.proto";
+import "production_process.proto";
+import "production_line.proto";
+import "product_order.proto";
+
+service ProductProcessRoute{
+    rpc Add(ProductProcessRouteInfo)returns(CommonResponse){}
+    rpc Get(GetProductProcessRouteRequest)returns(GetProductProcessRouteDetailResponse){}
+    rpc Query(QueryProductProcessRouteRequest)returns(QueryProductProcessRouteResponse){}
+}
+
+message GetProductProcessRouteRequest{
+    string productInfoID=1;
+    string currentProcessID=2;
+    repeated string currentStates=3;
+}
+
+message ProductProcessRouteInfo {
+	//ID 
+    string id=1;
+	//作业顺序 
+ 	int32 workIndex=2;
+	//工序顺序 
+ 	int32 routeIndex=3;
+	//创建时间 
+ 	string createTime=4;
+	//当前状态 
+ 	string currentState=5;
+	//更新时间 
+ 	string lastUpdateTime=6;
+	//备注 
+ 	string remark=7;
+	//上步工序ID 
+    string lastProcessID=8;
+    ProductionProcessInfo lastProcess=9;
+	//当前工序ID 
+    string currentProcessID=10;
+    ProductionProcessInfo currentProcess=11;
+	//执行工站ID 
+    string productionStationID=12;
+    ProductionStationInfo productionStation=13;
+	//执行人员ID 
+    string processUserID=14;
+	//产品信息ID 
+    string productInfoID=15;
+    ProductInfoInfo productInfo=16;
+}
+
+message QueryProductProcessRouteRequest{
+    // @inject_tag: uri:"pageIndex" form:"pageIndex"
+    int64 pageIndex=1;
+    // @inject_tag: uri:"pageSize" form:"pageSize"
+    int64 pageSize=2;
+    // @inject_tag: uri:"sortConfig" form:"sortConfig"
+    string sortConfig=3;
+    //当前工序
+    // @inject_tag: uri:"currentProcessID" form:"currentProcessID"
+    string currentProcessID=4;
+    //序列号
+    // @inject_tag: uri:"productSerialNo" form:"productSerialNo"
+    string productSerialNo=5;
+    //生产工单号
+    // @inject_tag: uri:"productOrderNo" form:"productOrderNo"
+    string productOrderNo=6;
+    //创建时间开始
+    // @inject_tag: uri:"createTime0" form:"createTime0"
+    string createTime0=7;
+    //创建时间结束
+    // @inject_tag: uri:"createTime1" form:"createTime1"
+    string createTime1=8;
+    // @inject_tag: uri:"productInfoID" form:"productInfoID"
+    string productInfoID=9;
+    // @inject_tag: uri:"routeIndex" form:"routeIndex"
+    int32 routeIndex=10;
+    // @inject_tag: uri:"currentState" form:"currentState"
+    string currentState=11;
+}
+
+message QueryProductProcessRouteResponse{
+    Code code=1;
+    string message=2;
+    repeated ProductProcessRouteInfo data=3;
+    int64 pages=4;
+    int64 records=5;
+    int64 total=6;
+}
+
+message GetAllProductProcessRouteResponse{
+    Code code=1;
+    string message=2;
+    repeated ProductProcessRouteInfo data=3;
+}
+
+message GetProductProcessRouteDetailResponse{
+    Code code=1;
+    string message=2;
+    ProductProcessRouteInfo data=3;
+}

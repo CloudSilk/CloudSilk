@@ -1,0 +1,57 @@
+syntax="proto3";
+
+package proto;
+option go_package = "./;proto";
+
+import "mom_common.proto";
+import "product_package.proto";
+import "attribute_expression.proto";
+
+message ProductPackageMatchRuleInfo {
+	//ID 
+ 	string id=3;
+	//优先级 
+ 	int32 priority=4;
+	//使用包装ID 
+    string productPackageID=5;
+    //使用包装
+    ProductPackageInfo productPackage=9;
+	//是否启用 
+ 	bool enable=6;
+	//默认匹配 
+ 	bool initialValue=7;
+	//备注 
+    string remark=8;
+    //特征表达式 
+ 	repeated AttributeExpressionInfo attributeExpressions=2;
+}
+
+message QueryProductPackageMatchRuleRequest{
+    // @inject_tag: uri:"pageIndex" form:"pageIndex"
+    int64 pageIndex=1;
+    // @inject_tag: uri:"pageSize" form:"pageSize"
+    int64 pageSize=2;
+    // @inject_tag: uri:"sortConfig" form:"sortConfig"
+    string sortConfig=3;
+}
+
+message QueryProductPackageMatchRuleResponse{
+    Code code=1;
+    string message=2;
+    repeated ProductPackageMatchRuleInfo data=3;
+    int64 pages=4;
+    int64 records=5;
+    int64 total=6;
+}
+
+message GetAllProductPackageMatchRuleResponse{
+    Code code=1;
+    string message=2;
+    repeated ProductPackageMatchRuleInfo data=3;
+}
+
+message GetProductPackageMatchRuleDetailResponse{
+    Code code=1;
+    string message=2;
+    ProductPackageMatchRuleInfo data=3;
+}

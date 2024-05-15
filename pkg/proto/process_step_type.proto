@@ -1,0 +1,58 @@
+syntax="proto3";
+
+package proto;
+option go_package = "./;proto";
+
+import "mom_common.proto";
+import "process_step_type_parameter.proto";
+
+service ProcessStepType{
+    rpc Query(QueryProcessStepTypeRequest)returns(QueryProcessStepTypeResponse){}
+}
+
+message ProcessStepTypeInfo {
+	//ID 
+    string id=1;
+    //代号
+    string code=2;
+	//描述 
+ 	string description=3;
+	//是否启用 
+    bool enable=4;
+    //备注
+    string remark=5;
+	//工步类型参数 
+    repeated ProcessStepTypeParameterInfo processStepTypeParameters=6;
+}
+
+message QueryProcessStepTypeRequest{
+    // @inject_tag: uri:"pageIndex" form:"pageIndex"
+    int64 pageIndex=1;
+    // @inject_tag: uri:"pageSize" form:"pageSize"
+    int64 pageSize=2;
+    // @inject_tag: uri:"sortConfig" form:"sortConfig"
+    string sortConfig=3;
+    // @inject_tag: uri:"code" form:"code"
+    string code=4;
+}
+
+message QueryProcessStepTypeResponse{
+    Code code=1;
+    string message=2;
+    repeated ProcessStepTypeInfo data=3;
+    int64 pages=4;
+    int64 records=5;
+    int64 total=6;
+}
+
+message GetAllProcessStepTypeResponse{
+    Code code=1;
+    string message=2;
+    repeated ProcessStepTypeInfo data=3;
+}
+
+message GetProcessStepTypeDetailResponse{
+    Code code=1;
+    string message=2;
+    ProcessStepTypeInfo data=3;
+}

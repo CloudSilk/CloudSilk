@@ -1,0 +1,33 @@
+syntax="proto3";
+
+package proto;
+option go_package = "./;proto";
+
+import "mom_common.proto";
+
+message LoginRequest{
+    string ProductionStation=1;
+    string CardNo=2;
+    string Name=3;
+    string Password=4;
+}
+
+message LogoutRequest{
+    string ProductionStation=1;
+    string Name=2;
+}
+
+message ServiceResponse{
+    Code code=1;
+    string message=2;
+    Data data=3;
+}
+
+message Data{
+    string id=1;
+    string name=2;
+    string chineseName=3;
+    string englishName=4;
+    string photo=5;
+    string staffNo=6;
+}

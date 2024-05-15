@@ -1,0 +1,60 @@
+syntax="proto3";
+
+package proto;
+option go_package = "./;proto";
+
+import "mom_common.proto";
+
+message SerialNumberInfo {
+	//ID 
+ 	string id=2;
+	//名称 
+ 	string name=3;
+	//描述 
+ 	string description=4;
+	//前缀 
+ 	string prefix=5;
+	//长度 
+ 	int32 length=6;
+	//种子 
+ 	int32 seed=7;
+	//增量 
+ 	int32 increment=8;
+	//创建时间 
+ 	string createTime=9;
+	//最后增长时间 
+ 	string lastIncreaseTime=10;
+}
+
+message QuerySerialNumberRequest{
+    // @inject_tag: uri:"pageIndex" form:"pageIndex"
+    int64 pageIndex=1;
+    // @inject_tag: uri:"pageSize" form:"pageSize"
+    int64 pageSize=2;
+    // @inject_tag: uri:"sortConfig" form:"sortConfig"
+    string sortConfig=3;
+    //名字或描述或前缀
+    // @inject_tag: uri:"name" form:"name"
+    string name=4;
+}
+
+message QuerySerialNumberResponse{
+    Code code=1;
+    string message=2;
+    repeated SerialNumberInfo data=3;
+    int64 pages=4;
+    int64 records=5;
+    int64 total=6;
+}
+
+message GetAllSerialNumberResponse{
+    Code code=1;
+    string message=2;
+    repeated SerialNumberInfo data=3;
+}
+
+message GetSerialNumberDetailResponse{
+    Code code=1;
+    string message=2;
+    SerialNumberInfo data=3;
+}

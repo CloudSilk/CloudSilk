@@ -1,0 +1,91 @@
+syntax="proto3";
+
+package proto;
+option go_package = "./;proto";
+
+import "mom_common.proto";
+
+message ProductOrderPackageInfo {
+	//ID 
+ 	string id=2;
+	//包装箱号 
+ 	string packageNo=3;
+	//防伪码 
+ 	string securityCode=4;
+	//防伪链接 
+ 	string securityUrl=5;
+	//栈板标识 
+ 	string palletNo=6;
+	//创建时间 
+ 	string createTime=7;
+	//当前包装数量 
+ 	int32 currentQuantity=8;
+	//实际包装数量 
+ 	int32 packageQuantity=9;
+	//实际毛重 
+ 	float grossWeight=10;
+	//实际净重 
+ 	float netWeight=11;
+	//打印次数 
+ 	int32 printTimes=12;
+	//当前状态 
+ 	string currentState=13;
+	//状态变更时间 
+ 	string lastUpdateTime=14;
+	//备注 
+ 	string remark=15;
+	//使用包装ID 
+    string productPackageID=16;
+	//归属工单ID 
+    string productOrderID=17;
+	//上级包装ID 
+    string parentID=18;
+}
+
+message QueryProductOrderPackageRequest{
+    // @inject_tag: uri:"pageIndex" form:"pageIndex"
+    int64 pageIndex=1;
+    // @inject_tag: uri:"pageSize" form:"pageSize"
+    int64 pageSize=2;
+    // @inject_tag: uri:"sortConfig" form:"sortConfig"
+    string sortConfig=3;
+	//包装箱号 
+    // @inject_tag: uri:"packageNo" form:"packageNo"
+    string packageNo=5;
+	//栈板标识 
+    // @inject_tag: uri:"palletNo" form:"palletNo"
+    string palletNo=8;
+	//当前状态 
+    // @inject_tag: uri:"currentState" form:"currentState"
+    string currentState=15;
+	//创建时间开始
+    // @inject_tag: uri:"createTime0" form:"createTime0"
+    string createTime0=16;
+	//创建时间结束
+    // @inject_tag: uri:"createTime1" form:"createTime1"
+    string createTime1=17;
+	//生产工单号
+    // @inject_tag: uri:"productOrderNo" form:"productOrderNo"
+    string productOrderNo=18;
+}
+
+message QueryProductOrderPackageResponse{
+    Code code=1;
+    string message=2;
+    repeated ProductOrderPackageInfo data=3;
+    int64 pages=4;
+    int64 records=5;
+    int64 total=6;
+}
+
+message GetAllProductOrderPackageResponse{
+    Code code=1;
+    string message=2;
+    repeated ProductOrderPackageInfo data=3;
+}
+
+message GetProductOrderPackageDetailResponse{
+    Code code=1;
+    string message=2;
+    ProductOrderPackageInfo data=3;
+}

@@ -1,0 +1,74 @@
+syntax="proto3";
+
+package proto;
+option go_package = "./;proto";
+
+message EnterProductionStationRequest{
+    //工位代号
+    string productionStation=1;
+    //托盘号
+    string trayNo=2;
+    //产品序列号
+    string productSerialNo=3;
+    //包装箱号
+    string packageNo=4;
+}
+
+message EnterProductionStationResponse{
+    int32 code=1;
+    string message=2;
+    EnterProductionStationData data=3;
+}
+
+message EnterProductionStationData{
+    int32 toward=1;
+    string productOrderNo=2;
+    string productSerialNo=3;
+    string salesOrderNo=4;
+    string itemNo=5;
+    string orderTime=6;
+    string productCategory=7;
+    string productModel=8;
+    string materialNo=9;
+    string materialDescription=10;
+    string currentState=11;
+    string propertyBrief=12;
+    string remark=13;
+    EnterProductionStationInfo productionProcess=14;
+}
+
+message EnterProductionStationInfo{
+    string code=1;
+    string description=2;
+    string identifier=3;
+    string sopLink=4;
+}
+
+message ExitProductionStationRequest{
+    string productionStation=1;
+    string trayNo=2;
+    string productSerialNo=3;
+    string packageNo=4;
+    bool isFail=5;
+    bool isRework=6;
+    string reworkReason=7;
+    int32 waitTime=8;
+    bool unbindTray=9;
+}
+
+message CreateProductTestRecordRequest{
+    string ProductSerialNo=1;
+    string ProductionStation=2;
+    string TestProject=3;
+    string TestStartTime=4;
+    string TestEndTime=5;
+    string TestData=6;
+    bool IsQualified=7;
+}
+
+message CheckProductProcessRouteFailureRequest{
+    string productionStation=1;
+    string productSerialNo=2;
+    //默认为1，1表示重试，2表示返工，3表示忽略跳过
+    int32 handleMethod=3;
+}

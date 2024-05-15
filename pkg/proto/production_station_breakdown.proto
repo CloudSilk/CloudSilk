@@ -1,0 +1,80 @@
+syntax="proto3";
+
+package proto;
+option go_package = "./;proto";
+
+import "mom_common.proto";
+import "production_line.proto";
+
+message ProductionStationBreakdownInfo {
+	//ID 
+    string id=2;
+	//生产工站ID 
+    string productionStationID=3;
+    ProductionStationInfo productionStation=15;
+	//创建时间 
+ 	string createTime=4;
+	//创建人员ID 
+    string createUserID=5;
+    string createUserName=16;
+	//故障类型ID 
+    string equipmentBreakdownTypeID=6;
+	//故障原因ID 
+    string equipmentBreakdownCauseID=7;
+	//故障方案ID 
+    string equipmentBreakdownSolutionID=8;
+	//维修简述 
+ 	string maintainBrief=9;
+	//完成时间 
+ 	string completeTime=10;
+	//停机时长 
+ 	int32 duration=11;
+	//维修人员ID 
+    string maintainUserID=12;
+	//备注信息 
+ 	string remark=13;
+	//设备ID 
+ 	string equipmentID=14;
+}
+
+
+
+
+message QueryProductionStationBreakdownRequest{
+    // @inject_tag: uri:"pageIndex" form:"pageIndex"
+    int64 pageIndex=1;
+    // @inject_tag: uri:"pageSize" form:"pageSize"
+    int64 pageSize=2;
+    // @inject_tag: uri:"sortConfig" form:"sortConfig"
+    string sortConfig=3;
+	//创建时间开始
+    // @inject_tag: uri:"createTime0" form:"createTime0"
+    string createTime0=5;
+    //创建时间结束
+    // @inject_tag: uri:"createTime1" form:"createTime1"
+    string createTime1=6;
+    //生产产线ID
+    // @inject_tag: uri:"productionLineID" form:"productionLineID"
+    string productionLineID=14;
+}
+
+message QueryProductionStationBreakdownResponse{
+    Code code=1;
+    string message=2;
+    repeated ProductionStationBreakdownInfo data=3;
+    int64 pages=4;
+    int64 records=5;
+    int64 total=6;
+}
+
+message GetAllProductionStationBreakdownResponse{
+    Code code=1;
+    string message=2;
+    repeated ProductionStationBreakdownInfo data=3;
+}
+
+message GetProductionStationBreakdownDetailResponse{
+    Code code=1;
+    string message=2;
+    ProductionStationBreakdownInfo data=3;
+}

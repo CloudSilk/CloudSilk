@@ -1,0 +1,85 @@
+syntax="proto3";
+
+package proto;
+option go_package = "./;proto";
+
+import "mom_common.proto";
+
+message RemoteServiceTaskInfo {
+	//ID 
+	string id=2;
+	//代号 
+ 	string code=3;
+	//描述 
+ 	string description=4;
+	//远程服务ID 
+	string remoteServiceID=5;
+ 	string remoteServiceName=17;
+	//调用方法 
+ 	string invokeMethod=6;
+	//回调方法 
+ 	string callbackMethod=7;
+	//失败措施 
+ 	int32 failureMeasure=8;
+	//调用计数 
+ 	int32 maximumInvokeCount=9;
+	//常规调用 
+ 	bool routineInvoke=10;
+	//定期调用 
+ 	bool regularInvoke=11;
+	//起始时间 
+ 	string startTime=12;
+	//运行间隔 
+ 	int32 interval=13;
+	//结束时间 
+ 	string finishTime=14;
+	//最后调用时间 
+ 	string lastInvokeTime=15;
+	//远程服务任务参数
+	repeated RemoteServiceTaskParameterInfo remoteServiceTaskParameters=16;
+}
+
+message RemoteServiceTaskParameterInfo {
+	//ID 
+	string id=2;
+	//数据类型 
+ 	string dataType=3;
+	//名称 
+ 	string name=4;
+	//描述 
+ 	string description=5;
+	//参数值 
+ 	string value=6;
+	//远程服务任务ID 
+	string remoteServiceTaskID=7;
+}
+
+message QueryRemoteServiceTaskRequest{
+    // @inject_tag: uri:"pageIndex" form:"pageIndex"
+    int64 pageIndex=1;
+    // @inject_tag: uri:"pageSize" form:"pageSize"
+    int64 pageSize=2;
+    // @inject_tag: uri:"sortConfig" form:"sortConfig"
+    string sortConfig=3;
+}
+
+message QueryRemoteServiceTaskResponse{
+    Code code=1;
+    string message=2;
+    repeated RemoteServiceTaskInfo data=3;
+    int64 pages=4;
+    int64 records=5;
+    int64 total=6;
+}
+
+message GetAllRemoteServiceTaskResponse{
+    Code code=1;
+    string message=2;
+    repeated RemoteServiceTaskInfo data=3;
+}
+
+message GetRemoteServiceTaskDetailResponse{
+    Code code=1;
+    string message=2;
+    RemoteServiceTaskInfo data=3;
+}

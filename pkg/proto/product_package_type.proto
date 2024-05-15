@@ -1,0 +1,58 @@
+syntax="proto3";
+
+package proto;
+option go_package = "./;proto";
+
+import "mom_common.proto";
+import "label_type.proto";
+import "system_event.proto";
+
+message ProductPackageTypeInfo {
+	//ID 
+ 	string id=2;
+	//类型 
+ 	string code=3;
+	//描述 
+ 	string description=4;
+	//备注 
+ 	string remark=5;
+	//标签类型ID 
+    string labelTypeID=6;
+    LabelTypeInfo labelType=8;
+	//系统事件ID 
+    string systemEventID=7;
+    SystemEventInfo systemEvent=9;
+}
+
+message QueryProductPackageTypeRequest{
+    // @inject_tag: uri:"pageIndex" form:"pageIndex"
+    int64 pageIndex=1;
+    // @inject_tag: uri:"pageSize" form:"pageSize"
+    int64 pageSize=2;
+    // @inject_tag: uri:"sortConfig" form:"sortConfig"
+    string sortConfig=3;
+	//类型或描述
+    // @inject_tag: uri:"code" form:"code"
+    string code=5;
+}
+
+message QueryProductPackageTypeResponse{
+    Code code=1;
+    string message=2;
+    repeated ProductPackageTypeInfo data=3;
+    int64 pages=4;
+    int64 records=5;
+    int64 total=6;
+}
+
+message GetAllProductPackageTypeResponse{
+    Code code=1;
+    string message=2;
+    repeated ProductPackageTypeInfo data=3;
+}
+
+message GetProductPackageTypeDetailResponse{
+    Code code=1;
+    string message=2;
+    ProductPackageTypeInfo data=3;
+}

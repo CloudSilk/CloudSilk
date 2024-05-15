@@ -1,0 +1,86 @@
+syntax="proto3";
+
+package proto;
+option go_package = "./;proto";
+
+import "mom_common.proto";
+// import "product_category.proto";
+
+service ProductAttribute{
+    rpc Add(ProductAttributeInfo)returns(CommonResponse){}
+    rpc Update(ProductAttributeInfo)returns(CommonResponse){}
+    rpc Delete(DelRequest)returns(CommonResponse){}
+    rpc Query(QueryProductAttributeRequest)returns(QueryProductAttributeResponse){}
+    rpc GetAll(GetAllRequest)returns(GetAllProductAttributeResponse){}
+    rpc GetDetail(GetDetailRequest)returns(GetProductAttributeDetailResponse){}
+}
+
+message ProductAttributeInfo {
+	//ID 
+ 	string id=2;
+	//代号 
+ 	string code=3;
+	//描述 
+    string description=4;
+	//预设值 
+    string defaultValue=5;
+	//备注 
+    string remark=6;
+	//产品特征标识符 
+ 	repeated ProductAttributeIdentifierInfo productAttributeIdentifiers=7;
+}
+
+message ProductAttributeIdentifierInfo {
+	//ID 
+    string id=2;
+	//识别码 
+ 	string identifier=3;
+	//描述 
+    string description=4;
+	//产品特性ID 
+    string productAttributeID=5;
+    //产品类别
+    repeated string availableCategoryIDs=6;
+    repeated ProductAttributeIdentifierAvailableCategoryInfo productAttributeIdentifierAvailableCategorys=7;
+}
+
+message ProductAttributeIdentifierAvailableCategoryInfo{
+    string id=4;
+    string productAttributeIdentifierID=1;
+    string productCategoryID=2;
+}
+
+message QueryProductAttributeRequest{
+    // @inject_tag: uri:"pageIndex" form:"pageIndex"
+    int64 pageIndex=1;
+    // @inject_tag: uri:"pageSize" form:"pageSize"
+    int64 pageSize=2;
+    // @inject_tag: uri:"sortConfig" form:"sortConfig"
+    string sortConfig=3;
+	//代号或描述
+    // @inject_tag: uri:"code" form:"code"
+    string code=4;
+    // @inject_tag: uri:"description" form:"description"
+    string description=5;
+}
+
+message QueryProductAttributeResponse{
+    Code code=1;
+    string message=2;
+    repeated ProductAttributeInfo data=3;
+    int64 pages=4;
+    int64 records=5;
+    int64 total=6;
+}
+
+message GetAllProductAttributeResponse{
+    Code code=1;
+    string message=2;
+    repeated ProductAttributeInfo data=3;
+}
+
+message GetProductAttributeDetailResponse{
+    Code code=1;
+    string message=2;
+    ProductAttributeInfo data=3;
+}

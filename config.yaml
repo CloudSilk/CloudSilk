@@ -1,0 +1,19 @@
+mysql: "root:123456@(127.0.0.1:3306)/CloudSilk?charset=utf8mb4&parseTime=True&loc=Local"
+dbType: "sqlite"
+sqlite: "./CloudSilk.s3db"
+debug: true
+token:
+  key: "CloudSilk"
+  redisAddr: ""
+  redisUserName: ""
+  redisPwd: ""
+  expired: 86400
+superAdminRoleID: "1"
+platformTenantID: "2012ae3c-6f5f-4d10-9a59-ca0dd7c058a5"
+defaultRoleID: 7434dc3b-fabc-4ada-9332-6ddf30e0356a
+defaultPwd: CloudSilk
+miniApp:
+  - id: ""
+    name: ""
+    secret: ""
+    tenantID: ""

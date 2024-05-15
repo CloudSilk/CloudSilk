@@ -1,0 +1,86 @@
+syntax="proto3";
+
+package proto;
+option go_package = "./;proto";
+
+import "mom_common.proto";
+import "product_order_package.proto";
+import "product_order.proto";
+
+service ProductPackageRecord{
+    rpc Get(GetProductPackageRecordRequest)returns(GetProductPackageRecordDetailResponse){}
+}
+
+message GetProductPackageRecordRequest{
+    string packageNo=1;
+}
+
+message ProductPackageRecordInfo {
+	//ID 
+    string id=2;
+	//装箱时间 
+ 	string createTime=3;
+	//装箱人员ID 
+    string createUserID=4;
+    string createUserName=15;
+	//使用包装ID 
+    string productOrderPackageID=5;
+    ProductOrderPackageInfo productOrderPackage=13;
+	//绑定产品ID 
+    string productInfoID=6;
+    ProductInfoInfo productInfo=14;
+	//备注 
+ 	string remark=7;
+    //生产工单号
+    string productOrderNo=8;
+    //产品型号
+    string productModelCode=9;
+    //产品序列号
+    string productSerialNo=10;
+    //包装箱号
+    string packageNo=11;
+    //包装箱
+    string productPackageDescription=12;
+}
+
+message QueryProductPackageRecordRequest{
+    // @inject_tag: uri:"pageIndex" form:"pageIndex"
+    int64 pageIndex=1;
+    // @inject_tag: uri:"pageSize" form:"pageSize"
+    int64 pageSize=2;
+    // @inject_tag: uri:"sortConfig" form:"sortConfig"
+    string sortConfig=3;
+    //包装箱号
+    // @inject_tag: uri:"packageNo" form:"packageNo"
+    string packageNo=11;
+    //生产产线ID
+    // @inject_tag: uri:"productionLineID" form:"productionLineID"
+    string productionLineID=12;
+    // @inject_tag: uri:"createTime0" form:"createTime0"
+    string createTime0=13;
+    // @inject_tag: uri:"createTime1" form:"createTime1"
+    string createTime1=14;
+    // @inject_tag: uri:"productSerialNo" form:"productSerialNo"
+    string productSerialNo=15;
+}
+
+message QueryProductPackageRecordResponse{
+    Code code=1;
+    string message=2;
+    repeated ProductPackageRecordInfo data=3;
+    int64 pages=4;
+    int64 records=5;
+    int64 total=6;
+}
+
+message GetAllProductPackageRecordResponse{
+    Code code=1;
+    string message=2;
+    repeated ProductPackageRecordInfo data=3;
+}
+
+message GetProductPackageRecordDetailResponse{
+    Code code=1;
+    string message=2;
+    ProductPackageRecordInfo data=3;
+}

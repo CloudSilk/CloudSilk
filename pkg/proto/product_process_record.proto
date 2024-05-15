@@ -1,0 +1,79 @@
+syntax="proto3";
+
+package proto;
+option go_package = "./;proto";
+
+import "mom_common.proto";
+
+message ProductProcessRecordInfo {
+	//ID 
+ 	string id=2;
+	//作业类型 
+ 	string processStepType=3;
+	//作业描述 
+ 	string workDescription=4;
+	//作业数据 
+ 	string workData=5;
+	//作业结果 
+ 	string workResult=6;
+	//作业时间 
+ 	string workTime=7;
+	//作业人员ID 
+ 	string workUserID=8;
+	//备注 
+ 	string remark=9;
+	//生产工站ID 
+ 	string productionStationID=10;
+	//生产工序ID 
+ 	string productionProcessID=11;
+	//产品信息ID 
+ 	string productInfoID=12;
+    //产品序列号
+    string productSerialNo=13;
+    //工站
+    string productionStation=14;
+    //生产工单号
+    string productOrderNo=15;
+}
+
+message QueryProductProcessRecordRequest{
+    // @inject_tag: uri:"pageIndex" form:"pageIndex"
+    int64 pageIndex=1;
+    // @inject_tag: uri:"pageSize" form:"pageSize"
+    int64 pageSize=2;
+    // @inject_tag: uri:"sortConfig" form:"sortConfig"
+    string sortConfig=3;
+    //产品序列号
+    // @inject_tag: uri:"productSerialNo" form:"productSerialNo"
+    string productSerialNo=4;
+    //生产工单号
+    // @inject_tag: uri:"productOrderNo" form:"productOrderNo"
+    string productOrderNo=5;
+    // @inject_tag: uri:"workTime0" form:"workTime0"
+    string workTime0=6;
+    // @inject_tag: uri:"workTime1" form:"workTime1"
+    string workTime1=7;
+    // @inject_tag: uri:"workDescription" form:"workDescription"
+    string workDescription=8;
+}
+
+message QueryProductProcessRecordResponse{
+    Code code=1;
+    string message=2;
+    repeated ProductProcessRecordInfo data=3;
+    int64 pages=4;
+    int64 records=5;
+    int64 total=6;
+}
+
+message GetAllProductProcessRecordResponse{
+    Code code=1;
+    string message=2;
+    repeated ProductProcessRecordInfo data=3;
+}
+
+message GetProductProcessRecordDetailResponse{
+    Code code=1;
+    string message=2;
+    ProductProcessRecordInfo data=3;
+}

@@ -19,3 +19,9 @@
 
 # Go workspace file
 go.work
+log
+cache
+# dubbogo.yaml
+.DS_Store
+mom.s3db
+dubbogo*.yaml

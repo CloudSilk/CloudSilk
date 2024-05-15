@@ -1,0 +1,55 @@
+syntax="proto3";
+
+package proto;
+option go_package = "./;proto";
+
+import "mom_common.proto";
+
+message PropertyExpressionInfo {
+	//ID 
+ 	string id=2;
+	//顺序 
+ 	int32 sortIndex=3;
+	//属性名称 
+ 	string propertyName=4;
+	//运算符 
+ 	string mathOperator=5;
+	//属性值 
+ 	string propertyValue=6;
+	//备注 
+ 	string remark=7;
+	//归属规则ID 
+    string ruleID=8;
+	//规则名称 
+ 	string ruleType=9;
+}
+
+message QueryPropertyExpressionRequest{
+    // @inject_tag: uri:"pageIndex" form:"pageIndex"
+    int64 pageIndex=1;
+    // @inject_tag: uri:"pageSize" form:"pageSize"
+    int64 pageSize=2;
+    // @inject_tag: uri:"sortConfig" form:"sortConfig"
+    string sortConfig=3;
+}
+
+message QueryPropertyExpressionResponse{
+    Code code=1;
+    string message=2;
+    repeated PropertyExpressionInfo data=3;
+    int64 pages=4;
+    int64 records=5;
+    int64 total=6;
+}
+
+message GetAllPropertyExpressionResponse{
+    Code code=1;
+    string message=2;
+    repeated PropertyExpressionInfo data=3;
+}
+
+message GetPropertyExpressionDetailResponse{
+    Code code=1;
+    string message=2;
+    PropertyExpressionInfo data=3;
+}

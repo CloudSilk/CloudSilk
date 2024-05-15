@@ -1,0 +1,60 @@
+syntax="proto3";
+
+package proto;
+option go_package = "./;proto";
+
+import "mom_common.proto";
+
+message ProductReworkSolutionInfo {
+	//ID 
+ 	string id=2;
+	//代号 
+ 	string code=3;
+	//描述 
+ 	string description=4;
+	//备注 
+ 	string remark=5;
+    //返工原因
+    repeated ProductReworkCauseAvailableSolutionInfo productReworkCauseAvailableSolutions=6;
+}
+
+message ProductReworkCauseAvailableSolutionInfo {
+    string id=4;
+	//返工解决方案ID 
+    string productReworkSolutionID=2;
+	//返工原因ID 
+    string productReworkCauseID=3;
+}
+
+message QueryProductReworkSolutionRequest{
+    // @inject_tag: uri:"pageIndex" form:"pageIndex"
+    int64 pageIndex=1;
+    // @inject_tag: uri:"pageSize" form:"pageSize"
+    int64 pageSize=2;
+    // @inject_tag: uri:"sortConfig" form:"sortConfig"
+    string sortConfig=3;
+	//代号或描述
+    // @inject_tag: uri:"code" form:"code"
+    string code=5;
+}
+
+message QueryProductReworkSolutionResponse{
+    Code code=1;
+    string message=2;
+    repeated ProductReworkSolutionInfo data=3;
+    int64 pages=4;
+    int64 records=5;
+    int64 total=6;
+}
+
+message GetAllProductReworkSolutionResponse{
+    Code code=1;
+    string message=2;
+    repeated ProductReworkSolutionInfo data=3;
+}
+
+message GetProductReworkSolutionDetailResponse{
+    Code code=1;
+    string message=2;
+    ProductReworkSolutionInfo data=3;
+}

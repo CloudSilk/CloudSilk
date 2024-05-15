@@ -1,0 +1,62 @@
+syntax="proto3";
+
+package proto;
+option go_package = "./;proto";
+
+import "mom_common.proto";
+
+message OperationTraceInfo {
+	//ID 
+ 	string id=2;
+	//操作人员ID 
+    string operateUserID=3;
+    string operateUserName=10;
+	//IP地址 
+ 	string iPAddress=4;
+	//操作时间 
+ 	string operateTime=5;
+	//模块 
+ 	string controllerName=6;
+	//操作 
+ 	string actionName=7;
+	//提交内容 
+    string requestContent=8;
+	//注释 
+ 	string annotation=9;
+}
+
+message QueryOperationTraceRequest{
+    // @inject_tag: uri:"pageIndex" form:"pageIndex"
+    int64 pageIndex=1;
+    // @inject_tag: uri:"pageSize" form:"pageSize"
+    int64 pageSize=2;
+    // @inject_tag: uri:"sortConfig" form:"sortConfig"
+    string sortConfig=3;
+    //操作时间开始 
+    // @inject_tag: uri:"operateTime0" form:"operateTime0"
+    string operateTime0=8;
+    //操作时间结束 
+    // @inject_tag: uri:"operateTime1" form:"operateTime1"
+    string operateTime1=9;
+}
+
+message QueryOperationTraceResponse{
+    Code code=1;
+    string message=2;
+    repeated OperationTraceInfo data=3;
+    int64 pages=4;
+    int64 records=5;
+    int64 total=6;
+}
+
+message GetAllOperationTraceResponse{
+    Code code=1;
+    string message=2;
+    repeated OperationTraceInfo data=3;
+}
+
+message GetOperationTraceDetailResponse{
+    Code code=1;
+    string message=2;
+    OperationTraceInfo data=3;
+}

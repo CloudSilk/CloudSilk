@@ -1,0 +1,66 @@
+syntax="proto3";
+
+package proto;
+option go_package = "./;proto";
+
+import "mom_common.proto";
+
+message ProductReleaseStrategyInfo {
+	//ID 
+ 	string id=2;
+	//工厂产线ID 
+    string productionLineID=3;
+	//产品类别ID 
+    string productCategoryID=4;
+    string productCategoryName=7;
+	//投料方式 
+ 	int32 releaseMethod=5;
+	//备注 
+ 	string remark=6;
+    //产品类别特性
+    repeated ProductReleaseStrategyComparableAttributeInfo ProductReleaseStrategyComparableAttributes=8;
+}
+
+message ProductReleaseStrategyComparableAttributeInfo {
+    string id=4;
+	//产品发布策略ID 
+    string productReleaseStrategyID=2;
+	//产品类别特性ID 
+    string productCategoryAttributeID=3;
+}
+
+message QueryProductReleaseStrategyRequest{
+    // @inject_tag: uri:"pageIndex" form:"pageIndex"
+    int64 pageIndex=1;
+    // @inject_tag: uri:"pageSize" form:"pageSize"
+    int64 pageSize=2;
+    // @inject_tag: uri:"sortConfig" form:"sortConfig"
+    string sortConfig=3;
+    //产线ID
+    // @inject_tag: uri:"productionLineID" form:"productionLineID"
+    string productionLineID=4;
+    //类别或描述
+    // @inject_tag: uri:"code" form:"code"
+    string code=5;
+}
+
+message QueryProductReleaseStrategyResponse{
+    Code code=1;
+    string message=2;
+    repeated ProductReleaseStrategyInfo data=3;
+    int64 pages=4;
+    int64 records=5;
+    int64 total=6;
+}
+
+message GetAllProductReleaseStrategyResponse{
+    Code code=1;
+    string message=2;
+    repeated ProductReleaseStrategyInfo data=3;
+}
+
+message GetProductReleaseStrategyDetailResponse{
+    Code code=1;
+    string message=2;
+    ProductReleaseStrategyInfo data=3;
+}

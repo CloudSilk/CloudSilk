@@ -1,0 +1,64 @@
+syntax="proto3";
+
+package proto;
+option go_package = "./;proto";
+
+import "mom_common.proto";
+import "production_line.proto";
+
+message ProductionStationStartupInfo {
+	//ID 
+    string id=2;
+	//开机时间 
+ 	string startupTime=3;
+	//最后心跳时间 
+ 	string lastHeartbeatTime=4;
+	//停机时间 
+ 	string shutdownTime=5;
+	//开机时长 
+ 	int32 duration=6;
+	//生产工站ID 
+    string productionStationID=7;
+    ProductionStationInfo productionStation=9;
+	//备注 
+ 	string remark=8;
+}
+
+message QueryProductionStationStartupRequest{
+    // @inject_tag: uri:"pageIndex" form:"pageIndex"
+    int64 pageIndex=1;
+    // @inject_tag: uri:"pageSize" form:"pageSize"
+    int64 pageSize=2;
+    // @inject_tag: uri:"sortConfig" form:"sortConfig"
+    string sortConfig=3;
+	//开机时间开始
+    // @inject_tag: uri:"startupTime0" form:"startupTime0"
+    string startupTime0=5;
+    //开机时间结束
+    // @inject_tag: uri:"startupTime1" form:"startupTime1"
+    string startupTime1=6;
+	// 生产产线ID
+    // @inject_tag: uri:"productionLineID" form:"productionLineID"
+    string productionLineID=7;
+}
+
+message QueryProductionStationStartupResponse{
+    Code code=1;
+    string message=2;
+    repeated ProductionStationStartupInfo data=3;
+    int64 pages=4;
+    int64 records=5;
+    int64 total=6;
+}
+
+message GetAllProductionStationStartupResponse{
+    Code code=1;
+    string message=2;
+    repeated ProductionStationStartupInfo data=3;
+}
+
+message GetProductionStationStartupDetailResponse{
+    Code code=1;
+    string message=2;
+    ProductionStationStartupInfo data=3;
+}

@@ -1,0 +1,72 @@
+syntax="proto3";
+
+package proto;
+option go_package = "./;proto";
+
+import "mom_common.proto";
+
+message TaskQueueInfo {
+	//ID 
+	string id=2;
+	//名称 
+ 	string name=3;
+	//描述 
+ 	string description=4;
+	//身份标识 
+ 	string identity=5;
+	//是否启用 
+ 	bool enable=6;
+	//运行间隔 
+	int32 interval=7;
+	//运行状态 
+	string runningState=8;
+	//状态分析 
+ 	string causeOfState=9;
+	//排队数量 
+	int32 jobCount=10;
+	//任务队列参数
+	repeated TaskQueueParameterInfo taskQueueParameters=11;
+}
+
+message TaskQueueParameterInfo {
+	//ID 
+	string id=2;
+	//键 
+ 	string key=3;
+	//值 
+ 	string value=4;
+	//备注 
+ 	string remark=5;
+	//任务队列ID 
+	string taskQueueID=6;
+}
+
+message QueryTaskQueueRequest{
+    // @inject_tag: uri:"pageIndex" form:"pageIndex"
+    int64 pageIndex=1;
+    // @inject_tag: uri:"pageSize" form:"pageSize"
+    int64 pageSize=2;
+    // @inject_tag: uri:"sortConfig" form:"sortConfig"
+    string sortConfig=3;
+}
+
+message QueryTaskQueueResponse{
+    Code code=1;
+    string message=2;
+    repeated TaskQueueInfo data=3;
+    int64 pages=4;
+    int64 records=5;
+    int64 total=6;
+}
+
+message GetAllTaskQueueResponse{
+    Code code=1;
+    string message=2;
+    repeated TaskQueueInfo data=3;
+}
+
+message GetTaskQueueDetailResponse{
+    Code code=1;
+    string message=2;
+    TaskQueueInfo data=3;
+}

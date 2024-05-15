@@ -1,0 +1,529 @@
+syntax="proto3";
+
+package proto;
+option go_package = "./;proto";
+
+import "mom_common.proto";
+import "product_order_bom.proto";
+import "product_model.proto";
+import "production_line.proto";
+import "product_order_process.proto";
+import "product_order_package.proto";
+import "product_attribute.proto";
+import "product_package_stack_rule.proto";
+import "label_type.proto";
+
+service ProductInfo{
+	rpc Get(GetProductInfoRequest)returns(GetProductInfoDetailResponse){}
+	rpc Query(QueryProductInfoRequest)returns(QueryProductInfoResponse){}
+}
+
+message ProductOrderInfo {
+	//ID 
+ 	string id=3;
+	//生产工单号 
+ 	string productOrderNo=4;
+	//销售单号 
+ 	string salesOrderNo=5;
+	//销售项号 
+ 	string itemNo=6;
+	//客户名称 
+ 	string customerName=7;
+	//工单类型 
+ 	int32 orderType=8;
+	//下单时间 
+ 	string orderTime=9;
+	//下单数量 
+ 	int32 orderQTY=10;
+	//成品仓库 
+ 	string warehouse=11;
+	//成品入库单 
+ 	string receiptNoteNo=12;
+	//生产班组 
+ 	string productionTeam=13;
+	//生产优先级 
+ 	int32 priorityLevel=14;
+	//交货期限 
+ 	string deliveryDate=15;
+	//创建时间 
+ 	string createTime=16;
+	//创建人员ID 
+    string createUserID=17;
+	string createUserName=47;
+	//发放时间 
+ 	string releaseTime=18;
+	//选配信息 
+ 	string selectedOptions=19;
+	//特性简述 
+ 	string propertyBrief=20;
+	//标准节拍 
+ 	int32 standardWorkTime=21;
+	//已发料数量 
+ 	int32 issuedQTY=22;
+	//最新发料时间 
+ 	string lastIssueTime=23;
+	//预计开工时间 
+ 	string estimateStartTime=24;
+	//实际开工时间 
+ 	string actualStartTime=25;
+	//已开工数量 
+ 	int32 startedQTY=26;
+	//已淘汰数量 
+ 	int32 obsoletedQTY=27;
+	//已完工数量 
+ 	int32 finishedQTY=28;
+	//预计单件耗时 
+ 	int32 estimateConsumeTimePerPiece=29;
+	//预计完工时间 
+ 	string estimateFinishTime=30;
+	//实际完工时间 
+ 	string actualFinishTime=31;
+	//平均单件耗时 
+ 	int32 averageConsumeTimePerPiece=32;
+	//已入库数量 
+ 	int32 depositedQTY=33;
+	//最新入库时间 
+ 	string lastDepositTime=34;
+	//当前状态 
+ 	string currentState=35;
+	//最新更新时间 
+ 	string lastUpdateTime=36;
+	//备注 
+ 	string remark=37;
+	//产品型号ID 
+    string productModelID=38;
+	ProductModelInfo productModel=39;
+	//发放产线ID 
+    string productionLineID=40;
+    ProductionLineInfo productionLine=41;
+    //工单附件
+ 	repeated ProductOrderAttachmentInfo productOrderAttachments=50;
+    //工单BOM
+ 	repeated ProductOrderBomInfo productOrderBoms=42;
+	//产品信息
+	repeated ProductInfoInfo productInfos=43;
+	//产品工单属性
+	repeated ProductOrderAttributeInfo productOrderAttributes=44;
+	//产品工单工序
+	repeated ProductOrderProcessInfo productOrderProcesses=45;
+	//产品工单标签
+	repeated ProductOrderLabelInfo productOrderLabels=49;
+	//产品工单包装
+	repeated ProductOrderPackageInfo productOrderPackages=46;
+	//产品工单栈板
+	repeated ProductOrderPalletInfo productOrderPallets=48;
+}
+
+message QueryProductOrderRequest{
+    // @inject_tag: uri:"pageIndex" form:"pageIndex"
+    int64 pageIndex=1;
+    // @inject_tag: uri:"pageSize" form:"pageSize"
+    int64 pageSize=2;
+    // @inject_tag: uri:"sortConfig" form:"sortConfig"
+    string sortConfig=3;
+	//生产工单号 
+    // @inject_tag: uri:"productOrderNo" form:"productOrderNo"
+    string productOrderNo=6;
+	//销售单号 
+    // @inject_tag: uri:"salesOrderNo" form:"salesOrderNo"
+    string salesOrderNo=7;
+	//销售项号 
+    // @inject_tag: uri:"itemNo" form:"itemNo"
+    string itemNo=8;
+	//创建时间开始
+    // @inject_tag: uri:"createTime0" form:"createTime0"
+    string createTime0=18;
+	//创建时间结束
+    // @inject_tag: uri:"createTime1" form:"createTime1"
+    string createTime1=19;
+}
+
+message QueryProductOrderResponse{
+    Code code=1;
+    string message=2;
+    repeated ProductOrderInfo data=3;
+    int64 pages=4;
+    int64 records=5;
+    int64 total=6;
+}
+
+message GetAllProductOrderResponse{
+    Code code=1;
+    string message=2;
+    repeated ProductOrderInfo data=3;
+}
+
+message GetProductOrderDetailResponse{
+    Code code=1;
+    string message=2;
+    ProductOrderInfo data=3;
+}
+
+service ProductOrder{
+    rpc GetDetail(GetDetailRequest)returns(GetProductOrderDetailResponse){}
+}
+
+message GetProductInfoRequest{
+	string productSerialNo=1;
+}
+
+message ProductInfoInfo {
+	//ID 
+    string id=2;
+	//产品序列号 
+ 	string productSerialNo=3;
+	//防伪码 
+ 	string securityCode=4;
+	//防伪链接 
+ 	string securityUrl=5;
+	//创建时间 
+ 	string createTime=6;
+	//创建人员ID 
+    string createUserID=7;
+	string createUserName=21;
+	//发放时间 
+ 	string releaseTime=8;
+	//发料时间 
+ 	string issuedTime=9;
+	//上线时间 
+ 	string startedTime=10;
+	//剩余工序 
+ 	int32 remainingRoutes=11;
+	//预计下线时间 
+ 	string estimateTime=12;
+	//下线时间 
+ 	string finishedTime=13;
+	//入库时间 
+ 	string depositedTime=14;
+	//当前状态 
+ 	string currentState=15;
+	//更新时间 
+ 	string lastUpdateTime=16;
+	//备注 
+ 	string remark=17;
+	//产品工单ID 
+    string productOrderID=18;
+	ProductOrderInfo productOrder=20;
+	//当前工序ID 
+    string productionProcessID=19;
+}
+
+message QueryProductInfoRequest{
+    // @inject_tag: uri:"pageIndex" form:"pageIndex"
+    int64 pageIndex=1;
+    // @inject_tag: uri:"pageSize" form:"pageSize"
+    int64 pageSize=2;
+    // @inject_tag: uri:"sortConfig" form:"sortConfig"
+    string sortConfig=3;
+	//产品序列号 
+    // @inject_tag: uri:"productSerialNo" form:"productSerialNo"
+    string productSerialNo=5;
+	//创建时间开始
+    // @inject_tag: uri:"createTime0" form:"createTime0"
+    string createTime0=8;
+	//创建时间结束
+    // @inject_tag: uri:"createTime1" form:"createTime1"
+    string createTime1=9;
+	//生产工单号
+    // @inject_tag: uri:"productOrderNo" form:"productOrderNo"
+    string productOrderNo=10;
+	//当前状态 
+    // @inject_tag: uri:"currentState" form:"currentState"
+    string currentState=17;
+}
+
+message QueryProductInfoResponse{
+    Code code=1;
+    string message=2;
+    repeated ProductInfoInfo data=3;
+    int64 pages=4;
+    int64 records=5;
+    int64 total=6;
+}
+
+message GetAllProductInfoResponse{
+    Code code=1;
+    string message=2;
+    repeated ProductInfoInfo data=3;
+}
+
+message GetProductInfoDetailResponse{
+    Code code=1;
+    string message=2;
+    ProductInfoInfo data=3;
+}
+
+
+service ProductOrderAttribute{
+    rpc Query(QueryProductOrderAttributeRequest)returns(QueryProductOrderAttributeResponse){}
+}
+
+message ProductOrderAttributeInfo {
+	//ID 
+    string id=1;
+	//值 
+ 	string value=2;
+	//描述 
+ 	string description=3;
+	//产品特性ID 
+    string productAttributeID=4;
+    //产品特性
+    ProductAttributeInfo productAttribute=5;
+	//创建时间 
+ 	string createTime=6;
+	//创建人员ID 
+    string createUserID=7;
+	string createUserName=10;
+	//隶属工单ID 
+    string productOrderID=8;
+    //隶属工单
+    ProductOrderInfo productOrder=9;
+}
+
+message QueryProductOrderAttributeRequest{
+    // @inject_tag: uri:"pageIndex" form:"pageIndex"
+    int64 pageIndex=1;
+    // @inject_tag: uri:"pageSize" form:"pageSize"
+    int64 pageSize=2;
+    // @inject_tag: uri:"sortConfig" form:"sortConfig"
+    string sortConfig=3;
+    //工单号
+    // @inject_tag: uri:"productOrderNo" form:"productOrderNo"
+    string productOrderNo=4;
+    //代号或描述
+    // @inject_tag: uri:"code" form:"code"
+    string code=5;
+    // @inject_tag: uri:"productOrderID" form:"productOrderID"
+    string productOrderID=6;
+}
+
+message QueryProductOrderAttributeResponse{
+    Code code=1;
+    string message=2;
+    repeated ProductOrderAttributeInfo data=3;
+    int64 pages=4;
+    int64 records=5;
+    int64 total=6;
+}
+
+message GetAllProductOrderAttributeResponse{
+    Code code=1;
+    string message=2;
+    repeated ProductOrderAttributeInfo data=3;
+}
+
+message GetProductOrderAttributeDetailResponse{
+    Code code=1;
+    string message=2;
+    ProductOrderAttributeInfo data=3;
+}
+
+message ProductOrderPalletInfo {
+	//ID 
+ 	string id=2;
+	//栈板编号 
+ 	string palletNo=3;
+	//栈板序号 
+ 	string palletSn=4;
+	//创建时间 
+ 	string createTime=5;
+	//码垛箱数 
+ 	int32 packageQuantity=6;
+	//当前状态 
+ 	string currentState=7;
+	//状态变更时间 
+ 	string lastUpdateTime=8;
+	//备注 
+ 	string remark=9;
+	//码垛规则ID 
+    string productPackageStackRuleID=10;
+ 	ProductPackageStackRuleInfo productPackageStackRule=11;
+	//归属工单ID 
+    string productOrderID=12;
+ 	ProductOrderInfo productOrder=13;
+}
+
+message QueryProductOrderPalletRequest{
+    // @inject_tag: uri:"pageIndex" form:"pageIndex"
+    int64 pageIndex=1;
+    // @inject_tag: uri:"pageSize" form:"pageSize"
+    int64 pageSize=2;
+    // @inject_tag: uri:"sortConfig" form:"sortConfig"
+    string sortConfig=3;
+	//栈板编号 
+    // @inject_tag: uri:"palletNo" form:"palletNo"
+    string palletNo=5;
+	//栈板序号 
+    // @inject_tag: uri:"palletSn" form:"palletSn"
+    string palletSn=6;
+	//创建时间开始 
+    // @inject_tag: uri:"createTime0" form:"createTime0"
+    string createTime0=7;
+	//创建时间结束
+    // @inject_tag: uri:"createTime1" form:"createTime1"
+    string createTime1=8;
+	//当前状态 
+    // @inject_tag: uri:"currentState" form:"currentState"
+    string currentState=9;
+    //生产工单号 
+    // @inject_tag: uri:"productOrderNo" form:"productOrderNo"
+    string productOrderNo=10;
+}
+
+message QueryProductOrderPalletResponse{
+    Code code=1;
+    string message=2;
+    repeated ProductOrderPalletInfo data=3;
+    int64 pages=4;
+    int64 records=5;
+    int64 total=6;
+}
+
+message GetAllProductOrderPalletResponse{
+    Code code=1;
+    string message=2;
+    repeated ProductOrderPalletInfo data=3;
+}
+
+message GetProductOrderPalletDetailResponse{
+    Code code=1;
+    string message=2;
+    ProductOrderPalletInfo data=3;
+}
+
+
+message ProductOrderLabelInfo {
+	//ID 
+ 	string id=1;
+	//归属工单ID 
+ 	string productOrderID=2;
+ 	ProductOrderInfo productOrder=3;
+	//标签类型ID 
+    string labelTypeID=4;
+    LabelTypeInfo labelType=5;
+	//模板文件 
+ 	string filePath=6;
+	//引用次数 
+ 	int32 referTimes=7;
+	//需要复核 
+ 	bool doubleCheck=8;
+	//创建时间 
+ 	string createTime=9;
+	//创建人员ID 
+    string createUserID=10;
+    string createUserName=16;
+	//复核时间 
+ 	string checkTime=11;
+	//复核人员ID 
+    string checkUserID=12;
+    string checkUserName=17;
+	//当前状态 
+    string currentState=13;
+	//状态变更时间 
+ 	string lastUpdateTime=14;
+    //标签参数
+    repeated ProductOrderLabelParameterInfo productOrderLabelParameters=15;
+}
+
+message ProductOrderLabelParameterInfo{
+    string id=1;
+    string productOrderLabelID=2;
+    string name=3;
+    string fixedValue=4;
+    string remark=5;
+}
+
+message QueryProductOrderLabelRequest{
+    // @inject_tag: uri:"pageIndex" form:"pageIndex"
+    int64 pageIndex=1;
+    // @inject_tag: uri:"pageSize" form:"pageSize"
+    int64 pageSize=2;
+    // @inject_tag: uri:"sortConfig" form:"sortConfig"
+    string sortConfig=3;
+    //生产工单号
+    // @inject_tag: uri:"productOrderNo" form:"productOrderNo"
+    string productOrderNo=4;
+    //当前状态 
+    // @inject_tag: uri:"currentState" form:"currentState"
+    string currentState=5;
+    //创建时间开始
+    // @inject_tag: uri:"createTime0" form:"createTime0"
+    string createTime0=6;
+    //创建时间结束
+    // @inject_tag: uri:"createTime1" form:"createTime1"
+    string createTime1=7;
+}
+
+message QueryProductOrderLabelResponse{
+    Code code=1;
+    string message=2;
+    repeated ProductOrderLabelInfo data=3;
+    int64 pages=4;
+    int64 records=5;
+    int64 total=6;
+}
+
+message GetAllProductOrderLabelResponse{
+    Code code=1;
+    string message=2;
+    repeated ProductOrderLabelInfo data=3;
+}
+
+message GetProductOrderLabelDetailResponse{
+    Code code=1;
+    string message=2;
+    ProductOrderLabelInfo data=3;
+}
+
+message ProductOrderAttachmentInfo {
+	//ID 
+ 	string id=2;
+	//文件名 
+ 	string fileName=3;
+	//文件类型 
+ 	string fileType=4;
+	//文件大小 
+ 	float fileSize=5;
+	//保存文件名 
+ 	string savedFileName=6;
+	//文件状态 
+ 	string fileStatus=7;
+	//创建时间 
+ 	string createTime=8;
+	//创建人员ID 
+    string createUserID=9;
+    string createUserName=11;
+	//隶属工单ID 
+    string productOrderID=10;
+    ProductOrderInfo productOrder=12;
+}
+
+message QueryProductOrderAttachmentRequest{
+    // @inject_tag: uri:"pageIndex" form:"pageIndex"
+    int64 pageIndex=1;
+    // @inject_tag: uri:"pageSize" form:"pageSize"
+    int64 pageSize=2;
+    // @inject_tag: uri:"sortConfig" form:"sortConfig"
+    string sortConfig=3;
+}
+
+message QueryProductOrderAttachmentResponse{
+    Code code=1;
+    string message=2;
+    repeated ProductOrderAttachmentInfo data=3;
+    int64 pages=4;
+    int64 records=5;
+    int64 total=6;
+}
+
+message GetAllProductOrderAttachmentResponse{
+    Code code=1;
+    string message=2;
+    repeated ProductOrderAttachmentInfo data=3;
+}
+
+message GetProductOrderAttachmentDetailResponse{
+    Code code=1;
+    string message=2;
+    ProductOrderAttachmentInfo data=3;
+}

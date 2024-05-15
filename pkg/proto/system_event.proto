@@ -1,0 +1,82 @@
+syntax="proto3";
+
+package proto;
+option go_package = "./;proto";
+
+import "mom_common.proto";
+
+service SystemEvent{
+    rpc Get(GetSystemEventRequest)returns(GetSystemEventDetailResponse){}
+}
+
+message GetSystemEventRequest{
+    string code=1;
+    bool enable=2;
+}
+
+message SystemEventInfo {
+	//ID 
+    string id=2;
+	//代号 
+ 	string code=3;
+	//描述 
+ 	string description=4;
+	//是否启用 
+ 	bool enable=5;
+    //系统事件参数 
+ 	repeated SystemEventParameterInfo systemEventParameters=6;
+    //系统事件订阅
+    repeated SystemEventSubscriptionInfo systemEventSubscriptions=7;
+}
+
+message SystemEventSubscriptionInfo {
+	//系统事件ID 
+    string systemEventID=3;
+	//远程服务任务ID 
+    string remoteServiceTaskID=4;
+}
+
+message SystemEventParameterInfo {
+    //ID 
+    string id=2;
+	//数据类型 
+ 	string dataType=3;
+	//名称 
+ 	string name=4;
+	//描述 
+ 	string description=5;
+	//参数值 
+ 	string value=6;
+	//系统事件ID 
+    string systemEventID=7;
+}
+
+message QuerySystemEventRequest{
+    // @inject_tag: uri:"pageIndex" form:"pageIndex"
+    int64 pageIndex=1;
+    // @inject_tag: uri:"pageSize" form:"pageSize"
+    int64 pageSize=2;
+    // @inject_tag: uri:"sortConfig" form:"sortConfig"
+    string sortConfig=3;
+}
+
+message QuerySystemEventResponse{
+    Code code=1;
+    string message=2;
+    repeated SystemEventInfo data=3;
+    int64 pages=4;
+    int64 records=5;
+    int64 total=6;
+}
+
+message GetAllSystemEventResponse{
+    Code code=1;
+    string message=2;
+    repeated SystemEventInfo data=3;
+}
+
+message GetSystemEventDetailResponse{
+    Code code=1;
+    string message=2;
+    SystemEventInfo data=3;
+}

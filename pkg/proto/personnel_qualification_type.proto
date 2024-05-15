@@ -1,0 +1,59 @@
+syntax="proto3";
+
+package proto;
+option go_package = "./;proto";
+
+import "mom_common.proto";
+import "product_model.proto";
+import "production_process.proto";
+
+message PersonnelQualificationTypeInfo {
+	//ID 
+    string id=1;
+	//代号 
+    string code=2;
+	//描述 
+    string description=3;
+	//有效时长(天) 
+ 	int32 effectiveDuration=4;
+	//失效预警 
+ 	bool expirationEarlyWarning=5;
+	//产品型号 
+    repeated ProductModelInfo productModels=6;
+	//生产工序ID 
+ 	string productionProcessID=7;
+	//生产工序 
+    ProductionProcessInfo productionProcess=8;
+	//备注 
+    string remark=9;
+}
+
+message QueryPersonnelQualificationTypeRequest{
+    // @inject_tag: uri:"pageIndex" form:"pageIndex"
+    int64 pageIndex=1;
+    // @inject_tag: uri:"pageSize" form:"pageSize"
+    int64 pageSize=2;
+    // @inject_tag: uri:"sortConfig" form:"sortConfig"
+    string sortConfig=3;
+}
+
+message QueryPersonnelQualificationTypeResponse{
+    Code code=1;
+    string message=2;
+    repeated PersonnelQualificationTypeInfo data=3;
+    int64 pages=4;
+    int64 records=5;
+    int64 total=6;
+}
+
+message GetAllPersonnelQualificationTypeResponse{
+    Code code=1;
+    string message=2;
+    repeated PersonnelQualificationTypeInfo data=3;
+}
+
+message GetPersonnelQualificationTypeDetailResponse{
+    Code code=1;
+    string message=2;
+    PersonnelQualificationTypeInfo data=3;
+}

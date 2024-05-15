@@ -1,0 +1,72 @@
+syntax="proto3";
+
+package proto;
+option go_package = "./;proto";
+
+import "mom_common.proto";
+import "label_type.proto";
+
+message LabelTemplateInfo {
+	//ID 
+ 	string id=2;
+	//代号 
+    string code=3;
+	//描述 
+    string description=4;
+	//文件路径 
+    string filePath=5;
+	//备注 
+    string remark=6;
+	//标签类型ID 
+    string labelTypeID=7;
+    LabelTypeInfo labelType=9;
+    //参数
+    repeated LabelParameterInfo LabelParameters=8;
+}
+
+message LabelParameterInfo {
+	//ID 
+    string id=2;
+	//名称 
+    string name=3;
+	//预设值 
+    string defaultValue=4;
+	//标签模板ID 
+    string labelTemplateID=5;
+}
+
+message QueryLabelTemplateRequest{
+    // @inject_tag: uri:"pageIndex" form:"pageIndex"
+    int64 pageIndex=1;
+    // @inject_tag: uri:"pageSize" form:"pageSize"
+    int64 pageSize=2;
+    // @inject_tag: uri:"sortConfig" form:"sortConfig"
+    string sortConfig=3;
+    //标签模版或描述
+    // @inject_tag: uri:"code" form:"code"
+    string code=4;
+    //标签类型ID
+    // @inject_tag: uri:"labelTypeID" form:"labelTypeID"
+    string labelTypeID=5;
+}
+
+message QueryLabelTemplateResponse{
+    Code code=1;
+    string message=2;
+    repeated LabelTemplateInfo data=3;
+    int64 pages=4;
+    int64 records=5;
+    int64 total=6;
+}
+
+message GetAllLabelTemplateResponse{
+    Code code=1;
+    string message=2;
+    repeated LabelTemplateInfo data=3;
+}
+
+message GetLabelTemplateDetailResponse{
+    Code code=1;
+    string message=2;
+    LabelTemplateInfo data=3;
+}

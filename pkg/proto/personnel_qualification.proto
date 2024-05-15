@@ -1,0 +1,76 @@
+syntax="proto3";
+
+package proto;
+option go_package = "./;proto";
+
+import "mom_common.proto";
+import "personnel_qualification_type.proto";
+
+service PersonnelQualification{
+    rpc Query(QueryPersonnelQualificationRequest)returns(QueryPersonnelQualificationResponse){}
+    rpc Get(GetPersonnelQualificationRequest)returns(GetPersonnelQualificationDetailResponse){}
+}
+
+message GetPersonnelQualificationRequest{
+    string certifiedUserID=1;
+}
+
+message PersonnelQualificationInfo {
+	//ID 
+    string id=1;
+	//资质类型ID 
+    string personnelQualificationTypeID=2;
+    PersonnelQualificationTypeInfo personnelQualificationType=3;
+	//认证人员ID 
+    string certifiedUserID=4;
+    string certifiedUserName=10;
+	//生效日期 
+ 	string effectiveDate=5;
+	//失效日期 
+ 	string expirationDate=6;
+	//授权人员ID 
+    string authorizedUserID=7;
+    string authorizedUserName=11;
+	//授权时间 
+ 	string authorizedTime=8;
+	//备注 
+    string remark=9;
+}
+
+message QueryPersonnelQualificationRequest{
+    // @inject_tag: uri:"pageIndex" form:"pageIndex"
+    int64 pageIndex=1;
+    // @inject_tag: uri:"pageSize" form:"pageSize"
+    int64 pageSize=2;
+    // @inject_tag: uri:"sortConfig" form:"sortConfig"
+    string sortConfig=3;
+    // @inject_tag: uri:"productionLineID" form:"productionLineID"
+    string productionLineID=4;
+    // @inject_tag: uri:"name" form:"name"
+    string name=5;
+    // @inject_tag: uri:"productionProcessID" form:"productionProcessID"
+    string productionProcessID=6;
+    // @inject_tag: uri:"productModelID" form:"productModelID"
+    string productModelID=7;
+}
+
+message QueryPersonnelQualificationResponse{
+    Code code=1;
+    string message=2;
+    repeated PersonnelQualificationInfo data=3;
+    int64 pages=4;
+    int64 records=5;
+    int64 total=6;
+}
+
+message GetAllPersonnelQualificationResponse{
+    Code code=1;
+    string message=2;
+    repeated PersonnelQualificationInfo data=3;
+}
+
+message GetPersonnelQualificationDetailResponse{
+    Code code=1;
+    string message=2;
+    PersonnelQualificationInfo data=3;
+}

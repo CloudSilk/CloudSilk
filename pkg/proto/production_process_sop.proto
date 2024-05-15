@@ -1,0 +1,67 @@
+syntax="proto3";
+
+package proto;
+option go_package = "./;proto";
+
+import "mom_common.proto";
+
+service ProductionProcessSop{
+    rpc Get(GetProductionProcessSopRequest)returns(GetProductionProcessSopDetailResponse){}
+}
+
+message GetProductionProcessSopRequest{
+    string productionProcessID=1;
+    string productModelID=2;
+}
+
+message ProductionProcessSopInfo {
+	//ID 
+ 	string id=2;
+	//生产工序ID 
+    string productionProcessID=3;
+	//产品型号ID 
+    string productModelID=4;
+	//文件链接 
+ 	string fileLink=5;
+    //型号
+    string code=6;
+    //物料号
+    string materialNo=7;
+    //物料描述
+    string materialDescription=8;
+    //生产工线ID
+    string productionLineID=9;
+}
+
+message QueryProductionProcessSopRequest{
+    // @inject_tag: uri:"pageIndex" form:"pageIndex"
+    int64 pageIndex=1;
+    // @inject_tag: uri:"pageSize" form:"pageSize"
+    int64 pageSize=2;
+    // @inject_tag: uri:"sortConfig" form:"sortConfig"
+    string sortConfig=3;
+	//生产产线ID 
+    // @inject_tag: uri:"productionLineID" form:"productionLineID"
+    string productionLineID=5;
+}
+
+message QueryProductionProcessSopResponse{
+    Code code=1;
+    string message=2;
+    repeated ProductionProcessSopInfo data=3;
+    int64 pages=4;
+    int64 records=5;
+    int64 total=6;
+}
+
+message GetAllProductionProcessSopResponse{
+    Code code=1;
+    string message=2;
+    repeated ProductionProcessSopInfo data=3;
+}
+
+message GetProductionProcessSopDetailResponse{
+    Code code=1;
+    string message=2;
+    ProductionProcessSopInfo data=3;
+}

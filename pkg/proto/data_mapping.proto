@@ -1,0 +1,55 @@
+syntax="proto3";
+
+package proto;
+option go_package = "./;proto";
+
+import "mom_common.proto";
+
+message DataMappingInfo {
+	//ID 
+ 	string id=2;
+	//分组 
+ 	string group=3;
+	//代号 
+    string code=4;
+	//描述 
+    string description=5;
+	//备注 
+    string remark=6;
+}
+
+message QueryDataMappingRequest{
+    // @inject_tag: uri:"pageIndex" form:"pageIndex"
+    int64 pageIndex=1;
+    // @inject_tag: uri:"pageSize" form:"pageSize"
+    int64 pageSize=2;
+    // @inject_tag: uri:"sortConfig" form:"sortConfig"
+    string sortConfig=3;
+    //分组 
+    // @inject_tag: uri:"group" form:"group"
+    string group=4;
+    //代号或描述
+    // @inject_tag: uri:"code" form:"code"
+    string code=5;
+}
+
+message QueryDataMappingResponse{
+    Code code=1;
+    string message=2;
+    repeated DataMappingInfo data=3;
+    int64 pages=4;
+    int64 records=5;
+    int64 total=6;
+}
+
+message GetAllDataMappingResponse{
+    Code code=1;
+    string message=2;
+    repeated DataMappingInfo data=3;
+}
+
+message GetDataMappingDetailResponse{
+    Code code=1;
+    string message=2;
+    DataMappingInfo data=3;
+}

@@ -1,0 +1,88 @@
+syntax="proto3";
+
+package proto;
+option go_package = "./;proto";
+
+import "mom_common.proto";
+import "product_model_bom.proto";
+import "product_category.proto";
+import "product_attribute.proto";
+
+service ProductModel{
+	rpc GetDetail(GetDetailRequest)returns(GetProductModelDetailResponse){}
+}
+
+message ProductModelInfo {
+	//ID 
+	string id=2;
+	//型号 
+	string code=3;
+	//物料号 
+	string materialNo=4;
+	//物料描述 
+	string materialDescription=5;
+	//识别码 
+	string identifier=6;
+	//是否预制 
+ 	bool isPrefabricated=7;
+	//是否授权 
+ 	bool isAuthorized=8;
+	//备注 
+	string remark=9;
+	//产品类别ID 
+	string productCategoryID=10;
+	ProductCategoryInfo productCategory=13;
+	//产品型号特征值 
+ 	repeated ProductModelAttributeValueInfo productModelAttributeValues=11;
+	//产品型号Bom 
+ 	repeated ProductModelBomInfo productModelBoms=12;
+}
+
+
+message ProductModelAttributeValueInfo {
+	string id=1;
+	//产品型号ID 
+	string productModelID=2;
+	//产品特性ID 
+	string productAttributeID=3;
+	ProductAttributeInfo productAttribute=4;
+	//设定值 
+	string assignedValue=5;
+} 
+
+
+message QueryProductModelRequest{
+    // @inject_tag: uri:"pageIndex" form:"pageIndex"
+    int64 pageIndex=1;
+    // @inject_tag: uri:"pageSize" form:"pageSize"
+    int64 pageSize=2;
+    // @inject_tag: uri:"sortConfig" form:"sortConfig"
+    string sortConfig=3;
+	//型号 
+    // @inject_tag: uri:"code" form:"code"
+    string code=5;
+	//产品类别ID
+	// @inject_tag: uri:"productCategoryID" form:"productCategoryID"
+	string productCategoryID=6;
+}
+
+message QueryProductModelResponse{
+    Code code=1;
+    string message=2;
+    repeated ProductModelInfo data=3;
+    int64 pages=4;
+    int64 records=5;
+    int64 total=6;
+}
+
+message GetAllProductModelResponse{
+    Code code=1;
+    string message=2;
+    repeated ProductModelInfo data=3;
+}
+
+message GetProductModelDetailResponse{
+    Code code=1;
+    string message=2;
+    ProductModelInfo data=3;
+}

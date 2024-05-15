@@ -1,0 +1,67 @@
+syntax="proto3";
+
+package proto;
+option go_package = "./;proto";
+
+import "mom_common.proto";
+
+message ExceptionTraceInfo {
+	//ID 
+ 	string id=2;
+	//主机 
+ 	string host=3;
+	//来源 
+    string source=4;
+	//等级 
+    string level=5;
+	//异常信息 
+    string message=6;
+	//堆栈跟踪 
+    string stackTrace=7;
+	//屏幕截图 
+    string screenCapture=8;
+	//上报时间 
+ 	string timeReported=9;
+	//上报人员ID 
+    string reportUserID=10;
+    string reportUserName=11;
+}
+
+message QueryExceptionTraceRequest{
+    // @inject_tag: uri:"pageIndex" form:"pageIndex"
+    int64 pageIndex=1;
+    // @inject_tag: uri:"pageSize" form:"pageSize"
+    int64 pageSize=2;
+    // @inject_tag: uri:"sortConfig" form:"sortConfig"
+    string sortConfig=3;
+	//异常信息 
+    // @inject_tag: uri:"message" form:"message"
+    string message=8;
+	//上报时间开始
+    // @inject_tag: uri:"timeReported0" form:"timeReported0"
+    string TimeReported0=11;
+    //上报时间结束
+    // @inject_tag: uri:"timeReported1" form:"timeReported1"
+    string TimeReported1=12;
+}
+
+message QueryExceptionTraceResponse{
+    Code code=1;
+    string message=2;
+    repeated ExceptionTraceInfo data=3;
+    int64 pages=4;
+    int64 records=5;
+    int64 total=6;
+}
+
+message GetAllExceptionTraceResponse{
+    Code code=1;
+    string message=2;
+    repeated ExceptionTraceInfo data=3;
+}
+
+message GetExceptionTraceDetailResponse{
+    Code code=1;
+    string message=2;
+    ExceptionTraceInfo data=3;
+}

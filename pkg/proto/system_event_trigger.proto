@@ -1,0 +1,70 @@
+syntax="proto3";
+
+package proto;
+option go_package = "./;proto";
+
+import "mom_common.proto";
+import "system_event_trigger_parameter.proto";
+
+service SystemEventTrigger{
+    rpc Add(SystemEventTriggerInfo)returns(CommonResponse){}
+}
+
+message SystemEventTriggerInfo {
+	//ID 
+    string id=2;
+	//事件编号 
+ 	string eventNo=3;
+	//系统事件ID 
+    string systemEventID=4;
+ 	string systemEventName=8;
+	//触发时间 
+ 	string createTime=5;
+	//当前状态 
+ 	string currentState=6;
+	//状态变更时间 
+ 	string lastUpdateTime=7;
+    repeated SystemEventTriggerParameterInfo systemEventTriggerParameters=9;
+}
+
+message QuerySystemEventTriggerRequest{
+    // @inject_tag: uri:"pageIndex" form:"pageIndex"
+    int64 pageIndex=1;
+    // @inject_tag: uri:"pageSize" form:"pageSize"
+    int64 pageSize=2;
+    // @inject_tag: uri:"sortConfig" form:"sortConfig"
+    string sortConfig=3;
+    //事件编号
+    // @inject_tag: uri:"eventNo" form:"eventNo"
+    string eventNo=4;
+    //触发时间开始
+    // @inject_tag: uri:"createTime0" form:"createTime0"
+    string createTime0=5;
+    //触发时间结束
+    // @inject_tag: uri:"createTime1" form:"createTime1"
+    string createTime1=6;
+    //系统事件
+    // @inject_tag: uri:"systemEvent" form:"systemEvent"
+    string systemEvent=7;
+}
+
+message QuerySystemEventTriggerResponse{
+    Code code=1;
+    string message=2;
+    repeated SystemEventTriggerInfo data=3;
+    int64 pages=4;
+    int64 records=5;
+    int64 total=6;
+}
+
+message GetAllSystemEventTriggerResponse{
+    Code code=1;
+    string message=2;
+    repeated SystemEventTriggerInfo data=3;
+}
+
+message GetSystemEventTriggerDetailResponse{
+    Code code=1;
+    string message=2;
+    SystemEventTriggerInfo data=3;
+}
