@@ -61,8 +61,8 @@ github.com/BurntSushi/toml v1.3.2/go.mod h1:CxXYINrC8qIiEnFrOxCa7Jy5BFHlXnUU2pbi
 github.com/BurntSushi/xgb v0.0.0-20160522181843-27f122750802/go.mod h1:IVnqGOEym/WlBOVXweHU+Q+/VP0lqqI8lqeDx9IjBqo=
 github.com/CloudSilk/curd v1.0.0 h1:RsnAJB/As4DL54jhVAyoK3ABMHiqW/oB7G2iakingNM=
 github.com/CloudSilk/curd v1.0.0/go.mod h1:+vgHj3GFOcUznnF2C+7MSKixGgV5Uk56Vb5omEyPwJw=
-github.com/CloudSilk/pkg v1.0.0 h1:nvowvXNpD0IVgexlKXQicDhgvndVEdzzWgh/Vi3OL5o=
-github.com/CloudSilk/pkg v1.0.0/go.mod h1:jc89dWikc4otcArqnSN4aPUQSKgPbb/6/MFTQlKeIu0=
+github.com/CloudSilk/pkg v1.0.1 h1:h+1oL98+GDP/hZNnsFTPgG7xSY8LKdIwE3/oi8LceTU=
+github.com/CloudSilk/pkg v1.0.1/go.mod h1:jc89dWikc4otcArqnSN4aPUQSKgPbb/6/MFTQlKeIu0=
 github.com/CloudSilk/usercenter v1.0.1 h1:bcCfOLzCLuX3IeRV3l6LjhGGqQevRz/WGHX/0bdrsXU=
 github.com/CloudSilk/usercenter v1.0.1/go.mod h1:mtoyb67PvdAoBPS5j7/yx6F+yPSX1ZntjilAtYOhnNw=
 github.com/DataDog/datadog-go v3.2.0+incompatible/go.mod h1:LButxg5PwREeZtORoXG3tL4fMGNddJ+vMq1mwgfaqoQ=
