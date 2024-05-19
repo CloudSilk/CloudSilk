@@ -5,6 +5,9 @@ import (
 )
 
 func RegisterRouter(r *gin.Engine) {
+	RegisterCodingGenerationRouter(r)
+	RegisterCodingSerialRouter(r)
+	RegisterCodingTemplateRouter(r)
 	RegisterRemoteServiceTaskQueueRouter(r)
 	RegisterRemoteServiceTaskRouter(r)
 	RegisterRemoteServiceRouter(r)

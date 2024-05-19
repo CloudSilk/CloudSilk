@@ -129,6 +129,11 @@ func AutoMigrate() {
 		&TaskQueueParameter{},
 		&InvocationAuthentication{},
 		&DataMapping{},
+		&CodingGeneration{},
+		&CodingSerial{},
+		&CodingTemplate{},
+		&CodingElement{},
+		&CodingElementValue{},
 
 		&OperationTrace{},
 		&InvocationTrace{},

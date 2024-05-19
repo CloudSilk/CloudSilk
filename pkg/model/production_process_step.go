@@ -20,7 +20,7 @@ type ProductionProcessStep struct {
 	ProcessStepTypeID    string                 `json:"processStepTypeID" gorm:"comment:工步类型ID"`
 	ProcessStepType      *ProcessStepType       `gorm:"constraint:OnDelete:CASCADE"`                                                         //工步类型
 	AttributeExpressions []*AttributeExpression `json:"attributeExpressions" gorm:"polymorphic:Rule;polymorphicValue:ProductionProcessStep"` //特性表达式
-	AvailableProcesses   []*AvailableProcess    `json:"AvailableProcesses" gorm:"constraint:OnDelete:CASCADE"`                               //可使用的工序
+	AvailableProcesses   []*AvailableProcess    `json:"availableProcesses" gorm:"constraint:OnDelete:CASCADE"`                               //可使用的工序
 }
 
 // 可使用的工序

@@ -4,6 +4,7 @@ import (
 	"github.com/CloudSilk/CloudSilk/pkg/proto"
 )
 
+//产品包装匹配规则
 type ProductPackageMatchRule struct {
 	ModelID
 	Priority             int32                  `json:"priority" gorm:"comment:优先级"`

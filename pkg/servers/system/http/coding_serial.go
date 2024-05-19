@@ -12,19 +12,19 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-// AddPrintServer godoc
+// AddCodingSerial godoc
 // @Summary 新增
 // @Description 新增
-// @Tags 打印服务器管理
+// @Tags 编码序列管理
 // @Accept  json
 // @Produce  json
 // @Param authorization header string true "jwt token"
-// @Param account body apipb.PrintServerInfo true "Add PrintServer"
+// @Param account body apipb.CodingSerialInfo true "Add CodingSerial"
 // @Success 200 {object} apipb.CommonResponse
-// @Router /api/mom/printserver/add [post]
-func AddPrintServer(c *gin.Context) {
+// @Router /api/mom/codingserial/add [post]
+func AddCodingSerial(c *gin.Context) {
 	transID := middleware.GetTransID(c)
-	req := &apipb.PrintServerInfo{}
+	req := &apipb.CodingSerialInfo{}
 	resp := &apipb.CommonResponse{
 		Code: apipb.Code_Success,
 	}
@@ -33,7 +33,7 @@ func AddPrintServer(c *gin.Context) {
 		resp.Code = apipb.Code_BadRequest
 		resp.Message = err.Error()
 		c.JSON(http.StatusOK, resp)
-		log.Warnf(context.Background(), "TransID:%s,新建打印服务器管理请求参数无效:%v", transID, err)
+		log.Warnf(context.Background(), "TransID:%s,新建编码序列管理请求参数无效:%v", transID, err)
 		return
 	}
 	err = middleware.Validate.Struct(req)
@@ -44,7 +44,7 @@ func AddPrintServer(c *gin.Context) {
 		return
 	}
 
-	id, err := logic.CreatePrintServer(model.PBToPrintServer(req))
+	id, err := logic.CreateCodingSerial(model.PBToCodingSerial(req))
 	if err != nil {
 		resp.Code = apipb.Code_InternalServerError
 		resp.Message = err.Error()
@@ -54,19 +54,19 @@ func AddPrintServer(c *gin.Context) {
 	c.JSON(http.StatusOK, resp)
 }
 
-// UpdatePrintServer godoc
+// UpdateCodingSerial godoc
 // @Summary 更新
 // @Description 更新
-// @Tags 打印服务器管理
+// @Tags 编码序列管理
 // @Accept  json
 // @Produce  json
 // @Param authorization header string true "jwt token"
-// @Param account body apipb.PrintServerInfo true "Update PrintServer"
+// @Param account body apipb.CodingSerialInfo true "Update CodingSerial"
 // @Success 200 {object} apipb.CommonResponse
-// @Router /api/mom/printserver/update [put]
-func UpdatePrintServer(c *gin.Context) {
+// @Router /api/mom/codingserial/update [put]
+func UpdateCodingSerial(c *gin.Context) {
 	transID := middleware.GetTransID(c)
-	req := &apipb.PrintServerInfo{}
+	req := &apipb.CodingSerialInfo{}
 	resp := &apipb.CommonResponse{
 		Code: apipb.Code_Success,
 	}
@@ -75,7 +75,7 @@ func UpdatePrintServer(c *gin.Context) {
 		resp.Code = apipb.Code_BadRequest
 		resp.Message = err.Error()
 		c.JSON(http.StatusOK, resp)
-		log.Warnf(context.Background(), "TransID:%s,更新打印服务器管理请求参数无效:%v", transID, err)
+		log.Warnf(context.Background(), "TransID:%s,更新编码序列管理请求参数无效:%v", transID, err)
 		return
 	}
 	err = middleware.Validate.Struct(req)
@@ -85,7 +85,7 @@ func UpdatePrintServer(c *gin.Context) {
 		c.JSON(http.StatusOK, resp)
 		return
 	}
-	err = logic.UpdatePrintServer(model.PBToPrintServer(req))
+	err = logic.UpdateCodingSerial(model.PBToCodingSerial(req))
 	if err != nil {
 		resp.Code = apipb.Code_InternalServerError
 		resp.Message = err.Error()
@@ -93,10 +93,10 @@ func UpdatePrintServer(c *gin.Context) {
 	c.JSON(http.StatusOK, resp)
 }
 
-// QueryPrintServer godoc
+// QueryCodingSerial godoc
 // @Summary 分页查询
 // @Description 分页查询
-// @Tags 打印服务器管理
+// @Tags 编码序列管理
 // @Accept  json
 // @Produce  octet-stream
 // @Param authorization header string true "jwt token"
@@ -104,11 +104,11 @@ func UpdatePrintServer(c *gin.Context) {
 // @Param pageSize query int false "默认每页10条"
 // @Param orderField query string false "排序字段"
 // @Param desc query bool false "是否倒序排序"
-// @Success 200 {object} apipb.QueryPrintServerResponse
-// @Router /api/mom/printserver/query [get]
-func QueryPrintServer(c *gin.Context) {
-	req := &apipb.QueryPrintServerRequest{}
-	resp := &apipb.QueryPrintServerResponse{
+// @Success 200 {object} apipb.QueryCodingSerialResponse
+// @Router /api/mom/codingserial/query [get]
+func QueryCodingSerial(c *gin.Context) {
+	req := &apipb.QueryCodingSerialRequest{}
+	resp := &apipb.QueryCodingSerialResponse{
 		Code: apipb.Code_Success,
 	}
 	err := c.BindQuery(req)
@@ -118,47 +118,47 @@ func QueryPrintServer(c *gin.Context) {
 		c.JSON(http.StatusOK, resp)
 		return
 	}
-	logic.QueryPrintServer(req, resp, false)
+	logic.QueryCodingSerial(req, resp, false)
 
 	c.JSON(http.StatusOK, resp)
 }
 
-// GetAllPrintServer godoc
+// GetAllCodingSerial godoc
 // @Summary 查询所有
 // @Description 查询所有
-// @Tags 打印服务器管理
+// @Tags 编码序列管理
 // @Accept  json
 // @Produce  json
 // @Param authorization header string true "jwt token"
-// @Success 200 {object} apipb.GetAllPrintServerResponse
-// @Router /api/mom/printserver/all [get]
-func GetAllPrintServer(c *gin.Context) {
-	resp := &apipb.GetAllPrintServerResponse{
+// @Success 200 {object} apipb.GetAllCodingSerialResponse
+// @Router /api/mom/codingserial/all [get]
+func GetAllCodingSerial(c *gin.Context) {
+	resp := &apipb.GetAllCodingSerialResponse{
 		Code: apipb.Code_Success,
 	}
-	list, err := logic.GetAllPrintServers()
+	list, err := logic.GetAllCodingSerials()
 	if err != nil {
 		resp.Code = apipb.Code_InternalServerError
 		resp.Message = err.Error()
 		c.JSON(http.StatusOK, resp)
 		return
 	}
-	resp.Data = model.PrintServersToPB(list)
+	resp.Data = model.CodingSerialsToPB(list)
 	c.JSON(http.StatusOK, resp)
 }
 
-// GetPrintServerDetail godoc
+// GetCodingSerialDetail godoc
 // @Summary 查询明细
 // @Description 查询明细
-// @Tags 打印服务器管理
+// @Tags 编码序列管理
 // @Accept  json
 // @Produce  json
 // @Param id query string true "ID"
 // @Param authorization header string true "jwt token"
-// @Success 200 {object} apipb.GetPrintServerDetailResponse
-// @Router /api/mom/printserver/detail [get]
-func GetPrintServerDetail(c *gin.Context) {
-	resp := &apipb.GetPrintServerDetailResponse{
+// @Success 200 {object} apipb.GetCodingSerialDetailResponse
+// @Router /api/mom/codingserial/detail [get]
+func GetCodingSerialDetail(c *gin.Context) {
+	resp := &apipb.GetCodingSerialDetailResponse{
 		Code: apipb.Code_Success,
 	}
 	id := c.Query("id")
@@ -169,27 +169,27 @@ func GetPrintServerDetail(c *gin.Context) {
 	}
 	var err error
 
-	data, err := logic.GetPrintServerByID(id)
+	data, err := logic.GetCodingSerialByID(id)
 	if err != nil {
 		resp.Code = apipb.Code_InternalServerError
 		resp.Message = err.Error()
 	} else {
-		resp.Data = model.PrintServerToPB(data)
+		resp.Data = model.CodingSerialToPB(data)
 	}
 	c.JSON(http.StatusOK, resp)
 }
 
-// DeletePrintServer godoc
+// DeleteCodingSerial godoc
 // @Summary 删除
 // @Description 删除
-// @Tags 打印服务器管理
+// @Tags 编码序列管理
 // @Accept  json
 // @Produce  json
 // @Param authorization header string true "jwt token"
-// @Param data body apipb.DelRequest true "Delete PrintServer"
+// @Param data body apipb.DelRequest true "Delete CodingSerial"
 // @Success 200 {object} apipb.CommonResponse
-// @Router /api/mom/printserver/delete [delete]
-func DeletePrintServer(c *gin.Context) {
+// @Router /api/mom/codingserial/delete [delete]
+func DeleteCodingSerial(c *gin.Context) {
 	transID := middleware.GetTransID(c)
 	req := &apipb.DelRequest{}
 	resp := &apipb.CommonResponse{
@@ -200,7 +200,7 @@ func DeletePrintServer(c *gin.Context) {
 		resp.Code = apipb.Code_BadRequest
 		resp.Message = err.Error()
 		c.JSON(http.StatusOK, resp)
-		log.Warnf(context.Background(), "TransID:%s,删除打印服务器管理请求参数无效:%v", transID, err)
+		log.Warnf(context.Background(), "TransID:%s,删除编码序列管理请求参数无效:%v", transID, err)
 		return
 	}
 	err = middleware.Validate.Struct(req)
@@ -210,7 +210,7 @@ func DeletePrintServer(c *gin.Context) {
 		c.JSON(http.StatusOK, resp)
 		return
 	}
-	err = logic.DeletePrintServer(req.Id)
+	err = logic.DeleteCodingSerial(req.Id)
 	if err != nil {
 		resp.Code = apipb.Code_InternalServerError
 		resp.Message = err.Error()
@@ -218,13 +218,13 @@ func DeletePrintServer(c *gin.Context) {
 	c.JSON(http.StatusOK, resp)
 }
 
-func RegisterPrintServerRouter(r *gin.Engine) {
-	g := r.Group("/api/mom/printserver")
+func RegisterCodingSerialRouter(r *gin.Engine) {
+	g := r.Group("/api/mom/codingserial")
 
-	g.POST("add", AddPrintServer)
-	g.PUT("update", UpdatePrintServer)
-	g.GET("query", QueryPrintServer)
-	g.DELETE("delete", DeletePrintServer)
-	g.GET("all", GetAllPrintServer)
-	g.GET("detail", GetPrintServerDetail)
+	g.POST("add", AddCodingSerial)
+	g.PUT("update", UpdateCodingSerial)
+	g.GET("query", QueryCodingSerial)
+	g.DELETE("delete", DeleteCodingSerial)
+	g.GET("all", GetAllCodingSerial)
+	g.GET("detail", GetCodingSerialDetail)
 }

@@ -90,6 +90,122 @@ definitions:
     - Code_TokenInvalid
     - Code_TokenExpired
     - Code_UserDisabled
+  proto.CodingElementInfo:
+    properties:
+      CodingTemplateID:
+        description: 编码模板ID
+        type: string
+      DataBits:
+        description: 数据位数
+        type: integer
+      DefaultValue:
+        description: 预设值
+        type: string
+      ElementType:
+        description: 元素类型
+        type: integer
+      Name:
+        description: 名称
+        type: string
+      PlaceHolder:
+        description: 占位符
+        type: string
+      Remark:
+        description: 备注
+        type: string
+      SortIndex:
+        description: 顺序
+        type: integer
+      codingElementValues:
+        description: 编码元素值
+        items:
+          $ref: '#/definitions/proto.CodingElementValueInfo'
+        type: array
+      id:
+        description: ID
+        type: string
+    type: object
+  proto.CodingElementValueInfo:
+    properties:
+      CodingElementID:
+        description: 编码元素ID
+        type: string
+      Description:
+        description: 描述
+        type: string
+      Value:
+        description: 值
+        type: string
+      id:
+        description: ID
+        type: string
+    type: object
+  proto.CodingGenerationInfo:
+    properties:
+      code:
+        description: 编码
+        type: string
+      codingTemplate:
+        allOf:
+        - $ref: '#/definitions/proto.CodingTemplateInfo'
+        description: 编码模板
+      codingTemplateID:
+        description: 编码模板ID
+        type: string
+      createTime:
+        description: 创建时间
+        type: string
+      createUserID:
+        description: 创建人员ID
+        type: string
+      id:
+        description: ID
+        type: string
+    type: object
+  proto.CodingSerialInfo:
+    properties:
+      createTime:
+        description: 创建时间
+        type: string
+      id:
+        description: ID
+        type: string
+      lastIncreaseTime:
+        description: 最后增长时间
+        type: string
+      prefix:
+        description: 前缀
+        type: string
+      seed:
+        description: 种子
+        type: integer
+    type: object
+  proto.CodingTemplateInfo:
+    properties:
+      code:
+        description: 代号
+        type: string
+      codingElements:
+        description: 编码元素
+        items:
+          $ref: '#/definitions/proto.CodingElementInfo'
+        type: array
+      description:
+        description: 描述
+        type: string
+      id:
+        description: ID
+        type: string
+      indexBits:
+        description: 索引位数
+        type: integer
+      indexType:
+        description: 索引类型
+        type: integer
+      remark:
+        description: 备注
+        type: string
+    type: object
   proto.CommonResponse:
     properties:
       code:
@@ -272,6 +388,39 @@ definitions:
         type: boolean
       waitTime:
         type: integer
+    type: object
+  proto.GetAllCodingGenerationResponse:
+    properties:
+      code:
+        $ref: '#/definitions/proto.Code'
+      data:
+        items:
+          $ref: '#/definitions/proto.CodingGenerationInfo'
+        type: array
+      message:
+        type: string
+    type: object
+  proto.GetAllCodingSerialResponse:
+    properties:
+      code:
+        $ref: '#/definitions/proto.Code'
+      data:
+        items:
+          $ref: '#/definitions/proto.CodingSerialInfo'
+        type: array
+      message:
+        type: string
+    type: object
+  proto.GetAllCodingTemplateResponse:
+    properties:
+      code:
+        $ref: '#/definitions/proto.Code'
+      data:
+        items:
+          $ref: '#/definitions/proto.CodingTemplateInfo'
+        type: array
+      message:
+        type: string
     type: object
   proto.GetAllDataMappingResponse:
     properties:
@@ -1084,6 +1233,33 @@ definitions:
         items:
           $ref: '#/definitions/proto.TaskQueueInfo'
         type: array
+      message:
+        type: string
+    type: object
+  proto.GetCodingGenerationDetailResponse:
+    properties:
+      code:
+        $ref: '#/definitions/proto.Code'
+      data:
+        $ref: '#/definitions/proto.CodingGenerationInfo'
+      message:
+        type: string
+    type: object
+  proto.GetCodingSerialDetailResponse:
+    properties:
+      code:
+        $ref: '#/definitions/proto.Code'
+      data:
+        $ref: '#/definitions/proto.CodingSerialInfo'
+      message:
+        type: string
+    type: object
+  proto.GetCodingTemplateDetailResponse:
+    properties:
+      code:
+        $ref: '#/definitions/proto.Code'
+      data:
+        $ref: '#/definitions/proto.CodingTemplateInfo'
       message:
         type: string
     type: object
@@ -4476,6 +4652,57 @@ definitions:
         description: 顺序
         type: integer
     type: object
+  proto.QueryCodingGenerationResponse:
+    properties:
+      code:
+        $ref: '#/definitions/proto.Code'
+      data:
+        items:
+          $ref: '#/definitions/proto.CodingGenerationInfo'
+        type: array
+      message:
+        type: string
+      pages:
+        type: integer
+      records:
+        type: integer
+      total:
+        type: integer
+    type: object
+  proto.QueryCodingSerialResponse:
+    properties:
+      code:
+        $ref: '#/definitions/proto.Code'
+      data:
+        items:
+          $ref: '#/definitions/proto.CodingSerialInfo'
+        type: array
+      message:
+        type: string
+      pages:
+        type: integer
+      records:
+        type: integer
+      total:
+        type: integer
+    type: object
+  proto.QueryCodingTemplateResponse:
+    properties:
+      code:
+        $ref: '#/definitions/proto.Code'
+      data:
+        items:
+          $ref: '#/definitions/proto.CodingTemplateInfo'
+        type: array
+      message:
+        type: string
+      pages:
+        type: integer
+      records:
+        type: integer
+      total:
+        type: integer
+    type: object
   proto.QueryDataMappingResponse:
     properties:
       code:
@@ -6182,6 +6409,501 @@ definitions:
 info:
   contact: {}
 paths:
+  /api/mom/codinggeneration/add:
+    post:
+      consumes:
+      - application/json
+      description: 新增
+      parameters:
+      - description: jwt token
+        in: header
+        name: authorization
+        required: true
+        type: string
+      - description: Add CodingGeneration
+        in: body
+        name: account
+        required: true
+        schema:
+          $ref: '#/definitions/proto.CodingGenerationInfo'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/proto.CommonResponse'
+      summary: 新增
+      tags:
+      - 编码序列记录
+  /api/mom/codinggeneration/all:
+    get:
+      consumes:
+      - application/json
+      description: 查询所有
+      parameters:
+      - description: jwt token
+        in: header
+        name: authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/proto.GetAllCodingGenerationResponse'
+      summary: 查询所有
+      tags:
+      - 编码序列记录
+  /api/mom/codinggeneration/delete:
+    delete:
+      consumes:
+      - application/json
+      description: 删除
+      parameters:
+      - description: jwt token
+        in: header
+        name: authorization
+        required: true
+        type: string
+      - description: Delete CodingGeneration
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/proto.DelRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/proto.CommonResponse'
+      summary: 删除
+      tags:
+      - 编码序列记录
+  /api/mom/codinggeneration/detail:
+    get:
+      consumes:
+      - application/json
+      description: 查询明细
+      parameters:
+      - description: ID
+        in: query
+        name: id
+        required: true
+        type: string
+      - description: jwt token
+        in: header
+        name: authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/proto.GetCodingGenerationDetailResponse'
+      summary: 查询明细
+      tags:
+      - 编码序列记录
+  /api/mom/codinggeneration/query:
+    get:
+      consumes:
+      - application/json
+      description: 分页查询
+      parameters:
+      - description: jwt token
+        in: header
+        name: authorization
+        required: true
+        type: string
+      - description: 从1开始
+        in: query
+        name: pageIndex
+        type: integer
+      - description: 默认每页10条
+        in: query
+        name: pageSize
+        type: integer
+      - description: 排序字段
+        in: query
+        name: orderField
+        type: string
+      - description: 是否倒序排序
+        in: query
+        name: desc
+        type: boolean
+      produces:
+      - application/octet-stream
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/proto.QueryCodingGenerationResponse'
+      summary: 分页查询
+      tags:
+      - 编码序列记录
+  /api/mom/codinggeneration/update:
+    put:
+      consumes:
+      - application/json
+      description: 更新
+      parameters:
+      - description: jwt token
+        in: header
+        name: authorization
+        required: true
+        type: string
+      - description: Update CodingGeneration
+        in: body
+        name: account
+        required: true
+        schema:
+          $ref: '#/definitions/proto.CodingGenerationInfo'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/proto.CommonResponse'
+      summary: 更新
+      tags:
+      - 编码序列记录
+  /api/mom/codingserial/add:
+    post:
+      consumes:
+      - application/json
+      description: 新增
+      parameters:
+      - description: jwt token
+        in: header
+        name: authorization
+        required: true
+        type: string
+      - description: Add CodingSerial
+        in: body
+        name: account
+        required: true
+        schema:
+          $ref: '#/definitions/proto.CodingSerialInfo'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/proto.CommonResponse'
+      summary: 新增
+      tags:
+      - 编码序列管理
+  /api/mom/codingserial/all:
+    get:
+      consumes:
+      - application/json
+      description: 查询所有
+      parameters:
+      - description: jwt token
+        in: header
+        name: authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/proto.GetAllCodingSerialResponse'
+      summary: 查询所有
+      tags:
+      - 编码序列管理
+  /api/mom/codingserial/delete:
+    delete:
+      consumes:
+      - application/json
+      description: 删除
+      parameters:
+      - description: jwt token
+        in: header
+        name: authorization
+        required: true
+        type: string
+      - description: Delete CodingSerial
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/proto.DelRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/proto.CommonResponse'
+      summary: 删除
+      tags:
+      - 编码序列管理
+  /api/mom/codingserial/detail:
+    get:
+      consumes:
+      - application/json
+      description: 查询明细
+      parameters:
+      - description: ID
+        in: query
+        name: id
+        required: true
+        type: string
+      - description: jwt token
+        in: header
+        name: authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/proto.GetCodingSerialDetailResponse'
+      summary: 查询明细
+      tags:
+      - 编码序列管理
+  /api/mom/codingserial/query:
+    get:
+      consumes:
+      - application/json
+      description: 分页查询
+      parameters:
+      - description: jwt token
+        in: header
+        name: authorization
+        required: true
+        type: string
+      - description: 从1开始
+        in: query
+        name: pageIndex
+        type: integer
+      - description: 默认每页10条
+        in: query
+        name: pageSize
+        type: integer
+      - description: 排序字段
+        in: query
+        name: orderField
+        type: string
+      - description: 是否倒序排序
+        in: query
+        name: desc
+        type: boolean
+      produces:
+      - application/octet-stream
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/proto.QueryCodingSerialResponse'
+      summary: 分页查询
+      tags:
+      - 编码序列管理
+  /api/mom/codingserial/update:
+    put:
+      consumes:
+      - application/json
+      description: 更新
+      parameters:
+      - description: jwt token
+        in: header
+        name: authorization
+        required: true
+        type: string
+      - description: Update CodingSerial
+        in: body
+        name: account
+        required: true
+        schema:
+          $ref: '#/definitions/proto.CodingSerialInfo'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/proto.CommonResponse'
+      summary: 更新
+      tags:
+      - 编码序列管理
+  /api/mom/codingtemplate/add:
+    post:
+      consumes:
+      - application/json
+      description: 新增
+      parameters:
+      - description: jwt token
+        in: header
+        name: authorization
+        required: true
+        type: string
+      - description: Add CodingTemplate
+        in: body
+        name: account
+        required: true
+        schema:
+          $ref: '#/definitions/proto.CodingTemplateInfo'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/proto.CommonResponse'
+      summary: 新增
+      tags:
+      - 编码模版管理
+  /api/mom/codingtemplate/all:
+    get:
+      consumes:
+      - application/json
+      description: 查询所有
+      parameters:
+      - description: jwt token
+        in: header
+        name: authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/proto.GetAllCodingTemplateResponse'
+      summary: 查询所有
+      tags:
+      - 编码模版管理
+  /api/mom/codingtemplate/delete:
+    delete:
+      consumes:
+      - application/json
+      description: 删除
+      parameters:
+      - description: jwt token
+        in: header
+        name: authorization
+        required: true
+        type: string
+      - description: Delete CodingTemplate
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/proto.DelRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/proto.CommonResponse'
+      summary: 删除
+      tags:
+      - 编码模版管理
+  /api/mom/codingtemplate/detail:
+    get:
+      consumes:
+      - application/json
+      description: 查询明细
+      parameters:
+      - description: ID
+        in: query
+        name: id
+        required: true
+        type: string
+      - description: jwt token
+        in: header
+        name: authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/proto.GetCodingTemplateDetailResponse'
+      summary: 查询明细
+      tags:
+      - 编码模版管理
+  /api/mom/codingtemplate/query:
+    get:
+      consumes:
+      - application/json
+      description: 分页查询
+      parameters:
+      - description: jwt token
+        in: header
+        name: authorization
+        required: true
+        type: string
+      - description: 从1开始
+        in: query
+        name: pageIndex
+        type: integer
+      - description: 默认每页10条
+        in: query
+        name: pageSize
+        type: integer
+      - description: 排序字段
+        in: query
+        name: orderField
+        type: string
+      - description: 是否倒序排序
+        in: query
+        name: desc
+        type: boolean
+      produces:
+      - application/octet-stream
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/proto.QueryCodingTemplateResponse'
+      summary: 分页查询
+      tags:
+      - 编码模版管理
+  /api/mom/codingtemplate/update:
+    put:
+      consumes:
+      - application/json
+      description: 更新
+      parameters:
+      - description: jwt token
+        in: header
+        name: authorization
+        required: true
+        type: string
+      - description: Update CodingTemplate
+        in: body
+        name: account
+        required: true
+        schema:
+          $ref: '#/definitions/proto.CodingTemplateInfo'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/proto.CommonResponse'
+      summary: 更新
+      tags:
+      - 编码模版管理
   /api/mom/label/labeltemplate/add:
     post:
       consumes:
