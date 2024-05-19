@@ -5,7 +5,7 @@ go 1.20
 require (
 	dubbo.apache.org/dubbo-go/v3 v3.0.5
 	github.com/CloudSilk/curd v1.0.0
-	github.com/CloudSilk/pkg v1.0.0
+	github.com/CloudSilk/pkg v1.0.1
 	github.com/CloudSilk/usercenter v1.0.1
 	github.com/dubbogo/grpc-go v1.42.10
 	github.com/dubbogo/triple v1.2.2-rc2

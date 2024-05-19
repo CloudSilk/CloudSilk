@@ -24,6 +24,7 @@ import (
 	curdhttp "github.com/CloudSilk/curd/http"
 	curdmodel "github.com/CloudSilk/curd/model"
 	curdservice "github.com/CloudSilk/curd/service"
+	pkgconfig "github.com/CloudSilk/pkg/config"
 	"github.com/CloudSilk/pkg/constants"
 	"github.com/CloudSilk/pkg/db"
 	"github.com/CloudSilk/pkg/db/mysql"
@@ -43,25 +44,39 @@ type IServer interface {
 	Start(*gin.Engine)
 }
 
-func StartAll(webPath, dbType string, port int) {
-	err := ucconfig.InitFromFile("./config.yaml")
+func StartAll(webPath string, port int, singleDB bool) {
+	err := pkgconfig.InitFromFile("./config.yaml")
 	if err != nil {
 		panic(err)
 	}
-
-	fmt.Println("数据库类型：", dbType)
-	var dbClient db.DBClientInterface
-	if dbType == "sqlite" {
-		dbClient = sqlite.NewSqlite2("", "", "./CloudSilk.s3db", "CloudSilk", ucconfig.DefaultConfig.Debug)
+	if singleDB {
+		ok, dbClient := pkgconfig.NewDB("all")
+		if !ok {
+			panic("未配置数据库")
+		}
+		model.InitDB(dbClient, ucconfig.DefaultConfig.Debug)
+		curdmodel.InitDB(dbClient, ucconfig.DefaultConfig.Debug)
+		ucmodel.InitDB(dbClient, ucconfig.DefaultConfig.Debug)
 	} else {
-		dbClient = mysql.NewMysql(ucconfig.DefaultConfig.Mysql, ucconfig.DefaultConfig.Debug)
+		// 单独配置数据库
+		ok, usercenterDBClient := pkgconfig.NewDB("Usercenter")
+		if !ok {
+			panic("未配置Usercenter数据库")
+		}
+		ok, curdDBClient := pkgconfig.NewDB("Curd")
+		if !ok {
+			panic("未配置Curd数据库")
+		}
+		ok, cloudSilkDBClient := pkgconfig.NewDB("CloudSilk")
+		if !ok {
+			panic("未配置CloudSilk数据库")
+		}
+		model.InitDB(cloudSilkDBClient, ucconfig.DefaultConfig.Debug)
+		curdmodel.InitDB(curdDBClient, ucconfig.DefaultConfig.Debug)
+		ucmodel.InitDB(usercenterDBClient, ucconfig.DefaultConfig.Debug)
 	}
 
-	fmt.Println(webPath)
-	model.InitDB(dbClient, ucconfig.DefaultConfig.Debug)
-	curdmodel.InitDB(dbClient, ucconfig.DefaultConfig.Debug)
 	curdservice.Init()
-	ucmodel.InitDB(dbClient, ucconfig.DefaultConfig.Debug)
 	token.InitTokenCache(ucconfig.DefaultConfig.Token.Key, ucconfig.DefaultConfig.Token.RedisAddr, ucconfig.DefaultConfig.Token.RedisName, ucconfig.DefaultConfig.Token.RedisPwd, ucconfig.DefaultConfig.Token.Expired)
 	constants.SetPlatformTenantID(ucconfig.DefaultConfig.PlatformTenantID)
 	constants.SetSuperAdminRoleID(ucconfig.DefaultConfig.SuperAdminRoleID)
@@ -144,10 +159,11 @@ func main() {
 	webPath := flag.String("ui", "./web", "web路径")
 	dbType := flag.String("db_type", "mysql", "数据库类型：sqlite和mysql两种")
 	serviceMode := flag.String("service_mode", "One", "运行模式：ALL、One")
+	singleDB := flag.Bool("single_db", true, "使用同一个数据")
 	port := flag.Int("port", 48900, "端口")
 	flag.Parse()
 	if *serviceMode == "ALL" {
-		StartAll(*webPath, *dbType, *port)
+		StartAll(*webPath, *port, *singleDB)
 	} else {
 		StartOne(*dbType, *port)
 	}
