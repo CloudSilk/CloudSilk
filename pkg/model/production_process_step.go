@@ -11,12 +11,10 @@ type ProductionProcessStep struct {
 	Code                 string                 `json:"code" gorm:"index;size:100;comment:代号"`
 	Description          string                 `json:"description" gorm:"size:1000;comment:描述"`
 	Graphic              string                 `json:"graphic" gorm:"size:1000;comment:图示"`
-	GroupCode            string                 `json:"groupCode" gorm:"size:100;comment:采集组"`
 	Enable               bool                   `json:"enable" gorm:"comment:是否启用"`
 	InitialValue         bool                   `json:"initialValue" gorm:"comment:默认匹配"`
 	ProcessControl       bool                   `json:"processControl" gorm:"comment:工序管控"`
 	Remark               string                 `json:"remark" gorm:"size:1000;comment:备注"`
-	ProductionLineID     string                 `json:"productionLineID" gorm:"comment:生产产线ID"`
 	ProcessStepTypeID    string                 `json:"processStepTypeID" gorm:"comment:工步类型ID"`
 	ProcessStepType      *ProcessStepType       `gorm:"constraint:OnDelete:CASCADE"`                                                         //工步类型
 	AttributeExpressions []*AttributeExpression `json:"attributeExpressions" gorm:"polymorphic:Rule;polymorphicValue:ProductionProcessStep"` //特性表达式
@@ -49,12 +47,10 @@ func PBToProductionProcessStep(in *proto.ProductionProcessStepInfo) *ProductionP
 		Code:                 in.Code,
 		Description:          in.Description,
 		Graphic:              in.Graphic,
-		GroupCode:            in.GroupCode,
 		Enable:               in.Enable,
 		InitialValue:         in.InitialValue,
 		ProcessControl:       in.ProcessControl,
 		Remark:               in.Remark,
-		ProductionLineID:     in.ProductionLineID,
 		ProcessStepTypeID:    in.ProcessStepTypeID,
 		AttributeExpressions: PBToAttributeExpressions(in.AttributeExpressions),
 		AvailableProcesses:   PBToAvailableProcesss(in.AvailableProcesses),
@@ -85,12 +81,10 @@ func ProductionProcessStepToPB(in *ProductionProcessStep) *proto.ProductionProce
 		Code:                 in.Code,
 		Description:          in.Description,
 		Graphic:              in.Graphic,
-		GroupCode:            in.GroupCode,
 		Enable:               in.Enable,
 		InitialValue:         in.InitialValue,
 		ProcessControl:       in.ProcessControl,
 		Remark:               in.Remark,
-		ProductionLineID:     in.ProductionLineID,
 		ProcessStepTypeID:    in.ProcessStepTypeID,
 		ProcessStepType:      ProcessStepTypeToPB(in.ProcessStepType),
 		AvailableProcessIDs:  availableProcessIDs,

@@ -30,8 +30,6 @@ message ProductionProcessStepInfo {
     string description=4;
     //图示
     string graphic=5;
-    //采集组
-    string groupCode=6;
     //是否启用
     bool enable=7;
     //默认匹配
@@ -40,8 +38,6 @@ message ProductionProcessStepInfo {
     bool processControl=9;
     //备注
     string remark=10;
-    //生产产线ID
-    string productionLineID=11;
     //工步类型ID
     string processStepTypeID=12;
     ProcessStepTypeInfo processStepType=13;
@@ -66,9 +62,9 @@ message QueryProductionProcessStepRequest{
     int64 pageSize=2;
     // @inject_tag: uri:"sortConfig" form:"sortConfig"
     string sortConfig=3;
-	//生产产线ID 
-    // @inject_tag: uri:"productionLineID" form:"productionLineID"
-    string productionLineID=5;
+	//生产工序ID 
+    // @inject_tag: uri:"productionProcessID" form:"productionProcessID"
+    string productionProcessID=5;
     // @inject_tag: uri:"ids" form:"ids"
     repeated string ids=6;
 }

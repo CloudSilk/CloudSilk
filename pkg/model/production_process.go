@@ -15,7 +15,6 @@ type ProductionProcess struct {
 	InitialValue                       bool                                 `json:"initialValue" gorm:"comment:默认匹配"`
 	EnableReport                       bool                                 `json:"enableReport" gorm:"comment:是否报工"`
 	EnableControl                      bool                                 `json:"enableControl" gorm:"comment:是否管控"`
-	SimulateExecution                  bool                                 `json:"simulateExecution" gorm:"comment:模拟执行"`
 	ProcessType                        int32                                `json:"processType" gorm:"comment:工序类型"`
 	VehicleType                        int32                                `json:"vehicleType" gorm:"comment:载具类型"`
 	ProductState                       string                               `json:"productState" gorm:"size:100;comment:产品状态"`
@@ -56,7 +55,6 @@ func PBToProductionProcess(in *proto.ProductionProcessInfo) *ProductionProcess {
 		InitialValue:                       in.InitialValue,
 		EnableReport:                       in.EnableReport,
 		EnableControl:                      in.EnableControl,
-		SimulateExecution:                  in.SimulateExecution,
 		ProcessType:                        in.ProcessType,
 		VehicleType:                        in.VehicleType,
 		ProductState:                       in.ProductState,
@@ -90,7 +88,6 @@ func ProductionProcessToPB(in *ProductionProcess) *proto.ProductionProcessInfo {
 		InitialValue:                       in.InitialValue,
 		EnableReport:                       in.EnableReport,
 		EnableControl:                      in.EnableControl,
-		SimulateExecution:                  in.SimulateExecution,
 		ProcessType:                        in.ProcessType,
 		VehicleType:                        in.VehicleType,
 		ProductState:                       in.ProductState,

@@ -31,8 +31,6 @@ message ProductionProcessInfo {
  	bool enableReport=10;
 	//是否管控 
  	bool enableControl=11;
-	//模拟执行 
- 	bool simulateExecution=12;
 	//工序类型 
  	int32 processType=13;
 	//载具类型 
