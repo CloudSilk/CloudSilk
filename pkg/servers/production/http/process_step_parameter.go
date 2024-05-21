@@ -12,19 +12,19 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-// AddProcessStepMatchRule godoc
+// AddProcessStepParameter godoc
 // @Summary 新增
 // @Description 新增
-// @Tags 工步匹配规则管理
+// @Tags 工步参数管理
 // @Accept  json
 // @Produce  json
 // @Param authorization header string true "jwt token"
-// @Param account body proto.ProcessStepMatchRuleInfo true "Add ProcessStepMatchRule"
+// @Param account body proto.ProcessStepParameterInfo true "Add ProcessStepParameter"
 // @Success 200 {object} proto.CommonResponse
-// @Router /api/mom/production/processstepmatchrule/add [post]
-func AddProcessStepMatchRule(c *gin.Context) {
+// @Router /api/mom/production/processstepparameter/add [post]
+func AddProcessStepParameter(c *gin.Context) {
 	transID := middleware.GetTransID(c)
-	req := &proto.ProcessStepMatchRuleInfo{}
+	req := &proto.ProcessStepParameterInfo{}
 	resp := &proto.CommonResponse{
 		Code: proto.Code_Success,
 	}
@@ -33,7 +33,7 @@ func AddProcessStepMatchRule(c *gin.Context) {
 		resp.Code = proto.Code_BadRequest
 		resp.Message = err.Error()
 		c.JSON(http.StatusOK, resp)
-		log.Warnf(context.Background(), "TransID:%s,新建工步匹配规则请求参数无效:%v", transID, err)
+		log.Warnf(context.Background(), "TransID:%s,新建生产工步类型请求参数无效:%v", transID, err)
 		return
 	}
 	err = middleware.Validate.Struct(req)
@@ -44,7 +44,7 @@ func AddProcessStepMatchRule(c *gin.Context) {
 		return
 	}
 
-	id, err := logic.CreateProcessStepMatchRule(model.PBToProcessStepMatchRule(req))
+	id, err := logic.CreateProcessStepParameter(model.PBToProcessStepParameter(req))
 	if err != nil {
 		resp.Code = proto.Code_InternalServerError
 		resp.Message = err.Error()
@@ -54,19 +54,19 @@ func AddProcessStepMatchRule(c *gin.Context) {
 	c.JSON(http.StatusOK, resp)
 }
 
-// UpdateProcessStepMatchRule godoc
+// UpdateProcessStepParameter godoc
 // @Summary 更新
 // @Description 更新
-// @Tags 工步匹配规则管理
+// @Tags 工步参数管理
 // @Accept  json
 // @Produce  json
 // @Param authorization header string true "jwt token"
-// @Param account body proto.ProcessStepMatchRuleInfo true "Update ProcessStepMatchRule"
+// @Param account body proto.ProcessStepParameterInfo true "Update ProcessStepParameter"
 // @Success 200 {object} proto.CommonResponse
-// @Router /api/mom/production/processstepmatchrule/update [put]
-func UpdateProcessStepMatchRule(c *gin.Context) {
+// @Router /api/mom/production/processstepparameter/update [put]
+func UpdateProcessStepParameter(c *gin.Context) {
 	transID := middleware.GetTransID(c)
-	req := &proto.ProcessStepMatchRuleInfo{}
+	req := &proto.ProcessStepParameterInfo{}
 	resp := &proto.CommonResponse{
 		Code: proto.Code_Success,
 	}
@@ -75,7 +75,7 @@ func UpdateProcessStepMatchRule(c *gin.Context) {
 		resp.Code = proto.Code_BadRequest
 		resp.Message = err.Error()
 		c.JSON(http.StatusOK, resp)
-		log.Warnf(context.Background(), "TransID:%s,更新工步匹配规则请求参数无效:%v", transID, err)
+		log.Warnf(context.Background(), "TransID:%s,更新生产工步类型请求参数无效:%v", transID, err)
 		return
 	}
 	err = middleware.Validate.Struct(req)
@@ -85,7 +85,7 @@ func UpdateProcessStepMatchRule(c *gin.Context) {
 		c.JSON(http.StatusOK, resp)
 		return
 	}
-	err = logic.UpdateProcessStepMatchRule(model.PBToProcessStepMatchRule(req))
+	err = logic.UpdateProcessStepParameter(model.PBToProcessStepParameter(req))
 	if err != nil {
 		resp.Code = proto.Code_InternalServerError
 		resp.Message = err.Error()
@@ -93,10 +93,10 @@ func UpdateProcessStepMatchRule(c *gin.Context) {
 	c.JSON(http.StatusOK, resp)
 }
 
-// QueryProcessStepMatchRule godoc
+// QueryProcessStepParameter godoc
 // @Summary 分页查询
 // @Description 分页查询
-// @Tags 工步匹配规则管理
+// @Tags 工步参数管理
 // @Accept  json
 // @Produce  octet-stream
 // @Param authorization header string true "jwt token"
@@ -104,11 +104,12 @@ func UpdateProcessStepMatchRule(c *gin.Context) {
 // @Param pageSize query int false "默认每页10条"
 // @Param orderField query string false "排序字段"
 // @Param desc query bool false "是否倒序排序"
-// @Success 200 {object} proto.QueryProcessStepMatchRuleResponse
-// @Router /api/mom/production/processstepmatchrule/query [get]
-func QueryProcessStepMatchRule(c *gin.Context) {
-	req := &proto.QueryProcessStepMatchRuleRequest{}
-	resp := &proto.QueryProcessStepMatchRuleResponse{
+// @Param code query string false "代号或描述"
+// @Success 200 {object} proto.QueryProcessStepParameterResponse
+// @Router /api/mom/production/processstepparameter/query [get]
+func QueryProcessStepParameter(c *gin.Context) {
+	req := &proto.QueryProcessStepParameterRequest{}
+	resp := &proto.QueryProcessStepParameterResponse{
 		Code: proto.Code_Success,
 	}
 	err := c.BindQuery(req)
@@ -118,47 +119,47 @@ func QueryProcessStepMatchRule(c *gin.Context) {
 		c.JSON(http.StatusOK, resp)
 		return
 	}
-	logic.QueryProcessStepMatchRule(req, resp, false)
+	logic.QueryProcessStepParameter(req, resp, false)
 
 	c.JSON(http.StatusOK, resp)
 }
 
-// GetAllProcessStepMatchRule godoc
+// GetAllProcessStepParameter godoc
 // @Summary 查询所有
 // @Description 查询所有
-// @Tags 工步匹配规则管理
+// @Tags 工步参数管理
 // @Accept  json
 // @Produce  json
 // @Param authorization header string true "jwt token"
-// @Success 200 {object} proto.GetAllProcessStepMatchRuleResponse
-// @Router /api/mom/production/processstepmatchrule/all [get]
-func GetAllProcessStepMatchRule(c *gin.Context) {
-	resp := &proto.GetAllProcessStepMatchRuleResponse{
+// @Success 200 {object} proto.GetAllProcessStepParameterResponse
+// @Router /api/mom/production/processstepparameter/all [get]
+func GetAllProcessStepParameter(c *gin.Context) {
+	resp := &proto.GetAllProcessStepParameterResponse{
 		Code: proto.Code_Success,
 	}
-	list, err := logic.GetAllProcessStepMatchRules()
+	list, err := logic.GetAllProcessStepParameters()
 	if err != nil {
 		resp.Code = proto.Code_InternalServerError
 		resp.Message = err.Error()
 		c.JSON(http.StatusOK, resp)
 		return
 	}
-	resp.Data = model.ProcessStepMatchRulesToPB(list)
+	resp.Data = model.ProcessStepParametersToPB(list)
 	c.JSON(http.StatusOK, resp)
 }
 
-// GetProcessStepMatchRuleDetail godoc
+// GetProcessStepParameterDetail godoc
 // @Summary 查询明细
 // @Description 查询明细
-// @Tags 工步匹配规则管理
+// @Tags 工步参数管理
 // @Accept  json
 // @Produce  json
 // @Param id query string true "ID"
 // @Param authorization header string true "jwt token"
-// @Success 200 {object} proto.GetProcessStepMatchRuleDetailResponse
-// @Router /api/mom/production/processstepmatchrule/detail [get]
-func GetProcessStepMatchRuleDetail(c *gin.Context) {
-	resp := &proto.GetProcessStepMatchRuleDetailResponse{
+// @Success 200 {object} proto.GetProcessStepParameterDetailResponse
+// @Router /api/mom/production/processstepparameter/detail [get]
+func GetProcessStepParameterDetail(c *gin.Context) {
+	resp := &proto.GetProcessStepParameterDetailResponse{
 		Code: proto.Code_Success,
 	}
 	id := c.Query("id")
@@ -169,27 +170,27 @@ func GetProcessStepMatchRuleDetail(c *gin.Context) {
 	}
 	var err error
 
-	data, err := logic.GetProcessStepMatchRuleByID(id)
+	data, err := logic.GetProcessStepParameterByID(id)
 	if err != nil {
 		resp.Code = proto.Code_InternalServerError
 		resp.Message = err.Error()
 	} else {
-		resp.Data = model.ProcessStepMatchRuleToPB(data)
+		resp.Data = model.ProcessStepParameterToPB(data)
 	}
 	c.JSON(http.StatusOK, resp)
 }
 
-// DeleteProcessStepMatchRule godoc
+// DeleteProcessStepParameter godoc
 // @Summary 删除
 // @Description 删除
-// @Tags 工步匹配规则管理
+// @Tags 工步参数管理
 // @Accept  json
 // @Produce  json
 // @Param authorization header string true "jwt token"
-// @Param data body proto.DelRequest true "Delete ProcessStepMatchRule"
+// @Param data body proto.DelRequest true "Delete ProcessStepParameter"
 // @Success 200 {object} proto.CommonResponse
-// @Router /api/mom/production/processstepmatchrule/delete [delete]
-func DeleteProcessStepMatchRule(c *gin.Context) {
+// @Router /api/mom/production/processstepparameter/delete [delete]
+func DeleteProcessStepParameter(c *gin.Context) {
 	transID := middleware.GetTransID(c)
 	req := &proto.DelRequest{}
 	resp := &proto.CommonResponse{
@@ -200,7 +201,7 @@ func DeleteProcessStepMatchRule(c *gin.Context) {
 		resp.Code = proto.Code_BadRequest
 		resp.Message = err.Error()
 		c.JSON(http.StatusOK, resp)
-		log.Warnf(context.Background(), "TransID:%s,删除工步匹配规则请求参数无效:%v", transID, err)
+		log.Warnf(context.Background(), "TransID:%s,删除生产工步类型请求参数无效:%v", transID, err)
 		return
 	}
 	err = middleware.Validate.Struct(req)
@@ -210,7 +211,7 @@ func DeleteProcessStepMatchRule(c *gin.Context) {
 		c.JSON(http.StatusOK, resp)
 		return
 	}
-	err = logic.DeleteProcessStepMatchRule(req.Id)
+	err = logic.DeleteProcessStepParameter(req.Id)
 	if err != nil {
 		resp.Code = proto.Code_InternalServerError
 		resp.Message = err.Error()
@@ -218,13 +219,13 @@ func DeleteProcessStepMatchRule(c *gin.Context) {
 	c.JSON(http.StatusOK, resp)
 }
 
-func RegisterProcessStepMatchRuleRouter(r *gin.Engine) {
-	g := r.Group("/api/mom/production/processstepmatchrule")
+func RegisterProcessStepParameterRouter(r *gin.Engine) {
+	g := r.Group("/api/mom/production/processstepparameter")
 
-	g.POST("add", AddProcessStepMatchRule)
-	g.PUT("update", UpdateProcessStepMatchRule)
-	g.GET("query", QueryProcessStepMatchRule)
-	g.DELETE("delete", DeleteProcessStepMatchRule)
-	g.GET("all", GetAllProcessStepMatchRule)
-	g.GET("detail", GetProcessStepMatchRuleDetail)
+	g.POST("add", AddProcessStepParameter)
+	g.PUT("update", UpdateProcessStepParameter)
+	g.GET("query", QueryProcessStepParameter)
+	g.DELETE("delete", DeleteProcessStepParameter)
+	g.GET("all", GetAllProcessStepParameter)
+	g.GET("detail", GetProcessStepParameterDetail)
 }

@@ -14,7 +14,7 @@ type CodingGeneration struct {
 	CreateTime       time.Time       `gorm:"autoCreateTime:nano;comment:创建时间"`
 	CreateUserID     string          `gorm:"size:36;comment:创建人员ID"`
 	CodingTemplateID string          `gorm:"size:36;comment:编码模板ID"`
-	CodingTemplate   *CodingTemplate `` //编码模板
+	CodingTemplate   *CodingTemplate `gorm:""` //编码模板
 }
 
 func PBToCodingGenerations(in []*proto.CodingGenerationInfo) []*CodingGeneration {

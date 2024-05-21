@@ -7,7 +7,7 @@ import (
 // 编码模版
 type CodingTemplate struct {
 	ModelID
-	Code              string              `gorm:"size:50;comment:代号"`
+	Code              string              `gorm:"index;size:50;comment:代号"`
 	IndexType         int32               `gorm:"comment:索引类型"`
 	IndexBits         int32               `gorm:"comment:索引位数"`
 	Description       string              `gorm:"size:500;comment:描述"`

@@ -43,9 +43,9 @@ message ProductionProcessInfo {
     string productionLineID=17;
 	ProductionLineInfo productionLine=18;
 	//支持工站
+	repeated string availableStationIDs=19;
 	repeated ProductionProcessAvailableStationInfo productionProcessAvailableStations=22;
-	//支援工序
-	// repeated ProductionProcessInfo productionProcesses=20;
+	//特性表达式
 	repeated AttributeExpressionInfo attributeExpressions=21;
 }
 

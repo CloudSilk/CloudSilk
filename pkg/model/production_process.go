@@ -20,10 +20,9 @@ type ProductionProcess struct {
 	ProductState                       string                               `json:"productState" gorm:"size:100;comment:产品状态"`
 	Remark                             string                               `json:"remark" gorm:"size:1000;comment:备注"`
 	ProductionLineID                   string                               `json:"productionLineID" gorm:"size:36;comment:生产产线ID"`
-	ProductionLine                     *ProductionLine                      `gorm:"constraint:OnDelete:CASCADE"` //生产产线
-	ProductionProcessAvailableStations []*ProductionProcessAvailableStation `gorm:"constraint:OnDelete:CASCADE"` //支持工站
-	AttributeExpressions               []*AttributeExpression               `gorm:"polymorphic:Rule;polymorphicValue:ProductionProcess"`
-	// ProductionProcesses                []*ProductionProcess                 `json:"productionProcesses" gorm:"-"` //支援工序
+	ProductionLine                     *ProductionLine                      `gorm:"constraint:OnDelete:CASCADE"`                         //生产产线
+	ProductionProcessAvailableStations []*ProductionProcessAvailableStation `gorm:"constraint:OnDelete:CASCADE"`                         //支持工站
+	AttributeExpressions               []*AttributeExpression               `gorm:"polymorphic:Rule;polymorphicValue:ProductionProcess"` //特性表达式
 }
 
 type ProductionProcessAvailableStation struct {
@@ -78,6 +77,11 @@ func ProductionProcessToPB(in *ProductionProcess) *proto.ProductionProcessInfo {
 		return nil
 	}
 
+	var availableStationIDs []string
+	for _, ProductionProcessAvailableStation := range in.ProductionProcessAvailableStations {
+		availableStationIDs = append(availableStationIDs, ProductionProcessAvailableStation.ProductionStationID)
+	}
+
 	m := &proto.ProductionProcessInfo{
 		Id:                                 in.ID,
 		SortIndex:                          in.SortIndex,
@@ -94,9 +98,9 @@ func ProductionProcessToPB(in *ProductionProcess) *proto.ProductionProcessInfo {
 		Remark:                             in.Remark,
 		ProductionLineID:                   in.ProductionLineID,
 		ProductionLine:                     ProductionLineToPB(in.ProductionLine),
+		AvailableStationIDs:                availableStationIDs,
 		ProductionProcessAvailableStations: ProductionProcessAvailableStationsToPB(in.ProductionProcessAvailableStations),
-		// ProductionProcesses:                ProductionProcesssToPB(in.ProductionProcesses),
-		AttributeExpressions: AttributeExpressionsToPB(in.AttributeExpressions),
+		AttributeExpressions:               AttributeExpressionsToPB(in.AttributeExpressions),
 	}
 	return m
 }

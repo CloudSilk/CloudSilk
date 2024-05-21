@@ -1,0 +1,93 @@
+syntax="proto3";
+
+package proto;
+option go_package = "./;proto";
+
+import "mom_common.proto";
+import "production_line.proto";
+import "attribute_expression.proto";
+import "production_process_step.proto";
+
+service ProcessStepParameter{
+    rpc Query(QueryProcessStepParameterRequest)returns(QueryProcessStepParameterResponse);
+}
+
+message ProcessStepParameterInfo {
+	//ID 
+ 	string id=1;
+	//代号 
+    string code=2;
+	//优先级 
+    int32 priority=3;
+	//描述 
+    string description=4;
+	//是否启用 
+    bool enable=5;
+	//备注 
+    string remark=6;
+	//产线ID 
+    string productionLineID=7;
+	//生产产线 
+    ProductionLineInfo productionLine=8;
+	//生产工步参数值 
+    repeated ProcessStepParameterValueInfo processStepParameterValues=9;
+	//特性表达式 
+    repeated AttributeExpressionInfo attributeExpressions=10;
+}
+
+message ProcessStepParameterValueInfo {
+	//ID 
+ 	string id=1;
+	//生产工步参数ID 
+    string processStepParameterID=2;
+	//生产工序ID 
+    string productionProcessID=3;
+	//生产工步ID 
+ 	string productionProcessStepID=4;
+	//生产工步 
+    ProductionProcessStepInfo productionProcessStep=5;
+	//生产工步类型参数ID 
+ 	string processStepTypeParameterID=6;
+	//标准值 
+ 	string standardValue=7;
+	//最大值 
+ 	string maximumValue=8;
+	//最小值 
+ 	string minimumValue=9;
+}
+
+message QueryProcessStepParameterRequest{
+    // @inject_tag: uri:"pageIndex" form:"pageIndex"
+    int64 pageIndex=1;
+    // @inject_tag: uri:"pageSize" form:"pageSize"
+    int64 pageSize=2;
+    // @inject_tag: uri:"sortConfig" form:"sortConfig"
+    string sortConfig=3;
+    // @inject_tag: uri:"enable" form:"enable"
+    bool enable=4;
+    // @inject_tag: uri:"hasProductionProcessStepID" form:"hasProductionProcessStepID"
+    bool hasProductionProcessStepID=5;
+    // @inject_tag: uri:"code" form:"code"
+    string code=6;
+}
+
+message QueryProcessStepParameterResponse{
+    Code code=1;
+    string message=2;
+    repeated ProcessStepParameterInfo data=3;
+    int64 pages=4;
+    int64 records=5;
+    int64 total=6;
+}
+
+message GetAllProcessStepParameterResponse{
+    Code code=1;
+    string message=2;
+    repeated ProcessStepParameterInfo data=3;
+}
+
+message GetProcessStepParameterDetailResponse{
+    Code code=1;
+    string message=2;
+    ProcessStepParameterInfo data=3;
+}

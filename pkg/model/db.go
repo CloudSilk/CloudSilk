@@ -68,7 +68,6 @@ func AutoMigrate() {
 		&ProductPackageStackRule{},
 		&ProductPackageMatchRule{},
 		&ProductProcessRoute{},
-		&ProcessStepMatchRule{},
 		&ProductionProcessSop{},
 		&ProductionProcessStep{},
 		&AvailableProcess{},
@@ -97,6 +96,8 @@ func AutoMigrate() {
 		&ProductTestRecord{},
 		&ProductReworkRecord{},
 		&ProductPackageRecord{},
+		&ProcessStepParameter{},
+		&ProcessStepParameterValue{},
 
 		&ProductionProcess{},
 		&ProductionStationAlarm{},

@@ -123,8 +123,8 @@ func Init(serviceMode string) {
 		productOrderAttributeProvider := new(ppp.ProductOrderAttributeProvider)
 		ProductOrderAttributeClient.Query = productOrderAttributeProvider.Query
 
-		processStepMatchRuleProvider := new(ptpp.ProcessStepMatchRuleProvider)
-		ProcessStepMatchRuleClient.Query = processStepMatchRuleProvider.Query
+		processStepParameterProvider := new(ptpp.ProcessStepParameterProvider)
+		ProcessStepParameterClient.Query = processStepParameterProvider.Query
 
 		productionProcessStepProvider := new(ptpp.ProductionProcessStepProvider)
 		ProductionProcessStepClient.Get = productionProcessStepProvider.Get
@@ -158,7 +158,7 @@ func Init(serviceMode string) {
 		config.SetConsumerService(ProductOrderProcessClient)
 		config.SetConsumerService(ProductionStationOutputClient)
 		config.SetConsumerService(ProductOrderAttributeClient)
-		config.SetConsumerService(ProcessStepMatchRuleClient)
+		config.SetConsumerService(ProcessStepParameterClient)
 		config.SetConsumerService(ProductionProcessStepClient)
 		config.SetConsumerService(ProductTestRecordClient)
 	}
