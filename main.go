@@ -30,7 +30,6 @@ import (
 	"github.com/CloudSilk/pkg/db/mysql"
 	"github.com/CloudSilk/pkg/db/sqlite"
 	"github.com/CloudSilk/pkg/utils"
-	ucconfig "github.com/CloudSilk/usercenter/config"
 	uchttp "github.com/CloudSilk/usercenter/http"
 	ucmodel "github.com/CloudSilk/usercenter/model"
 	"github.com/CloudSilk/usercenter/model/token"
@@ -54,9 +53,9 @@ func StartAll(webPath string, port int, singleDB bool) {
 		if !ok {
 			panic("未配置数据库")
 		}
-		model.InitDB(dbClient, ucconfig.DefaultConfig.Debug)
-		curdmodel.InitDB(dbClient, ucconfig.DefaultConfig.Debug)
-		ucmodel.InitDB(dbClient, ucconfig.DefaultConfig.Debug)
+		model.InitDB(dbClient, pkgconfig.DefaultConfig.Debug)
+		curdmodel.InitDB(dbClient, pkgconfig.DefaultConfig.Debug)
+		ucmodel.InitDB(dbClient, pkgconfig.DefaultConfig.Debug)
 	} else {
 		// 单独配置数据库
 		ok, usercenterDBClient := pkgconfig.NewDB("Usercenter")
@@ -71,18 +70,18 @@ func StartAll(webPath string, port int, singleDB bool) {
 		if !ok {
 			panic("未配置CloudSilk数据库")
 		}
-		model.InitDB(cloudSilkDBClient, ucconfig.DefaultConfig.Debug)
-		curdmodel.InitDB(curdDBClient, ucconfig.DefaultConfig.Debug)
-		ucmodel.InitDB(usercenterDBClient, ucconfig.DefaultConfig.Debug)
+		model.InitDB(cloudSilkDBClient, pkgconfig.DefaultConfig.Debug)
+		curdmodel.InitDB(curdDBClient, pkgconfig.DefaultConfig.Debug)
+		ucmodel.InitDB(usercenterDBClient, pkgconfig.DefaultConfig.Debug)
 	}
 
 	curdservice.Init()
-	token.InitTokenCache(ucconfig.DefaultConfig.Token.Key, ucconfig.DefaultConfig.Token.RedisAddr, ucconfig.DefaultConfig.Token.RedisName, ucconfig.DefaultConfig.Token.RedisPwd, ucconfig.DefaultConfig.Token.Expired)
-	constants.SetPlatformTenantID(ucconfig.DefaultConfig.PlatformTenantID)
-	constants.SetSuperAdminRoleID(ucconfig.DefaultConfig.SuperAdminRoleID)
-	constants.SetDefaultRoleID(ucconfig.DefaultConfig.DefaultRoleID)
-	constants.SetEnabelTenant(ucconfig.DefaultConfig.EnableTenant)
-	ucmodel.SetDefaultPwd(ucconfig.DefaultConfig.DefaultPwd)
+	token.InitTokenCache(pkgconfig.DefaultConfig.Token.Key, pkgconfig.DefaultConfig.Token.RedisAddr, pkgconfig.DefaultConfig.Token.RedisName, pkgconfig.DefaultConfig.Token.RedisPwd, pkgconfig.DefaultConfig.Token.Expired)
+	constants.SetPlatformTenantID(pkgconfig.DefaultConfig.PlatformTenantID)
+	constants.SetSuperAdminRoleID(pkgconfig.DefaultConfig.SuperAdminRoleID)
+	constants.SetDefaultRoleID(pkgconfig.DefaultConfig.DefaultRoleID)
+	constants.SetEnabelTenant(pkgconfig.DefaultConfig.EnableTenant)
+	ucmodel.SetDefaultPwd(pkgconfig.DefaultConfig.DefaultPwd)
 
 	gen.LoadCache()
 
