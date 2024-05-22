@@ -15,7 +15,7 @@ import (
 // AddMaterialSupplier godoc
 // @Summary 新增
 // @Description 新增
-// @Tags 物料托盘管理
+// @Tags 物料供应商管理
 // @Accept  json
 // @Produce  json
 // @Param authorization header string true "jwt token"
@@ -57,7 +57,7 @@ func AddMaterialSupplier(c *gin.Context) {
 // UpdateMaterialSupplier godoc
 // @Summary 更新
 // @Description 更新
-// @Tags 物料托盘管理
+// @Tags 物料供应商管理
 // @Accept  json
 // @Produce  json
 // @Param authorization header string true "jwt token"
@@ -96,7 +96,7 @@ func UpdateMaterialSupplier(c *gin.Context) {
 // QueryMaterialSupplier godoc
 // @Summary 分页查询
 // @Description 分页查询
-// @Tags 物料托盘管理
+// @Tags 物料供应商管理
 // @Accept  json
 // @Produce  octet-stream
 // @Param authorization header string true "jwt token"
@@ -127,7 +127,7 @@ func QueryMaterialSupplier(c *gin.Context) {
 // GetAllMaterialSupplier godoc
 // @Summary 查询所有
 // @Description 查询所有
-// @Tags 物料托盘管理
+// @Tags 物料供应商管理
 // @Accept  json
 // @Produce  json
 // @Param authorization header string true "jwt token"
@@ -151,7 +151,7 @@ func GetAllMaterialSupplier(c *gin.Context) {
 // GetMaterialSupplierDetail godoc
 // @Summary 查询明细
 // @Description 查询明细
-// @Tags 物料托盘管理
+// @Tags 物料供应商管理
 // @Accept  json
 // @Produce  json
 // @Param id query string true "ID"
@@ -183,7 +183,7 @@ func GetMaterialSupplierDetail(c *gin.Context) {
 // DeleteMaterialSupplier godoc
 // @Summary 删除
 // @Description 删除
-// @Tags 物料托盘管理
+// @Tags 物料供应商管理
 // @Accept  json
 // @Produce  json
 // @Param authorization header string true "jwt token"

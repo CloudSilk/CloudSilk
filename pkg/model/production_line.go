@@ -20,6 +20,8 @@ type ProductionLine struct {
 	ProductionStations                 []*ProductionStation                 `json:"productionStations" gorm:"constraint:OnDelete:CASCADE;"`                 //工站
 	ProductionCrossways                []*ProductionCrossway                `json:"productionCrossways" gorm:"constraint:OnDelete:CASCADE;"`                //产线路口
 	ProductionLineSupportableCategorys []*ProductionLineSupportableCategory `json:"productionLineSupportableCategorys" gorm:"constraint:OnDelete:CASCADE;"` //产线支持产品类别
+	ProductionProcesses                []*ProductionProcess                 `gorm:"constraint:OnDelete:CASCADE"`
+	ProcessStepParameters              []*ProcessStepParameter              `gorm:"constraint:OnDelete:CASCADE"`
 }
 
 type ProductionLineSupportableCategory struct {
@@ -103,6 +105,8 @@ func ProductionLineToPB(in *ProductionLine) *proto.ProductionLineInfo {
 		ProductionStations:                 ProductionStationsToPB(in.ProductionStations),
 		ProductionCrossways:                ProductionCrosswaysToPB(in.ProductionCrossways),
 		ProductionLineSupportableCategorys: ProductionLineSupportableCategorysToPB(in.ProductionLineSupportableCategorys),
+		ProductionProcesses:                ProductionProcesssToPB(in.ProductionProcesses),
+		ProcessStepParameters:              ProcessStepParametersToPB(in.ProcessStepParameters),
 	}
 	return m
 }

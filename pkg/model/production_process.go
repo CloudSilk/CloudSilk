@@ -23,6 +23,7 @@ type ProductionProcess struct {
 	ProductionLine                     *ProductionLine                      `gorm:"constraint:OnDelete:CASCADE"`                         //生产产线
 	ProductionProcessAvailableStations []*ProductionProcessAvailableStation `gorm:"constraint:OnDelete:CASCADE"`                         //支持工站
 	AttributeExpressions               []*AttributeExpression               `gorm:"polymorphic:Rule;polymorphicValue:ProductionProcess"` //特性表达式
+	ProductionProcessSteps             []*AvailableProcess                  `gorm:"constraint:OnDelete:CASCADE"`
 }
 
 type ProductionProcessAvailableStation struct {
@@ -101,6 +102,7 @@ func ProductionProcessToPB(in *ProductionProcess) *proto.ProductionProcessInfo {
 		AvailableStationIDs:                availableStationIDs,
 		ProductionProcessAvailableStations: ProductionProcessAvailableStationsToPB(in.ProductionProcessAvailableStations),
 		AttributeExpressions:               AttributeExpressionsToPB(in.AttributeExpressions),
+		ProductionProcessSteps:             AvailableProcesssToPB(in.ProductionProcessSteps),
 	}
 	return m
 }

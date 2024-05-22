@@ -5,9 +5,7 @@ option go_package = "./;proto";
 
 import "mom_common.proto";
 import "production_line.proto";
-import "production_process.proto";
 import "product_order.proto";
-import "production_process_step.proto";
 
 service ProductTestRecord{
     rpc Add(ProductTestRecordInfo)returns(CommonResponse){}

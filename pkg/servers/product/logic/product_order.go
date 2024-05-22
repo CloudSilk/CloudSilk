@@ -11,13 +11,19 @@ import (
 )
 
 func CreateProductOrder(m *model.ProductOrder) (string, error) {
-	// systemConfigKey := systemConfigKeys.PrefabricateProductOrderPrefix
-	// if m.OrderType == productOrderTypes.Routine {
-	// 	systemConfigKey = systemConfigKeys.RoutineProductOrderPrefix
+	// systemConfigKey := types.SystemConfigKeyPrefabricateProductOrderPrefix
+	// if m.OrderType == types.ProductOrderTypeRoutine {
+	// 	systemConfigKey = types.SystemConfigKeyRoutineProductOrderPrefix
 	// }
 
-	// model.DB.DB().Find(&model.SystemConfigs{}, "", "")
-	//
+	// var systemConfig *model.SystemConfig
+	// if err := model.DB.DB().Find(systemConfig, "key=?", systemConfigKey).Error; err != nil {
+	// 	return "", err
+	// }
+	// if systemConfig == nil {
+	// 	return "", fmt.Errorf("缺少系统配置项: %s", systemConfigKey)
+	// }
+
 	duplication, err := model.DB.CreateWithCheckDuplication(m, "receipt_note_no=?", m.ReceiptNoteNo)
 	if err != nil {
 		return "", err

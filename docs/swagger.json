@@ -1282,7 +1282,7 @@
                     "application/json"
                 ],
                 "tags": [
-                    "物料托盘管理"
+                    "物料类别管理"
                 ],
                 "summary": "新增",
                 "parameters": [
@@ -1323,7 +1323,7 @@
                     "application/json"
                 ],
                 "tags": [
-                    "物料托盘管理"
+                    "物料类别管理"
                 ],
                 "summary": "查询所有",
                 "parameters": [
@@ -1355,7 +1355,7 @@
                     "application/json"
                 ],
                 "tags": [
-                    "物料托盘管理"
+                    "物料类别管理"
                 ],
                 "summary": "删除",
                 "parameters": [
@@ -1396,7 +1396,7 @@
                     "application/json"
                 ],
                 "tags": [
-                    "物料托盘管理"
+                    "物料类别管理"
                 ],
                 "summary": "查询明细",
                 "parameters": [
@@ -1435,7 +1435,7 @@
                     "application/octet-stream"
                 ],
                 "tags": [
-                    "物料托盘管理"
+                    "物料类别管理"
                 ],
                 "summary": "分页查询",
                 "parameters": [
@@ -1497,7 +1497,7 @@
                     "application/json"
                 ],
                 "tags": [
-                    "物料托盘管理"
+                    "物料类别管理"
                 ],
                 "summary": "更新",
                 "parameters": [
@@ -1538,7 +1538,7 @@
                     "application/json"
                 ],
                 "tags": [
-                    "物料托盘管理"
+                    "物料信息管理"
                 ],
                 "summary": "新增",
                 "parameters": [
@@ -1579,7 +1579,7 @@
                     "application/json"
                 ],
                 "tags": [
-                    "物料托盘管理"
+                    "物料信息管理"
                 ],
                 "summary": "查询所有",
                 "parameters": [
@@ -1611,7 +1611,7 @@
                     "application/json"
                 ],
                 "tags": [
-                    "物料托盘管理"
+                    "物料信息管理"
                 ],
                 "summary": "删除",
                 "parameters": [
@@ -1652,7 +1652,7 @@
                     "application/json"
                 ],
                 "tags": [
-                    "物料托盘管理"
+                    "物料信息管理"
                 ],
                 "summary": "查询明细",
                 "parameters": [
@@ -1691,7 +1691,7 @@
                     "application/octet-stream"
                 ],
                 "tags": [
-                    "物料托盘管理"
+                    "物料信息管理"
                 ],
                 "summary": "分页查询",
                 "parameters": [
@@ -1753,7 +1753,7 @@
                     "application/json"
                 ],
                 "tags": [
-                    "物料托盘管理"
+                    "物料信息管理"
                 ],
                 "summary": "更新",
                 "parameters": [
@@ -1794,7 +1794,7 @@
                     "application/json"
                 ],
                 "tags": [
-                    "物料托盘管理"
+                    "物料供应商管理"
                 ],
                 "summary": "新增",
                 "parameters": [
@@ -1835,7 +1835,7 @@
                     "application/json"
                 ],
                 "tags": [
-                    "物料托盘管理"
+                    "物料供应商管理"
                 ],
                 "summary": "查询所有",
                 "parameters": [
@@ -1867,7 +1867,7 @@
                     "application/json"
                 ],
                 "tags": [
-                    "物料托盘管理"
+                    "物料供应商管理"
                 ],
                 "summary": "删除",
                 "parameters": [
@@ -1908,7 +1908,7 @@
                     "application/json"
                 ],
                 "tags": [
-                    "物料托盘管理"
+                    "物料供应商管理"
                 ],
                 "summary": "查询明细",
                 "parameters": [
@@ -1947,7 +1947,7 @@
                     "application/octet-stream"
                 ],
                 "tags": [
-                    "物料托盘管理"
+                    "物料供应商管理"
                 ],
                 "summary": "分页查询",
                 "parameters": [
@@ -2009,7 +2009,7 @@
                     "application/json"
                 ],
                 "tags": [
-                    "物料托盘管理"
+                    "物料供应商管理"
                 ],
                 "summary": "更新",
                 "parameters": [
@@ -12388,6 +12388,45 @@
                 }
             }
         },
+        "/api/mom/production/processstepparameter/productionlineid": {
+            "get": {
+                "description": "查询产线下所有工步参数",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "工步参数管理"
+                ],
+                "summary": "查询产线下所有工步参数",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "生产产线ID",
+                        "name": "productionLineID",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "jwt token",
+                        "name": "authorization",
+                        "in": "header",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/proto.GetProductionLineDetailResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/api/mom/production/processstepparameter/query": {
             "get": {
                 "description": "分页查询",
@@ -20855,6 +20894,9 @@
                 "productionProcessID": {
                     "type": "string"
                 },
+                "productionProcessStep": {
+                    "$ref": "#/definitions/proto.ProductionProcessStepInfo"
+                },
                 "productionProcessStepID": {
                     "type": "string"
                 }
@@ -26861,6 +26903,12 @@
                     "description": "物料管控",
                     "type": "boolean"
                 },
+                "processStepParameters": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/proto.ProcessStepParameterInfo"
+                    }
+                },
                 "productModelID": {
                     "description": "当前型号ID",
                     "type": "string"
@@ -26881,6 +26929,12 @@
                     "type": "array",
                     "items": {
                         "$ref": "#/definitions/proto.ProductionLineSupportableCategoryInfo"
+                    }
+                },
+                "productionProcesses": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/proto.ProductionProcessInfo"
                     }
                 },
                 "productionStations": {
@@ -26933,10 +26987,17 @@
             "type": "object",
             "properties": {
                 "attributeExpressions": {
-                    "description": "支援工序\nrepeated ProductionProcessInfo productionProcesses=20;",
+                    "description": "特性表达式",
                     "type": "array",
                     "items": {
                         "$ref": "#/definitions/proto.AttributeExpressionInfo"
+                    }
+                },
+                "availableStationIDs": {
+                    "description": "支持工站",
+                    "type": "array",
+                    "items": {
+                        "type": "string"
                     }
                 },
                 "code": {
@@ -26987,10 +27048,15 @@
                     "type": "string"
                 },
                 "productionProcessAvailableStations": {
-                    "description": "支持工站",
                     "type": "array",
                     "items": {
                         "$ref": "#/definitions/proto.ProductionProcessAvailableStationInfo"
+                    }
+                },
+                "productionProcessSteps": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/proto.AvailableProcessInfo"
                     }
                 },
                 "remark": {

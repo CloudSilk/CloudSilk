@@ -4,9 +4,9 @@ import (
 	"context"
 	"net/http"
 
-	"github.com/CloudSilk/CloudSilk/pkg/servers/production/logic"
 	"github.com/CloudSilk/CloudSilk/pkg/model"
 	"github.com/CloudSilk/CloudSilk/pkg/proto"
+	"github.com/CloudSilk/CloudSilk/pkg/servers/production/logic"
 	"github.com/CloudSilk/pkg/utils/log"
 	"github.com/CloudSilk/pkg/utils/middleware"
 	"github.com/gin-gonic/gin"
@@ -219,6 +219,38 @@ func DeleteProcessStepParameter(c *gin.Context) {
 	c.JSON(http.StatusOK, resp)
 }
 
+// GetProcessStepParameterByProductionLineID godoc
+// @Summary 查询产线下所有工步参数
+// @Description 查询产线下所有工步参数
+// @Tags 工步参数管理
+// @Accept  json
+// @Produce  json
+// @Param productionLineID query string true "生产产线ID"
+// @Param authorization header string true "jwt token"
+// @Success 200 {object} proto.GetProductionLineDetailResponse
+// @Router /api/mom/production/processstepparameter/productionlineid [get]
+func GetProcessStepParameterByProductionLineID(c *gin.Context) {
+	resp := &proto.GetProductionLineDetailResponse{
+		Code: proto.Code_Success,
+	}
+	id := c.Query("productionLineID")
+	if id == "" {
+		resp.Code = proto.Code_BadRequest
+		c.JSON(http.StatusOK, resp)
+		return
+	}
+	var err error
+
+	data, err := logic.GetProcessStepParameterByProductionLineID(id)
+	if err != nil {
+		resp.Code = proto.Code_InternalServerError
+		resp.Message = err.Error()
+	} else {
+		resp.Data = model.ProductionLineToPB(data)
+	}
+	c.JSON(http.StatusOK, resp)
+}
+
 func RegisterProcessStepParameterRouter(r *gin.Engine) {
 	g := r.Group("/api/mom/production/processstepparameter")
 
@@ -228,4 +260,5 @@ func RegisterProcessStepParameterRouter(r *gin.Engine) {
 	g.DELETE("delete", DeleteProcessStepParameter)
 	g.GET("all", GetAllProcessStepParameter)
 	g.GET("detail", GetProcessStepParameterDetail)
+	g.GET("productionlineid", GetProcessStepParameterByProductionLineID)
 }

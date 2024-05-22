@@ -24,9 +24,10 @@ type ProductionProcessStep struct {
 // 可使用的工序
 type AvailableProcess struct {
 	ModelID
-	ProductionProcessStepID string             `json:"productionProcessStepID" gorm:"index;comment:生产工步ID"`
-	ProductionProcessID     string             `json:"productionProcessID" gorm:"comment:生产工序ID"`
-	ProductionProcess       *ProductionProcess `json:"productionProcess" gorm:"constraint:OnDelete:CASCADE"` //生产工序
+	ProductionProcessStepID string                 `json:"productionProcessStepID" gorm:"index;comment:生产工步ID"`
+	ProductionProcessStep   *ProductionProcessStep ``
+	ProductionProcessID     string                 `json:"productionProcessID" gorm:"comment:生产工序ID"`
+	ProductionProcess       *ProductionProcess     `json:"productionProcess" gorm:"constraint:OnDelete:CASCADE"` //生产工序
 }
 
 func PBToProductionProcessSteps(in []*proto.ProductionProcessStepInfo) []*ProductionProcessStep {
@@ -129,6 +130,7 @@ func AvailableProcessToPB(in *AvailableProcess) *proto.AvailableProcessInfo {
 	m := &proto.AvailableProcessInfo{
 		Id:                      in.ID,
 		ProductionProcessStepID: in.ProductionProcessStepID,
+		ProductionProcessStep:   ProductionProcessStepToPB(in.ProductionProcessStep),
 		ProductionProcessID:     in.ProductionProcessID,
 		ProductionProcess:       ProductionProcessToPB(in.ProductionProcess),
 	}

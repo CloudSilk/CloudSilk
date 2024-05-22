@@ -5,7 +5,7 @@ option go_package = "./;proto";
 
 import "mom_common.proto";
 import "product_model.proto";
-import "production_process.proto";
+import "production_line.proto";
 
 message PersonnelQualificationTypeInfo {
 	//ID 
