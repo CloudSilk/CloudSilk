@@ -96,5 +96,25 @@ func GetAllProcessStepParameterByProductionLineID(productionLineID string) (*mod
 		Preload("ProcessStepParameters").
 		Preload("ProcessStepParameters.ProcessStepParameterValues").
 		Where("id = ?", productionLineID).First(m).Error
+
+	for _, processStepParameter := range m.ProcessStepParameters {
+		for _, processStepParameterValue := range processStepParameter.ProcessStepParameterValues {
+			for _, process := range m.ProductionProcesses {
+				if process.ID == processStepParameterValue.ProductionProcessID {
+					for _, processStep := range process.ProductionProcessSteps {
+						if processStep.ProductionProcessStepID == processStepParameterValue.ProductionProcessStepID {
+							for _, processStepTypeParameter := range processStep.ProductionProcessStep.ProcessStepType.ProcessStepTypeParameters {
+								if processStepTypeParameter.ID == processStepParameterValue.ProcessStepTypeParameterID {
+									processStepTypeParameter.StandardValue = processStepParameterValue.StandardValue
+									processStepTypeParameter.MinimumValue = processStepParameterValue.MinimumValue
+									processStepTypeParameter.MaximumValue = processStepParameterValue.MaximumValue
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+	}
 	return m, err
 }

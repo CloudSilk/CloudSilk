@@ -20,10 +20,14 @@ message ProcessStepTypeParameterInfo {
     string description=4;
     //默认值
     string defaultValue=9;
+    //标准值
+    string standardValue=14;
+    //最大值
     string maximumValue=10;
+    //最小值
     string minimumValue=11;
+    //单位
     string unit=12;
-    string groupCode=13;
 	//是否必填 
  	bool required=5;
 	//是否上下限 

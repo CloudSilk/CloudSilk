@@ -24464,17 +24464,16 @@ const docTemplate = `{
                     "description": "描述",
                     "type": "string"
                 },
-                "groupCode": {
-                    "type": "string"
-                },
                 "id": {
                     "description": "ID",
                     "type": "string"
                 },
                 "maximumValue": {
+                    "description": "最大值",
                     "type": "string"
                 },
                 "minimumValue": {
+                    "description": "最小值",
                     "type": "string"
                 },
                 "parameterType": {
@@ -24493,7 +24492,12 @@ const docTemplate = `{
                     "description": "是否必填",
                     "type": "boolean"
                 },
+                "standardValue": {
+                    "description": "标准值",
+                    "type": "string"
+                },
                 "unit": {
+                    "description": "单位",
                     "type": "string"
                 }
             }

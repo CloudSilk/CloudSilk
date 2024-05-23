@@ -106,7 +106,7 @@ func ProductionLineToPB(in *ProductionLine) *proto.ProductionLineInfo {
 		ProductionCrossways:                ProductionCrosswaysToPB(in.ProductionCrossways),
 		ProductionLineSupportableCategorys: ProductionLineSupportableCategorysToPB(in.ProductionLineSupportableCategorys),
 		ProductionProcesses:                ProductionProcesssToPB(in.ProductionProcesses),
-		ProcessStepParameters:              ProcessStepParametersToPB(in.ProcessStepParameters),
+		// ProcessStepParameters:              ProcessStepParametersToPB(in.ProcessStepParameters),
 	}
 	return m
 }
