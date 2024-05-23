@@ -219,7 +219,7 @@ func DeleteProcessStepParameter(c *gin.Context) {
 	c.JSON(http.StatusOK, resp)
 }
 
-// GetProcessStepParameterByProductionLineID godoc
+// GetAllProcessStepParameterByProductionLineID godoc
 // @Summary 查询产线下所有工步参数
 // @Description 查询产线下所有工步参数
 // @Tags 工步参数管理
@@ -229,7 +229,7 @@ func DeleteProcessStepParameter(c *gin.Context) {
 // @Param authorization header string true "jwt token"
 // @Success 200 {object} proto.GetProductionLineDetailResponse
 // @Router /api/mom/production/processstepparameter/productionlineid [get]
-func GetProcessStepParameterByProductionLineID(c *gin.Context) {
+func GetAllProcessStepParameterByProductionLineID(c *gin.Context) {
 	resp := &proto.GetProductionLineDetailResponse{
 		Code: proto.Code_Success,
 	}
@@ -241,7 +241,7 @@ func GetProcessStepParameterByProductionLineID(c *gin.Context) {
 	}
 	var err error
 
-	data, err := logic.GetProcessStepParameterByProductionLineID(id)
+	data, err := logic.GetAllProcessStepParameterByProductionLineID(id)
 	if err != nil {
 		resp.Code = proto.Code_InternalServerError
 		resp.Message = err.Error()
@@ -260,5 +260,5 @@ func RegisterProcessStepParameterRouter(r *gin.Engine) {
 	g.DELETE("delete", DeleteProcessStepParameter)
 	g.GET("all", GetAllProcessStepParameter)
 	g.GET("detail", GetProcessStepParameterDetail)
-	g.GET("productionlineid", GetProcessStepParameterByProductionLineID)
+	g.GET("all/productionlineid", GetAllProcessStepParameterByProductionLineID)
 }

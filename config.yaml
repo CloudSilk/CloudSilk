@@ -6,8 +6,8 @@ dbConfigs:
     fileName: "./CloudSilk.s3db"
     dbType: "sqlite"
   CloudSilk:
-    fileName: "./CloudSilk.s3db"
-    dbType: "sqlite"
+    connectionStr: "root:password@(127.0.0.1:3306)/mom?charset=utf8mb4&parseTime=True&loc=Local"
+    dbType: "mysql"
   all:
     fileName: "./CloudSilk.s3db"
     dbType: "sqlite"

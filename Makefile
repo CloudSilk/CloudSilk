@@ -1,14 +1,12 @@
-
-
 IMAGE=registry.cn-shanghai.aliyuncs.com/antshome/CloudSilk:1.0.0
 run:
 	MOM_DISABLE_AUTH=true DUBBO_GO_CONFIG_PATH="./dubbogo.yaml" go run main.go 
 run-sqlite:
 	MOM_DISABLE_AUTH=true DUBBO_GO_CONFIG_PATH="./dubbogo.yaml" go run main.go --ui ./web/dist --db_type="sqlite" 
 run-all:
-	MOM_DISABLE_AUTH=true DUBBO_GO_CONFIG_PATH="./dubbogo.yaml" SERVICE_MODE="ALL" go run main.go --ui ./web/dist --db_type="sqlite" --service_mode="ALL" --port=48089 --single_db=false
+	MOM_DISABLE_AUTH=true DUBBO_GO_CONFIG_PATH="./dubbogo.yaml" SERVICE_MODE="ALL" go run main.go --ui ./web/dist --service_mode="ALL" --port=48089 --single_db=false
 run-all-single-db:
-	MOM_DISABLE_AUTH=true DUBBO_GO_CONFIG_PATH="./dubbogo.yaml" SERVICE_MODE="ALL" go run main.go --ui ./web/dist --db_type="sqlite" --service_mode="ALL" --port=48089 --single_db=true
+	MOM_DISABLE_AUTH=true DUBBO_GO_CONFIG_PATH="./dubbogo.yaml" SERVICE_MODE="ALL" go run main.go --ui ./web/dist --service_mode="ALL" --port=48089 --single_db=true
 build-image:
 	CGO_ENABLED=0  GOOS=linux  GOARCH=amd64 go build -o CloudSilk main.go
 	sudo docker build -f local.Dockerfile -t ${IMAGE} .

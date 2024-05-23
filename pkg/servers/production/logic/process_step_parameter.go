@@ -85,7 +85,7 @@ func DeleteProcessStepParameter(id string) (err error) {
 	return model.DB.DB().Delete(&model.ProcessStepParameter{}, "id=?", id).Error
 }
 
-func GetProcessStepParameterByProductionLineID(productionLineID string) (*model.ProductionLine, error) {
+func GetAllProcessStepParameterByProductionLineID(productionLineID string) (*model.ProductionLine, error) {
 	m := &model.ProductionLine{}
 	err := model.DB.DB().
 		Preload("ProductionProcesses").
@@ -94,7 +94,7 @@ func GetProcessStepParameterByProductionLineID(productionLineID string) (*model.
 		Preload("ProductionProcesses.ProductionProcessSteps.ProductionProcessStep.ProcessStepType").
 		Preload("ProductionProcesses.ProductionProcessSteps.ProductionProcessStep.ProcessStepType.ProcessStepTypeParameters").
 		Preload("ProcessStepParameters").
-		Preload("ProcessStepParameters.ProcessStepParameterValue").
-		Preload(clause.Associations).Where("id = ?", productionLineID).First(m).Error
+		Preload("ProcessStepParameters.ProcessStepParameterValues").
+		Where("id = ?", productionLineID).First(m).Error
 	return m, err
 }
