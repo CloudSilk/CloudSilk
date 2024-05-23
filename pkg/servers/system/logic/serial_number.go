@@ -1,9 +1,13 @@
 package logic
 
 import (
+	"fmt"
+	"math"
+
 	"github.com/CloudSilk/CloudSilk/pkg/model"
 	"github.com/CloudSilk/CloudSilk/pkg/proto"
 	"github.com/CloudSilk/pkg/utils"
+	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
 )
 
@@ -59,4 +63,31 @@ func GetSerialNumberByIDs(ids []string) ([]*model.SerialNumber, error) {
 
 func DeleteSerialNumber(id string) (err error) {
 	return model.DB.DB().Delete(&model.SerialNumber{}, "id=?", id).Error
+}
+
+func GenerateSerialNumber(name, description, prefix string, length, increment int32) (string, error) {
+	serialNumber := &model.SerialNumber{}
+	if err := model.DB.DB().Where("name=?", name).First(serialNumber).Error; err == gorm.ErrRecordNotFound {
+		serialNumber.Name = name
+		serialNumber.Description = name
+		serialNumber.Seed = 0
+		serialNumber.Increment = increment
+		serialNumber.Prefix = prefix
+		serialNumber.Length = length
+	} else if err != nil {
+		return "", err
+	}
+
+	serialNumber.Seed += serialNumber.Increment
+	seed := serialNumber.Seed
+	maximum := math.Pow10(int(serialNumber.Length))
+	if float64(seed) > maximum {
+		return "", fmt.Errorf("序列超限错误，种子(%d)超出最大限定值(%f)", seed, maximum)
+	}
+
+	if err := model.DB.DB().Save(serialNumber).Error; err != nil {
+		return "", err
+	}
+
+	return fmt.Sprintf("%s%0*d", serialNumber.Prefix, serialNumber.Length, serialNumber.Seed), nil
 }

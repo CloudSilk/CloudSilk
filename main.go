@@ -86,9 +86,7 @@ func StartAll(webPath string, port int, singleDB bool) {
 	gen.LoadCache()
 
 	r := gin.Default()
-	if os.Getenv("MOM_DISABLE_AUTH") != "true" {
-		r.Use(ucmiddleware.AuthRequired)
-	}
+	r.Use(ucmiddleware.AuthRequired)
 	r.Use(utils.Cors())
 
 	uchttp.RegisterAuthRouter(r)

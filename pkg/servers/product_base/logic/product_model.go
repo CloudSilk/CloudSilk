@@ -37,7 +37,7 @@ func CreateProductModel(m *model.ProductModel) (string, error) {
 	}
 	m.ProductModelAttributeValues = productModelAttributeValues
 
-	err = model.DB.DB().Model(m).Create(m).Error
+	err = model.DB.DB().Create(m).Error
 
 	return m.ID, err
 }

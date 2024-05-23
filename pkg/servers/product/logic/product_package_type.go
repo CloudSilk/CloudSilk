@@ -12,26 +12,14 @@ import (
 )
 
 func CreateProductPackageType(m *model.ProductPackageType) (string, error) {
-	var count int64
-	err := model.DB.DB().Model(m).Where(" code =? ", m.Code).Count(&count).Error
+	duplication, err := model.DB.CreateWithCheckDuplication(m, "code =? ", m.Code)
 	if err != nil {
 		return "", err
 	}
-
-	if count > 0 {
+	if duplication {
 		return "", errors.New("存在相同包装类型")
 	}
-
-	// omits := []string{}
-	// if m.LabelTypeID == "" {
-	// 	omits = append(omits, "LabelTypeID")
-	// }
-	// if m.SystemEventID == "" {
-	// 	omits = append(omits, "SystemEventID")
-	// }
-	err = model.DB.DB().Model(m).Create(m).Error
-
-	return m.ID, err
+	return m.ID, nil
 }
 
 func UpdateProductPackageType(m *model.ProductPackageType) error {

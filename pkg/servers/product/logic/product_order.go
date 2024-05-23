@@ -2,36 +2,94 @@ package logic
 
 import (
 	"errors"
+	"fmt"
+	"time"
 
 	"github.com/CloudSilk/CloudSilk/pkg/model"
 	"github.com/CloudSilk/CloudSilk/pkg/proto"
+	system "github.com/CloudSilk/CloudSilk/pkg/servers/system/logic"
+	"github.com/CloudSilk/CloudSilk/pkg/types"
 	"github.com/CloudSilk/pkg/utils"
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
 )
 
 func CreateProductOrder(m *model.ProductOrder) (string, error) {
-	// systemConfigKey := types.SystemConfigKeyPrefabricateProductOrderPrefix
-	// if m.OrderType == types.ProductOrderTypeRoutine {
-	// 	systemConfigKey = types.SystemConfigKeyRoutineProductOrderPrefix
-	// }
+	var count int64
+	if err := model.DB.DB().Model(m).Where("receipt_note_no=?", m.ReceiptNoteNo).Count(&count).Error; err != nil {
+		return "", err
+	}
+	if count > 0 {
+		return "", errors.New("存在相同入库单号")
+	}
 
-	// var systemConfig *model.SystemConfig
-	// if err := model.DB.DB().Find(systemConfig, "key=?", systemConfigKey).Error; err != nil {
-	// 	return "", err
-	// }
-	// if systemConfig == nil {
-	// 	return "", fmt.Errorf("缺少系统配置项: %s", systemConfigKey)
-	// }
+	systemConfigKey := types.SystemConfigKeyPrefabricateProductOrderPrefix
+	if m.OrderType == types.ProductOrderTypeRoutine {
+		systemConfigKey = types.SystemConfigKeyRoutineProductOrderPrefix
+	}
 
-	duplication, err := model.DB.CreateWithCheckDuplication(m, "receipt_note_no=?", m.ReceiptNoteNo)
+	var systemConfig model.SystemParamsConfig
+	if err := model.DB.DB().First(&systemConfig, "key=?", systemConfigKey).Error; err == gorm.ErrRecordNotFound {
+		return "", fmt.Errorf("缺少系统配置项: %s", systemConfigKey)
+	} else if err != nil {
+		return "", err
+	}
+
+	dateStamp := time.Now().Format("20060102")
+	prefix := fmt.Sprintf("%s%s", systemConfig.Value, dateStamp)
+	productOrderNo, err := system.GenerateSerialNumber(prefix, dateStamp, prefix, 6, 1)
 	if err != nil {
 		return "", err
 	}
-	if duplication {
-		return "", errors.New("存在相同产品工单")
+	m.ProductOrderNo = productOrderNo
+
+	//产品工单BOM
+	for i, v := range m.ProductOrderBoms {
+		v.ItemNo = fmt.Sprintf("%04d", i)
+		v.RequireQTY = float32(m.OrderQTY) * v.PieceQTY
+		v.CreateUserID = m.CreateUserID
 	}
-	return m.ID, nil
+
+	//产品工单特性
+	if len(m.ProductOrderAttributes) > 0 {
+		var productModel model.ProductModel
+		if err := model.DB.DB().First(&productModel, "id=?", m.ProductModelID).Error; err != nil {
+			return "", err
+		}
+		for _, v := range m.ProductOrderAttributes {
+			var productCategoryAttribute model.ProductCategoryAttribute
+			if err := model.DB.DB().Preload("ProductAttribute").First(&productCategoryAttribute, "product_category_id=? AND product_attribute_id=?", productModel.ProductCategoryID, v.ProductAttributeID).Error; err != nil {
+				return "", err
+			}
+			if !productCategoryAttribute.AllowNullOrBlank && v.Value == "" {
+				return "", fmt.Errorf("产品特性:%s的值不允许为空", productCategoryAttribute.ProductAttribute.Description)
+			}
+
+			v.CreateUserID = m.CreateUserID
+		}
+	}
+
+	//产品工单标签
+	for _, v := range m.ProductOrderLabels {
+		currentState := types.ProductOrderLabelStateWaitCheck
+		if !v.DoubleCheck {
+			currentState = types.ProductOrderLabelStateChecked
+		}
+		v.CurrentState = currentState
+		v.CreateUserID = m.CreateUserID
+	}
+
+	//产品工单附件
+	for _, v := range m.ProductOrderAttachments {
+		v.CreateUserID = m.CreateUserID
+	}
+
+	m.CurrentState = types.ProductOrderStateReceipted
+	m.OrderTime = utils.ParseSqlNullTime(time.Now().Format("2006-01-02 15:04:05"))
+
+	err = model.DB.DB().Create(m).Error
+
+	return m.ID, err
 }
 
 func UpdateProductOrder(m *model.ProductOrder) error {
