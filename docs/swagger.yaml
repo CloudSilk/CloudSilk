@@ -14511,6 +14511,32 @@ paths:
       summary: 查询所有
       tags:
       - 工步参数管理
+  /api/mom/production/processstepparameter/all/productionlineid:
+    get:
+      consumes:
+      - application/json
+      description: 查询产线下所有工步参数
+      parameters:
+      - description: 生产产线ID
+        in: query
+        name: productionLineID
+        required: true
+        type: string
+      - description: jwt token
+        in: header
+        name: authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/proto.GetProductionLineDetailResponse'
+      summary: 查询产线下所有工步参数
+      tags:
+      - 工步参数管理
   /api/mom/production/processstepparameter/delete:
     delete:
       consumes:
@@ -14562,32 +14588,6 @@ paths:
           schema:
             $ref: '#/definitions/proto.GetProcessStepParameterDetailResponse'
       summary: 查询明细
-      tags:
-      - 工步参数管理
-  /api/mom/production/processstepparameter/productionlineid:
-    get:
-      consumes:
-      - application/json
-      description: 查询产线下所有工步参数
-      parameters:
-      - description: 生产产线ID
-        in: query
-        name: productionLineID
-        required: true
-        type: string
-      - description: jwt token
-        in: header
-        name: authorization
-        required: true
-        type: string
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/proto.GetProductionLineDetailResponse'
-      summary: 查询产线下所有工步参数
       tags:
       - 工步参数管理
   /api/mom/production/processstepparameter/query:

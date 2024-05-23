@@ -12308,6 +12308,45 @@
                 }
             }
         },
+        "/api/mom/production/processstepparameter/all/productionlineid": {
+            "get": {
+                "description": "查询产线下所有工步参数",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "工步参数管理"
+                ],
+                "summary": "查询产线下所有工步参数",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "生产产线ID",
+                        "name": "productionLineID",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "jwt token",
+                        "name": "authorization",
+                        "in": "header",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/proto.GetProductionLineDetailResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/api/mom/production/processstepparameter/delete": {
             "delete": {
                 "description": "删除",
@@ -12383,45 +12422,6 @@
                         "description": "OK",
                         "schema": {
                             "$ref": "#/definitions/proto.GetProcessStepParameterDetailResponse"
-                        }
-                    }
-                }
-            }
-        },
-        "/api/mom/production/processstepparameter/productionlineid": {
-            "get": {
-                "description": "查询产线下所有工步参数",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "工步参数管理"
-                ],
-                "summary": "查询产线下所有工步参数",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "生产产线ID",
-                        "name": "productionLineID",
-                        "in": "query",
-                        "required": true
-                    },
-                    {
-                        "type": "string",
-                        "description": "jwt token",
-                        "name": "authorization",
-                        "in": "header",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/proto.GetProductionLineDetailResponse"
                         }
                     }
                 }

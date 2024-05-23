@@ -228,7 +228,7 @@ func DeleteProcessStepParameter(c *gin.Context) {
 // @Param productionLineID query string true "生产产线ID"
 // @Param authorization header string true "jwt token"
 // @Success 200 {object} proto.GetProductionLineDetailResponse
-// @Router /api/mom/production/processstepparameter/productionlineid [get]
+// @Router /api/mom/production/processstepparameter/all/productionlineid [get]
 func GetAllProcessStepParameterByProductionLineID(c *gin.Context) {
 	resp := &proto.GetProductionLineDetailResponse{
 		Code: proto.Code_Success,
