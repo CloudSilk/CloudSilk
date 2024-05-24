@@ -26,7 +26,7 @@ func QueryExceptionTrace(req *proto.QueryExceptionTraceRequest, resp *proto.Quer
 		db = db.Where("`time_reported` BETWEEN ? AND ?", req.TimeReported0, req.TimeReported1)
 	}
 
-	orderStr, err := utils.GenerateOrderString(req.SortConfig, "id")
+	orderStr, err := utils.GenerateOrderString(req.SortConfig, "created_at desc")
 	if err != nil {
 		resp.Code = proto.Code_BadRequest
 		resp.Message = err.Error()

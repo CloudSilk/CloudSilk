@@ -26,7 +26,7 @@ func QueryProductionStationStartup(req *proto.QueryProductionStationStartupReque
 		db = db.Where("`startup_time` BETWEEN ? and ?", req.StartupTime0, req.StartupTime1)
 	}
 
-	orderStr, err := utils.GenerateOrderString(req.SortConfig, "id")
+	orderStr, err := utils.GenerateOrderString(req.SortConfig, "created_at desc")
 	if err != nil {
 		resp.Code = proto.Code_BadRequest
 		resp.Message = err.Error()

@@ -38,7 +38,7 @@ func QueryProductCategory(req *proto.QueryProductCategoryRequest, resp *proto.Qu
 		db = db.Where("`product_brand_id` = ?", req.ProductBrandID)
 	}
 
-	orderStr, err := utils.GenerateOrderString(req.SortConfig, "id")
+	orderStr, err := utils.GenerateOrderString(req.SortConfig, "created_at desc")
 	if err != nil {
 		resp.Code = proto.Code_BadRequest
 		resp.Message = err.Error()

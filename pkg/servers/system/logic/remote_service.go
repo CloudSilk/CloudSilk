@@ -22,7 +22,7 @@ func QueryRemoteService(req *proto.QueryRemoteServiceRequest, resp *proto.QueryR
 		db.Where("`name` LIKE ? OR `address` LIKE ?", "%s"+req.Name+"%", "%s"+req.Name+"%")
 	}
 
-	orderStr, err := utils.GenerateOrderString(req.SortConfig, "id")
+	orderStr, err := utils.GenerateOrderString(req.SortConfig, "created_at desc")
 	if err != nil {
 		resp.Code = proto.Code_BadRequest
 		resp.Message = err.Error()

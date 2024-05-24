@@ -19,7 +19,7 @@ func UpdatePersonnelQualificationType(m *model.PersonnelQualificationType) error
 func QueryPersonnelQualificationType(req *proto.QueryPersonnelQualificationTypeRequest, resp *proto.QueryPersonnelQualificationTypeResponse, preload bool) {
 	db := model.DB.DB().Model(&model.PersonnelQualificationType{})
 
-	orderStr, err := utils.GenerateOrderString(req.SortConfig, "id")
+	orderStr, err := utils.GenerateOrderString(req.SortConfig, "created_at desc")
 	if err != nil {
 		resp.Code = proto.Code_BadRequest
 		resp.Message = err.Error()

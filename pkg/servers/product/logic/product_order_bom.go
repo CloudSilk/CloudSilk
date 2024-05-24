@@ -26,7 +26,7 @@ func QueryProductOrderBom(req *proto.QueryProductOrderBomRequest, resp *proto.Qu
 		db = db.Where("`material_no` LIKE ? OR `material_description` LIKE ?", "%"+req.MaterialNo+"%", "%"+req.MaterialNo+"%")
 	}
 
-	orderStr, err := utils.GenerateOrderString(req.SortConfig, "id")
+	orderStr, err := utils.GenerateOrderString(req.SortConfig, "created_at desc")
 	if err != nil {
 		resp.Code = proto.Code_BadRequest
 		resp.Message = err.Error()

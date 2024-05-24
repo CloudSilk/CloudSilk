@@ -30,7 +30,7 @@ func UpdateProductPackageStackRule(m *model.ProductPackageStackRule) error {
 func QueryProductPackageStackRule(req *proto.QueryProductPackageStackRuleRequest, resp *proto.QueryProductPackageStackRuleResponse, preload bool) {
 	db := model.DB.DB().Model(&model.ProductPackageStackRule{})
 
-	orderStr, err := utils.GenerateOrderString(req.SortConfig, "id")
+	orderStr, err := utils.GenerateOrderString(req.SortConfig, "created_at desc")
 	if err != nil {
 		resp.Code = proto.Code_BadRequest
 		resp.Message = err.Error()

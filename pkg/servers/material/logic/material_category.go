@@ -19,7 +19,7 @@ func UpdateMaterialCategory(m *model.MaterialCategory) error {
 func QueryMaterialCategory(req *proto.QueryMaterialCategoryRequest, resp *proto.QueryMaterialCategoryResponse, preload bool) {
 	db := model.DB.DB().Model(&model.MaterialCategory{})
 
-	orderStr, err := utils.GenerateOrderString(req.SortConfig, "id")
+	orderStr, err := utils.GenerateOrderString(req.SortConfig, "created_at desc")
 	if err != nil {
 		resp.Code = proto.Code_BadRequest
 		resp.Message = err.Error()

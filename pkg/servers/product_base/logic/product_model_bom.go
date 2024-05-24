@@ -50,7 +50,7 @@ func QueryProductModelBom(req *proto.QueryProductModelBomRequest, resp *proto.Qu
 			Where("product_models.product_category_id = ?", req.ProductCategoryID)
 	}
 
-	orderStr, err := utils.GenerateOrderString(req.SortConfig, "id")
+	orderStr, err := utils.GenerateOrderString(req.SortConfig, "created_at desc")
 	if err != nil {
 		resp.Code = proto.Code_BadRequest
 		resp.Message = err.Error()

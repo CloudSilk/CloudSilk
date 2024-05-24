@@ -3,6 +3,7 @@ package logic
 import (
 	"errors"
 	"fmt"
+	"strings"
 	"time"
 
 	"github.com/CloudSilk/CloudSilk/pkg/model"
@@ -140,7 +141,7 @@ func QueryProductOrder(req *proto.QueryProductOrderRequest, resp *proto.QueryPro
 		db = db.Where("`create_time` BETWEEN ? and ?", req.CreateTime0, req.CreateTime1)
 	}
 
-	orderStr, err := utils.GenerateOrderString(req.SortConfig, "id")
+	orderStr, err := utils.GenerateOrderString(req.SortConfig, "created_at desc")
 	if err != nil {
 		resp.Code = proto.Code_BadRequest
 		resp.Message = err.Error()
@@ -194,5 +195,44 @@ func GetProductOrderByIDs(ids []string) ([]*model.ProductOrder, error) {
 }
 
 func DeleteProductOrder(id string) (err error) {
+	var currentState string
+	if err := model.DB.DB().Model(&model.ProductOrder{}).Where("id=?", id).Select("current_state").Scan(&currentState).Error; err != nil {
+		return err
+	}
+
+	states := []string{types.ProductOrderStateCancelled, types.ProductOrderStateUploaded, types.ProductOrderStateReceipted}
+	for _, v := range states {
+		if v == currentState {
+			return fmt.Errorf("只有工单状态为已上传、已取消时，才可以删除。如需删除已发放的工单，可以尝试撤回发放后删除；如需删除生产中的工单，可以尝试取消生产后删除。")
+		}
+	}
+
 	return model.DB.DB().Delete(&model.ProductOrder{}, "id=?", id).Error
+}
+
+func ReleaseProductOrder(ids []string) (err error) {
+	var productOrders []*model.ProductOrder
+	if err := model.DB.DB().Find(&productOrders, "id in (?)", ids).Error; err != nil {
+		return err
+	}
+
+	productOrderNoArray := []string{}
+	for _, v := range productOrders {
+		if v.CurrentState == types.ProductOrderStateDispatched {
+			productOrderNoArray = append(productOrderNoArray, v.ProductOrderNo)
+		}
+	}
+	if len(productOrderNoArray) != 0 {
+		return fmt.Errorf("下列工单的状态错误，只能发放状态为%s的工单。%s", types.ProductOrderStateDispatched, strings.Join(productOrderNoArray, ","))
+	}
+
+	return model.DB.DB().Transaction(func(tx *gorm.DB) error {
+		if err := tx.Model(&model.ProductOrder{}).Where("id in (?)", ids).Update("current_state", types.ProductStateReleased).Error; err != nil {
+			return err
+		}
+		if err := tx.Model(&model.ProductInfo{}).Where("product_order_id in (?)", ids).Update("current_state", types.ProductStateReleased).Error; err != nil {
+			return err
+		}
+		return nil
+	})
 }

@@ -19,7 +19,7 @@ func UpdateCodingTemplate(m *model.CodingTemplate) error {
 func QueryCodingTemplate(req *apipb.QueryCodingTemplateRequest, resp *apipb.QueryCodingTemplateResponse, preload bool) {
 	db := model.DB.DB().Model(&model.CodingTemplate{})
 
-	orderStr, err := utils.GenerateOrderString(req.SortConfig, "id")
+	orderStr, err := utils.GenerateOrderString(req.SortConfig, "created_at desc")
 	if err != nil {
 		resp.Code = apipb.Code_BadRequest
 		resp.Message = err.Error()

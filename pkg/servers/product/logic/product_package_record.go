@@ -37,7 +37,7 @@ func QueryProductPackageRecord(req *proto.QueryProductPackageRecordRequest, resp
 			Where("product_infos.product_serial_no LIKE ? or product_orders.product_order_no LIKE ? or product_orders.sales_order_no LIKE ?", "%"+req.ProductSerialNo+"%", "%"+req.ProductSerialNo+"%", "%"+req.ProductSerialNo+"%")
 	}
 
-	orderStr, err := utils.GenerateOrderString(req.SortConfig, "id")
+	orderStr, err := utils.GenerateOrderString(req.SortConfig, "created_at desc")
 	if err != nil {
 		resp.Code = proto.Code_BadRequest
 		resp.Message = err.Error()

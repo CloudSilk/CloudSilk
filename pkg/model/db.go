@@ -1,6 +1,8 @@
 package model
 
 import (
+	"time"
+
 	"github.com/CloudSilk/pkg/db"
 	"github.com/CloudSilk/pkg/db/mysql"
 	"github.com/CloudSilk/pkg/db/sqlite"
@@ -151,7 +153,8 @@ func AutoMigrate() {
 }
 
 type ModelID struct {
-	ID string `json:"id" gorm:"primarykey;size:36"`
+	ID        string    `json:"id" gorm:"primarykey;size:36"`
+	CreatedAt time.Time `json:"createdAt" copier:"-"`
 }
 
 func (u *ModelID) BeforeCreate(tx *gorm.DB) (err error) {

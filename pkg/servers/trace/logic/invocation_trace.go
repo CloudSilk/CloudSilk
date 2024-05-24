@@ -31,7 +31,7 @@ func QueryInvocationTrace(req *proto.QueryInvocationTraceRequest, resp *proto.Qu
 		db.Where("`request_text` LIKE ? or `response_text` LIKE ?", "%"+req.RequestText+"%", "%"+req.RequestText+"%")
 	}
 
-	orderStr, err := utils.GenerateOrderString(req.SortConfig, "id")
+	orderStr, err := utils.GenerateOrderString(req.SortConfig, "created_at desc")
 	if err != nil {
 		resp.Code = proto.Code_BadRequest
 		resp.Message = err.Error()

@@ -42,7 +42,7 @@ func UpdateRemoteServiceTask(m *model.RemoteServiceTask) error {
 func QueryRemoteServiceTask(req *proto.QueryRemoteServiceTaskRequest, resp *proto.QueryRemoteServiceTaskResponse, preload bool) {
 	db := model.DB.DB().Model(&model.RemoteServiceTask{}).Preload("RemoteService").Preload(clause.Associations)
 
-	orderStr, err := utils.GenerateOrderString(req.SortConfig, "id")
+	orderStr, err := utils.GenerateOrderString(req.SortConfig, "created_at desc")
 	if err != nil {
 		resp.Code = proto.Code_BadRequest
 		resp.Message = err.Error()

@@ -19,7 +19,7 @@ func UpdateSystemEventTriggerParameter(m *model.SystemEventTriggerParameter) err
 func QuerySystemEventTriggerParameter(req *proto.QuerySystemEventTriggerParameterRequest, resp *proto.QuerySystemEventTriggerParameterResponse, preload bool) {
 	db := model.DB.DB().Model(&model.SystemEventTriggerParameter{}).Preload("SystemEvent").Preload(clause.Associations)
 
-	orderStr, err := utils.GenerateOrderString(req.SortConfig, "id")
+	orderStr, err := utils.GenerateOrderString(req.SortConfig, "created_at desc")
 	if err != nil {
 		resp.Code = proto.Code_BadRequest
 		resp.Message = err.Error()

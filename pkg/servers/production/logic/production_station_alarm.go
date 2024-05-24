@@ -40,7 +40,7 @@ func QueryProductionStationAlarm(req *proto.QueryProductionStationAlarmRequest, 
 		db.Where("production_station_alarms.alarm_message LIKE ?", "%"+req.AlarmMessage+"%")
 	}
 
-	orderStr, err := utils.GenerateOrderString(req.SortConfig, "id")
+	orderStr, err := utils.GenerateOrderString(req.SortConfig, "created_at desc")
 	if err != nil {
 		resp.Code = proto.Code_BadRequest
 		resp.Message = err.Error()

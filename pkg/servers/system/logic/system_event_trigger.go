@@ -29,7 +29,7 @@ func QuerySystemEventTrigger(req *proto.QuerySystemEventTriggerRequest, resp *pr
 			Where("system_events.description = ?", req.SystemEvent)
 	}
 
-	orderStr, err := utils.GenerateOrderString(req.SortConfig, "id")
+	orderStr, err := utils.GenerateOrderString(req.SortConfig, "created_at desc")
 	if err != nil {
 		resp.Code = proto.Code_BadRequest
 		resp.Message = err.Error()

@@ -19,7 +19,7 @@ func UpdateCodingGeneration(m *model.CodingGeneration) error {
 func QueryCodingGeneration(req *apipb.QueryCodingGenerationRequest, resp *apipb.QueryCodingGenerationResponse, preload bool) {
 	db := model.DB.DB().Model(&model.CodingGeneration{})
 
-	orderStr, err := utils.GenerateOrderString(req.SortConfig, "id")
+	orderStr, err := utils.GenerateOrderString(req.SortConfig, "created_at desc")
 	if err != nil {
 		resp.Code = apipb.Code_BadRequest
 		resp.Message = err.Error()

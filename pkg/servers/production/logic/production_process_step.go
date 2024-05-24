@@ -53,7 +53,7 @@ func QueryProductionProcessStep(req *proto.QueryProductionProcessStepRequest, re
 		db = db.Where("`id` in ?", req.Ids)
 	}
 
-	orderStr, err := utils.GenerateOrderString(req.SortConfig, "id")
+	orderStr, err := utils.GenerateOrderString(req.SortConfig, "created_at desc")
 	if err != nil {
 		resp.Code = proto.Code_BadRequest
 		resp.Message = err.Error()

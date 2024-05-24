@@ -32,7 +32,7 @@ func QueryProductInfo(req *proto.QueryProductInfoRequest, resp *proto.QueryProdu
 		db = db.Where("`current_state` = ?", req.CurrentState)
 	}
 
-	orderStr, err := utils.GenerateOrderString(req.SortConfig, "id")
+	orderStr, err := utils.GenerateOrderString(req.SortConfig, "created_at desc")
 	if err != nil {
 		resp.Code = proto.Code_BadRequest
 		resp.Message = err.Error()

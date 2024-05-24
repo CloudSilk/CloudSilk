@@ -37,7 +37,7 @@ func QueryProductProcessRecord(req *proto.QueryProductProcessRecordRequest, resp
 		db = db.Where("product_process_records.work_description LIKE ?", "%"+req.WorkDescription+"%")
 	}
 
-	orderStr, err := utils.GenerateOrderString(req.SortConfig, "id")
+	orderStr, err := utils.GenerateOrderString(req.SortConfig, "created_at desc")
 	if err != nil {
 		resp.Code = proto.Code_BadRequest
 		resp.Message = err.Error()

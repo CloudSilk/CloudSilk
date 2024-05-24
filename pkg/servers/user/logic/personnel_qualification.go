@@ -27,7 +27,7 @@ func QueryPersonnelQualification(req *proto.QueryPersonnelQualificationRequest, 
 		db = db.Where("`name` like ? or `card_no` like ? or `staff_no` like ?", "%"+req.Name+"%", "%"+req.Name+"%", "%"+req.Name+"%")
 	}
 
-	orderStr, err := utils.GenerateOrderString(req.SortConfig, "id")
+	orderStr, err := utils.GenerateOrderString(req.SortConfig, "created_at desc")
 	if err != nil {
 		resp.Code = proto.Code_BadRequest
 		resp.Message = err.Error()

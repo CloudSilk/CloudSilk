@@ -33,7 +33,7 @@ func QueryProductOrderPriorityRule(req *proto.QueryProductOrderPriorityRuleReque
 		db = db.Where("`priority_level` = ?", req.PriorityLevel)
 	}
 
-	orderStr, err := utils.GenerateOrderString(req.SortConfig, "id")
+	orderStr, err := utils.GenerateOrderString(req.SortConfig, "created_at desc")
 	if err != nil {
 		resp.Code = proto.Code_BadRequest
 		resp.Message = err.Error()
