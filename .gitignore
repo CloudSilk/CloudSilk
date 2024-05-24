@@ -25,3 +25,10 @@ cache
 .DS_Store
 *.s3db
 dubbogo*.yaml
+.vs
+csharp/packages
+bin
+obj
+*.csproj.user
+tmp
+result
