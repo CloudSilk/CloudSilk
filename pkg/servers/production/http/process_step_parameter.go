@@ -105,6 +105,7 @@ func UpdateProcessStepParameter(c *gin.Context) {
 // @Param orderField query string false "排序字段"
 // @Param desc query bool false "是否倒序排序"
 // @Param code query string false "代号或描述"
+// @Param productionLineID query string false "产线ID"
 // @Success 200 {object} proto.QueryProcessStepParameterResponse
 // @Router /api/mom/production/processstepparameter/query [get]
 func QueryProcessStepParameter(c *gin.Context) {

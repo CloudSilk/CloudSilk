@@ -325,8 +325,12 @@ message QueryProcessStepParameterRequest{
     bool enable=4;
     // @inject_tag: uri:"hasProductionProcessStepID" form:"hasProductionProcessStepID"
     bool hasProductionProcessStepID=5;
+    // 代号或描述
     // @inject_tag: uri:"code" form:"code"
     string code=6;
+    // 产线ID
+    // @inject_tag: uri:"productionLineID" form:"productionLineID"
+    string productionLineID=7;
 }
 
 message QueryProcessStepParameterResponse{

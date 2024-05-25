@@ -14625,6 +14625,10 @@ paths:
         in: query
         name: code
         type: string
+      - description: 产线ID
+        in: query
+        name: productionLineID
+        type: string
       produces:
       - application/octet-stream
       responses:

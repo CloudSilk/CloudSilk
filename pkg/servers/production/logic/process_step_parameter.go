@@ -44,7 +44,13 @@ func UpdateProcessStepParameter(m *model.ProcessStepParameter) error {
 }
 
 func QueryProcessStepParameter(req *proto.QueryProcessStepParameterRequest, resp *proto.QueryProcessStepParameterResponse, preload bool) {
-	db := model.DB.DB().Model(&model.ProcessStepParameter{})
+	db := model.DB.DB().Model(&model.ProcessStepParameter{}).Preload("ProductionLine")
+	if req.Code != "" {
+		db = db.Where("`code` like ? OR `description` like ?", "%"+req.Code+"%", "%"+req.Code+"%")
+	}
+	if req.ProductionLineID != "" {
+		db = db.Where("`production_line_id`=?", req.ProductionLineID)
+	}
 
 	orderStr, err := utils.GenerateOrderString(req.SortConfig, "created_at desc")
 	if err != nil {

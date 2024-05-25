@@ -12477,6 +12477,12 @@
                         "description": "代号或描述",
                         "name": "code",
                         "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "产线ID",
+                        "name": "productionLineID",
+                        "in": "query"
                     }
                 ],
                 "responses": {
