@@ -26,7 +26,7 @@ func UpdateProductCategory(m *model.ProductCategory) error {
 		return errors.New("存在相同产品类别")
 	}
 
-	return model.DB.DB().Save(m).Error
+	return model.DB.DB().Omit("created_at").Save(m).Error
 }
 
 func QueryProductCategory(req *proto.QueryProductCategoryRequest, resp *proto.QueryProductCategoryResponse, preload bool) {

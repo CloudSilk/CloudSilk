@@ -13,7 +13,7 @@ func CreateProductOrderAttachment(m *model.ProductOrderAttachment) (string, erro
 }
 
 func UpdateProductOrderAttachment(m *model.ProductOrderAttachment) error {
-	return model.DB.DB().Omit("create_time").Save(m).Error
+	return model.DB.DB().Omit("created_at", "create_time").Save(m).Error
 }
 
 func QueryProductOrderAttachment(req *proto.QueryProductOrderAttachmentRequest, resp *proto.QueryProductOrderAttachmentResponse, preload bool) {

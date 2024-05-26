@@ -19,7 +19,7 @@ func UpdateProductAttributeValuateRule(m *model.ProductAttributeValuateRule) err
 			return err
 		}
 
-		if err := tx.Save(m).Error; err != nil {
+		if err := tx.Omit("created_at").Save(m).Error; err != nil {
 			return err
 		}
 

@@ -26,7 +26,7 @@ func UpdateProductBrand(m *model.ProductBrand) error {
 		return errors.New("存在相同尺码")
 	}
 
-	return model.DB.DB().Save(m).Error
+	return model.DB.DB().Omit("created_at").Save(m).Error
 }
 
 func QueryProductBrand(req *proto.QueryProductBrandRequest, resp *proto.QueryProductBrandResponse, preload bool) {

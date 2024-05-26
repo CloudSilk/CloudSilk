@@ -13,7 +13,7 @@ func CreateProductTestRecord(m *model.ProductTestRecord) (string, error) {
 }
 
 func UpdateProductTestRecord(m *model.ProductTestRecord) error {
-	return model.DB.DB().Omit("CreateTime", "CheckUserID").Save(m).Error
+	return model.DB.DB().Omit("created_at").Save(m).Error
 }
 
 func QueryProductTestRecord(req *proto.QueryProductTestRecordRequest, resp *proto.QueryProductTestRecordResponse, preload bool) {

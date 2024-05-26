@@ -13,7 +13,7 @@ func CreatePersonnelQualification(m *model.PersonnelQualification) (string, erro
 }
 
 func UpdatePersonnelQualification(m *model.PersonnelQualification) error {
-	return model.DB.DB().Save(m).Error
+	return model.DB.DB().Omit("created_at").Save(m).Error
 }
 
 func QueryPersonnelQualification(req *proto.QueryPersonnelQualificationRequest, resp *proto.QueryPersonnelQualificationResponse, preload bool) {

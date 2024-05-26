@@ -13,7 +13,7 @@ func CreateInvocationAuthentication(m *model.InvocationAuthentication) (string, 
 }
 
 func UpdateInvocationAuthentication(m *model.InvocationAuthentication) error {
-	return model.DB.DB().Save(m).Error
+	return model.DB.DB().Omit("created_at").Save(m).Error
 }
 
 func QueryInvocationAuthentication(req *proto.QueryInvocationAuthenticationRequest, resp *proto.QueryInvocationAuthenticationResponse, preload bool) {

@@ -13,7 +13,7 @@ func CreateProductRhythmRecord(m *model.ProductRhythmRecord) (string, error) {
 }
 
 func UpdateProductRhythmRecord(m *model.ProductRhythmRecord) error {
-	return model.DB.DB().Save(m).Error
+	return model.DB.DB().Omit("created_at").Save(m).Error
 }
 
 func QueryProductRhythmRecord(req *proto.QueryProductRhythmRecordRequest, resp *proto.QueryProductRhythmRecordResponse, preload bool) {

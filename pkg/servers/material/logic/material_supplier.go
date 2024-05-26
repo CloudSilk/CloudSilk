@@ -13,7 +13,7 @@ func CreateMaterialSupplier(m *model.MaterialSupplier) (string, error) {
 }
 
 func UpdateMaterialSupplier(m *model.MaterialSupplier) error {
-	return model.DB.DB().Save(m).Error
+	return model.DB.DB().Omit("created_at").Save(m).Error
 }
 
 func QueryMaterialSupplier(req *proto.QueryMaterialSupplierRequest, resp *proto.QueryMaterialSupplierResponse, preload bool) {

@@ -13,7 +13,7 @@ func CreateDataMapping(m *model.DataMapping) (string, error) {
 }
 
 func UpdateDataMapping(m *model.DataMapping) error {
-	return model.DB.DB().Save(m).Error
+	return model.DB.DB().Omit("created_at").Save(m).Error
 }
 
 func QueryDataMapping(req *proto.QueryDataMappingRequest, resp *proto.QueryDataMappingResponse, preload bool) {

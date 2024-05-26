@@ -13,7 +13,7 @@ func CreateProductWorkRecord(m *model.ProductWorkRecord) (string, error) {
 }
 
 func UpdateProductWorkRecord(m *model.ProductWorkRecord) error {
-	return model.DB.DB().Omit("CreateTime").Save(m).Error
+	return model.DB.DB().Omit("created_at").Save(m).Error
 }
 
 func QueryProductWorkRecord(req *proto.QueryProductWorkRecordRequest, resp *proto.QueryProductWorkRecordResponse, preload bool) {

@@ -27,7 +27,7 @@ func UpdateProductAttribute(m *model.ProductAttribute) error {
 			return err
 		}
 
-		duplication, err := model.DB.UpdateWithCheckDuplicationAndOmit(tx, m, true, []string{}, "id <> ? and code =? ", m.ID, m.Code)
+		duplication, err := model.DB.UpdateWithCheckDuplicationAndOmit(tx, m, true, []string{"created_at"}, "id <> ? and code =? ", m.ID, m.Code)
 		if err != nil {
 			return err
 		}

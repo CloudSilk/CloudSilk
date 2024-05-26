@@ -13,7 +13,7 @@ func CreateProductionStationOutput(m *model.ProductionStationOutput) (string, er
 }
 
 func UpdateProductionStationOutput(m *model.ProductionStationOutput) error {
-	return model.DB.DB().Omit("output_time").Save(m).Error
+	return model.DB.DB().Omit("created_at", "output_time").Save(m).Error
 }
 
 func QueryProductionStationOutput(req *proto.QueryProductionStationOutputRequest, resp *proto.QueryProductionStationOutputResponse, preload bool) {

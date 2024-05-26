@@ -13,7 +13,7 @@ func CreateOperationTrace(m *model.OperationTrace) (string, error) {
 }
 
 func UpdateOperationTrace(m *model.OperationTrace) error {
-	return model.DB.DB().Omit("operate_time").Save(m).Error
+	return model.DB.DB().Omit("created_at", "operate_time").Save(m).Error
 }
 
 func QueryOperationTrace(req *proto.QueryOperationTraceRequest, resp *proto.QueryOperationTraceResponse, preload bool) {

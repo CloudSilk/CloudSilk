@@ -55,7 +55,7 @@ func UpdateProductCategoryAttribute(m *model.ProductCategoryAttribute) error {
 			return err
 		}
 
-		duplication, err := model.DB.UpdateWithCheckDuplicationAndOmit(tx, m, true, []string{}, "id <> ?  and  default_value=? ", m.ID, m.DefaultValue)
+		duplication, err := model.DB.UpdateWithCheckDuplicationAndOmit(tx, m, true, []string{"created_at"}, "id <> ?  and  default_value=? ", m.ID, m.DefaultValue)
 		if err != nil {
 			return err
 		}

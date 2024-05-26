@@ -13,7 +13,7 @@ func CreateProductionStationSignup(m *model.ProductionStationSignup) (string, er
 }
 
 func UpdateProductionStationSignup(m *model.ProductionStationSignup) error {
-	return model.DB.DB().Omit("login_time").Save(m).Error
+	return model.DB.DB().Omit("created_at", "login_time").Save(m).Error
 }
 
 func QueryProductionStationSignup(req *proto.QueryProductionStationSignupRequest, resp *proto.QueryProductionStationSignupResponse, preload bool) {

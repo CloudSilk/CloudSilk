@@ -19,7 +19,7 @@ func UpdateProductReleaseStrategy(m *model.ProductReleaseStrategy) error {
 			return err
 		}
 
-		return tx.Save(m).Error
+		return tx.Omit("created_at").Save(m).Error
 	})
 }
 

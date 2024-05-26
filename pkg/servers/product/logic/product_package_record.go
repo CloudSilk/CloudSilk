@@ -13,7 +13,7 @@ func CreateProductPackageRecord(m *model.ProductPackageRecord) (string, error) {
 }
 
 func UpdateProductPackageRecord(m *model.ProductPackageRecord) error {
-	return model.DB.DB().Save(m).Error
+	return model.DB.DB().Omit("created_at").Save(m).Error
 }
 
 func QueryProductPackageRecord(req *proto.QueryProductPackageRecordRequest, resp *proto.QueryProductPackageRecordResponse, preload bool) {

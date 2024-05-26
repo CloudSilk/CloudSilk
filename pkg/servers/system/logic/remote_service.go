@@ -13,7 +13,7 @@ func CreateRemoteService(m *model.RemoteService) (string, error) {
 }
 
 func UpdateRemoteService(m *model.RemoteService) error {
-	return model.DB.DB().Save(m).Error
+	return model.DB.DB().Omit("created_at").Save(m).Error
 }
 
 func QueryRemoteService(req *proto.QueryRemoteServiceRequest, resp *proto.QueryRemoteServiceResponse, preload bool) {

@@ -31,7 +31,7 @@ func UpdateProductModelBom(m *model.ProductModelBom) error {
 		// if m.ProductModelID == "" {
 		// 	omits = append(omits, "ProductModelID")
 		// }
-		duplication, err := model.DB.UpdateWithCheckDuplicationAndOmit(tx, m, true, []string{}, "id <> ?  and  material_no =? ", m.ID, m.MaterialNo)
+		duplication, err := model.DB.UpdateWithCheckDuplicationAndOmit(tx, m, true, []string{"created_at"}, "id <> ?  and  material_no =? ", m.ID, m.MaterialNo)
 		if err != nil {
 			return err
 		}

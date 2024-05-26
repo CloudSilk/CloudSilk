@@ -22,7 +22,7 @@ func CreateProductPackage(m *model.ProductPackage) (string, error) {
 }
 
 func UpdateProductPackage(m *model.ProductPackage) error {
-	duplication, err := model.DB.UpdateWithCheckDuplicationAndOmit(model.DB.DB(), m, false, []string{}, "id != ? and  code =? ", m.ID, m.Code)
+	duplication, err := model.DB.UpdateWithCheckDuplicationAndOmit(model.DB.DB(), m, false, []string{"created_at"}, "id != ? and  code =? ", m.ID, m.Code)
 	if err != nil {
 		return err
 	}

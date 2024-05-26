@@ -13,7 +13,7 @@ func CreateProductInfo(m *model.ProductInfo) (string, error) {
 }
 
 func UpdateProductInfo(m *model.ProductInfo) error {
-	return model.DB.DB().Omit("create_time").Save(m).Error
+	return model.DB.DB().Omit("created_at", "create_time").Save(m).Error
 }
 
 func QueryProductInfo(req *proto.QueryProductInfoRequest, resp *proto.QueryProductInfoResponse, preload bool) {

@@ -13,7 +13,7 @@ func CreateTaskQueueExecution(m *model.TaskQueueExecution) (string, error) {
 }
 
 func UpdateTaskQueueExecution(m *model.TaskQueueExecution) error {
-	return model.DB.DB().Omit("create_time").Save(m).Error
+	return model.DB.DB().Omit("created_at", "create_time").Save(m).Error
 }
 
 func QueryTaskQueueExecution(req *proto.QueryTaskQueueExecutionRequest, resp *proto.QueryTaskQueueExecutionResponse, preload bool) {

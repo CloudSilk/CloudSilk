@@ -13,7 +13,7 @@ func CreateProductReleaseRecord(m *model.ProductReleaseRecord) (string, error) {
 }
 
 func UpdateProductReleaseRecord(m *model.ProductReleaseRecord) error {
-	return model.DB.DB().Omit("CreateTime").Save(m).Error
+	return model.DB.DB().Omit("created_at", "create_time").Save(m).Error
 }
 
 func QueryProductReleaseRecord(req *proto.QueryProductReleaseRecordRequest, resp *proto.QueryProductReleaseRecordResponse, preload bool) {

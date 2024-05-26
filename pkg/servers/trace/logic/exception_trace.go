@@ -13,7 +13,7 @@ func CreateExceptionTrace(m *model.ExceptionTrace) (string, error) {
 }
 
 func UpdateExceptionTrace(m *model.ExceptionTrace) error {
-	return model.DB.DB().Omit("time_reported").Save(m).Error
+	return model.DB.DB().Omit("created_at", "time_reported").Save(m).Error
 }
 
 func QueryExceptionTrace(req *proto.QueryExceptionTraceRequest, resp *proto.QueryExceptionTraceResponse, preload bool) {

@@ -89,15 +89,18 @@ func PBToProcessStepTypeParameter(in *proto.ProcessStepTypeParameterInfo) *Proce
 		return nil
 	}
 	return &ProcessStepTypeParameter{
-		ModelID:           ModelID{ID: in.Id},
-		ProcessStepTypeID: in.ProcessStepTypeID,
-		Code:              in.Code,
-		Description:       in.Description,
-		DefaultValue:      in.DefaultValue,
-		Required:          in.Required,
-		BoundsRequired:    in.BoundsRequired,
-		ParameterType:     in.ParameterType,
-		Remark:            in.Remark,
+		ModelID:        ModelID{ID: in.Id},
+		Code:           in.Code,
+		Description:    in.Description,
+		DefaultValue:   in.DefaultValue,
+		StandardValue:  in.StandardValue,
+		MaximumValue:   in.MaximumValue,
+		MinimumValue:   in.MinimumValue,
+		Unit:           in.Unit,
+		Required:       in.Required,
+		BoundsRequired: in.BoundsRequired,
+		ParameterType:  in.ParameterType,
+		Remark:         in.Remark,
 	}
 }
 
@@ -122,6 +125,7 @@ func ProcessStepTypeParameterToPB(in *ProcessStepTypeParameter) *proto.ProcessSt
 		StandardValue:     in.StandardValue,
 		MaximumValue:      in.MaximumValue,
 		MinimumValue:      in.MinimumValue,
+		Unit:              in.Unit,
 		Required:          in.Required,
 		BoundsRequired:    in.BoundsRequired,
 		ParameterType:     in.ParameterType,

@@ -13,7 +13,7 @@ func CreateProductReworkRecord(m *model.ProductReworkRecord) (string, error) {
 }
 
 func UpdateProductReworkRecord(m *model.ProductReworkRecord) error {
-	return model.DB.DB().Omit("create_time", "create_userID").Save(m).Error
+	return model.DB.DB().Omit("created_at", "create_time").Save(m).Error
 }
 
 func QueryProductReworkRecord(req *proto.QueryProductReworkRecordRequest, resp *proto.QueryProductReworkRecordResponse, preload bool) {

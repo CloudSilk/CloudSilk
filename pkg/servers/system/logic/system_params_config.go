@@ -13,7 +13,7 @@ func CreateSystemParamsConfig(m *model.SystemParamsConfig) (string, error) {
 }
 
 func UpdateSystemParamsConfig(m *model.SystemParamsConfig) error {
-	return model.DB.DB().Save(m).Error
+	return model.DB.DB().Omit("created_at").Save(m).Error
 }
 
 func QuerySystemParamsConfig(req *proto.QuerySystemParamsConfigRequest, resp *proto.QuerySystemParamsConfigResponse, preload bool) {

@@ -13,7 +13,7 @@ func CreateRemoteServiceTaskQueue(m *model.RemoteServiceTaskQueue) (string, erro
 }
 
 func UpdateRemoteServiceTaskQueue(m *model.RemoteServiceTaskQueue) error {
-	return model.DB.DB().Omit("create_time").Save(m).Error
+	return model.DB.DB().Omit("created_at", "create_time").Save(m).Error
 }
 
 func QueryRemoteServiceTaskQueue(req *proto.QueryRemoteServiceTaskQueueRequest, resp *proto.QueryRemoteServiceTaskQueueResponse, preload bool) {

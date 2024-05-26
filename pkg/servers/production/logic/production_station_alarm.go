@@ -13,7 +13,7 @@ func CreateProductionStationAlarm(m *model.ProductionStationAlarm) (string, erro
 }
 
 func UpdateProductionStationAlarm(m *model.ProductionStationAlarm) error {
-	return model.DB.DB().Omit("create_time").Save(m).Error
+	return model.DB.DB().Omit("created_at", "create_time").Save(m).Error
 }
 
 func QueryProductionStationAlarm(req *proto.QueryProductionStationAlarmRequest, resp *proto.QueryProductionStationAlarmResponse, preload bool) {

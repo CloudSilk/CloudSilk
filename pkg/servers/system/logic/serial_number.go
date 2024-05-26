@@ -17,7 +17,7 @@ func CreateSerialNumber(m *model.SerialNumber) (string, error) {
 }
 
 func UpdateSerialNumber(m *model.SerialNumber) error {
-	return model.DB.DB().Omit("create_time").Save(m).Error
+	return model.DB.DB().Omit("created_at", "create_time").Save(m).Error
 }
 
 func QuerySerialNumber(req *proto.QuerySerialNumberRequest, resp *proto.QuerySerialNumberResponse, preload bool) {

@@ -13,7 +13,7 @@ func CreateProductProcessRoute(m *model.ProductProcessRoute) (string, error) {
 }
 
 func UpdateProductProcessRoute(m *model.ProductProcessRoute) error {
-	return model.DB.DB().Save(m).Error
+	return model.DB.DB().Omit("created_at").Save(m).Error
 }
 
 func QueryProductProcessRoute(req *proto.QueryProductProcessRouteRequest, resp *proto.QueryProductProcessRouteResponse, preload bool) {

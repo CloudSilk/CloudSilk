@@ -31,7 +31,7 @@ func UpdateTaskQueue(m *model.TaskQueue) error {
 			return err
 		}
 
-		duplication, err := model.DB.UpdateWithCheckDuplicationAndOmit(tx, m, true, []string{"CreateTime"}, "id <> ? and name=? ", m.ID, m.Name)
+		duplication, err := model.DB.UpdateWithCheckDuplicationAndOmit(tx, m, true, []string{"created_at"}, "id <> ? and name=? ", m.ID, m.Name)
 		if err != nil {
 			return err
 		}

@@ -21,7 +21,7 @@ func CreateSystemEvent(m *model.SystemEvent) (string, error) {
 }
 
 func UpdateSystemEvent(m *model.SystemEvent) error {
-	duplication, err := model.DB.UpdateWithCheckDuplicationAndOmit(model.DB.DB(), m, true, []string{}, "id <> ? and code=? ", m.ID, m.Code)
+	duplication, err := model.DB.UpdateWithCheckDuplicationAndOmit(model.DB.DB(), m, true, []string{"created_at"}, "id <> ? and code=? ", m.ID, m.Code)
 	if err != nil {
 		return err
 	}

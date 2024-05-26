@@ -30,7 +30,7 @@ func CreateProductOrder(m *model.ProductOrder) (string, error) {
 	}
 
 	var systemConfig model.SystemParamsConfig
-	if err := model.DB.DB().First(&systemConfig, "key=?", systemConfigKey).Error; err == gorm.ErrRecordNotFound {
+	if err := model.DB.DB().First(&systemConfig, "`key`=?", systemConfigKey).Error; err == gorm.ErrRecordNotFound {
 		return "", fmt.Errorf("缺少系统配置项: %s", systemConfigKey)
 	} else if err != nil {
 		return "", err
@@ -111,7 +111,7 @@ func UpdateProductOrder(m *model.ProductOrder) error {
 			return err
 		}
 
-		duplication, err := model.DB.UpdateWithCheckDuplicationAndOmit(tx, m, false, []string{"create_time"}, "id <> ? and  receipt_note_no=?", m.ID, m.ReceiptNoteNo)
+		duplication, err := model.DB.UpdateWithCheckDuplicationAndOmit(tx, m, true, []string{"created_at", "create_time"}, "id <> ? and  receipt_note_no=?", m.ID, m.ReceiptNoteNo)
 		if err != nil {
 			return err
 		}

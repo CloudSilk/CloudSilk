@@ -13,7 +13,7 @@ func CreateLabelType(m *model.LabelType) (string, error) {
 }
 
 func UpdateLabelType(m *model.LabelType) error {
-	return model.DB.DB().Save(m).Error
+	return model.DB.DB().Omit("created_at").Save(m).Error
 }
 
 func QueryLabelType(req *proto.QueryLabelTypeRequest, resp *proto.QueryLabelTypeResponse, preload bool) {

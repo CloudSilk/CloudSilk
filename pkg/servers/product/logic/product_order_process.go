@@ -21,7 +21,7 @@ func CreateProductOrderProcess(m *model.ProductOrderProcess) (string, error) {
 }
 
 func UpdateProductOrderProcess(m *model.ProductOrderProcess) error {
-	duplication, err := model.DB.UpdateWithCheckDuplicationAndOmit(model.DB.DB(), m, false, []string{"create_time"}, "id <> ? and  product_order_id=? and production_process_id =?", m.ID, m.ProductOrderID, m.ProductionProcessID)
+	duplication, err := model.DB.UpdateWithCheckDuplicationAndOmit(model.DB.DB(), m, false, []string{"created_at", "create_time"}, "id <> ? and  product_order_id=? and production_process_id =?", m.ID, m.ProductOrderID, m.ProductionProcessID)
 	if err != nil {
 		return err
 	}

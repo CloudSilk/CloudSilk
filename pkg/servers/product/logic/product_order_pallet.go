@@ -13,7 +13,7 @@ func CreateProductOrderPallet(m *model.ProductOrderPallet) (string, error) {
 }
 
 func UpdateProductOrderPallet(m *model.ProductOrderPallet) error {
-	return model.DB.DB().Omit("create_time").Save(m).Error
+	return model.DB.DB().Omit("created_at", "create_time").Save(m).Error
 }
 
 func QueryProductOrderPallet(req *proto.QueryProductOrderPalletRequest, resp *proto.QueryProductOrderPalletResponse, preload bool) {

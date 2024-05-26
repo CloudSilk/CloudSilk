@@ -13,7 +13,7 @@ func CreateProductionProcessSop(m *model.ProductionProcessSop) (string, error) {
 }
 
 func UpdateProductionProcessSop(m *model.ProductionProcessSop) error {
-	return model.DB.DB().Omit().Save(m).Error
+	return model.DB.DB().Omit("created_at").Save(m).Error
 }
 
 func QueryProductionProcessSop(req *proto.QueryProductionProcessSopRequest, resp *proto.QueryProductionProcessSopResponse, preload bool) {

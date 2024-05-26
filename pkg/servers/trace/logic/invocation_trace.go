@@ -13,7 +13,7 @@ func CreateInvocationTrace(m *model.InvocationTrace) (string, error) {
 }
 
 func UpdateInvocationTrace(m *model.InvocationTrace) error {
-	return model.DB.DB().Omit("request_time").Save(m).Error
+	return model.DB.DB().Omit("created_at", "request_time").Save(m).Error
 }
 
 func QueryInvocationTrace(req *proto.QueryInvocationTraceRequest, resp *proto.QueryInvocationTraceResponse, preload bool) {

@@ -82,7 +82,7 @@ func UpdateProductModel(m *model.ProductModel) error {
 		// if m.ProductCategoryID == "" {
 		// 	omits = append(omits, "ProductCategoryID")
 		// }
-		duplication, err := model.DB.UpdateWithCheckDuplicationAndOmit(tx, m, true, []string{}, "id <> ?  AND  material_no =? ", m.ID, m.MaterialNo)
+		duplication, err := model.DB.UpdateWithCheckDuplicationAndOmit(tx, m, true, []string{"created_at"}, "id <> ?  AND  material_no =? ", m.ID, m.MaterialNo)
 		if err != nil {
 			return err
 		}

@@ -13,7 +13,7 @@ func CreateProductionStationBreakdown(m *model.ProductionStationBreakdown) (stri
 }
 
 func UpdateProductionStationBreakdown(m *model.ProductionStationBreakdown) error {
-	return model.DB.DB().Omit("create_time").Save(m).Error
+	return model.DB.DB().Omit("created_at", "create_time").Save(m).Error
 }
 
 func QueryProductionStationBreakdown(req *proto.QueryProductionStationBreakdownRequest, resp *proto.QueryProductionStationBreakdownResponse, preload bool) {

@@ -13,7 +13,7 @@ func CreateMaterialCategory(m *model.MaterialCategory) (string, error) {
 }
 
 func UpdateMaterialCategory(m *model.MaterialCategory) error {
-	return model.DB.DB().Save(m).Error
+	return model.DB.DB().Omit("created_at").Save(m).Error
 }
 
 func QueryMaterialCategory(req *proto.QueryMaterialCategoryRequest, resp *proto.QueryMaterialCategoryResponse, preload bool) {

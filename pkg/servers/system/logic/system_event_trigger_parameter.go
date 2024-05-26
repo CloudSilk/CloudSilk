@@ -13,7 +13,7 @@ func CreateSystemEventTriggerParameter(m *model.SystemEventTriggerParameter) (st
 }
 
 func UpdateSystemEventTriggerParameter(m *model.SystemEventTriggerParameter) error {
-	return model.DB.DB().Save(m).Error
+	return model.DB.DB().Omit("created_at").Save(m).Error
 }
 
 func QuerySystemEventTriggerParameter(req *proto.QuerySystemEventTriggerParameterRequest, resp *proto.QuerySystemEventTriggerParameterResponse, preload bool) {

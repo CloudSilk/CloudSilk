@@ -13,7 +13,7 @@ func CreateMaterialTray(m *model.MaterialTray) (string, error) {
 }
 
 func UpdateMaterialTray(m *model.MaterialTray) error {
-	return model.DB.DB().Save(m).Error
+	return model.DB.DB().Omit("created_at").Save(m).Error
 }
 
 func QueryMaterialTray(req *proto.QueryMaterialTrayRequest, resp *proto.QueryMaterialTrayResponse, preload bool) {
