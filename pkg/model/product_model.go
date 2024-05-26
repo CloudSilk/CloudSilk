@@ -27,6 +27,7 @@ type ProductModelAttributeValue struct {
 	ProductAttributeID string            `json:"productAttributeID" gorm:"size:36;comment:产品特性ID"`
 	ProductAttribute   *ProductAttribute `gorm:"constraint:OnDelete:CASCADE"`
 	AssignedValue      string            `json:"assignedValue" gorm:"size:100;comment:设定值"`
+	AllowNullOrBlank   bool              `json:"allowNullOrBlank" gorm:"-"` //允许空缺
 }
 
 func PBToProductModels(in []*proto.ProductModelInfo) []*ProductModel {
@@ -123,6 +124,7 @@ func ProductModelAttributeValueToPB(in *ProductModelAttributeValue) *proto.Produ
 		ProductAttributeID: in.ProductAttributeID,
 		ProductAttribute:   ProductAttributeToPB(in.ProductAttribute),
 		AssignedValue:      in.AssignedValue,
+		AllowNullOrBlank:   in.AllowNullOrBlank,
 	}
 	return m
 }

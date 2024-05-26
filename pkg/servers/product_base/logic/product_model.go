@@ -101,6 +101,9 @@ func QueryProductModel(req *proto.QueryProductModelRequest, resp *proto.QueryPro
 	if req.Code != "" {
 		db = db.Where("`code` LIKE ? OR `material_no` LIKE ? OR `material_description` LIKE ?", "%"+req.Code+"%", "%"+req.Code+"%", "%"+req.Code+"%")
 	}
+	if !req.IsPrefabricated {
+		db = db.Where("is_prefabricated=?", req.IsPrefabricated)
+	}
 
 	orderStr, err := utils.GenerateOrderString(req.SortConfig, "created_at desc")
 	if err != nil {
@@ -127,14 +130,27 @@ func GetAllProductModels() (list []*model.ProductModel, err error) {
 
 func GetProductModelByID(id string) (*model.ProductModel, error) {
 	m := &model.ProductModel{}
-	err := model.DB.DB().Preload("ProductModelAttributeValues").Preload("ProductModelAttributeValues.ProductAttribute").
-		Preload("ProductModelBoms").Preload(clause.Associations).Where("id = ?", id).First(m).Error
+	err := model.DB.DB().
+		Preload("ProductModelAttributeValues").
+		Preload("ProductModelAttributeValues.ProductAttribute").
+		Preload("ProductModelAttributeValues.ProductAttribute.ProductCategoryAttributes").
+		Preload("ProductModelBoms").
+		Preload(clause.Associations).Where("id = ?", id).First(m).Error
+	for _, productModelAttributeValue := range m.ProductModelAttributeValues {
+		for _, productCategoryAttribute := range productModelAttributeValue.ProductAttribute.ProductCategoryAttributes {
+			if productCategoryAttribute.ProductCategoryID == m.ProductCategoryID {
+				productModelAttributeValue.AllowNullOrBlank = productCategoryAttribute.AllowNullOrBlank
+			}
+		}
+	}
 	return m, err
 }
 
 func GetProductModelByIDs(ids []string) ([]*model.ProductModel, error) {
 	var m []*model.ProductModel
-	err := model.DB.DB().Preload("ProductModelAttributeValues").Preload("ProductModelAttributeValues.ProductAttribute").
+	err := model.DB.DB().Preload("ProductModelAttributeValues").
+		Preload("ProductModelAttributeValues.ProductAttribute").
+		Preload("ProductModelAttributeValues.ProductAttribute.ProductCategoryAttributes").
 		Preload("ProductModelBoms").Preload(clause.Associations).Where("id in (?)", ids).Find(&m).Error
 	return m, err
 }

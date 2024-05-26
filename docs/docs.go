@@ -11938,6 +11938,12 @@ const docTemplate = `{
                         "description": "产品类别ID",
                         "name": "productCategoryID",
                         "in": "query"
+                    },
+                    {
+                        "type": "boolean",
+                        "description": "是否预制",
+                        "name": "IsPrefabricated",
+                        "in": "query"
                     }
                 ],
                 "responses": {
@@ -24924,6 +24930,10 @@ const docTemplate = `{
         "proto.ProductModelAttributeValueInfo": {
             "type": "object",
             "properties": {
+                "allowNullOrBlank": {
+                    "description": "允许空缺",
+                    "type": "boolean"
+                },
                 "assignedValue": {
                     "description": "设定值",
                     "type": "string"

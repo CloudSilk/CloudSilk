@@ -4,9 +4,9 @@ import (
 	"context"
 	"net/http"
 
-	"github.com/CloudSilk/CloudSilk/pkg/servers/product_base/logic"
 	"github.com/CloudSilk/CloudSilk/pkg/model"
 	"github.com/CloudSilk/CloudSilk/pkg/proto"
+	"github.com/CloudSilk/CloudSilk/pkg/servers/product_base/logic"
 	"github.com/CloudSilk/pkg/utils/log"
 	"github.com/CloudSilk/pkg/utils/middleware"
 	"github.com/gin-gonic/gin"
@@ -106,6 +106,7 @@ func UpdateProductModel(c *gin.Context) {
 // @Param desc query bool false "是否倒序排序"
 // @Param code query string false "型号"
 // @Param productCategoryID query int false "产品类别ID"
+// @Param IsPrefabricated query bool false "是否预制"
 // @Success 200 {object} proto.QueryProductModelResponse
 // @Router /api/mom/productbase/productmodel/query [get]
 func QueryProductModel(c *gin.Context) {

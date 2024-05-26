@@ -2736,6 +2736,9 @@ definitions:
     type: object
   proto.ProductModelAttributeValueInfo:
     properties:
+      allowNullOrBlank:
+        description: 允许空缺
+        type: boolean
       assignedValue:
         description: 设定值
         type: string
@@ -14261,6 +14264,10 @@ paths:
         in: query
         name: productCategoryID
         type: integer
+      - description: 是否预制
+        in: query
+        name: IsPrefabricated
+        type: boolean
       produces:
       - application/octet-stream
       responses:
