@@ -16,7 +16,7 @@ type ProductionStationStartup struct {
 	ShutdownTime        sql.NullTime       `json:"shutdownTime" gorm:"comment:停机时间"`
 	Duration            int32              `json:"duration" gorm:"comment:开机时长"`
 	ProductionStationID string             `json:"productionStationID" gorm:"size:36;comment:生产工站ID"`
-	ProductionStation   *ProductionStation ``
+	ProductionStation   *ProductionStation `gorm:"constraint:OnDelete:CASCADE"`
 	Remark              string             `json:"remark" gorm:"size:1000;comment:备注"`
 }
 

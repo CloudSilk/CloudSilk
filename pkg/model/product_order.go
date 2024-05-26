@@ -46,17 +46,17 @@ type ProductOrder struct {
 	LastUpdateTime              time.Time                 `json:"lastUpdateTime" gorm:"autoUpdateTime:nano;comment:最新更新时间"`
 	Remark                      string                    `json:"remark" gorm:"size:1000;comment:备注"`
 	ProductModelID              *string                   `json:"productModelID" gorm:"size:36;comment:产品型号ID"`
-	ProductModel                *ProductModel             `json:"productModel"` //产品型号
+	ProductModel                *ProductModel             `json:"productModel" gorm:"constraint:OnDelete:SET NULL"` //产品型号
 	ProductionLineID            *string                   `json:"productionLineID" gorm:"size:36;comment:发放产线ID"`
-	ProductionLine              *ProductionLine           `json:"productionLine"`               //发放产线
-	ProductOrderAttachments     []*ProductOrderAttachment `gorm:"constraint:OnDelete:CASCADE;"` //产品工单附件
-	ProductOrderBoms            []*ProductOrderBom        `gorm:"constraint:OnDelete:CASCADE;"` //产品工单BOM
-	ProductOrderAttributes      []*ProductOrderAttribute  `gorm:"constraint:OnDelete:CASCADE;"` //产品工单特性
-	ProductInfos                []*ProductInfo            `gorm:"constraint:OnDelete:CASCADE;"` //产品清单
-	ProductOrderProcesses       []*ProductOrderProcess    `gorm:"constraint:OnDelete:CASCADE;"` //产品工单工序
-	ProductOrderLabels          []*ProductOrderLabel      `gorm:"constraint:OnDelete:CASCADE;"` //产品工单标签
-	ProductOrderPackages        []*ProductOrderPackage    `gorm:"constraint:OnDelete:CASCADE;"` //产品工单包装
-	ProductOrderPallets         []*ProductOrderPallet     `gorm:"constraint:OnDelete:CASCADE;"` //产品工单栈板
+	ProductionLine              *ProductionLine           `json:"productionLine" gorm:"constraint:OnDelete:SET NULL"` //发放产线
+	ProductOrderAttachments     []*ProductOrderAttachment `gorm:"constraint:OnDelete:CASCADE;"`                       //产品工单附件
+	ProductOrderBoms            []*ProductOrderBom        `gorm:"constraint:OnDelete:CASCADE;"`                       //产品工单BOM
+	ProductOrderAttributes      []*ProductOrderAttribute  `gorm:"constraint:OnDelete:CASCADE;"`                       //产品工单特性
+	ProductInfos                []*ProductInfo            `gorm:"constraint:OnDelete:CASCADE;"`                       //产品清单
+	ProductOrderProcesses       []*ProductOrderProcess    `gorm:"constraint:OnDelete:CASCADE;"`                       //产品工单工序
+	ProductOrderLabels          []*ProductOrderLabel      `gorm:"constraint:OnDelete:CASCADE;"`                       //产品工单标签
+	ProductOrderPackages        []*ProductOrderPackage    `gorm:"constraint:OnDelete:CASCADE;"`                       //产品工单包装
+	ProductOrderPallets         []*ProductOrderPallet     `gorm:"constraint:OnDelete:CASCADE;"`                       //产品工单栈板
 }
 
 func PBToProductOrders(in []*proto.ProductOrderInfo) []*ProductOrder {

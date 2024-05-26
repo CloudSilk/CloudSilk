@@ -15,7 +15,7 @@ type TaskQueueExecution struct {
 	FailureReason string     `json:"failureReason" gorm:"size:-1;comment:失败原因"`
 	CreateTime    time.Time  `json:"createTime" gorm:"autoCreateTime:nano;comment:创建时间"`
 	TaskQueueID   string     `json:"taskQueueID" gorm:"size:36;comment:任务队列ID"`
-	TaskQueue     *TaskQueue `json:"taskQueue"` //任务队列
+	TaskQueue     *TaskQueue `json:"taskQueue" gorm:"constraint:OnDelete:CASCADE"` //任务队列
 }
 
 func PBToTaskQueueExecutions(in []*proto.TaskQueueExecutionInfo) []*TaskQueueExecution {

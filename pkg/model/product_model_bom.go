@@ -15,7 +15,7 @@ type ProductModelBom struct {
 	ProductionProcess   string        `json:"productionProcess" gorm:"size:20;comment:需求工序"`
 	Remark              string        `json:"remark" gorm:"size:1000;comment:备注"`
 	ProductModelID      string        `json:"productModelID" gorm:"index;size:36;comment:产品型号ID"`
-	ProductModel        *ProductModel `json:"productModel"` //产品型号
+	ProductModel        *ProductModel `json:"productModel" gorm:"constraint:OnDelete:CASCADE"` //产品型号
 }
 
 func PBToProductModelBoms(in []*proto.ProductModelBomInfo) []*ProductModelBom {

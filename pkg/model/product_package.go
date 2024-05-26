@@ -19,7 +19,7 @@ type ProductPackage struct {
 	MeasureUnit          string              `json:"measureUnit" gorm:"size:200;comment:尺寸单位"`
 	Remark               string              `json:"remark" gorm:"size:1000;comment:备注"`
 	ProductPackageTypeID *string             `json:"productPackageTypeID" gorm:"comment:包装类型ID"`
-	ProductPackageType   *ProductPackageType `json:"productPackageType"` //包装类型
+	ProductPackageType   *ProductPackageType `json:"productPackageType" gorm:"constraint:OnDelete:SET NULL"` //包装类型
 }
 
 func PBToProductPackages(in []*proto.ProductPackageInfo) []*ProductPackage {

@@ -21,10 +21,10 @@ type ProductionStation struct {
 	LastUpdateTime   time.Time       `json:"lastUpdateTime" gorm:"autoUpdateTime:nano;comment:最后更新时间"`
 	Remark           string          `json:"remark" gorm:"size:500;comment:备注"`
 	ProductionLineID string          `json:"productionLineID" gorm:"index;size:36;comment:生产产线ID"`
-	ProductionLine   *ProductionLine `json:"productionLine"` //生产产线
+	ProductionLine   *ProductionLine `json:"productionLine" gorm:"constraint:OnDelete:CASCADE"` //生产产线
 	CurrentUserID    *string         `json:"currentUserID" gorm:"index;size:36;comment:当前登录用户ID"`
 	ProductInfoID    *string         `json:"productInfoID" gorm:"index;size:36;comment:当前产品ID"`
-	ProductInfo      *ProductInfo    `json:"productInfo"` //当前产品
+	ProductInfo      *ProductInfo    `json:"productInfo" gorm:"constraint:OnDelete:CASCADE"` //当前产品
 }
 
 func PBToProductionStations(in []*proto.ProductionStationInfo) []*ProductionStation {

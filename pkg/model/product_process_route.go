@@ -21,10 +21,10 @@ type ProductProcessRoute struct {
 	CurrentProcessID    string             `json:"currentProcessID" gorm:"size:36;comment:当前工序ID"`
 	CurrentProcess      *ProductionProcess `json:"currentProcess" gorm:"foreignkey:current_process_id"` //生产工序
 	ProductionStationID string             `json:"productionStationID" gorm:"size:36;comment:执行工站ID"`
-	ProductionStation   *ProductionStation `json:"productionStation"` //工站
+	ProductionStation   *ProductionStation `json:"productionStation" gorm:"constraint:OnDelete:CASCADE"` //工站
 	ProcessUserID       string             `json:"processUserID" gorm:"size:36;comment:执行人员ID"`
 	ProductInfoID       string             `json:"productInfoID" gorm:"size:36;comment:产品信息ID"`
-	ProductInfo         *ProductInfo       `json:"productInfo"` //产品
+	ProductInfo         *ProductInfo       `json:"productInfo" gorm:"constraint:OnDelete:CASCADE"` //产品
 }
 
 func PBToProductProcessRoutes(in []*proto.ProductProcessRouteInfo) []*ProductProcessRoute {

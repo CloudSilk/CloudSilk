@@ -24,7 +24,7 @@ type ProductOrderBom struct {
 	CreateUserID        string        `json:"createUserID" gorm:"size:36;comment:创建人员ID"`
 	Remark              string        `json:"remark" gorm:"size:1000;comment:备注"`
 	ProductOrderID      string        `json:"productOrderID" gorm:"size:36;comment:隶属工单ID"`
-	ProductOrder        *ProductOrder `json:"productOrder"` //工单
+	ProductOrder        *ProductOrder `json:"productOrder" gorm:"constraint:OnDelete:CASCADE"` //工单
 }
 
 func PBToProductOrderBoms(in []*proto.ProductOrderBomInfo) []*ProductOrderBom {

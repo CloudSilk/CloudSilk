@@ -8,7 +8,7 @@ type ProductOrderReleaseRule struct {
 	ModelID
 	Priority             int32                  `json:"priority" gorm:"comment:优先级"`
 	ProductionLineID     string                 `json:"productionLineID" gorm:"size:36;comment:发放产线ID"`
-	ProductionLine       *ProductionLine        `json:"productionLine"`
+	ProductionLine       *ProductionLine        `json:"productionLine" gorm:"constraint:OnDelete:CASCADE"`
 	Enable               bool                   `json:"enable" gorm:"comment:是否启用"`
 	InitialValue         bool                   `json:"initialValue" gorm:"comment:默认发放"`
 	Remark               string                 `json:"remark" gorm:"size:1000;comment:备注"`

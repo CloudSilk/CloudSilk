@@ -18,7 +18,7 @@ type ProductOrderAttachment struct {
 	CreateTime     time.Time     `json:"createTime" gorm:"autoCreateTime:nano;comment:创建时间"`
 	CreateUserID   string        `json:"createUserID" gorm:"size:36;comment:创建人员ID"`
 	ProductOrderID string        `json:"productOrderID" gorm:"size:36;comment:隶属工单ID"`
-	ProductOrder   *ProductOrder `json:"productOrder"`
+	ProductOrder   *ProductOrder `json:"productOrder" gorm:"constraint:OnDelete:CASCADE"`
 }
 
 func PBToProductOrderAttachments(in []*proto.ProductOrderAttachmentInfo) []*ProductOrderAttachment {

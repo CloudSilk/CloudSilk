@@ -10,11 +10,11 @@ import (
 type ProductWorkRecord struct {
 	ModelID
 	ProductionStationID     string                 `json:"ProductionStationID" gorm:"size:36;comment:生产工站ID"`
-	ProductionStation       *ProductionStation     ``
+	ProductionStation       *ProductionStation     ` gorm:"constraint:OnDelete:CASCADE"`
 	ProductionProcessStepID string                 `json:"ProductionProcessStepID" gorm:"size:36;comment:作业步骤ID"`
-	ProductionProcessStep   *ProductionProcessStep ``
+	ProductionProcessStep   *ProductionProcessStep ` gorm:"constraint:OnDelete:CASCADE"`
 	ProductInfoID           string                 `json:"ProductInfoID" gorm:"size:36;comment:产品信息ID"`
-	ProductInfo             *ProductInfo           ``
+	ProductInfo             *ProductInfo           ` gorm:"constraint:OnDelete:CASCADE"`
 	WorkStartTime           sql.NullTime           `json:"WorkStartTime" gorm:"comment:开始作业时间"`
 	WorkEndTime             sql.NullTime           `json:"WorkEndTime" gorm:"comment:结束作业时间"`
 	Duration                int32                  `json:"Duration" gorm:"comment:耗时(秒)"`

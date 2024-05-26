@@ -9,7 +9,7 @@ type PrintServer struct {
 	Name         string     `json:"name" gorm:"size:100;comment:名称"`
 	Identity     string     `json:"identity" gorm:"size:100;comment:身份标识"`
 	RunningState string     `json:"runningState" gorm:"size:100;comment:运行状态"`
-	Printers     []*Printer `json:"printers"` //打印机
+	Printers     []*Printer `json:"printers" gorm:"constraint:OnDelete:CASCADE"` //打印机
 }
 
 type Printer struct {
