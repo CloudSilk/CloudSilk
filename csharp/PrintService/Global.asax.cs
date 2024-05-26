@@ -53,7 +53,11 @@ namespace PrintService
         }
         private void Start()
         {
-            client = new MQTTClient(Environment.GetEnvironmentVariable("PRINT_MQTT_HOST") == null ? "127.0.0.1" : Environment.GetEnvironmentVariable("PRINT_MQTT_HOST"), 1883, HandleReceived, new string[] { "task/print" });
+            if (Environment.GetEnvironmentVariable("PRINT_ENABLE_MQTT") == "true")
+            {
+                client = new MQTTClient(Environment.GetEnvironmentVariable("PRINT_MQTT_HOST") == null ? "127.0.0.1" : Environment.GetEnvironmentVariable("PRINT_MQTT_HOST"), 1883, HandleReceived, new string[] { "task/print" });
+            }
+            
         }
     }
 }
