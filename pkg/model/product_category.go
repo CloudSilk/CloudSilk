@@ -14,7 +14,7 @@ type ProductCategory struct {
 	AttributeExpression       string                      `json:"attributeExpression" gorm:"size:4000;comment:特性表达式"`
 	Remark                    string                      `json:"remark" gorm:"size:1000;comment:备注"`
 	ProductBrandID            string                      `json:"productBrandID" gorm:"size:36;comment:产品品牌"`
-	ProductBrand              *ProductBrand               `json:"productBrand"` //产品品牌
+	ProductBrand              *ProductBrand               `json:"productBrand" gorm:"constraint:OnDelete:CASCADE"` //产品品牌
 	ProductCategoryAttributes []*ProductCategoryAttribute `gorm:"constraint:OnDelete:CASCADE"`
 }
 

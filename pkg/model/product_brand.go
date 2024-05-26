@@ -7,10 +7,10 @@ import (
 // 产品品牌
 type ProductBrand struct {
 	ModelID
-	Code        string `json:"code" gorm:"index;size:100;comment:代号"`
-	Description string `json:"description" gorm:"size:200;comment:描述"`
-	Identifier  string `json:"identifier" gorm:"size:100;comment:识别码"`
-	Remark      string `json:"remark" gorm:"size:1000;comment:备注"`
+	Code             string             `json:"code" gorm:"index;size:100;comment:代号"`
+	Description      string             `json:"description" gorm:"size:200;comment:描述"`
+	Identifier       string             `json:"identifier" gorm:"size:100;comment:识别码"`
+	Remark           string             `json:"remark" gorm:"size:1000;comment:备注"`
 }
 
 func PBToProductBrands(in []*proto.ProductBrandInfo) []*ProductBrand {
