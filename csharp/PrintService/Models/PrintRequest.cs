@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
+﻿using System.Collections.Generic;
 
 namespace PrintService.Models
 {
@@ -11,5 +8,6 @@ namespace PrintService.Models
         public string PrinterName;
         public int PrintCopies;
         public string PrintJobName;
+        public byte[] TemplateFile;
     }
 }
