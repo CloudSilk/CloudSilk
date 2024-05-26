@@ -101,7 +101,7 @@ func QueryProductModel(req *proto.QueryProductModelRequest, resp *proto.QueryPro
 	if req.Code != "" {
 		db = db.Where("`code` LIKE ? OR `material_no` LIKE ? OR `material_description` LIKE ?", "%"+req.Code+"%", "%"+req.Code+"%", "%"+req.Code+"%")
 	}
-	if !req.IsPrefabricated {
+	if req.IsPrefabricated {
 		db = db.Where("is_prefabricated=?", req.IsPrefabricated)
 	}
 

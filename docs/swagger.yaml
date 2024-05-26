@@ -1238,6 +1238,13 @@ definitions:
       message:
         type: string
     type: object
+  proto.GetByIDsRequest:
+    properties:
+      ids:
+        items:
+          type: string
+        type: array
+    type: object
   proto.GetCodingGenerationDetailResponse:
     properties:
       code:
@@ -8778,6 +8785,33 @@ paths:
           schema:
             $ref: '#/definitions/proto.QueryProductOrderResponse'
       summary: 分页查询
+      tags:
+      - 生产工单管理
+  /api/mom/product/productorder/release:
+    put:
+      consumes:
+      - application/json
+      description: 发放
+      parameters:
+      - description: jwt token
+        in: header
+        name: authorization
+        required: true
+        type: string
+      - description: Release ProductOrder
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/proto.GetByIDsRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/proto.CommonResponse'
+      summary: 发放
       tags:
       - 生产工单管理
   /api/mom/product/productorder/update:
