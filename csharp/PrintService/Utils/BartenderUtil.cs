@@ -5,7 +5,7 @@
     using System.Collections.Generic;
     using System.Drawing.Printing;
     using System.Linq;
-    using PrintService.model;
+    using PrintService.Models;
 
     /// <summary>
     /// 
@@ -25,13 +25,13 @@
         /// <param name="message"></param>
         /// <param name="printJobName"></param>
         /// <returns></returns>
-        public static bool Print(string fileName, IDictionary<string, dynamic> keyValues, string printerName, int printCopies, ref string message, string printJobName)
+        public static bool Print(string fileName, PrintRequest printRequest, ref string message)
         {
             var printed = false;
             try
             {
-                var installed = PrinterSettings.InstalledPrinters.Cast<string>().Any(c => c == printerName);
-                if (!installed) throw new Exception($@"无法找到名称为{printerName}的打印机");
+                var installed = PrinterSettings.InstalledPrinters.Cast<string>().Any(c => c == printRequest.PrinterName);
+                if (!installed) throw new Exception($@"无法找到名称为{printRequest.PrinterName}的打印机");
 
                 if (null == BartenderUtil.Engine || !BartenderUtil.Engine.IsAlive)
                 {
@@ -51,19 +51,19 @@
 
                 //设置模板打印参数
                 document.SubStrings.ForEach(subString => {
-                    var defined = null != keyValues && keyValues.ContainsKey(subString.Name);
+                    var defined = null != printRequest.Parameters && printRequest.Parameters.ContainsKey(subString.Name);
                     if (defined)
                     {
-                        var value = keyValues[subString.Name];
+                        var value = printRequest.Parameters[subString.Name];
                         subString.Value = value;
                     }
                 });
                 //设置模板打印设置
-                document.PrintSetup.PrinterName = printerName;
-                document.PrintSetup.IdenticalCopiesOfLabel = printCopies;
+                document.PrintSetup.PrinterName = printRequest.PrinterName;
+                document.PrintSetup.IdenticalCopiesOfLabel = printRequest.PrintCopies;
 
                 var messages = new Messages();
-                var printResult = document.Print(printJobName, out messages);
+                var printResult = document.Print(printRequest.PrintJobName, out messages);
 
                 //关闭模板文件
                 BartenderUtil.Engine.Documents.Close(fileName, SaveOptions.DoNotSaveChanges);
