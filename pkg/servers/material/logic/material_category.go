@@ -44,7 +44,7 @@ func GetAllMaterialCategorys() (list []*model.MaterialCategory, err error) {
 
 func GetMaterialCategoryByID(id string) (*model.MaterialCategory, error) {
 	m := &model.MaterialCategory{}
-	err := model.DB.DB().Preload(clause.Associations).Where("id = ?", id).First(m).Error
+	err := model.DB.DB().Preload(clause.Associations).Where("`id` = ?", id).First(m).Error
 	return m, err
 }
 
@@ -55,5 +55,5 @@ func GetMaterialCategoryByIDs(ids []string) ([]*model.MaterialCategory, error) {
 }
 
 func DeleteMaterialCategory(id string) (err error) {
-	return model.DB.DB().Delete(&model.MaterialCategory{}, "id=?", id).Error
+	return model.DB.DB().Delete(&model.MaterialCategory{}, "`id` = ?", id).Error
 }

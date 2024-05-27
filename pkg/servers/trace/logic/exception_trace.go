@@ -51,16 +51,16 @@ func GetAllExceptionTraces() (list []*model.ExceptionTrace, err error) {
 
 func GetExceptionTraceByID(id string) (*model.ExceptionTrace, error) {
 	m := &model.ExceptionTrace{}
-	err := model.DB.DB().Preload(clause.Associations).Where("id = ?", id).First(m).Error
+	err := model.DB.DB().Preload(clause.Associations).Where("`id` = ?", id).First(m).Error
 	return m, err
 }
 
 func GetExceptionTraceByIDs(ids []string) ([]*model.ExceptionTrace, error) {
 	var m []*model.ExceptionTrace
-	err := model.DB.DB().Preload(clause.Associations).Where("id in (?)", ids).Find(&m).Error
+	err := model.DB.DB().Preload(clause.Associations).Where("`id` in (?)", ids).Find(&m).Error
 	return m, err
 }
 
 func DeleteExceptionTrace(id string) (err error) {
-	return model.DB.DB().Delete(&model.ExceptionTrace{}, "id=?", id).Error
+	return model.DB.DB().Delete(&model.ExceptionTrace{}, "`id` = ?", id).Error
 }

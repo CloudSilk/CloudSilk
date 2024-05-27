@@ -52,16 +52,16 @@ func GetAllPersonnelQualifications() (list []*model.PersonnelQualification, err 
 
 func GetPersonnelQualificationByID(id string) (*model.PersonnelQualification, error) {
 	m := &model.PersonnelQualification{}
-	err := model.DB.DB().Preload(clause.Associations).Where("id = ?", id).First(m).Error
+	err := model.DB.DB().Preload(clause.Associations).Where("`id` = ?", id).First(m).Error
 	return m, err
 }
 
 func GetPersonnelQualificationByIDs(ids []string) ([]*model.PersonnelQualification, error) {
 	var m []*model.PersonnelQualification
-	err := model.DB.DB().Preload(clause.Associations).Where("id in (?)", ids).Find(&m).Error
+	err := model.DB.DB().Preload(clause.Associations).Where("`id` in (?)", ids).Find(&m).Error
 	return m, err
 }
 
 func DeletePersonnelQualification(id string) (err error) {
-	return model.DB.DB().Delete(&model.PersonnelQualification{}, "id=?", id).Error
+	return model.DB.DB().Delete(&model.PersonnelQualification{}, "`id` = ?", id).Error
 }

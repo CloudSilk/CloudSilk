@@ -2,17 +2,15 @@ package logic
 
 import (
 	"errors"
-	"fmt"
 
 	"github.com/CloudSilk/CloudSilk/pkg/model"
 	"github.com/CloudSilk/CloudSilk/pkg/proto"
 	"github.com/CloudSilk/pkg/utils"
-	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
 )
 
 func CreateProductPackageType(m *model.ProductPackageType) (string, error) {
-	duplication, err := model.DB.CreateWithCheckDuplication(m, "code =? ", m.Code)
+	duplication, err := model.DB.CreateWithCheckDuplication(m, "`code`  = ? ", m.Code)
 	if err != nil {
 		return "", err
 	}
@@ -30,7 +28,7 @@ func UpdateProductPackageType(m *model.ProductPackageType) error {
 	// if m.SystemEventID == "" {
 	// 	omits = append(omits, "SystemEventID")
 	// }
-	duplication, err := model.DB.UpdateWithCheckDuplicationAndOmit(model.DB.DB(), m, false, []string{"created_at"}, "id != ? and  code =? ", m.ID, m.Code)
+	duplication, err := model.DB.UpdateWithCheckDuplicationAndOmit(model.DB.DB(), m, false, []string{"created_at"}, "`id` != ? and  `code`  = ? ", m.ID, m.Code)
 	if err != nil {
 		return err
 	}
@@ -72,32 +70,22 @@ func GetAllProductPackageTypes() (list []*model.ProductPackageType, err error) {
 
 func GetProductPackageTypeByID(id string) (*model.ProductPackageType, error) {
 	m := &model.ProductPackageType{}
-	err := model.DB.DB().Preload("LabelType").Preload(clause.Associations).Where("id = ?", id).First(m).Error
+	err := model.DB.DB().Preload("LabelType").Preload(clause.Associations).Where("`id` = ?", id).First(m).Error
 	return m, err
 }
 
 func GetProductPackageTypeByIDs(ids []string) ([]*model.ProductPackageType, error) {
 	var m []*model.ProductPackageType
-	err := model.DB.DB().Preload(clause.Associations).Where("id in (?)", ids).Find(&m).Error
+	err := model.DB.DB().Preload(clause.Associations).Where("`id` in (?)", ids).Find(&m).Error
 	return m, err
 }
 
 func DeleteProductPackageType(id string) (err error) {
-	err = model.DB.DB().First(&model.ProductPackage{}, "ProductPackageTypeID=?", id).Error
-	switch err {
-	case gorm.ErrRecordNotFound:
-		break
-	case nil:
-		return fmt.Errorf("数据冲突，请清空此类型下属的产品包装")
-	default:
-		return err
-	}
-
-	return model.DB.DB().Delete(&model.ProductPackageType{}, "id=?", id).Error
+	return model.DB.DB().Delete(&model.ProductPackageType{}, "`id` = ?", id).Error
 }
 
 func UpdateProductPackageTypeAll(m *model.ProductPackageType) error {
-	duplication, err := model.DB.UpdateWithCheckDuplicationAndOmit(model.DB.DB(), m, true, []string{}, "id != ? and  code =? ", m.ID, m.Code)
+	duplication, err := model.DB.UpdateWithCheckDuplicationAndOmit(model.DB.DB(), m, true, []string{}, "`id` <> ? and  `code`  = ? ", m.ID, m.Code)
 	if err != nil {
 		return err
 	}

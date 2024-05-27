@@ -58,7 +58,7 @@ func GetAllProductRhythmRecords() (list []*model.ProductRhythmRecord, err error)
 
 func GetProductRhythmRecordByID(id string) (*model.ProductRhythmRecord, error) {
 	m := &model.ProductRhythmRecord{}
-	err := model.DB.DB().Preload(clause.Associations).Where("id = ?", id).First(m).Error
+	err := model.DB.DB().Preload(clause.Associations).Where("`id` = ?", id).First(m).Error
 	return m, err
 }
 
@@ -70,17 +70,17 @@ func GetProductRhythmRecord(productionProcessID, productInfoID, productionStatio
 		workEndTime = " AND work_end_time IS NULL"
 	}
 
-	err := model.DB.DB().Preload(clause.Associations).Where("production_process_id = ? AND product_info_id = ? AND production_station_id = ?"+workEndTime,
+	err := model.DB.DB().Preload(clause.Associations).Where("`production_process_id` = ? AND `product_info_id` = ? AND `production_station_id` = ?"+workEndTime,
 		productionProcessID, productInfoID, productionStationID).First(m).Error
 	return m, err
 }
 
 func GetProductRhythmRecordByIDs(ids []string) ([]*model.ProductRhythmRecord, error) {
 	var m []*model.ProductRhythmRecord
-	err := model.DB.DB().Preload(clause.Associations).Where("id in (?)", ids).Find(&m).Error
+	err := model.DB.DB().Preload(clause.Associations).Where("`id` in (?)", ids).Find(&m).Error
 	return m, err
 }
 
 func DeleteProductRhythmRecord(id string) (err error) {
-	return model.DB.DB().Delete(&model.ProductRhythmRecord{}, "id=?", id).Error
+	return model.DB.DB().Delete(&model.ProductRhythmRecord{}, "`id` = ?", id).Error
 }

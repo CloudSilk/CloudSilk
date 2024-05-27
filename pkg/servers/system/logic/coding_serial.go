@@ -44,16 +44,16 @@ func GetAllCodingSerials() (list []*model.CodingSerial, err error) {
 
 func GetCodingSerialByID(id string) (*model.CodingSerial, error) {
 	m := &model.CodingSerial{}
-	err := model.DB.DB().Preload(clause.Associations).Where("id = ?", id).First(m).Error
+	err := model.DB.DB().Preload(clause.Associations).Where("`id` = ?", id).First(m).Error
 	return m, err
 }
 
 func GetCodingSerialByIDs(ids []string) ([]*model.CodingSerial, error) {
 	var m []*model.CodingSerial
-	err := model.DB.DB().Preload(clause.Associations).Where("id in (?)", ids).Find(&m).Error
+	err := model.DB.DB().Preload(clause.Associations).Where("`id` in (?)", ids).Find(&m).Error
 	return m, err
 }
 
 func DeleteCodingSerial(id string) (err error) {
-	return model.DB.DB().Delete(&model.CodingSerial{}, "id=?", id).Error
+	return model.DB.DB().Delete(&model.CodingSerial{}, "`id` = ?", id).Error
 }

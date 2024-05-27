@@ -50,16 +50,16 @@ func GetAllRemoteServiceTaskQueues() (list []*model.RemoteServiceTaskQueue, err 
 
 func GetRemoteServiceTaskQueueByID(id string) (*model.RemoteServiceTaskQueue, error) {
 	m := &model.RemoteServiceTaskQueue{}
-	err := model.DB.DB().Preload("RemoteServiceTaskQueueParameters").Preload(clause.Associations).Where("id = ?", id).First(m).Error
+	err := model.DB.DB().Preload("RemoteServiceTaskQueueParameters").Preload(clause.Associations).Where("`id` = ?", id).First(m).Error
 	return m, err
 }
 
 func GetRemoteServiceTaskQueueByIDs(ids []string) ([]*model.RemoteServiceTaskQueue, error) {
 	var m []*model.RemoteServiceTaskQueue
-	err := model.DB.DB().Preload("RemoteServiceTaskQueueParameters").Preload(clause.Associations).Where("id in (?)", ids).Find(&m).Error
+	err := model.DB.DB().Preload("RemoteServiceTaskQueueParameters").Preload(clause.Associations).Where("`id` in (?)", ids).Find(&m).Error
 	return m, err
 }
 
 func DeleteRemoteServiceTaskQueue(id string) (err error) {
-	return model.DB.DB().Delete(&model.RemoteServiceTaskQueue{}, "id=?", id).Error
+	return model.DB.DB().Delete(&model.RemoteServiceTaskQueue{}, "`id` = ?", id).Error
 }

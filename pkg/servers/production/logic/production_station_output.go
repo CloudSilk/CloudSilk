@@ -61,7 +61,7 @@ func GetAllProductionStationOutputs() (list []*model.ProductionStationOutput, er
 
 func GetProductionStationOutputByID(id string) (*model.ProductionStationOutput, error) {
 	m := &model.ProductionStationOutput{}
-	err := model.DB.DB().Preload(clause.Associations).Where("id = ?", id).First(m).Error
+	err := model.DB.DB().Preload(clause.Associations).Where("`id` = ?", id).First(m).Error
 	return m, err
 }
 
@@ -76,10 +76,10 @@ func GetProductionStationOutput(req *proto.GetProductionStationOutputRequest) (*
 
 func GetProductionStationOutputByIDs(ids []string) ([]*model.ProductionStationOutput, error) {
 	var m []*model.ProductionStationOutput
-	err := model.DB.DB().Preload(clause.Associations).Where("id in (?)", ids).Find(&m).Error
+	err := model.DB.DB().Preload(clause.Associations).Where("`id` in (?)", ids).Find(&m).Error
 	return m, err
 }
 
 func DeleteProductionStationOutput(id string) (err error) {
-	return model.DB.DB().Delete(&model.ProductionStationOutput{}, "id=?", id).Error
+	return model.DB.DB().Delete(&model.ProductionStationOutput{}, "`id` = ?", id).Error
 }

@@ -55,5 +55,5 @@ func GetMaterialInfoByIDs(ids []string) ([]*model.MaterialInfo, error) {
 }
 
 func DeleteMaterialInfo(id string) (err error) {
-	return model.DB.DB().Delete(&model.MaterialInfo{}, "id=?", id).Error
+	return model.DB.DB().Delete(&model.MaterialInfo{}, "`id` = ?", id).Error
 }

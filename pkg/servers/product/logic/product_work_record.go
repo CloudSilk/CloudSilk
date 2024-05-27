@@ -34,7 +34,7 @@ func QueryProductWorkRecord(req *proto.QueryProductWorkRecordRequest, resp *prot
 	}
 	if req.ProductionLineID != "" {
 		db.Joins("JOIN production_stations ON product_work_records.production_station_id=production_stations.id").
-			Where("production_stations.production_line_id=?", req.ProductionLineID)
+			Where("production_stations.production_line_id = ?", req.ProductionLineID)
 	}
 
 	orderStr, err := utils.GenerateOrderString(req.SortConfig, "created_at desc")
@@ -73,5 +73,5 @@ func GetProductWorkRecordByIDs(ids []string) ([]*model.ProductWorkRecord, error)
 }
 
 func DeleteProductWorkRecord(id string) (err error) {
-	return model.DB.DB().Delete(&model.ProductWorkRecord{}, "id=?", id).Error
+	return model.DB.DB().Delete(&model.ProductWorkRecord{}, "id = ?", id).Error
 }

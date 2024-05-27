@@ -11,7 +11,7 @@ import (
 )
 
 func CreateProcessStepParameter(m *model.ProcessStepParameter) (string, error) {
-	duplication, err := model.DB.CreateWithCheckDuplication(m, " code =? ", m.Code)
+	duplication, err := model.DB.CreateWithCheckDuplication(m, " `code`  = ? ", m.Code)
 	if err != nil {
 		return "", err
 	}
@@ -23,15 +23,15 @@ func CreateProcessStepParameter(m *model.ProcessStepParameter) (string, error) {
 
 func UpdateProcessStepParameter(m *model.ProcessStepParameter) error {
 	return model.DB.DB().Transaction(func(tx *gorm.DB) error {
-		if err := tx.Delete(&model.ProcessStepParameterValue{}, "process_step_parameter_id=?", m.ID).Error; err != nil {
+		if err := tx.Delete(&model.ProcessStepParameterValue{}, "`process_step_parameter_id` = ?", m.ID).Error; err != nil {
 			return err
 		}
 
-		if err := tx.Delete(&model.AttributeExpression{}, "rule_id = ? AND rule_type = ?", m.ID, "ProcessStepParameter").Error; err != nil {
+		if err := tx.Delete(&model.AttributeExpression{}, "`rule_id` = ? AND `rule_type` = ?", m.ID, "ProcessStepParameter").Error; err != nil {
 			return err
 		}
 
-		duplication, err := model.DB.UpdateWithCheckDuplicationAndOmit(tx, m, true, []string{"created_at"}, "id <> ?  and  code =? ", m.ID, m.Code)
+		duplication, err := model.DB.UpdateWithCheckDuplicationAndOmit(tx, m, true, []string{"created_at"}, "`id` <> ?  and  `code`  = ? ", m.ID, m.Code)
 		if err != nil {
 			return err
 		}
@@ -49,7 +49,7 @@ func QueryProcessStepParameter(req *proto.QueryProcessStepParameterRequest, resp
 		db = db.Where("`code` like ? OR `description` like ?", "%"+req.Code+"%", "%"+req.Code+"%")
 	}
 	if req.ProductionLineID != "" {
-		db = db.Where("`production_line_id`=?", req.ProductionLineID)
+		db = db.Where("`production_line_id` = ?", req.ProductionLineID)
 	}
 
 	orderStr, err := utils.GenerateOrderString(req.SortConfig, "created_at desc")
@@ -83,12 +83,12 @@ func GetProcessStepParameterByID(id string) (*model.ProcessStepParameter, error)
 
 func GetProcessStepParameterByIDs(ids []string) ([]*model.ProcessStepParameter, error) {
 	var m []*model.ProcessStepParameter
-	err := model.DB.DB().Preload(clause.Associations).Where("id in (?)", ids).Find(&m).Error
+	err := model.DB.DB().Preload(clause.Associations).Where("`id` in (?)", ids).Find(&m).Error
 	return m, err
 }
 
 func DeleteProcessStepParameter(id string) (err error) {
-	return model.DB.DB().Delete(&model.ProcessStepParameter{}, "id=?", id).Error
+	return model.DB.DB().Delete(&model.ProcessStepParameter{}, "`id` = ?", id).Error
 }
 
 func GetAllProcessStepParameterByProductionLineID(productionLineID string) (*model.ProductionLine, error) {
@@ -101,7 +101,7 @@ func GetAllProcessStepParameterByProductionLineID(productionLineID string) (*mod
 		Preload("ProductionProcesses.ProductionProcessSteps.ProductionProcessStep.ProcessStepType.ProcessStepTypeParameters").
 		Preload("ProcessStepParameters").
 		Preload("ProcessStepParameters.ProcessStepParameterValues").
-		Where("id = ?", productionLineID).First(m).Error
+		Where("`id` = ?", productionLineID).First(m).Error
 
 	for _, processStepParameter := range m.ProcessStepParameters {
 		for _, processStepParameterValue := range processStepParameter.ProcessStepParameterValues {

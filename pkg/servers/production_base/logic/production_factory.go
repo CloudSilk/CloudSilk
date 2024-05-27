@@ -11,7 +11,7 @@ import (
 )
 
 func CreateProductionFactory(m *model.ProductionFactory) (string, error) {
-	duplication, err := model.DB.CreateWithCheckDuplication(m, " code =? ", m.Code)
+	duplication, err := model.DB.CreateWithCheckDuplication(m, " code  = ? ", m.Code)
 	if err != nil {
 		return "", err
 	}
@@ -28,11 +28,11 @@ func UpdateProductionFactory(m *model.ProductionFactory) error {
 			return err
 		}
 
-		if err := tx.Delete(&model.ProductionLine{}, "production_factory_id=?", m.ID).Error; err != nil {
+		if err := tx.Delete(&model.ProductionLine{}, "production_factory_id = ?", m.ID).Error; err != nil {
 			return err
 		}
 
-		duplication, err := model.DB.UpdateWithCheckDuplicationAndOmit(tx, m, true, []string{"created_at"}, "id <> ?  and  code =? ", m.ID, m.Code)
+		duplication, err := model.DB.UpdateWithCheckDuplicationAndOmit(tx, m, true, []string{"created_at"}, "id <> ?  and  code  = ? ", m.ID, m.Code)
 		if err != nil {
 			return err
 		}
@@ -75,16 +75,16 @@ func GetAllProductionFactorys() (list []*model.ProductionFactory, err error) {
 
 func GetProductionFactoryByID(id string) (*model.ProductionFactory, error) {
 	m := &model.ProductionFactory{}
-	err := model.DB.DB().Preload("ProductionLines.ProductionStations").Preload("ProductionLines.ProductionCrossways").Preload(clause.Associations).Where("id = ?", id).First(m).Error
+	err := model.DB.DB().Preload("ProductionLines.ProductionStations").Preload("ProductionLines.ProductionCrossways").Preload(clause.Associations).Where("`id` = ?", id).First(m).Error
 	return m, err
 }
 
 func GetProductionFactoryByIDs(ids []string) ([]*model.ProductionFactory, error) {
 	var m []*model.ProductionFactory
-	err := model.DB.DB().Preload("ProductionLines.ProductionStations").Preload("ProductionLines.ProductionCrossways").Preload(clause.Associations).Where("id in (?)", ids).Find(&m).Error
+	err := model.DB.DB().Preload("ProductionLines.ProductionStations").Preload("ProductionLines.ProductionCrossways").Preload(clause.Associations).Where("`id` in (?)", ids).Find(&m).Error
 	return m, err
 }
 
 func DeleteProductionFactory(id string) (err error) {
-	return model.DB.DB().Delete(&model.ProductionFactory{}, "id=?", id).Error
+	return model.DB.DB().Delete(&model.ProductionFactory{}, "`id` = ?", id).Error
 }

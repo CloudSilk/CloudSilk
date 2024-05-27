@@ -67,5 +67,5 @@ func GetInvocationTraceByIDs(ids []string) ([]*model.InvocationTrace, error) {
 }
 
 func DeleteInvocationTrace(id string) (err error) {
-	return model.DB.DB().Delete(&model.InvocationTrace{}, "id=?", id).Error
+	return model.DB.DB().Delete(&model.InvocationTrace{}, "id = ?", id).Error
 }

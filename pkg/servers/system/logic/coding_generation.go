@@ -44,16 +44,16 @@ func GetAllCodingGenerations() (list []*model.CodingGeneration, err error) {
 
 func GetCodingGenerationByID(id string) (*model.CodingGeneration, error) {
 	m := &model.CodingGeneration{}
-	err := model.DB.DB().Preload(clause.Associations).Where("id = ?", id).First(m).Error
+	err := model.DB.DB().Preload(clause.Associations).Where("`id` = ?", id).First(m).Error
 	return m, err
 }
 
 func GetCodingGenerationByIDs(ids []string) ([]*model.CodingGeneration, error) {
 	var m []*model.CodingGeneration
-	err := model.DB.DB().Preload(clause.Associations).Where("id in (?)", ids).Find(&m).Error
+	err := model.DB.DB().Preload(clause.Associations).Where("`id` in (?)", ids).Find(&m).Error
 	return m, err
 }
 
 func DeleteCodingGeneration(id string) (err error) {
-	return model.DB.DB().Delete(&model.CodingGeneration{}, "id=?", id).Error
+	return model.DB.DB().Delete(&model.CodingGeneration{}, "`id` = ?", id).Error
 }

@@ -47,16 +47,16 @@ func GetAllOperationTraces() (list []*model.OperationTrace, err error) {
 
 func GetOperationTraceByID(id string) (*model.OperationTrace, error) {
 	m := &model.OperationTrace{}
-	err := model.DB.DB().Preload(clause.Associations).Where("id = ?", id).First(m).Error
+	err := model.DB.DB().Preload(clause.Associations).Where("`id` = ?", id).First(m).Error
 	return m, err
 }
 
 func GetOperationTraceByIDs(ids []string) ([]*model.OperationTrace, error) {
 	var m []*model.OperationTrace
-	err := model.DB.DB().Preload(clause.Associations).Where("id in (?)", ids).Find(&m).Error
+	err := model.DB.DB().Preload(clause.Associations).Where("`id` in (?)", ids).Find(&m).Error
 	return m, err
 }
 
 func DeleteOperationTrace(id string) (err error) {
-	return model.DB.DB().Delete(&model.OperationTrace{}, "id=?", id).Error
+	return model.DB.DB().Delete(&model.OperationTrace{}, "`id` = ?", id).Error
 }

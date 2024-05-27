@@ -34,7 +34,7 @@ func QueryProductTestRecord(req *proto.QueryProductTestRecordRequest, resp *prot
 	}
 	if req.ProductionLineID != "" {
 		db.Joins("JOIN production_stations ON product_test_records.production_station_id=production_stations.id").
-			Where("production_stations.production_line_id=?", req.ProductionLineID)
+			Where("production_stations.production_line_id = ?", req.ProductionLineID)
 	}
 
 	orderStr, err := utils.GenerateOrderString(req.SortConfig, "created_at desc")
@@ -62,16 +62,16 @@ func GetAllProductTestRecords() (list []*model.ProductTestRecord, err error) {
 
 func GetProductTestRecordByID(id string) (*model.ProductTestRecord, error) {
 	m := &model.ProductTestRecord{}
-	err := model.DB.DB().Preload(clause.Associations).Where("id = ?", id).First(m).Error
+	err := model.DB.DB().Preload(clause.Associations).Where("`id` = ?", id).First(m).Error
 	return m, err
 }
 
 func GetProductTestRecordByIDs(ids []string) ([]*model.ProductTestRecord, error) {
 	var m []*model.ProductTestRecord
-	err := model.DB.DB().Preload(clause.Associations).Where("id in (?)", ids).Find(&m).Error
+	err := model.DB.DB().Preload(clause.Associations).Where("`id` in (?)", ids).Find(&m).Error
 	return m, err
 }
 
 func DeleteProductTestRecord(id string) (err error) {
-	return model.DB.DB().Delete(&model.ProductTestRecord{}, "id=?", id).Error
+	return model.DB.DB().Delete(&model.ProductTestRecord{}, "`id` = ?", id).Error
 }

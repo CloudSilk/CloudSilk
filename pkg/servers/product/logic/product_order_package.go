@@ -60,16 +60,16 @@ func GetAllProductOrderPackages() (list []*model.ProductOrderPackage, err error)
 
 func GetProductOrderPackageByID(id string) (*model.ProductOrderPackage, error) {
 	m := &model.ProductOrderPackage{}
-	err := model.DB.DB().Preload(clause.Associations).Where("id = ?", id).First(m).Error
+	err := model.DB.DB().Preload(clause.Associations).Where("`id` = ?", id).First(m).Error
 	return m, err
 }
 
 func GetProductOrderPackageByIDs(ids []string) ([]*model.ProductOrderPackage, error) {
 	var m []*model.ProductOrderPackage
-	err := model.DB.DB().Preload(clause.Associations).Where("id in (?)", ids).Find(&m).Error
+	err := model.DB.DB().Preload(clause.Associations).Where("`id` in (?)", ids).Find(&m).Error
 	return m, err
 }
 
 func DeleteProductOrderPackage(id string) (err error) {
-	return model.DB.DB().Delete(&model.ProductOrderPackage{}, "id=?", id).Error
+	return model.DB.DB().Delete(&model.ProductOrderPackage{}, "`id` = ?", id).Error
 }

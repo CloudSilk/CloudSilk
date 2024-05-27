@@ -57,7 +57,7 @@ func GetProductOrderReleaseRuleByID(id string) (*model.ProductOrderReleaseRule, 
 	m := &model.ProductOrderReleaseRule{}
 	err := model.DB.DB().Preload("AttributeExpressions", func(db *gorm.DB) *gorm.DB {
 		return db.Where("rule_type", "ProductOrderReleaseRule")
-	}).Preload(clause.Associations).Where("id = ?", id).First(m).Error
+	}).Preload(clause.Associations).Where("`id` = ?", id).First(m).Error
 	return m, err
 }
 
@@ -65,10 +65,10 @@ func GetProductOrderReleaseRuleByIDs(ids []string) ([]*model.ProductOrderRelease
 	var m []*model.ProductOrderReleaseRule
 	err := model.DB.DB().Preload("AttributeExpressions", func(db *gorm.DB) *gorm.DB {
 		return db.Where("rule_type", "ProductOrderReleaseRule")
-	}).Preload(clause.Associations).Where("id in (?)", ids).Find(&m).Error
+	}).Preload(clause.Associations).Where("`id` in (?)", ids).Find(&m).Error
 	return m, err
 }
 
 func DeleteProductOrderReleaseRule(id string) (err error) {
-	return model.DB.DB().Delete(&model.ProductOrderReleaseRule{}, "id=?", id).Error
+	return model.DB.DB().Delete(&model.ProductOrderReleaseRule{}, "`id` = ?", id).Error
 }

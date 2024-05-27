@@ -15,7 +15,7 @@ import (
 
 func CreateProductModel(m *model.ProductModel) (string, error) {
 	var count int64
-	err := model.DB.DB().Model(m).Where(" material_no =? ", m.MaterialNo).Count(&count).Error
+	err := model.DB.DB().Model(m).Where(" material_no  = ? ", m.MaterialNo).Count(&count).Error
 	if err != nil {
 		return "", err
 	}
@@ -25,7 +25,7 @@ func CreateProductModel(m *model.ProductModel) (string, error) {
 
 	//新增型号配置关联同产品类别下的产品类别特性
 	var productCategoryAttributes []*model.ProductCategoryAttribute
-	if err := model.DB.DB().Where("`product_category_id`=?", m.ProductCategoryID).Find(&productCategoryAttributes).Error; err != nil {
+	if err := model.DB.DB().Where("`product_category_id` = ?", m.ProductCategoryID).Find(&productCategoryAttributes).Error; err != nil {
 		return "", err
 	}
 	var productModelAttributeValues []*model.ProductModelAttributeValue
@@ -70,7 +70,7 @@ func UpdateProductModel(m *model.ProductModel) error {
 		if err := tx.Preload("ProductModelAttributeValues").Preload("ProductModelBoms").Preload(clause.Associations).Where("id = ?", m.ID).First(oldProductModel).Error; err != nil {
 			return err
 		}
-		if err := tx.Delete(model.ProductModelAttributeValue{}, "product_model_id=?", m.ID).Error; err != nil {
+		if err := tx.Delete(model.ProductModelAttributeValue{}, "product_model_id = ?", m.ID).Error; err != nil {
 			return err
 		}
 
@@ -82,7 +82,7 @@ func UpdateProductModel(m *model.ProductModel) error {
 		// if m.ProductCategoryID == "" {
 		// 	omits = append(omits, "ProductCategoryID")
 		// }
-		duplication, err := model.DB.UpdateWithCheckDuplicationAndOmit(tx, m, true, []string{"created_at"}, "id <> ?  AND  material_no =? ", m.ID, m.MaterialNo)
+		duplication, err := model.DB.UpdateWithCheckDuplicationAndOmit(tx, m, true, []string{"created_at"}, "id <> ?  AND  material_no  = ? ", m.ID, m.MaterialNo)
 		if err != nil {
 			return err
 		}
@@ -102,7 +102,7 @@ func QueryProductModel(req *proto.QueryProductModelRequest, resp *proto.QueryPro
 		db = db.Where("`code` LIKE ? OR `material_no` LIKE ? OR `material_description` LIKE ?", "%"+req.Code+"%", "%"+req.Code+"%", "%"+req.Code+"%")
 	}
 	if req.IsPrefabricated {
-		db = db.Where("is_prefabricated=?", req.IsPrefabricated)
+		db = db.Where("`is_prefabricated` = ?", req.IsPrefabricated)
 	}
 
 	orderStr, err := utils.GenerateOrderString(req.SortConfig, "created_at desc")
@@ -156,28 +156,8 @@ func GetProductModelByIDs(ids []string) ([]*model.ProductModel, error) {
 }
 
 func DeleteProductModel(id string) (err error) {
-	return model.DB.DB().Delete(&model.ProductModel{}, id).Error
+	return model.DB.DB().Delete(&model.ProductModel{}, "`id` = ?", id).Error
 }
-
-// func DeleteProductModel(id string) (err error) {
-// model.ProductModel := []interface{}{&ProductionProcessSop{}, &ProductModelAttributeValue{}, &ProductModelBom{}}
-
-// return model.DB.DB().Transaction(func(tx *gorm.DB) error {
-// 	for _, model := range model.ProductModel {
-// 		if err := tx.Delete(model, "ProductModelID=?", id).Error; err != nil {
-// 			return err
-// 		}
-// 	}
-
-// 	if err := tx.Delete(&model.ProductModel{}, "id=?", id).Error; err != nil {
-// 		return err
-// 	}
-
-// 	return nil
-// })
-
-// return nil
-// }
 
 func ParamProductModelByID(id string) (err error) {
 	var productModel model.ProductModel
@@ -213,12 +193,12 @@ func ParamProductModelByID(id string) (err error) {
 		if strings.TrimSpace(code) != "" {
 			var productCategoryAttribute model.ProductCategoryAttribute
 			if err := model.DB.DB().Joins("JOIN product_attributes ON product_category_attributes.product_attribute_id=product_attributes.id").
-				Where("`product_category_id`=? and `code`=?", productModel.ProductCategoryID, code).First(&productCategoryAttribute).Error; err != nil {
+				Where("`product_category_id` = ? and `code` = ?", productModel.ProductCategoryID, code).First(&productCategoryAttribute).Error; err != nil {
 				continue
 			}
 
 			var productModelAttributeValue model.ProductModelAttributeValue
-			if err := model.DB.DB().Where("`product_model_id`=? and `product_attribute_id`=?", productModel.ID, productCategoryAttribute.ProductAttributeID).First(&productModelAttributeValue).Error; err == gorm.ErrRecordNotFound {
+			if err := model.DB.DB().Where("`product_model_id` = ? and `product_attribute_id` = ?", productModel.ID, productCategoryAttribute.ProductAttributeID).First(&productModelAttributeValue).Error; err == gorm.ErrRecordNotFound {
 				productModelAttributeValue = model.ProductModelAttributeValue{
 					ProductAttributeID: productCategoryAttribute.ProductAttributeID,
 					ProductModelID:     productModel.ID,

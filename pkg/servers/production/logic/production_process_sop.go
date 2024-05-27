@@ -20,7 +20,7 @@ func QueryProductionProcessSop(req *proto.QueryProductionProcessSopRequest, resp
 	db := model.DB.DB().Model(&model.ProductionProcessSop{}).Preload("ProductModel").Preload(clause.Associations)
 	if req.ProductionLineID != "" {
 		db = db.Joins("JOIN production_processes ON production_process_sops.production_process_id=production_processes.id").
-			Where("production_processes.production_line_id=?", req.ProductionLineID)
+			Where("production_processes.production_line_id = ?", req.ProductionLineID)
 	}
 
 	orderStr, err := utils.GenerateOrderString(req.SortConfig, "created_at desc")
@@ -48,7 +48,7 @@ func GetAllProductionProcessSops() (list []*model.ProductionProcessSop, err erro
 
 func GetProductionProcessSopByID(id string) (*model.ProductionProcessSop, error) {
 	m := &model.ProductionProcessSop{}
-	err := model.DB.DB().Preload("ProductionProcess").Preload(clause.Associations).Where("id = ?", id).First(m).Error
+	err := model.DB.DB().Preload("ProductionProcess").Preload(clause.Associations).Where("`id` = ?", id).First(m).Error
 	return m, err
 }
 
@@ -63,10 +63,10 @@ func GetProductionProcessSop(req *proto.GetProductionProcessSopRequest) (*model.
 
 func GetProductionProcessSopByIDs(ids []string) ([]*model.ProductionProcessSop, error) {
 	var m []*model.ProductionProcessSop
-	err := model.DB.DB().Preload(clause.Associations).Where("id in (?)", ids).Find(&m).Error
+	err := model.DB.DB().Preload(clause.Associations).Where("`id` in (?)", ids).Find(&m).Error
 	return m, err
 }
 
 func DeleteProductionProcessSop(id string) (err error) {
-	return model.DB.DB().Delete(&model.ProductionProcessSop{}, "id=?", id).Error
+	return model.DB.DB().Delete(&model.ProductionProcessSop{}, "`id` = ?", id).Error
 }

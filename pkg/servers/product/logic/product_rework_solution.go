@@ -11,7 +11,7 @@ import (
 )
 
 func CreateProductReworkSolution(m *model.ProductReworkSolution) (string, error) {
-	duplication, err := model.DB.CreateWithCheckDuplication(m, " code =? ", m.Code)
+	duplication, err := model.DB.CreateWithCheckDuplication(m, " `code`  = ? ", m.Code)
 	if err != nil {
 		return "", err
 	}
@@ -23,11 +23,11 @@ func CreateProductReworkSolution(m *model.ProductReworkSolution) (string, error)
 
 func UpdateProductReworkSolution(m *model.ProductReworkSolution) error {
 	return model.DB.DB().Transaction(func(tx *gorm.DB) error {
-		if err := tx.Delete(&model.ProductReworkCauseAvailableSolution{}, "product_rework_solution_id=?", m.ID).Error; err != nil {
+		if err := tx.Delete(&model.ProductReworkCauseAvailableSolution{}, "`product_rework_solution_id` = ?", m.ID).Error; err != nil {
 			return err
 		}
 
-		duplication, err := model.DB.UpdateWithCheckDuplicationAndOmit(tx, m, true, []string{"created_at"}, "id <> ?  and  code =? ", m.ID, m.Code)
+		duplication, err := model.DB.UpdateWithCheckDuplicationAndOmit(tx, m, true, []string{"created_at"}, "`id` <> ?  and  `code`  = ? ", m.ID, m.Code)
 		if err != nil {
 			return err
 		}
@@ -70,16 +70,16 @@ func GetAllProductReworkSolutions() (list []*model.ProductReworkSolution, err er
 
 func GetProductReworkSolutionByID(id string) (*model.ProductReworkSolution, error) {
 	m := &model.ProductReworkSolution{}
-	err := model.DB.DB().Preload("ProductReworkCauseAvailableSolutions").Preload(clause.Associations).Where("id = ?", id).First(m).Error
+	err := model.DB.DB().Preload("ProductReworkCauseAvailableSolutions").Preload(clause.Associations).Where("`id` = ?", id).First(m).Error
 	return m, err
 }
 
 func GetProductReworkSolutionByIDs(ids []string) ([]*model.ProductReworkSolution, error) {
 	var m []*model.ProductReworkSolution
-	err := model.DB.DB().Preload("ProductReworkCauseAvailableSolutions").Preload(clause.Associations).Where("id in (?)", ids).Find(&m).Error
+	err := model.DB.DB().Preload("ProductReworkCauseAvailableSolutions").Preload(clause.Associations).Where("`id` in (?)", ids).Find(&m).Error
 	return m, err
 }
 
 func DeleteProductReworkSolution(id string) (err error) {
-	return model.DB.DB().Delete(&model.ProductReworkSolution{}, "id=?", id).Error
+	return model.DB.DB().Delete(&model.ProductReworkSolution{}, "`id` = ?", id).Error
 }

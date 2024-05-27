@@ -67,16 +67,16 @@ func GetAllProductIssueRecords() (list []*model.ProductIssueRecord, err error) {
 
 func GetProductIssueRecordByID(id string) (*model.ProductIssueRecord, error) {
 	m := &model.ProductIssueRecord{}
-	err := model.DB.DB().Preload(clause.Associations).Where("id = ?", id).First(m).Error
+	err := model.DB.DB().Preload(clause.Associations).Where("`id` = ?", id).First(m).Error
 	return m, err
 }
 
 func GetProductIssueRecordByIDs(ids []string) ([]*model.ProductIssueRecord, error) {
 	var m []*model.ProductIssueRecord
-	err := model.DB.DB().Preload(clause.Associations).Where("id in (?)", ids).Find(&m).Error
+	err := model.DB.DB().Preload(clause.Associations).Where("`id` in (?)", ids).Find(&m).Error
 	return m, err
 }
 
 func DeleteProductIssueRecord(id string) (err error) {
-	return model.DB.DB().Delete(&model.ProductIssueRecord{}, "id=?", id).Error
+	return model.DB.DB().Delete(&model.ProductIssueRecord{}, "`id` = ?", id).Error
 }

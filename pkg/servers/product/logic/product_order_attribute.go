@@ -27,7 +27,7 @@ func QueryProductOrderAttribute(req *proto.QueryProductOrderAttributeRequest, re
 			Where("product_attributes.code LIKE ? OR product_attributes.description LIKE ? OR product_order_attributes.value LIKE ?", "%"+req.Code+"%", "%"+req.Code+"%", "%"+req.Code+"%")
 	}
 	if req.ProductOrderID != "" {
-		db = db.Where("`product_order_id`=?", req.ProductOrderID)
+		db = db.Where("`product_order_id` = ?", req.ProductOrderID)
 	}
 
 	orderStr, err := utils.GenerateOrderString(req.SortConfig, "`id`")
@@ -55,7 +55,7 @@ func GetAllProductOrderAttributes() (list []*model.ProductOrderAttribute, err er
 
 func GetProductOrderAttributeByID(id string) (*model.ProductOrderAttribute, error) {
 	m := &model.ProductOrderAttribute{}
-	err := model.DB.DB().Preload(clause.Associations).Where("id = ?", id).First(m).Error
+	err := model.DB.DB().Preload(clause.Associations).Where("`id` = ?", id).First(m).Error
 	return m, err
 }
 
@@ -66,5 +66,5 @@ func GetProductOrderAttributeByIDs(ids []string) ([]*model.ProductOrderAttribute
 }
 
 func DeleteProductOrderAttribute(id string) (err error) {
-	return model.DB.DB().Delete(&model.ProductOrderAttribute{}, "id=?", id).Error
+	return model.DB.DB().Delete(&model.ProductOrderAttribute{}, "`id` = ?", id).Error
 }

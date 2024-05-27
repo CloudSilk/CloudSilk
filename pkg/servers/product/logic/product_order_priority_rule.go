@@ -15,7 +15,7 @@ func CreateProductOrderPriorityRule(m *model.ProductOrderPriorityRule) (string, 
 
 func UpdateProductOrderPriorityRule(m *model.ProductOrderPriorityRule) error {
 	return model.DB.DB().Transaction(func(tx *gorm.DB) error {
-		if err := tx.Delete(&model.AttributeExpression{}, "rule_id = ? AND rule_type = ?", m.ID, "ProductOrderPriorityRule").Error; err != nil {
+		if err := tx.Delete(&model.AttributeExpression{}, "`rule_id` = ? AND `rule_type` = ?", m.ID, "ProductOrderPriorityRule").Error; err != nil {
 			return err
 		}
 
@@ -60,7 +60,7 @@ func GetProductOrderPriorityRuleByID(id string) (*model.ProductOrderPriorityRule
 	m := &model.ProductOrderPriorityRule{}
 	err := model.DB.DB().Preload("AttributeExpressions", func(db *gorm.DB) *gorm.DB {
 		return db.Where("rule_type", "ProductOrderPriorityRule")
-	}).Preload(clause.Associations).Where("id = ?", id).First(m).Error
+	}).Preload(clause.Associations).Where("`id` = ?", id).First(m).Error
 	return m, err
 }
 
@@ -68,10 +68,10 @@ func GetProductOrderPriorityRuleByIDs(ids []string) ([]*model.ProductOrderPriori
 	var m []*model.ProductOrderPriorityRule
 	err := model.DB.DB().Preload("AttributeExpressions", func(db *gorm.DB) *gorm.DB {
 		return db.Where("rule_type", "ProductOrderPriorityRule")
-	}).Preload(clause.Associations).Where("id in (?)", ids).Find(&m).Error
+	}).Preload(clause.Associations).Where("`id` in (?)", ids).Find(&m).Error
 	return m, err
 }
 
 func DeleteProductOrderPriorityRule(id string) (err error) {
-	return model.DB.DB().Delete(&model.ProductOrderPriorityRule{}, "id=?", id).Error
+	return model.DB.DB().Delete(&model.ProductOrderPriorityRule{}, "`id` = ?", id).Error
 }

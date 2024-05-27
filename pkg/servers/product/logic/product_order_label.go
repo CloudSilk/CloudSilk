@@ -54,16 +54,16 @@ func GetAllProductOrderLabels() (list []*model.ProductOrderLabel, err error) {
 
 func GetProductOrderLabelByID(id string) (*model.ProductOrderLabel, error) {
 	m := &model.ProductOrderLabel{}
-	err := model.DB.DB().Preload("ProductOrderLabelParameters").Preload(clause.Associations).Where("id = ?", id).First(m).Error
+	err := model.DB.DB().Preload("ProductOrderLabelParameters").Preload(clause.Associations).Where("`id` = ?", id).First(m).Error
 	return m, err
 }
 
 func GetProductOrderLabelByIDs(ids []string) ([]*model.ProductOrderLabel, error) {
 	var m []*model.ProductOrderLabel
-	err := model.DB.DB().Preload("ProductOrderLabelParameters").Preload(clause.Associations).Where("id in (?)", ids).Find(&m).Error
+	err := model.DB.DB().Preload("ProductOrderLabelParameters").Preload(clause.Associations).Where("`id` in (?)", ids).Find(&m).Error
 	return m, err
 }
 
 func DeleteProductOrderLabel(id string) (err error) {
-	return model.DB.DB().Delete(&model.ProductOrderLabel{}, "id=?", id).Error
+	return model.DB.DB().Delete(&model.ProductOrderLabel{}, "`id` = ?", id).Error
 }

@@ -54,16 +54,16 @@ func GetAllSystemEventTriggers() (list []*model.SystemEventTrigger, err error) {
 
 func GetSystemEventTriggerByID(id string) (*model.SystemEventTrigger, error) {
 	m := &model.SystemEventTrigger{}
-	err := model.DB.DB().Preload(clause.Associations).Where("id = ?", id).First(m).Error
+	err := model.DB.DB().Preload(clause.Associations).Where("`id` = ?", id).First(m).Error
 	return m, err
 }
 
 func GetSystemEventTriggerByIDs(ids []string) ([]*model.SystemEventTrigger, error) {
 	var m []*model.SystemEventTrigger
-	err := model.DB.DB().Preload(clause.Associations).Where("id in (?)", ids).Find(&m).Error
+	err := model.DB.DB().Preload(clause.Associations).Where("`id` in (?)", ids).Find(&m).Error
 	return m, err
 }
 
 func DeleteSystemEventTrigger(id string) (err error) {
-	return model.DB.DB().Delete(&model.SystemEventTrigger{}, "id=?", id).Error
+	return model.DB.DB().Delete(&model.SystemEventTrigger{}, "`id` = ?", id).Error
 }

@@ -65,16 +65,16 @@ func GetAllProductionStationAlarms() (list []*model.ProductionStationAlarm, err 
 
 func GetProductionStationAlarmByID(id string) (*model.ProductionStationAlarm, error) {
 	m := &model.ProductionStationAlarm{}
-	err := model.DB.DB().Preload(clause.Associations).Where("id = ?", id).First(m).Error
+	err := model.DB.DB().Preload(clause.Associations).Where("`id` = ?", id).First(m).Error
 	return m, err
 }
 
 func GetProductionStationAlarmByIDs(ids []string) ([]*model.ProductionStationAlarm, error) {
 	var m []*model.ProductionStationAlarm
-	err := model.DB.DB().Preload(clause.Associations).Where("id in (?)", ids).Find(&m).Error
+	err := model.DB.DB().Preload(clause.Associations).Where("`id` in (?)", ids).Find(&m).Error
 	return m, err
 }
 
 func DeleteProductionStationAlarm(id string) (err error) {
-	return model.DB.DB().Delete(&model.ProductionStationAlarm{}, "id=?", id).Error
+	return model.DB.DB().Delete(&model.ProductionStationAlarm{}, "`id` = ?", id).Error
 }

@@ -11,7 +11,7 @@ import (
 )
 
 func CreateProductCategoryAttribute(m *model.ProductCategoryAttribute) (string, error) {
-	duplication, err := model.DB.CreateWithCheckDuplication(m, " default_value =? ", m.DefaultValue)
+	duplication, err := model.DB.CreateWithCheckDuplication(m, " `default_value`  = ? ", m.DefaultValue)
 	if err != nil {
 		return "", err
 	}
@@ -21,41 +21,10 @@ func CreateProductCategoryAttribute(m *model.ProductCategoryAttribute) (string, 
 	return m.ID, nil
 }
 
-// 删除子表
-func DeleteProductCategoryAttributeValues(tx *gorm.DB, old, m *model.ProductCategoryAttribute) error {
-	var deleteIDs []string
-	for _, oldObj := range old.ProductCategoryAttributeValue {
-		flag := false
-		for _, newObj := range m.ProductCategoryAttributeValue {
-			if newObj.ID == oldObj.ID {
-				flag = true
-			}
-		}
-		if !flag {
-			deleteIDs = append(deleteIDs, oldObj.ID)
-		}
-	}
-
-	if len(deleteIDs) > 0 {
-		if err := tx.Delete(&model.ProductCategoryAttributeValue{}, "id in ?", deleteIDs).Error; err != nil {
-			return err
-		}
-	}
-	return nil
-}
-
 func UpdateProductCategoryAttribute(m *model.ProductCategoryAttribute) error {
 	return model.DB.DB().Transaction(func(tx *gorm.DB) error {
-		oldProductCategoryAttribute := &model.ProductCategoryAttribute{}
-		if err := tx.Preload("ProductCategoryAttributeValue").Preload(clause.Associations).Where("id = ?", m.ID).First(oldProductCategoryAttribute).Error; err != nil {
-			return err
-		}
-
-		if err := DeleteProductCategoryAttributeValues(tx, oldProductCategoryAttribute, m); err != nil {
-			return err
-		}
-
-		duplication, err := model.DB.UpdateWithCheckDuplicationAndOmit(tx, m, true, []string{"created_at"}, "id <> ?  and  default_value=? ", m.ID, m.DefaultValue)
+		tx.Delete(&model.ProductCategoryAttributeValue{}, "`product_category_attribute_id` = ?", m.ID)
+		duplication, err := model.DB.UpdateWithCheckDuplicationAndOmit(tx, m, true, []string{"created_at"}, "id <> ?  and  `default_value` = ? ", m.ID, m.DefaultValue)
 		if err != nil {
 			return err
 		}
@@ -105,34 +74,16 @@ func GetAllProductCategoryAttributes() (list []*model.ProductCategoryAttribute, 
 
 func GetProductCategoryAttributeByID(id string) (*model.ProductCategoryAttribute, error) {
 	m := &model.ProductCategoryAttribute{}
-	err := model.DB.DB().Preload("ProductCategoryAttributeValue").Preload(clause.Associations).Where("id = ?", id).First(m).Error
+	err := model.DB.DB().Preload("ProductCategoryAttributeValue").Preload(clause.Associations).Where("`id` = ?", id).First(m).Error
 	return m, err
 }
 
 func GetProductCategoryAttributeByIDs(ids []string) ([]*model.ProductCategoryAttribute, error) {
 	var m []*model.ProductCategoryAttribute
-	err := model.DB.DB().Preload("ProductCategoryAttributeValue").Preload(clause.Associations).Where("id in (?)", ids).Find(&m).Error
+	err := model.DB.DB().Preload("ProductCategoryAttributeValue").Preload(clause.Associations).Where("`id` in (?)", ids).Find(&m).Error
 	return m, err
 }
 
 func DeleteProductCategoryAttribute(id string) (err error) {
-	return model.DB.DB().Delete(&model.ProductCategoryAttribute{}, "id=?", id).Error
+	return model.DB.DB().Delete(&model.ProductCategoryAttribute{}, "`id` = ?", id).Error
 }
-
-// func DeleteProductCategoryAttribute(id string) (err error) {
-// 	models := []interface{}{&model.ProductCategoryAttributeValue{}}
-
-// 	return model.DB.DB().Transaction(func(tx *gorm.DB) error {
-// 		for _, model := range models {
-// 			if err := tx.Delete(model, "ProductCategoryAttributeID=?", id).Error; err != nil {
-// 				return err
-// 			}
-// 		}
-
-// 		if err := tx.Delete(&model.ProductCategoryAttribute{}, "id=?", id).Error; err != nil {
-// 			return err
-// 		}
-
-// 		return nil
-// 	})
-// }

@@ -53,16 +53,16 @@ func GetAllTaskQueueExecutions() (list []*model.TaskQueueExecution, err error) {
 
 func GetTaskQueueExecutionByID(id string) (*model.TaskQueueExecution, error) {
 	m := &model.TaskQueueExecution{}
-	err := model.DB.DB().Preload(clause.Associations).Where("id = ?", id).First(m).Error
+	err := model.DB.DB().Preload(clause.Associations).Where("`id` = ?", id).First(m).Error
 	return m, err
 }
 
 func GetTaskQueueExecutionByIDs(ids []string) ([]*model.TaskQueueExecution, error) {
 	var m []*model.TaskQueueExecution
-	err := model.DB.DB().Preload(clause.Associations).Where("id in (?)", ids).Find(&m).Error
+	err := model.DB.DB().Preload(clause.Associations).Where("`id` in (?)", ids).Find(&m).Error
 	return m, err
 }
 
 func DeleteTaskQueueExecution(id string) (err error) {
-	return model.DB.DB().Delete(&model.TaskQueueExecution{}, "id=?", id).Error
+	return model.DB.DB().Delete(&model.TaskQueueExecution{}, "`id` = ?", id).Error
 }

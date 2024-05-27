@@ -17,7 +17,7 @@ import (
 
 func CreateProductOrder(m *model.ProductOrder) (string, error) {
 	var count int64
-	if err := model.DB.DB().Model(m).Where("receipt_note_no=?", m.ReceiptNoteNo).Count(&count).Error; err != nil {
+	if err := model.DB.DB().Model(m).Where("`receipt_note_no` = ?", m.ReceiptNoteNo).Count(&count).Error; err != nil {
 		return "", err
 	}
 	if count > 0 {
@@ -30,7 +30,7 @@ func CreateProductOrder(m *model.ProductOrder) (string, error) {
 	}
 
 	var systemConfig model.SystemParamsConfig
-	if err := model.DB.DB().First(&systemConfig, "`key`=?", systemConfigKey).Error; err == gorm.ErrRecordNotFound {
+	if err := model.DB.DB().First(&systemConfig, "`key` = ?", systemConfigKey).Error; err == gorm.ErrRecordNotFound {
 		return "", fmt.Errorf("缺少系统配置项: %s", systemConfigKey)
 	} else if err != nil {
 		return "", err
@@ -54,12 +54,12 @@ func CreateProductOrder(m *model.ProductOrder) (string, error) {
 	//产品工单特性
 	if len(m.ProductOrderAttributes) > 0 {
 		var productModel model.ProductModel
-		if err := model.DB.DB().First(&productModel, "id=?", m.ProductModelID).Error; err != nil {
+		if err := model.DB.DB().First(&productModel, "`id` = ?", m.ProductModelID).Error; err != nil {
 			return "", err
 		}
 		for _, v := range m.ProductOrderAttributes {
 			var productCategoryAttribute model.ProductCategoryAttribute
-			if err := model.DB.DB().Preload("ProductAttribute").First(&productCategoryAttribute, "product_category_id=? AND product_attribute_id=?", productModel.ProductCategoryID, v.ProductAttributeID).Error; err != nil {
+			if err := model.DB.DB().Preload("ProductAttribute").First(&productCategoryAttribute, "`product_category_id` = ? AND `product_attribute_id` = ?", productModel.ProductCategoryID, v.ProductAttributeID).Error; err != nil {
 				return "", err
 			}
 			if !productCategoryAttribute.AllowNullOrBlank && v.Value == "" {
@@ -111,7 +111,7 @@ func UpdateProductOrder(m *model.ProductOrder) error {
 			return err
 		}
 
-		duplication, err := model.DB.UpdateWithCheckDuplicationAndOmit(tx, m, true, []string{"created_at", "create_time"}, "id <> ? and  receipt_note_no=?", m.ID, m.ReceiptNoteNo)
+		duplication, err := model.DB.UpdateWithCheckDuplicationAndOmit(tx, m, true, []string{"created_at", "create_time"}, "`id` <> ? and  `receipt_note_no` = ?", m.ID, m.ReceiptNoteNo)
 		if err != nil {
 			return err
 		}
@@ -175,7 +175,7 @@ func GetProductOrderByID(id string) (*model.ProductOrder, error) {
 		Preload("ProductOrderLabels").
 		Preload("ProductOrderPackages").
 		Preload("ProductOrderPallets").
-		Preload(clause.Associations).Where("id = ?", id).First(m).Error
+		Preload(clause.Associations).Where("`id` = ?", id).First(m).Error
 	return m, err
 }
 
@@ -190,13 +190,13 @@ func GetProductOrderByIDs(ids []string) ([]*model.ProductOrder, error) {
 		Preload("ProductOrderLabels").
 		Preload("ProductOrderPackages").
 		Preload("ProductOrderPallets").
-		Preload(clause.Associations).Where("id in (?)", ids).Find(&m).Error
+		Preload(clause.Associations).Where("`id` in (?)", ids).Find(&m).Error
 	return m, err
 }
 
 func DeleteProductOrder(id string) (err error) {
 	var currentState string
-	if err := model.DB.DB().Model(&model.ProductOrder{}).Where("id=?", id).Select("current_state").Scan(&currentState).Error; err != nil {
+	if err := model.DB.DB().Model(&model.ProductOrder{}).Where("`id` = ?", id).Select("current_state").Scan(&currentState).Error; err != nil {
 		return err
 	}
 
@@ -207,12 +207,12 @@ func DeleteProductOrder(id string) (err error) {
 		}
 	}
 
-	return model.DB.DB().Delete(&model.ProductOrder{}, "id=?", id).Error
+	return model.DB.DB().Delete(&model.ProductOrder{}, "`id` = ?", id).Error
 }
 
 func ReleaseProductOrder(ids []string) (err error) {
 	var productOrders []*model.ProductOrder
-	if err := model.DB.DB().Find(&productOrders, "id in (?)", ids).Error; err != nil {
+	if err := model.DB.DB().Find(&productOrders, "`id` in (?)", ids).Error; err != nil {
 		return err
 	}
 
@@ -227,10 +227,10 @@ func ReleaseProductOrder(ids []string) (err error) {
 	}
 
 	return model.DB.DB().Transaction(func(tx *gorm.DB) error {
-		if err := tx.Model(&model.ProductOrder{}).Where("id in (?)", ids).Update("current_state", types.ProductStateReleased).Error; err != nil {
+		if err := tx.Model(&model.ProductOrder{}).Where("`id` in (?)", ids).Update("current_state", types.ProductStateReleased).Error; err != nil {
 			return err
 		}
-		if err := tx.Model(&model.ProductInfo{}).Where("product_order_id in (?)", ids).Update("current_state", types.ProductStateReleased).Error; err != nil {
+		if err := tx.Model(&model.ProductInfo{}).Where("`product_order_id` in (?)", ids).Update("current_state", types.ProductStateReleased).Error; err != nil {
 			return err
 		}
 		return nil

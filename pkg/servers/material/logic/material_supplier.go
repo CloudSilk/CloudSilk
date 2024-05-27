@@ -44,7 +44,7 @@ func GetAllMaterialSuppliers() (list []*model.MaterialSupplier, err error) {
 
 func GetMaterialSupplierByID(id string) (*model.MaterialSupplier, error) {
 	m := &model.MaterialSupplier{}
-	err := model.DB.DB().Preload(clause.Associations).Where("id = ?", id).First(m).Error
+	err := model.DB.DB().Preload(clause.Associations).Where("`id` = ?", id).First(m).Error
 	return m, err
 }
 
@@ -55,5 +55,5 @@ func GetMaterialSupplierByIDs(ids []string) ([]*model.MaterialSupplier, error) {
 }
 
 func DeleteMaterialSupplier(id string) (err error) {
-	return model.DB.DB().Delete(&model.MaterialSupplier{}, "id=?", id).Error
+	return model.DB.DB().Delete(&model.MaterialSupplier{}, "`id` = ?", id).Error
 }

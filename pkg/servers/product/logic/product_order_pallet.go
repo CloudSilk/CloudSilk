@@ -64,16 +64,16 @@ func GetAllProductOrderPallets() (list []*model.ProductOrderPallet, err error) {
 
 func GetProductOrderPalletByID(id string) (*model.ProductOrderPallet, error) {
 	m := &model.ProductOrderPallet{}
-	err := model.DB.DB().Preload(clause.Associations).Where("id = ?", id).First(m).Error
+	err := model.DB.DB().Preload(clause.Associations).Where("`id` = ?", id).First(m).Error
 	return m, err
 }
 
 func GetProductOrderPalletByIDs(ids []string) ([]*model.ProductOrderPallet, error) {
 	var m []*model.ProductOrderPallet
-	err := model.DB.DB().Preload(clause.Associations).Where("id in (?)", ids).Find(&m).Error
+	err := model.DB.DB().Preload(clause.Associations).Where("`id` in (?)", ids).Find(&m).Error
 	return m, err
 }
 
 func DeleteProductOrderPallet(id string) (err error) {
-	return model.DB.DB().Delete(&model.ProductOrderPallet{}, "id=?", id).Error
+	return model.DB.DB().Delete(&model.ProductOrderPallet{}, "`id` = ?", id).Error
 }
