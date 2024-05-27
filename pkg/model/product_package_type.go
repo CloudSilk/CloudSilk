@@ -10,9 +10,9 @@ type ProductPackageType struct {
 	Description   string       `json:"description" gorm:"size:1000;comment:描述"`
 	Remark        string       `json:"remark" gorm:"size:1000;comment:备注"`
 	LabelTypeID   *string      `json:"labelTypeID" gorm:"comment:标签类型ID"`
-	LabelType     *LabelType   `json:"labelType"` //标签类型
+	LabelType     *LabelType   `json:"labelType" gorm:"constraint:OnDelete:SET NULL"` //标签类型
 	SystemEventID *string      `json:"systemEventID" gorm:"comment:系统事件ID"`
-	SystemEvent   *SystemEvent `json:"systemEvent"` //系统事件
+	SystemEvent   *SystemEvent `json:"systemEvent" gorm:"constraint:OnDelete:SET NULL"` //系统事件
 }
 
 func PBToProductPackageTypes(in []*proto.ProductPackageTypeInfo) []*ProductPackageType {

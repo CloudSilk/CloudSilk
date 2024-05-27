@@ -13,9 +13,9 @@ type ProductPackageRecord struct {
 	CreateTime            time.Time            `json:"createTime" gorm:"autoCreateTime:nano;comment:装箱时间"`
 	CreateUserID          string               `json:"createUserID" gorm:"size:36;comment:装箱人员ID"`
 	ProductOrderPackageID string               `json:"productOrderPackageID" gorm:"size:36;comment:使用包装ID"`
-	ProductOrderPackage   *ProductOrderPackage `json:"productOrderPackage"` //包装
+	ProductOrderPackage   *ProductOrderPackage `json:"productOrderPackage" gorm:"constraint:OnDelete:CASCADE"` //包装
 	ProductInfoID         string               `json:"productInfoID" gorm:"size:36;comment:绑定产品ID"`
-	ProductInfo           *ProductInfo         `json:"productInfo"` //产品
+	ProductInfo           *ProductInfo         `json:"productInfo" gorm:"constraint:OnDelete:CASCADE"` //产品
 	Remark                string               `json:"remark" gorm:"size:1000;comment:备注"`
 }
 

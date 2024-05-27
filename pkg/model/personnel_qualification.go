@@ -12,7 +12,7 @@ import (
 type PersonnelQualification struct {
 	ModelID
 	PersonnelQualificationTypeID string                      `json:"personnelQualificationTypeID" gorm:"index;size:36;comment:资质类型ID"`
-	PersonnelQualificationType   *PersonnelQualificationType `json:"personnelQualificationType"` //资质类型
+	PersonnelQualificationType   *PersonnelQualificationType `json:"personnelQualificationType" gorm:"constraint:OnDelete:CASCADE"` //资质类型
 	CertifiedUserID              string                      `json:"certifiedUserID" gorm:"index;size:36;comment:认证人员ID"`
 	EffectiveDate                sql.NullTime                `json:"effectiveDate" gorm:"comment:生效日期"`
 	ExpirationDate               sql.NullTime                `json:"expirationDate" gorm:"comment:失效日期"`

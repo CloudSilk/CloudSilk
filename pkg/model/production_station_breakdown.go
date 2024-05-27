@@ -12,7 +12,7 @@ import (
 type ProductionStationBreakdown struct {
 	ModelID
 	ProductionStationID          string             `json:"productionStationID" gorm:"size:36;comment:生产工站ID"`
-	ProductionStation            *ProductionStation ``
+	ProductionStation            *ProductionStation `gorm:"constraint:OnDelete:CASCADE"`
 	CreateTime                   time.Time          `json:"createTime" gorm:"autoCreateTime:nano;comment:创建时间"`
 	CreateUserID                 string             `json:"createUserID" gorm:"size:36;comment:创建人员ID"`
 	EquipmentBreakdownTypeID     string             `json:"equipmentBreakdownTypeID" gorm:"size:36;comment:故障类型ID"`

@@ -22,10 +22,10 @@ type ProductRhythmRecord struct {
 	IsRework            bool               `json:"isRework" gorm:"comment:是否返工"`
 	Remark              string             `json:"remark" gorm:"size:1000;comment:备注"`
 	ProductionStationID string             `json:"productionStationID" gorm:"comment:生产工站ID"`
-	ProductionStation   *ProductionStation `json:"productionStation"` //生产工站
+	ProductionStation   *ProductionStation `json:"productionStation" gorm:"constraint:OnDelete:CASCADE"` //生产工站
 	ProductionProcessID string             `json:"productionProcessID" gorm:"comment:生产工序ID"`
 	ProductInfoID       string             `json:"productInfoID" gorm:"comment:产品信息ID"`
-	ProductInfo         *ProductInfo
+	ProductInfo         *ProductInfo       ` gorm:"constraint:OnDelete:CASCADE"`
 }
 
 func PBToProductRhythmRecords(in []*proto.ProductRhythmRecordInfo) []*ProductRhythmRecord {

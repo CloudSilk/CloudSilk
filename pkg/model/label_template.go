@@ -12,7 +12,7 @@ type LabelTemplate struct {
 	FilePath        string            `json:"filePath" gorm:"size:200;comment:文件路径"`
 	Remark          string            `json:"remark" gorm:"size:200;comment:备注"`
 	LabelTypeID     *string           `json:"labelTypeID" gorm:"size:36;comment:标签类型ID;"`
-	LabelType       *LabelType        `json:"labelType"`                                           //标签类型
+	LabelType       *LabelType        `json:"labelType" gorm:"constraint:OnDelete:SET NULL"`        //标签类型
 	LabelParameters []*LabelParameter `json:"labelParameters" gorm:"constraint:OnDelete:CASCADE;"` //参数
 }
 

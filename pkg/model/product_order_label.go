@@ -12,9 +12,9 @@ import (
 type ProductOrderLabel struct {
 	ModelID
 	ProductOrderID              string                        `json:"productOrderID" gorm:"size:36;comment:归属工单ID"`
-	ProductOrder                *ProductOrder                 `json:"productOrder"`
+	ProductOrder                *ProductOrder                 `json:"productOrder" gorm:"constraint:OnDelete:CASCADE"`
 	LabelTypeID                 string                        `json:"labelTypeID" gorm:"size:36;comment:标签类型ID"`
-	LabelType                   *LabelType                    `json:"labelType"`
+	LabelType                   *LabelType                    `json:"labelType" gorm:"constraint:OnDelete:CASCADE"`
 	FilePath                    string                        `json:"filePath" gorm:"size:2000;comment:模板文件"`
 	ReferTimes                  int32                         `json:"referTimes" gorm:"comment:引用次数"`
 	DoubleCheck                 bool                          `json:"doubleCheck" gorm:"comment:需要复核"`

@@ -13,11 +13,11 @@ type ProductionStationOutput struct {
 	OutputTime          time.Time          `json:"OutputTime" gorm:"autoCreateTime:nano;comment:产出时间"`
 	LoginUserID         string             `json:"LoginUserID" gorm:"size:36;comment:登录人员ID"`
 	ProductionStationID string             `json:"ProductionStationID" gorm:"size:36;comment:生产工站ID"`
-	ProductionStation   *ProductionStation `json:"productionStation"` //生产工站
+	ProductionStation   *ProductionStation `json:"productionStation" gorm:"constraint:OnDelete:CASCADE"` //生产工站
 	ProductionProcessID string             `json:"ProductionProcessID" gorm:"size:36;comment:生产工序ID"`
-	ProductionProcess   *ProductionProcess `json:"productionProcess"` //生产工序
+	ProductionProcess   *ProductionProcess `json:"productionProcess" gorm:"constraint:OnDelete:CASCADE"` //生产工序
 	ProductInfoID       string             `json:"ProductInfoID" gorm:"size:36;comment:产品信息ID"`
-	ProductInfo         *ProductInfo       `json:"productInfo"` //产品信息
+	ProductInfo         *ProductInfo       `json:"productInfo" gorm:"constraint:OnDelete:CASCADE"` //产品信息
 }
 
 func PBToProductionStationOutputs(in []*proto.ProductionStationOutputInfo) []*ProductionStationOutput {

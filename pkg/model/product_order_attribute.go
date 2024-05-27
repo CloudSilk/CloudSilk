@@ -13,11 +13,11 @@ type ProductOrderAttribute struct {
 	Value              string            `json:"Value" gorm:"size:200;comment:值"`
 	Description        string            `json:"Description" gorm:"size:500;comment:描述"`
 	ProductAttributeID string            `json:"ProductAttributeID" gorm:"size:36;comment:产品特性ID"`
-	ProductAttribute   *ProductAttribute `json:"ProductAttribute"` //产品特性
+	ProductAttribute   *ProductAttribute `json:"ProductAttribute" gorm:"constraint:OnDelete:CASCADE"` //产品特性
 	CreateTime         time.Time         `json:"CreateTime" gorm:"autoCreateTime:nano;comment:创建时间"`
 	CreateUserID       string            `json:"CreateUserID" gorm:"size:36;comment:创建人员ID"`
 	ProductOrderID     string            `json:"ProductOrderID" gorm:"size:36;comment:隶属工单ID"`
-	ProductOrder       *ProductOrder     `json:"ProductOrder"` //隶属工单
+	ProductOrder       *ProductOrder     `json:"ProductOrder" gorm:"constraint:OnDelete:CASCADE"` //隶属工单
 }
 
 func PBToProductOrderAttributes(in []*proto.ProductOrderAttributeInfo) []*ProductOrderAttribute {

@@ -27,7 +27,7 @@ type ProductInfo struct {
 	LastUpdateTime      time.Time     `json:"lastUpdateTime" gorm:"autoUpdateTime:nano;comment:更新时间"`
 	Remark              string        `json:"remark" gorm:"size:1000;comment:备注"`
 	ProductOrderID      string        `json:"productOrderID" gorm:"size:36;comment:产品工单ID"`
-	ProductOrder        *ProductOrder `json:"productOrder"` //产品工单
+	ProductOrder        *ProductOrder `json:"productOrder" gorm:"constraint:OnDelete:CASCADE"` //产品工单
 	ProductionProcessID string        `json:"productionProcessID" gorm:"size:36;comment:当前工序ID"`
 }
 

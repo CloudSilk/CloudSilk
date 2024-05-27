@@ -8,7 +8,7 @@ import (
 type ProductionLine struct {
 	ModelID
 	ProductionFactoryID                string                               `json:"productionFactoryID" gorm:"index;size:36;comment:生产工厂ID"`
-	ProductionFactory                  *ProductionFactory                   `json:"productionFactory"`
+	ProductionFactory                  *ProductionFactory                   `json:"productionFactory" gorm:"constraint:OnDelete:CASCADE"`
 	Code                               string                               `json:"code" gorm:"index;size:100;comment:代号"`
 	Description                        string                               `json:"description" gorm:"size:200;comment:描述"`
 	Identifier                         string                               `json:"identifier" gorm:"size:100;comment:识别码"`

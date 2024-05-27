@@ -11,7 +11,7 @@ type ProcessStepParameter struct {
 	Enable                     bool                         `gorm:"comment:是否启用"`
 	Remark                     string                       `gorm:"size:500;comment:备注"`
 	ProductionLineID           string                       `gorm:"size:36;comment:产线ID"`
-	ProductionLine             *ProductionLine              `gorm:""`                                                       //生产产线
+	ProductionLine             *ProductionLine              `gorm:"constraint:OnDelete:CASCADE"`                            //生产产线
 	ProcessStepParameterValues []*ProcessStepParameterValue `gorm:"constraint:OnDelete:CASCADE"`                            //生产工步参数值
 	AttributeExpressions       []*AttributeExpression       `gorm:"polymorphic:Rule;polymorphicValue:ProcessStepParameter"` //特性表达式
 }
@@ -22,7 +22,7 @@ type ProcessStepParameterValue struct {
 	ProcessStepParameterID     string                 `gorm:"index;size:36;comment:生产工步参数ID"`
 	ProductionProcessID        string                 `gorm:"size:36;comment:生产工序ID"`
 	ProductionProcessStepID    string                 `gorm:"size:36;comment:生产工步ID"`
-	ProductionProcessStep      *ProductionProcessStep `gorm:""` //生产工步
+	ProductionProcessStep      *ProductionProcessStep `gorm:"constraint:OnDelete:CASCADE"` //生产工步
 	ProcessStepTypeParameterID string                 `gorm:"size:36;comment:生产工步类型参数ID"`
 	StandardValue              string                 `gorm:"size:100;comment:标准值"`
 	MaximumValue               string                 `gorm:"size:100;comment:最大值"`
