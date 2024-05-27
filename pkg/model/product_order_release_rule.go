@@ -4,6 +4,7 @@ import (
 	"github.com/CloudSilk/CloudSilk/pkg/proto"
 )
 
+// 产品工单发放规则
 type ProductOrderReleaseRule struct {
 	ModelID
 	Priority             int32                  `json:"priority" gorm:"comment:优先级"`

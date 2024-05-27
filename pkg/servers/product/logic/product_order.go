@@ -85,7 +85,10 @@ func CreateProductOrder(m *model.ProductOrder) (string, error) {
 		v.CreateUserID = m.CreateUserID
 	}
 
-	m.CurrentState = types.ProductOrderStateReceipted
+	m.CurrentState = types.ProductOrderStateUploaded
+	if false {
+		m.CurrentState = types.ProductOrderStateReceipted
+	}
 	m.OrderTime = utils.ParseSqlNullTime(time.Now().Format("2006-01-02 15:04:05"))
 
 	err = model.DB.DB().Create(m).Error
@@ -235,4 +238,219 @@ func ReleaseProductOrder(ids []string) (err error) {
 		}
 		return nil
 	})
+}
+
+// 生产工单核验
+func ReceiveProductOrder() (err error) {
+	var productOrders []*model.ProductOrder
+	if err = model.DB.DB().Preload("ProductOrderAttributes").Find(&productOrders, "`current_state` = ?", types.ProductOrderStateUploaded).Error; err != nil {
+		return
+	}
+
+	for _, productOrder := range productOrders {
+		if OnProductOrderCheck(productOrder.ProductOrderNo) != nil {
+			if err = model.DB.DB().Create(model.TaskQueueExecution{
+				Success:       false,
+				FailureReason: fmt.Sprintf("%v", err),
+				DataTrace:     fmt.Sprintf("数据表: ProductOrder, 索引: %s", productOrder.ProductOrderNo),
+			}).Error; err != nil {
+				return
+			}
+		}
+	}
+
+	return
+}
+
+func OnProductOrderCheck(productOrderNo string) (err error) {
+	productOrder := &model.ProductOrder{}
+	if err = model.DB.DB().Preload("ProductOrderAttributes").First(&productOrder, "`product_order_no` = ?", productOrderNo).Error; err != nil {
+		return
+	}
+	var productOrderReleaseRules []*model.ProductOrderReleaseRule
+	if err = model.DB.DB().Order("priority").Find(&productOrderReleaseRules, "`enable` = ?", true).Error; err != nil {
+		return
+	}
+
+	var productOrderReleaseRule *model.ProductOrderReleaseRule
+	for _, _productOrderReleaseRule := range productOrderReleaseRules {
+		match := _productOrderReleaseRule.InitialValue
+		var attributeExpressions []*model.AttributeExpression
+		if err = model.DB.DB().Find(&attributeExpressions, "`rule_id` = ? AND `rule_type` = ?", _productOrderReleaseRule.ID, "ProductOrderReleaseRule").Error; err != nil {
+			return
+		}
+		for _, attributeExpression := range attributeExpressions {
+			attributeMatch := false
+			for _, productOrderAttribute := range productOrder.ProductOrderAttributes {
+				if productOrderAttribute.ProductAttributeID == attributeExpression.ProductAttributeID && productOrderAttribute.Value == attributeExpression.AttributeValue {
+					attributeMatch = true
+					break
+				}
+			}
+			if attributeMatch {
+				match = attributeMatch
+				break
+			}
+		}
+
+		if match {
+			productOrderReleaseRule = _productOrderReleaseRule
+			break
+		}
+	}
+	if productOrderReleaseRule == nil {
+		return fmt.Errorf("签派失败，无法匹配发放规则")
+	}
+
+	productOrder.ProductionLineID = &productOrderReleaseRule.ProductionLineID
+	productOrder.CurrentState = types.ProductOrderStateReceipted
+
+	return model.DB.DB().Save(productOrder).Error
+}
+
+// 生产工单发放
+func ReleaseProductOrder2(ids []string) (err error) {
+	var productOrders []*model.ProductOrder
+	if err := model.DB.DB().Find(&productOrders, "`current_state` = ?", types.ProductOrderStateVerified).Error; err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func OnProductOrderRelease(productOrderID string) (err error) {
+	productOrder := &model.ProductOrder{}
+	if err = model.DB.DB().Preload("ProductOrderAttributes").First(&productOrder, "`id` = ?", productOrderID).Error; err != nil {
+		return
+	}
+	var productOrderReleaseRules []*model.ProductOrderReleaseRule
+	if err = model.DB.DB().Order("priority").Find(&productOrderReleaseRules, "`enable` = ?", true).Error; err != nil {
+		return
+	}
+
+	var productOrderReleaseRule *model.ProductOrderReleaseRule
+	for _, _productOrderReleaseRule := range productOrderReleaseRules {
+		match := _productOrderReleaseRule.InitialValue
+		var attributeExpressions []*model.AttributeExpression
+		if err = model.DB.DB().Find(&attributeExpressions, "`rule_id` = ? AND `rule_type` = ?", _productOrderReleaseRule.ID, "ProductOrderReleaseRule").Error; err != nil {
+			return
+		}
+		for _, attributeExpression := range attributeExpressions {
+			attributeMatch := false
+			for _, productOrderAttribute := range productOrder.ProductOrderAttributes {
+				if productOrderAttribute.ProductAttributeID == attributeExpression.ProductAttributeID && productOrderAttribute.Value == attributeExpression.AttributeValue {
+					attributeMatch = true
+					break
+				}
+			}
+			if attributeMatch {
+				match = attributeMatch
+				break
+			}
+		}
+
+		if match {
+			productOrderReleaseRule = _productOrderReleaseRule
+			break
+		}
+	}
+	if productOrderReleaseRule == nil {
+		return fmt.Errorf("签派失败，无法匹配发放规则")
+	}
+
+	productOrder.ProductionLineID = &productOrderReleaseRule.ProductionLineID
+
+	var productionRhythms []*model.ProductionRhythm
+	if err = model.DB.DB().Order("priority").Find(&productionRhythms, "`enable` = ? AND `production_line_id`=?", true, productOrder.ProductionLineID).Error; err != nil {
+		return
+	}
+	var productionRhythm *model.ProductionRhythm
+	for _, _productionRhythm := range productionRhythms {
+		match := _productionRhythm.InitialValue
+		var attributeExpressions []*model.AttributeExpression
+		if err = model.DB.DB().Find(&attributeExpressions, "`rule_id` = ? AND `rule_type` = ?", _productionRhythm.ID, "ProductionRhythm").Error; err != nil {
+			return
+		}
+		for _, attributeExpression := range attributeExpressions {
+			attributeMatch := false
+			for _, productOrderAttribute := range productOrder.ProductOrderAttributes {
+				if productOrderAttribute.ProductAttributeID == attributeExpression.ProductAttributeID && productOrderAttribute.Value == attributeExpression.AttributeValue {
+					attributeMatch = true
+					break
+				}
+			}
+			if attributeMatch {
+				match = attributeMatch
+				break
+			}
+		}
+		if match {
+			productionRhythm = _productionRhythm
+			break
+		}
+	}
+	if productionRhythm == nil {
+		return fmt.Errorf("发放失败，无法匹配生产节拍")
+	}
+
+	var productionProcesses []*model.ProductionProcess
+	if err = model.DB.DB().Order("priority").Find(&productionProcesses, "`enable` = ? AND `production_line_id`=?", true, productOrder.ProductionLineID).Error; err != nil {
+		return
+	}
+	var _productionProcesses []*model.ProductionProcess
+	for _, _productionProcess := range productionProcesses {
+		match := _productionProcess.InitialValue
+		var attributeExpressions []*model.AttributeExpression
+		if err = model.DB.DB().Find(&attributeExpressions, "`rule_id` = ? AND `rule_type` = ?", _productionProcess.ID, "ProductionProcess").Error; err != nil {
+			return
+		}
+		for _, attributeExpression := range attributeExpressions {
+			attributeMatch := false
+			for _, productOrderAttribute := range productOrder.ProductOrderAttributes {
+				if productOrderAttribute.ProductAttributeID == attributeExpression.ProductAttributeID && productOrderAttribute.Value == attributeExpression.AttributeValue {
+					attributeMatch = true
+					_productionProcesses = append(_productionProcesses, _productionProcess)
+					break
+				} else if match {
+					attributeMatch = true
+					_productionProcesses = append(_productionProcesses, _productionProcess)
+					break
+				}
+			}
+			if attributeMatch {
+				break
+			}
+		}
+	}
+
+	for _, productionProcess := range _productionProcesses {
+		if err = model.DB.DB().Create(model.ProductOrderProcess{
+			CreateUserID:        "2",
+			SortIndex:           productionProcess.SortIndex,
+			ProductOrderID:      productOrder.ID,
+			ProductionProcessID: productionProcess.ID,
+			Enable:              true,
+		}).Error; err != nil {
+			return
+		}
+	}
+
+	productOrder.StandardWorkTime = productionRhythm.StandardTime
+	productOrder.ReleaseTime = utils.ParseSqlNullTime(time.Now().Format("2006-01-02 15:04:05"))
+	productOrder.CurrentState = types.ProductOrderStateReleased
+	// productOrder.PropertyBrief = productOrderAttributes.Select(c => c.Value).Aggregate((x1, x2) => {
+	// 	var v1 = string.IsNullOrWhiteSpace(x1) ? "NA" : x1;
+	// 	var v2 = string.IsNullOrWhiteSpace(x2) ? "NA" : x2;
+	// 	return $@"\{v1}\{v2}";
+	// }).Trim('\\');
+	productOrder.PropertyBrief = ""
+
+	if err = model.DB.DB().Model(model.ProductInfo{}).Where("ProductOrderID=? AND CurrentState=?", productOrder.ID, types.ProductStateReceipted).Updates(map[string]interface{}{
+		"ReleaseTime":  time.Now(),
+		"CurrentState": types.ProductStateReleased,
+	}).Error; err != nil {
+		return
+	}
+
+	return model.DB.DB().Save(productOrder).Error
 }
