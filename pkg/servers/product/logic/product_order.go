@@ -315,6 +315,18 @@ func ReleaseProductOrder2(ids []string) (err error) {
 		return err
 	}
 
+	for _, productOrder := range productOrders {
+		if OnProductOrderRelease(productOrder.ID) != nil {
+			if err = model.DB.DB().Create(model.TaskQueueExecution{
+				Success:       false,
+				FailureReason: fmt.Sprintf("%v", err),
+				DataTrace:     fmt.Sprintf("数据表: ProductOrder, 索引: %s", productOrder.ProductOrderNo),
+			}).Error; err != nil {
+				return
+			}
+		}
+	}
+
 	return nil
 }
 
@@ -438,16 +450,19 @@ func OnProductOrderRelease(productOrderID string) (err error) {
 	productOrder.StandardWorkTime = productionRhythm.StandardTime
 	productOrder.ReleaseTime = utils.ParseSqlNullTime(time.Now().Format("2006-01-02 15:04:05"))
 	productOrder.CurrentState = types.ProductOrderStateReleased
-	// productOrder.PropertyBrief = productOrderAttributes.Select(c => c.Value).Aggregate((x1, x2) => {
-	// 	var v1 = string.IsNullOrWhiteSpace(x1) ? "NA" : x1;
-	// 	var v2 = string.IsNullOrWhiteSpace(x2) ? "NA" : x2;
-	// 	return $@"\{v1}\{v2}";
-	// }).Trim('\\');
-	productOrder.PropertyBrief = ""
 
-	if err = model.DB.DB().Model(model.ProductInfo{}).Where("ProductOrderID=? AND CurrentState=?", productOrder.ID, types.ProductStateReceipted).Updates(map[string]interface{}{
-		"ReleaseTime":  time.Now(),
-		"CurrentState": types.ProductStateReleased,
+	propertyBrief := ""
+	for _, productOrderAttribute := range productOrder.ProductOrderAttributes {
+		if productOrderAttribute.Value == "" {
+			productOrderAttribute.Value = "NA"
+		}
+		propertyBrief += productOrderAttribute.Value + "\\"
+	}
+	productOrder.PropertyBrief = strings.TrimSuffix(propertyBrief, "\\")
+
+	if err = model.DB.DB().Model(model.ProductInfo{}).Where("`product_order_id`=? AND `current_state`=?", productOrder.ID, types.ProductStateReceipted).Updates(map[string]interface{}{
+		"release_time":  time.Now(),
+		"current_state": types.ProductStateReleased,
 	}).Error; err != nil {
 		return
 	}
