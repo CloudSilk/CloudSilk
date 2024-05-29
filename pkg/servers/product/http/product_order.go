@@ -203,6 +203,14 @@ func GetProductOrderDetail(c *gin.Context) {
 		resp.Message = err.Error()
 	} else {
 		resp.Data = model.ProductOrderToPB(data)
+		user, err := clients.UserClient.GetDetail(context.Background(), &usercenter.GetDetailRequest{Id: resp.Data.CreateUserID})
+		if err != nil {
+			resp.Code = proto.Code_InternalServerError
+			resp.Message = err.Error()
+			c.JSON(http.StatusOK, resp)
+			return
+		}
+		resp.Data.CreateUserName = user.Data.Nickname
 	}
 	c.JSON(http.StatusOK, resp)
 }

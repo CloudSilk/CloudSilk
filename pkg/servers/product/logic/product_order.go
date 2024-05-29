@@ -173,9 +173,12 @@ func GetProductOrderByID(id string) (*model.ProductOrder, error) {
 		Preload("ProductOrderAttachments").
 		Preload("ProductOrderBoms").
 		Preload("ProductOrderAttributes").
+		Preload("ProductOrderAttributes.ProductAttribute").
 		Preload("ProductInfos").
 		Preload("ProductOrderProcesses").
+		Preload("ProductOrderProcesses.ProductionProcess").
 		Preload("ProductOrderLabels").
+		Preload("ProductOrderLabels.LabelType").
 		Preload("ProductOrderPackages").
 		Preload("ProductOrderPallets").
 		Preload(clause.Associations).Where("`id` = ?", id).First(m).Error
@@ -188,9 +191,12 @@ func GetProductOrderByIDs(ids []string) ([]*model.ProductOrder, error) {
 		Preload("ProductOrderAttachments").
 		Preload("ProductOrderBoms").
 		Preload("ProductOrderAttributes").
+		Preload("ProductOrderAttributes.ProductAttribute").
 		Preload("ProductInfos").
 		Preload("ProductOrderProcesses").
+		Preload("ProductOrderProcesses.ProductionProcess").
 		Preload("ProductOrderLabels").
+		Preload("ProductOrderLabels.LabelType").
 		Preload("ProductOrderPackages").
 		Preload("ProductOrderPallets").
 		Preload(clause.Associations).Where("`id` in (?)", ids).Find(&m).Error
