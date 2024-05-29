@@ -10496,7 +10496,7 @@ paths:
       - description: 工单工序ID
         in: query
         name: productOrderProcessID
-        type: integer
+        type: string
       produces:
       - application/octet-stream
       responses:
@@ -11176,7 +11176,7 @@ paths:
       - description: 生产产线ID
         in: query
         name: productionLineID
-        type: integer
+        type: string
       - description: 装箱时间开始
         in: query
         name: createTime0
@@ -11896,7 +11896,7 @@ paths:
       - description: 当前工序
         in: query
         name: currentProcessID
-        type: integer
+        type: string
       - description: 序列号
         in: query
         name: productSerialNo
@@ -12608,7 +12608,7 @@ paths:
       - description: 生产产线ID
         in: query
         name: productionLineID
-        type: integer
+        type: string
       - description: 产品序列号
         in: query
         name: productSerialNo
@@ -13332,7 +13332,7 @@ paths:
       - description: 作业产线
         in: query
         name: productionLineID
-        type: integer
+        type: string
       produces:
       - application/octet-stream
       responses:
@@ -13517,7 +13517,7 @@ paths:
       - description: 作业产线
         in: query
         name: productionLineID
-        type: integer
+        type: string
       produces:
       - application/octet-stream
       responses:
@@ -14028,7 +14028,7 @@ paths:
       - description: 产品品牌ID
         in: query
         name: productBrandID
-        type: integer
+        type: string
       produces:
       - application/octet-stream
       responses:
@@ -14197,7 +14197,7 @@ paths:
       - description: 产品类别ID
         in: query
         name: productCategoryID
-        type: integer
+        type: string
       - description: 特性或描述
         in: query
         name: productAtribute
@@ -14405,7 +14405,7 @@ paths:
       - description: 产品类别ID
         in: query
         name: productCategoryID
-        type: integer
+        type: string
       - description: 是否预制
         in: query
         name: IsPrefabricated
@@ -14578,7 +14578,11 @@ paths:
       - description: 产品类别ID
         in: query
         name: productCategoryID
-        type: integer
+        type: string
+      - description: 产品型号ID
+        in: query
+        name: productModelID
+        type: string
       produces:
       - application/octet-stream
       responses:
@@ -15115,7 +15119,7 @@ paths:
       - description: 生产产线ID
         in: query
         name: productionLineID
-        type: integer
+        type: string
       produces:
       - application/octet-stream
       responses:
@@ -15284,7 +15288,7 @@ paths:
       - description: 生产产线ID
         in: query
         name: productionLineID
-        type: integer
+        type: string
       produces:
       - application/octet-stream
       responses:
@@ -15453,7 +15457,7 @@ paths:
       - description: 生产工序ID
         in: query
         name: productionProcessID
-        type: integer
+        type: string
       produces:
       - application/octet-stream
       responses:
@@ -15622,7 +15626,7 @@ paths:
       - description: 生产产线ID
         in: query
         name: productionLineID
-        type: integer
+        type: string
       produces:
       - application/octet-stream
       responses:
@@ -15799,7 +15803,7 @@ paths:
       - description: 生产产线ID
         in: query
         name: productionLineID
-        type: integer
+        type: string
       - description: 生产工单号
         in: query
         name: productOrderNo
@@ -15988,7 +15992,7 @@ paths:
       - description: 生产产线ID
         in: query
         name: productionLineID
-        type: integer
+        type: string
       produces:
       - application/octet-stream
       responses:
@@ -16700,7 +16704,7 @@ paths:
       - description: 生产产线ID
         in: query
         name: productionLineID
-        type: integer
+        type: string
       produces:
       - application/octet-stream
       responses:
@@ -17042,7 +17046,7 @@ paths:
       - description: '生产工厂ID '
         in: query
         name: productionFactoryID
-        type: integer
+        type: string
       produces:
       - application/octet-stream
       responses:
@@ -17219,7 +17223,7 @@ paths:
       - description: 生产产线ID
         in: query
         name: productionLineID
-        type: integer
+        type: string
       produces:
       - application/octet-stream
       responses:
@@ -19098,7 +19102,7 @@ paths:
       - description: 任务队列ID
         in: query
         name: taskQueueID
-        type: integer
+        type: string
       - description: 数据跟踪或失败原因
         in: query
         name: dataTrace
@@ -19818,7 +19822,7 @@ paths:
       - description: 生产产线ID
         in: query
         name: productionLineID
-        type: integer
+        type: string
       - description: 认证人员信息
         in: query
         name: name
@@ -19991,7 +19995,7 @@ paths:
       - description: 生产产线ID
         in: query
         name: productionLineID
-        type: integer
+        type: string
       - description: 认证人员信息
         in: query
         name: name

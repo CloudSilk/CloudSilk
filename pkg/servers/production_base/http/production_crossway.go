@@ -4,9 +4,9 @@ import (
 	"context"
 	"net/http"
 
-	"github.com/CloudSilk/CloudSilk/pkg/servers/production_base/logic"
 	"github.com/CloudSilk/CloudSilk/pkg/model"
 	"github.com/CloudSilk/CloudSilk/pkg/proto"
+	"github.com/CloudSilk/CloudSilk/pkg/servers/production_base/logic"
 	"github.com/CloudSilk/pkg/utils/log"
 	"github.com/CloudSilk/pkg/utils/middleware"
 	"github.com/gin-gonic/gin"
@@ -105,7 +105,7 @@ func UpdateProductionCrossway(c *gin.Context) {
 // @Param orderField query string false "排序字段"
 // @Param desc query bool false "是否倒序排序"
 // @Param code query string false "代号或描述"
-// @Param productionLineID query int false "生产产线ID"
+// @Param productionLineID query string false "生产产线ID"
 // @Success 200 {object} proto.QueryProductionCrosswayResponse
 // @Router /api/mom/productionbase/productioncrossway/query [get]
 func QueryProductionCrossway(c *gin.Context) {

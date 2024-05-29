@@ -1,17 +1,17 @@
 dbConfigs:
   Usercenter:
-    fileName: "./CloudSilk.s3db"
-    dbType: "sqlite"
+    connectionStr: "root:iEcak4rPBv2MHKG@(124.221.198.163:3308)/usercenter?charset=utf8mb4&parseTime=True&loc=Local"
+    dbType: "mysql"
   Curd:
-    fileName: "./CloudSilk.s3db"
-    dbType: "sqlite"
+    connectionStr: "root:iEcak4rPBv2MHKG@(124.221.198.163:3308)/usercenter?charset=utf8mb4&parseTime=True&loc=Local"
+    dbType: "mysql"
   CloudSilk:
-    connectionStr: "root:password@(127.0.0.1:3306)/mom?charset=utf8mb4&parseTime=True&loc=Local"
+    connectionStr: "root:iEcak4rPBv2MHKG@(124.221.198.163:3308)/mom?charset=utf8mb4&parseTime=True&loc=Local"
     dbType: "mysql"
   all:
     fileName: "./CloudSilk.s3db"
     dbType: "sqlite"
-debug: true
+debug: false
 token:
   key: "CloudSilk"
   redisAddr: ""

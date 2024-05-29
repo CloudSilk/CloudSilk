@@ -125,7 +125,7 @@ func UpdateProductionProcess(c *gin.Context) {
 // @Param pageSize query int false "默认每页10条"
 // @Param orderField query string false "排序字段"
 // @Param desc query bool false "是否倒序排序"
-// @Param productionLineID query int false "生产产线ID"
+// @Param productionLineID query string false "生产产线ID"
 // @Success 200 {object} proto.QueryProductionProcessResponse
 // @Router /api/mom/production/productionprocess/query [get]
 func QueryProductionProcess(c *gin.Context) {

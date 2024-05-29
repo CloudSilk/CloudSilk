@@ -118,9 +118,14 @@ func PBToProductOrder(in *proto.ProductOrderInfo) *ProductOrder {
 		Remark:                  in.Remark,
 		ProductModelID:          productModelID,
 		ProductionLineID:        productionLineID,
-		ProductOrderBoms:        PBToProductOrderBoms(in.ProductOrderBoms),
-		ProductOrderLabels:      PBToProductOrderLabels(in.ProductOrderLabels),
 		ProductOrderAttachments: PBToProductOrderAttachments(in.ProductOrderAttachments),
+		ProductOrderBoms:        PBToProductOrderBoms(in.ProductOrderBoms),
+		ProductInfos:            PBToProductInfos(in.ProductInfos),
+		ProductOrderAttributes:  PBToProductOrderAttributes(in.ProductOrderAttributes),
+		ProductOrderProcesses:   PBToProductOrderProcesss(in.ProductOrderProcesses),
+		ProductOrderLabels:      PBToProductOrderLabels(in.ProductOrderLabels),
+		ProductOrderPackages:    PBToProductOrderPackages(in.ProductOrderPackages),
+		ProductOrderPallets:     PBToProductOrderPallets(in.ProductOrderPallets),
 	}
 }
 

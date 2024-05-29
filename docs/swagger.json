@@ -6208,7 +6208,7 @@
                         "in": "query"
                     },
                     {
-                        "type": "integer",
+                        "type": "string",
                         "description": "工单工序ID",
                         "name": "productOrderProcessID",
                         "in": "query"
@@ -7238,7 +7238,7 @@
                         "in": "query"
                     },
                     {
-                        "type": "integer",
+                        "type": "string",
                         "description": "生产产线ID",
                         "name": "productionLineID",
                         "in": "query"
@@ -8328,7 +8328,7 @@
                         "in": "query"
                     },
                     {
-                        "type": "integer",
+                        "type": "string",
                         "description": "当前工序",
                         "name": "currentProcessID",
                         "in": "query"
@@ -9406,7 +9406,7 @@
                         "in": "query"
                     },
                     {
-                        "type": "integer",
+                        "type": "string",
                         "description": "生产产线ID",
                         "name": "productionLineID",
                         "in": "query"
@@ -10502,7 +10502,7 @@
                         "in": "query"
                     },
                     {
-                        "type": "integer",
+                        "type": "string",
                         "description": "作业产线",
                         "name": "productionLineID",
                         "in": "query"
@@ -10782,7 +10782,7 @@
                         "in": "query"
                     },
                     {
-                        "type": "integer",
+                        "type": "string",
                         "description": "作业产线",
                         "name": "productionLineID",
                         "in": "query"
@@ -11556,7 +11556,7 @@
                         "in": "query"
                     },
                     {
-                        "type": "integer",
+                        "type": "string",
                         "description": "产品品牌ID",
                         "name": "productBrandID",
                         "in": "query"
@@ -11812,7 +11812,7 @@
                         "in": "query"
                     },
                     {
-                        "type": "integer",
+                        "type": "string",
                         "description": "产品类别ID",
                         "name": "productCategoryID",
                         "in": "query"
@@ -12127,7 +12127,7 @@
                         "in": "query"
                     },
                     {
-                        "type": "integer",
+                        "type": "string",
                         "description": "产品类别ID",
                         "name": "productCategoryID",
                         "in": "query"
@@ -12389,9 +12389,15 @@
                         "in": "query"
                     },
                     {
-                        "type": "integer",
+                        "type": "string",
                         "description": "产品类别ID",
                         "name": "productCategoryID",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "产品型号ID",
+                        "name": "productModelID",
                         "in": "query"
                     }
                 ],
@@ -13202,7 +13208,7 @@
                         "in": "query"
                     },
                     {
-                        "type": "integer",
+                        "type": "string",
                         "description": "生产产线ID",
                         "name": "productionLineID",
                         "in": "query"
@@ -13458,7 +13464,7 @@
                         "in": "query"
                     },
                     {
-                        "type": "integer",
+                        "type": "string",
                         "description": "生产产线ID",
                         "name": "productionLineID",
                         "in": "query"
@@ -13714,7 +13720,7 @@
                         "in": "query"
                     },
                     {
-                        "type": "integer",
+                        "type": "string",
                         "description": "生产工序ID",
                         "name": "productionProcessID",
                         "in": "query"
@@ -13970,7 +13976,7 @@
                         "in": "query"
                     },
                     {
-                        "type": "integer",
+                        "type": "string",
                         "description": "生产产线ID",
                         "name": "productionLineID",
                         "in": "query"
@@ -14238,7 +14244,7 @@
                         "in": "query"
                     },
                     {
-                        "type": "integer",
+                        "type": "string",
                         "description": "生产产线ID",
                         "name": "productionLineID",
                         "in": "query"
@@ -14524,7 +14530,7 @@
                         "in": "query"
                     },
                     {
-                        "type": "integer",
+                        "type": "string",
                         "description": "生产产线ID",
                         "name": "productionLineID",
                         "in": "query"
@@ -15602,7 +15608,7 @@
                         "in": "query"
                     },
                     {
-                        "type": "integer",
+                        "type": "string",
                         "description": "生产产线ID",
                         "name": "productionLineID",
                         "in": "query"
@@ -16120,7 +16126,7 @@
                         "in": "query"
                     },
                     {
-                        "type": "integer",
+                        "type": "string",
                         "description": "生产工厂ID ",
                         "name": "productionFactoryID",
                         "in": "query"
@@ -16388,7 +16394,7 @@
                         "in": "query"
                     },
                     {
-                        "type": "integer",
+                        "type": "string",
                         "description": "生产产线ID",
                         "name": "productionLineID",
                         "in": "query"
@@ -19234,7 +19240,7 @@
                         "in": "query"
                     },
                     {
-                        "type": "integer",
+                        "type": "string",
                         "description": "任务队列ID",
                         "name": "taskQueueID",
                         "in": "query"
@@ -20324,7 +20330,7 @@
                         "in": "query"
                     },
                     {
-                        "type": "integer",
+                        "type": "string",
                         "description": "生产产线ID",
                         "name": "productionLineID",
                         "in": "query"
@@ -20586,7 +20592,7 @@
                         "in": "query"
                     },
                     {
-                        "type": "integer",
+                        "type": "string",
                         "description": "生产产线ID",
                         "name": "productionLineID",
                         "in": "query"

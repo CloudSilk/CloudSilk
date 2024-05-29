@@ -105,7 +105,7 @@ func UpdateProductModel(c *gin.Context) {
 // @Param orderField query string false "排序字段"
 // @Param desc query bool false "是否倒序排序"
 // @Param code query string false "型号"
-// @Param productCategoryID query int false "产品类别ID"
+// @Param productCategoryID query string false "产品类别ID"
 // @Param IsPrefabricated query bool false "是否预制"
 // @Success 200 {object} proto.QueryProductModelResponse
 // @Router /api/mom/productbase/productmodel/query [get]

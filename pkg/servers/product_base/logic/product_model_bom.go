@@ -49,6 +49,9 @@ func QueryProductModelBom(req *proto.QueryProductModelBomRequest, resp *proto.Qu
 		db = db.Joins("JOIN product_models ON product_model_boms.product_model_id=product_models.id").
 			Where("product_models.product_category_id = ?", req.ProductCategoryID)
 	}
+	if req.ProductModelID != "" {
+		db = db.Where("`product_model_id`=?", req.ProductModelID)
+	}
 
 	orderStr, err := utils.GenerateOrderString(req.SortConfig, "created_at desc")
 	if err != nil {
