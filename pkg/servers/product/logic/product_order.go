@@ -1,6 +1,7 @@
 package logic
 
 import (
+	"database/sql"
 	"errors"
 	"fmt"
 	"strings"
@@ -28,10 +29,9 @@ func CreateProductOrder(m *model.ProductOrder) (string, error) {
 	if m.OrderType == types.ProductOrderTypeRoutine {
 		systemConfigKey = types.SystemConfigKeyRoutineProductOrderPrefix
 	}
-
 	var systemConfig model.SystemParamsConfig
 	if err := model.DB.DB().First(&systemConfig, "`key` = ?", systemConfigKey).Error; err == gorm.ErrRecordNotFound {
-		return "", fmt.Errorf("缺少系统配置项: %s", systemConfigKey)
+		return "", fmt.Errorf("系统参数配置缺少项: %s", systemConfigKey)
 	} else if err != nil {
 		return "", err
 	}
@@ -46,7 +46,7 @@ func CreateProductOrder(m *model.ProductOrder) (string, error) {
 
 	//产品工单BOM
 	for i, v := range m.ProductOrderBoms {
-		v.ItemNo = fmt.Sprintf("%04d", i)
+		v.ItemNo = fmt.Sprintf("%04d", i+1)
 		v.RequireQTY = float32(m.OrderQTY) * v.PieceQTY
 		v.CreateUserID = m.CreateUserID
 	}
@@ -89,7 +89,7 @@ func CreateProductOrder(m *model.ProductOrder) (string, error) {
 	if false {
 		m.CurrentState = types.ProductOrderStateReceipted
 	}
-	m.OrderTime = utils.ParseSqlNullTime(time.Now().Format("2006-01-02 15:04:05"))
+	m.OrderTime = sql.NullTime{Time: time.Now(), Valid: true}
 
 	err = model.DB.DB().Create(m).Error
 
@@ -213,6 +213,7 @@ func DeleteProductOrder(id string) (err error) {
 	return model.DB.DB().Delete(&model.ProductOrder{}, "`id` = ?", id).Error
 }
 
+// 发放
 func ReleaseProductOrder(ids []string) (err error) {
 	var productOrders []*model.ProductOrder
 	if err := model.DB.DB().Find(&productOrders, "`id` in (?)", ids).Error; err != nil {
@@ -229,8 +230,22 @@ func ReleaseProductOrder(ids []string) (err error) {
 		return fmt.Errorf("下列工单的状态错误，只能发放状态为%s的工单。%s", types.ProductOrderStateDispatched, strings.Join(productOrderNoArray, ","))
 	}
 
+	for _, v := range productOrders {
+		if v.CurrentState == types.ProductOrderStateVerified {
+			if OnProductOrderRelease(v.ID) != nil {
+				if err = model.DB.DB().Create(model.TaskQueueExecution{
+					Success:       false,
+					FailureReason: fmt.Sprintf("%v", err),
+					DataTrace:     fmt.Sprintf("数据表: ProductOrder, 索引: %s", v.ProductOrderNo),
+				}).Error; err != nil {
+					return
+				}
+			}
+		}
+	}
+
 	return model.DB.DB().Transaction(func(tx *gorm.DB) error {
-		if err := tx.Model(&model.ProductOrder{}).Where("`id` in (?)", ids).Update("current_state", types.ProductStateReleased).Error; err != nil {
+		if err := tx.Model(&model.ProductOrder{}).Where("`id` in (?)", ids).Update("current_state", types.ProductOrderStateReleased).Error; err != nil {
 			return err
 		}
 		if err := tx.Model(&model.ProductInfo{}).Where("`product_order_id` in (?)", ids).Update("current_state", types.ProductStateReleased).Error; err != nil {
@@ -238,96 +253,6 @@ func ReleaseProductOrder(ids []string) (err error) {
 		}
 		return nil
 	})
-}
-
-// 生产工单核验
-func ReceiveProductOrder() (err error) {
-	var productOrders []*model.ProductOrder
-	if err = model.DB.DB().Preload("ProductOrderAttributes").Find(&productOrders, "`current_state` = ?", types.ProductOrderStateUploaded).Error; err != nil {
-		return
-	}
-
-	for _, productOrder := range productOrders {
-		if OnProductOrderCheck(productOrder.ProductOrderNo) != nil {
-			if err = model.DB.DB().Create(model.TaskQueueExecution{
-				Success:       false,
-				FailureReason: fmt.Sprintf("%v", err),
-				DataTrace:     fmt.Sprintf("数据表: ProductOrder, 索引: %s", productOrder.ProductOrderNo),
-			}).Error; err != nil {
-				return
-			}
-		}
-	}
-
-	return
-}
-
-func OnProductOrderCheck(productOrderNo string) (err error) {
-	productOrder := &model.ProductOrder{}
-	if err = model.DB.DB().Preload("ProductOrderAttributes").First(&productOrder, "`product_order_no` = ?", productOrderNo).Error; err != nil {
-		return
-	}
-	var productOrderReleaseRules []*model.ProductOrderReleaseRule
-	if err = model.DB.DB().Order("priority").Find(&productOrderReleaseRules, "`enable` = ?", true).Error; err != nil {
-		return
-	}
-
-	var productOrderReleaseRule *model.ProductOrderReleaseRule
-	for _, _productOrderReleaseRule := range productOrderReleaseRules {
-		match := _productOrderReleaseRule.InitialValue
-		var attributeExpressions []*model.AttributeExpression
-		if err = model.DB.DB().Find(&attributeExpressions, "`rule_id` = ? AND `rule_type` = ?", _productOrderReleaseRule.ID, "ProductOrderReleaseRule").Error; err != nil {
-			return
-		}
-		for _, attributeExpression := range attributeExpressions {
-			attributeMatch := false
-			for _, productOrderAttribute := range productOrder.ProductOrderAttributes {
-				if productOrderAttribute.ProductAttributeID == attributeExpression.ProductAttributeID && productOrderAttribute.Value == attributeExpression.AttributeValue {
-					attributeMatch = true
-					break
-				}
-			}
-			if attributeMatch {
-				match = attributeMatch
-				break
-			}
-		}
-
-		if match {
-			productOrderReleaseRule = _productOrderReleaseRule
-			break
-		}
-	}
-	if productOrderReleaseRule == nil {
-		return fmt.Errorf("签派失败，无法匹配发放规则")
-	}
-
-	productOrder.ProductionLineID = &productOrderReleaseRule.ProductionLineID
-	productOrder.CurrentState = types.ProductOrderStateReceipted
-
-	return model.DB.DB().Save(productOrder).Error
-}
-
-// 生产工单发放
-func ReleaseProductOrder2(ids []string) (err error) {
-	var productOrders []*model.ProductOrder
-	if err := model.DB.DB().Find(&productOrders, "`current_state` = ?", types.ProductOrderStateVerified).Error; err != nil {
-		return err
-	}
-
-	for _, productOrder := range productOrders {
-		if OnProductOrderRelease(productOrder.ID) != nil {
-			if err = model.DB.DB().Create(model.TaskQueueExecution{
-				Success:       false,
-				FailureReason: fmt.Sprintf("%v", err),
-				DataTrace:     fmt.Sprintf("数据表: ProductOrder, 索引: %s", productOrder.ProductOrderNo),
-			}).Error; err != nil {
-				return
-			}
-		}
-	}
-
-	return nil
 }
 
 func OnProductOrderRelease(productOrderID string) (err error) {
@@ -448,7 +373,7 @@ func OnProductOrderRelease(productOrderID string) (err error) {
 	}
 
 	productOrder.StandardWorkTime = productionRhythm.StandardTime
-	productOrder.ReleaseTime = utils.ParseSqlNullTime(time.Now().Format("2006-01-02 15:04:05"))
+	productOrder.ReleaseTime = sql.NullTime{Time: time.Now(), Valid: true}
 	productOrder.CurrentState = types.ProductOrderStateReleased
 
 	propertyBrief := ""
@@ -468,4 +393,163 @@ func OnProductOrderRelease(productOrderID string) (err error) {
 	}
 
 	return model.DB.DB().Save(productOrder).Error
+}
+
+// 接收
+func ReceiveProductOrder(ids []string) (err error) {
+	var productOrders []*model.ProductOrder
+	if err := model.DB.DB().Find(&productOrders, "`id` in (?)", ids).Error; err != nil {
+		return err
+	}
+
+	productOrderNoArray := []string{}
+	for _, v := range productOrders {
+		if v.CurrentState != types.ProductOrderStateUploaded {
+			productOrderNoArray = append(productOrderNoArray, v.ProductOrderNo)
+		}
+	}
+	if len(productOrderNoArray) != 0 {
+		return fmt.Errorf("下列工单的状态错误，只能接收状态为%s的工单。%s", types.ProductOrderStateUploaded, strings.Join(productOrderNoArray, ","))
+	}
+
+	for _, v := range productOrders {
+		if v.CurrentState == types.ProductOrderStateUploaded {
+			if OnProductOrderCheck(v.ProductOrderNo) != nil {
+				if err = model.DB.DB().Create(model.TaskQueueExecution{
+					Success:       false,
+					FailureReason: fmt.Sprintf("%v", err),
+					DataTrace:     fmt.Sprintf("数据表: ProductOrder, 索引: %s", v.ProductOrderNo),
+				}).Error; err != nil {
+					return
+				}
+			}
+		}
+	}
+
+	return model.DB.DB().Model(&model.ProductOrder{}).Where("`id` in (?)", ids).Update("current_state", types.ProductOrderStateReceipted).Error
+}
+
+func OnProductOrderCheck(productOrderNo string) (err error) {
+	productOrder := &model.ProductOrder{}
+	if err = model.DB.DB().Preload("ProductOrderAttributes").First(&productOrder, "`product_order_no` = ?", productOrderNo).Error; err != nil {
+		return
+	}
+	var productOrderReleaseRules []*model.ProductOrderReleaseRule
+	if err = model.DB.DB().Order("priority").Find(&productOrderReleaseRules, "`enable` = ?", true).Error; err != nil {
+		return
+	}
+
+	var productOrderReleaseRule *model.ProductOrderReleaseRule
+	for _, _productOrderReleaseRule := range productOrderReleaseRules {
+		match := _productOrderReleaseRule.InitialValue
+		var attributeExpressions []*model.AttributeExpression
+		if err = model.DB.DB().Find(&attributeExpressions, "`rule_id` = ? AND `rule_type` = ?", _productOrderReleaseRule.ID, "ProductOrderReleaseRule").Error; err != nil {
+			return
+		}
+		for _, attributeExpression := range attributeExpressions {
+			attributeMatch := false
+			for _, productOrderAttribute := range productOrder.ProductOrderAttributes {
+				if productOrderAttribute.ProductAttributeID == attributeExpression.ProductAttributeID && productOrderAttribute.Value == attributeExpression.AttributeValue {
+					attributeMatch = true
+					break
+				}
+			}
+			if attributeMatch {
+				match = attributeMatch
+				break
+			}
+		}
+
+		if match {
+			productOrderReleaseRule = _productOrderReleaseRule
+			break
+		}
+	}
+	if productOrderReleaseRule == nil {
+		return fmt.Errorf("签派失败，无法匹配发放规则")
+	}
+
+	productOrder.ProductionLineID = &productOrderReleaseRule.ProductionLineID
+	productOrder.CurrentState = types.ProductOrderStateReceipted
+
+	return model.DB.DB().Save(productOrder).Error
+}
+
+// 取消
+func CancelProductOrder(ids []string) (err error) {
+	var productOrders []*model.ProductOrder
+	if err := model.DB.DB().Find(&productOrders, "`id` in (?)", ids).Error; err != nil {
+		return err
+	}
+
+	productOrderNoArray := []string{}
+	for _, v := range productOrders {
+		if v.CurrentState != types.ProductOrderStateDispatched && v.CurrentState != types.ProductOrderStateReleased && v.CurrentState != types.ProductOrderStateProducting {
+			productOrderNoArray = append(productOrderNoArray, v.ProductOrderNo)
+		}
+	}
+	if len(productOrderNoArray) != 0 {
+		return fmt.Errorf("下列工单的状态错误，只能取消状态为%s或%s或%s的工单。%s", types.ProductOrderStateDispatched, types.ProductOrderStateReleased, types.ProductOrderStateProducting, strings.Join(productOrderNoArray, ","))
+	}
+
+	return model.DB.DB().Transaction(func(tx *gorm.DB) error {
+		if err := tx.Model(&model.ProductOrder{}).Where("`id` in (?)", ids).Update("current_state", types.ProductOrderStateCancelled).Error; err != nil {
+			return err
+		}
+		if err := tx.Model(&model.ProductInfo{}).Where("`product_order_id` in (?) AND `current_state` = ?", ids, types.ProductStateReleased).Update("current_state", types.ProductStateCancelled).Error; err != nil {
+			return err
+		}
+		return nil
+	})
+}
+
+// 暂缓
+func SuspendProductOrder(ids []string) (err error) {
+	var productOrders []*model.ProductOrder
+	if err := model.DB.DB().Find(&productOrders, "`id` in (?)", ids).Error; err != nil {
+		return err
+	}
+
+	productOrderNoArray := []string{}
+	for _, v := range productOrders {
+		if v.CurrentState != types.ProductOrderStateReleased && v.CurrentState != types.ProductOrderStateProducting {
+			productOrderNoArray = append(productOrderNoArray, v.ProductOrderNo)
+		}
+	}
+	if len(productOrderNoArray) != 0 {
+		return fmt.Errorf("下列工单的状态错误，只能暂缓状态为%s或%s的工单。%s", types.ProductOrderStateReleased, types.ProductOrderStateProducting, strings.Join(productOrderNoArray, ","))
+	}
+
+	return model.DB.DB().Model(&model.ProductOrder{}).Where("`id` in (?)", ids).Update("current_state", types.ProductOrderStateSuspended).Error
+}
+
+// 恢复
+func ResumeProductOrder(ids []string) (err error) {
+	var productOrders []*model.ProductOrder
+	if err := model.DB.DB().Find(&productOrders, "`id` in (?)", ids).Error; err != nil {
+		return err
+	}
+
+	productOrderNoArray := []string{}
+	for _, v := range productOrders {
+		if v.CurrentState != types.ProductOrderStateSuspended {
+			productOrderNoArray = append(productOrderNoArray, v.ProductOrderNo)
+		}
+	}
+	if len(productOrderNoArray) != 0 {
+		return fmt.Errorf("下列工单的状态错误，只能恢复状态为%s的工单。%s", types.ProductOrderStateSuspended, strings.Join(productOrderNoArray, ","))
+	}
+
+	return model.DB.DB().Transaction(func(tx *gorm.DB) error {
+		if err := tx.Model(&model.ProductOrder{}).Where("`id` in (?) AND `started_qty` > 0", ids).Update("current_state", types.ProductOrderStateProducting).Error; err != nil {
+			return err
+		}
+		if err := tx.Model(&model.ProductOrder{}).Where("`id` in (?) AND `started_qty` = 0", ids).Update("current_state", types.ProductOrderStateReleased).Error; err != nil {
+			return err
+		}
+		if err := tx.Model(&model.ProductInfo{}).Where("`product_order_id` in (?) AND current_state=?", ids, types.ProductStateSuspended).Update("current_state", types.ProductStateReleased).Error; err != nil {
+			return err
+		}
+		return nil
+	})
 }

@@ -79,7 +79,7 @@ func GetAllProductionProcessSteps() (list []*model.ProductionProcessStep, err er
 func GetProductionProcessStepByID(id string) (*model.ProductionProcessStep, error) {
 	m := &model.ProductionProcessStep{}
 	err := model.DB.DB().Preload("AttributeExpressions", func(db *gorm.DB) *gorm.DB {
-		return db.Where("rule_type", "model.ProductionProcessStep")
+		return db.Where("rule_type", "ProductionProcessStep")
 	}).Preload("AvailableProcesses").Preload(clause.Associations).Where("`id` = ?", id).First(m).Error
 	return m, err
 }
@@ -87,7 +87,7 @@ func GetProductionProcessStepByID(id string) (*model.ProductionProcessStep, erro
 func GetProductionProcessStep(req *proto.GetProductionProcessStepRequest) (*model.ProductionProcessStep, error) {
 	m := &model.ProductionProcessStep{}
 	err := model.DB.DB().Preload("AttributeExpressions", func(db *gorm.DB) *gorm.DB {
-		return db.Where("rule_type", "model.ProductionProcessStep")
+		return db.Where("rule_type", "ProductionProcessStep")
 	}).Preload("AvailableProcesses").Preload(clause.Associations).First(m, map[string]interface{}{
 		"production_process_id": req.ProductionProcessID,
 		"product_model_id":      req.ProductModelID,
@@ -99,7 +99,7 @@ func GetProductionProcessStep(req *proto.GetProductionProcessStepRequest) (*mode
 func GetProductionProcessStepByIDs(ids []string) ([]*model.ProductionProcessStep, error) {
 	var m []*model.ProductionProcessStep
 	err := model.DB.DB().Preload("AttributeExpressions", func(db *gorm.DB) *gorm.DB {
-		return db.Where("rule_type", "model.ProductionProcessStep")
+		return db.Where("rule_type", "ProductionProcessStep")
 	}).Preload("AvailableProcesses").Preload(clause.Associations).Where("`id` in (?)", ids).Find(&m).Error
 	return m, err
 }

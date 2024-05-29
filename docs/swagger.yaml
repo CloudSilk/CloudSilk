@@ -8673,6 +8673,33 @@ paths:
       summary: 查询所有
       tags:
       - 生产工单管理
+  /api/mom/product/productorder/cancel:
+    put:
+      consumes:
+      - application/json
+      description: 取消
+      parameters:
+      - description: jwt token
+        in: header
+        name: authorization
+        required: true
+        type: string
+      - description: Cancel ProductOrder
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/proto.GetByIDsRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/proto.CommonResponse'
+      summary: 取消
+      tags:
+      - 生产工单管理
   /api/mom/product/productorder/delete:
     delete:
       consumes:
@@ -8787,6 +8814,33 @@ paths:
       summary: 分页查询
       tags:
       - 生产工单管理
+  /api/mom/product/productorder/receive:
+    put:
+      consumes:
+      - application/json
+      description: 接收
+      parameters:
+      - description: jwt token
+        in: header
+        name: authorization
+        required: true
+        type: string
+      - description: Receive ProductOrder
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/proto.GetByIDsRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/proto.CommonResponse'
+      summary: 接收
+      tags:
+      - 生产工单管理
   /api/mom/product/productorder/release:
     put:
       consumes:
@@ -8812,6 +8866,60 @@ paths:
           schema:
             $ref: '#/definitions/proto.CommonResponse'
       summary: 发放
+      tags:
+      - 生产工单管理
+  /api/mom/product/productorder/resume:
+    put:
+      consumes:
+      - application/json
+      description: 恢复
+      parameters:
+      - description: jwt token
+        in: header
+        name: authorization
+        required: true
+        type: string
+      - description: Resume ProductOrder
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/proto.GetByIDsRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/proto.CommonResponse'
+      summary: 恢复
+      tags:
+      - 生产工单管理
+  /api/mom/product/productorder/suspend:
+    put:
+      consumes:
+      - application/json
+      description: 暂缓
+      parameters:
+      - description: jwt token
+        in: header
+        name: authorization
+        required: true
+        type: string
+      - description: Suspend ProductOrder
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/proto.GetByIDsRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/proto.CommonResponse'
+      summary: 暂缓
       tags:
       - 生产工单管理
   /api/mom/product/productorder/update:

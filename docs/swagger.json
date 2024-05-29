@@ -3447,6 +3447,47 @@
                 }
             }
         },
+        "/api/mom/product/productorder/cancel": {
+            "put": {
+                "description": "取消",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "生产工单管理"
+                ],
+                "summary": "取消",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "jwt token",
+                        "name": "authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "description": "Cancel ProductOrder",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/proto.GetByIDsRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/proto.CommonResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/api/mom/product/productorder/delete": {
             "delete": {
                 "description": "删除",
@@ -3619,6 +3660,47 @@
                 }
             }
         },
+        "/api/mom/product/productorder/receive": {
+            "put": {
+                "description": "接收",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "生产工单管理"
+                ],
+                "summary": "接收",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "jwt token",
+                        "name": "authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "description": "Receive ProductOrder",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/proto.GetByIDsRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/proto.CommonResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/api/mom/product/productorder/release": {
             "put": {
                 "description": "发放",
@@ -3642,6 +3724,88 @@
                     },
                     {
                         "description": "Release ProductOrder",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/proto.GetByIDsRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/proto.CommonResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/mom/product/productorder/resume": {
+            "put": {
+                "description": "恢复",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "生产工单管理"
+                ],
+                "summary": "恢复",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "jwt token",
+                        "name": "authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "description": "Resume ProductOrder",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/proto.GetByIDsRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/proto.CommonResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/mom/product/productorder/suspend": {
+            "put": {
+                "description": "暂缓",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "生产工单管理"
+                ],
+                "summary": "暂缓",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "jwt token",
+                        "name": "authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "description": "Suspend ProductOrder",
                         "name": "data",
                         "in": "body",
                         "required": true,
