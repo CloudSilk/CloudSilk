@@ -1,10 +1,13 @@
 dbConfigs:
   Usercenter:
-    connectionStr: "root:123456@(127.0.0.1:3306)/usercenter?charset=utf8mb4&parseTime=True&loc=Local"
-    dbType: "mysql"
+    fileName: "./CloudSilk.s3db"
+    dbType: "sqlite"
   Curd:
     fileName: "./CloudSilk.s3db"
     dbType: "sqlite"
+  CloudSilk:
+    connectionStr: "root:password@(127.0.0.1:3306)/mom?charset=utf8mb4&parseTime=True&loc=Local"
+    dbType: "mysql"
   all:
     fileName: "./CloudSilk.s3db"
     dbType: "sqlite"

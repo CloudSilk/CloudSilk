@@ -32,3 +32,4 @@ obj
 *.csproj.user
 tmp
 result
+config.yaml
