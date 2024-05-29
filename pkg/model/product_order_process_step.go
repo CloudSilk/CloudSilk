@@ -17,9 +17,9 @@ type ProductOrderProcessStep struct {
 	CreateUserID                          string                                  `json:"createUserID" gorm:"size:36;comment:创建人员ID"`
 	Remark                                string                                  `json:"remark" gorm:"comment:备注"`
 	ProcessStepTypeID                     string                                  `json:"processStepTypeID" gorm:"size:36;comment:工序类型ID"`
-	ProcessStepType                       *ProcessStepType                        `json:"processStepType"` //工序类型
+	ProcessStepType                       *ProcessStepType                        `json:"processStepType" gorm:"constraint:OnDelete:CASCADE"` //工序类型
 	ProductOrderProcessID                 string                                  `json:"productOrderProcessID" gorm:"index;size:36;comment:工单工序ID"`
-	ProductOrderProcess                   *ProductOrderProcess                    `json:"productOrderProcess"`
+	ProductOrderProcess                   *ProductOrderProcess                    `json:"productOrderProcess" gorm:"constraint:OnDelete:CASCADE"`
 	ProductOrderProcessStepAttachments    []*ProductOrderProcessStepAttachment    `json:"productOrderProcessStepAttachments" gorm:"constraint:OnDelete:CASCADE;"`
 	ProductOrderProcessStepTypeParameters []*ProductOrderProcessStepTypeParameter `json:"productOrderProcessStepTypeParameters" gorm:"constraint:OnDelete:CASCADE;"`
 }

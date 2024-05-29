@@ -13,7 +13,7 @@ func CreateProductOrderPallet(m *model.ProductOrderPallet) (string, error) {
 }
 
 func UpdateProductOrderPallet(m *model.ProductOrderPallet) error {
-	return model.DB.DB().Omit("create_time").Save(m).Error
+	return model.DB.DB().Omit("created_at", "create_time").Save(m).Error
 }
 
 func QueryProductOrderPallet(req *proto.QueryProductOrderPalletRequest, resp *proto.QueryProductOrderPalletResponse, preload bool) {
@@ -39,7 +39,7 @@ func QueryProductOrderPallet(req *proto.QueryProductOrderPalletRequest, resp *pr
 			Where("product_orders.product_order_no like ?", "%"+req.ProductOrderNo+"%")
 	}
 
-	orderStr, err := utils.GenerateOrderString(req.SortConfig, "id")
+	orderStr, err := utils.GenerateOrderString(req.SortConfig, "created_at desc")
 	if err != nil {
 		resp.Code = proto.Code_BadRequest
 		resp.Message = err.Error()
@@ -64,16 +64,16 @@ func GetAllProductOrderPallets() (list []*model.ProductOrderPallet, err error) {
 
 func GetProductOrderPalletByID(id string) (*model.ProductOrderPallet, error) {
 	m := &model.ProductOrderPallet{}
-	err := model.DB.DB().Preload(clause.Associations).Where("id = ?", id).First(m).Error
+	err := model.DB.DB().Preload(clause.Associations).Where("`id` = ?", id).First(m).Error
 	return m, err
 }
 
 func GetProductOrderPalletByIDs(ids []string) ([]*model.ProductOrderPallet, error) {
 	var m []*model.ProductOrderPallet
-	err := model.DB.DB().Preload(clause.Associations).Where("id in (?)", ids).Find(&m).Error
+	err := model.DB.DB().Preload(clause.Associations).Where("`id` in (?)", ids).Find(&m).Error
 	return m, err
 }
 
 func DeleteProductOrderPallet(id string) (err error) {
-	return model.DB.DB().Delete(&model.ProductOrderPallet{}, "id=?", id).Error
+	return model.DB.DB().Delete(&model.ProductOrderPallet{}, "`id` = ?", id).Error
 }

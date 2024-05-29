@@ -15,11 +15,11 @@ type ProductIssueRecord struct {
 	CurrentState      string             `json:"CurrentState" gorm:"size:-1;comment:当前状态"`
 	LastUpdateTime    time.Time          `json:"LastUpdateTime" gorm:"autoUpdateTime:nano;comment:状态变更时间"`
 	ProductInfoID     string             `json:"ProductInfoID" gorm:"size:36;comment:绑定产品ID"`
-	ProductInfo       *ProductInfo       `json:"ProductInfo"`
+	ProductInfo       *ProductInfo       `json:"ProductInfo" gorm:"constraint:OnDelete:CASCADE"`
 	ProductOrderBomID string             `json:"ProductOrderBomID" gorm:"size:36;comment:工单物料ID"`
-	ProductOrderBom   *ProductOrderBom   `json:"ProductOrderBom"`
+	ProductOrderBom   *ProductOrderBom   `json:"ProductOrderBom" gorm:"constraint:OnDelete:CASCADE"`
 	IssuanceProcessID string             `json:"IssuanceProcessID" gorm:"size:36;comment:发料工序ID"`
-	IssuanceProcess   *ProductionProcess `json:"IssuanceProcess"`
+	IssuanceProcess   *ProductionProcess `json:"IssuanceProcess" gorm:"constraint:OnDelete:CASCADE"`
 }
 
 func PBToProductIssueRecords(in []*proto.ProductIssueRecordInfo) []*ProductIssueRecord {

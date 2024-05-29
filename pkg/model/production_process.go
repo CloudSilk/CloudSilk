@@ -15,16 +15,15 @@ type ProductionProcess struct {
 	InitialValue                       bool                                 `json:"initialValue" gorm:"comment:默认匹配"`
 	EnableReport                       bool                                 `json:"enableReport" gorm:"comment:是否报工"`
 	EnableControl                      bool                                 `json:"enableControl" gorm:"comment:是否管控"`
-	SimulateExecution                  bool                                 `json:"simulateExecution" gorm:"comment:模拟执行"`
 	ProcessType                        int32                                `json:"processType" gorm:"comment:工序类型"`
 	VehicleType                        int32                                `json:"vehicleType" gorm:"comment:载具类型"`
 	ProductState                       string                               `json:"productState" gorm:"size:100;comment:产品状态"`
 	Remark                             string                               `json:"remark" gorm:"size:1000;comment:备注"`
 	ProductionLineID                   string                               `json:"productionLineID" gorm:"size:36;comment:生产产线ID"`
-	ProductionLine                     *ProductionLine                      `gorm:"constraint:OnDelete:CASCADE"` //生产产线
-	ProductionProcessAvailableStations []*ProductionProcessAvailableStation `gorm:"constraint:OnDelete:CASCADE"` //支持工站
-	AttributeExpressions               []*AttributeExpression               `gorm:"polymorphic:Rule;polymorphicValue:ProductionProcess"`
-	// ProductionProcesses                []*ProductionProcess                 `json:"productionProcesses" gorm:"-"` //支援工序
+	ProductionLine                     *ProductionLine                      `gorm:"constraint:OnDelete:CASCADE"`                         //生产产线
+	ProductionProcessAvailableStations []*ProductionProcessAvailableStation `gorm:"constraint:OnDelete:CASCADE"`                         //支持工站
+	AttributeExpressions               []*AttributeExpression               `gorm:"polymorphic:Rule;polymorphicValue:ProductionProcess"` //特性表达式
+	ProductionProcessSteps             []*AvailableProcess                  `gorm:"constraint:OnDelete:CASCADE"`
 }
 
 type ProductionProcessAvailableStation struct {
@@ -56,7 +55,6 @@ func PBToProductionProcess(in *proto.ProductionProcessInfo) *ProductionProcess {
 		InitialValue:                       in.InitialValue,
 		EnableReport:                       in.EnableReport,
 		EnableControl:                      in.EnableControl,
-		SimulateExecution:                  in.SimulateExecution,
 		ProcessType:                        in.ProcessType,
 		VehicleType:                        in.VehicleType,
 		ProductState:                       in.ProductState,
@@ -80,6 +78,11 @@ func ProductionProcessToPB(in *ProductionProcess) *proto.ProductionProcessInfo {
 		return nil
 	}
 
+	var availableStationIDs []string
+	for _, ProductionProcessAvailableStation := range in.ProductionProcessAvailableStations {
+		availableStationIDs = append(availableStationIDs, ProductionProcessAvailableStation.ProductionStationID)
+	}
+
 	m := &proto.ProductionProcessInfo{
 		Id:                                 in.ID,
 		SortIndex:                          in.SortIndex,
@@ -90,16 +93,16 @@ func ProductionProcessToPB(in *ProductionProcess) *proto.ProductionProcessInfo {
 		InitialValue:                       in.InitialValue,
 		EnableReport:                       in.EnableReport,
 		EnableControl:                      in.EnableControl,
-		SimulateExecution:                  in.SimulateExecution,
 		ProcessType:                        in.ProcessType,
 		VehicleType:                        in.VehicleType,
 		ProductState:                       in.ProductState,
 		Remark:                             in.Remark,
 		ProductionLineID:                   in.ProductionLineID,
 		ProductionLine:                     ProductionLineToPB(in.ProductionLine),
+		AvailableStationIDs:                availableStationIDs,
 		ProductionProcessAvailableStations: ProductionProcessAvailableStationsToPB(in.ProductionProcessAvailableStations),
-		// ProductionProcesses:                ProductionProcesssToPB(in.ProductionProcesses),
-		AttributeExpressions: AttributeExpressionsToPB(in.AttributeExpressions),
+		AttributeExpressions:               AttributeExpressionsToPB(in.AttributeExpressions),
+		ProductionProcessSteps:             AvailableProcesssToPB(in.ProductionProcessSteps),
 	}
 	return m
 }

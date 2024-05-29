@@ -4,9 +4,9 @@ import (
 	"context"
 	"net/http"
 
-	"github.com/CloudSilk/CloudSilk/pkg/servers/system/logic"
 	"github.com/CloudSilk/CloudSilk/pkg/model"
 	"github.com/CloudSilk/CloudSilk/pkg/proto"
+	"github.com/CloudSilk/CloudSilk/pkg/servers/system/logic"
 	"github.com/CloudSilk/pkg/utils/log"
 	"github.com/CloudSilk/pkg/utils/middleware"
 	"github.com/gin-gonic/gin"
@@ -106,7 +106,7 @@ func UpdateTaskQueueExecution(c *gin.Context) {
 // @Param desc query bool false "是否倒序排序"
 // @Param createTime0 query string false "创建时间开始"
 // @Param createTime1 query string false "创建时间结束"
-// @Param taskQueueID query int false "任务队列ID"
+// @Param taskQueueID query string false "任务队列ID"
 // @Param dataTrace query string false "数据跟踪或失败原因"
 // @Success 200 {object} proto.QueryTaskQueueExecutionResponse
 // @Router /api/mom/system/taskqueueexecution/query [get]

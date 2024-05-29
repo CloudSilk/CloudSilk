@@ -13,7 +13,7 @@ func CreateExceptionTrace(m *model.ExceptionTrace) (string, error) {
 }
 
 func UpdateExceptionTrace(m *model.ExceptionTrace) error {
-	return model.DB.DB().Omit("time_reported").Save(m).Error
+	return model.DB.DB().Omit("created_at", "time_reported").Save(m).Error
 }
 
 func QueryExceptionTrace(req *proto.QueryExceptionTraceRequest, resp *proto.QueryExceptionTraceResponse, preload bool) {
@@ -26,7 +26,7 @@ func QueryExceptionTrace(req *proto.QueryExceptionTraceRequest, resp *proto.Quer
 		db = db.Where("`time_reported` BETWEEN ? AND ?", req.TimeReported0, req.TimeReported1)
 	}
 
-	orderStr, err := utils.GenerateOrderString(req.SortConfig, "id")
+	orderStr, err := utils.GenerateOrderString(req.SortConfig, "created_at desc")
 	if err != nil {
 		resp.Code = proto.Code_BadRequest
 		resp.Message = err.Error()
@@ -51,16 +51,16 @@ func GetAllExceptionTraces() (list []*model.ExceptionTrace, err error) {
 
 func GetExceptionTraceByID(id string) (*model.ExceptionTrace, error) {
 	m := &model.ExceptionTrace{}
-	err := model.DB.DB().Preload(clause.Associations).Where("id = ?", id).First(m).Error
+	err := model.DB.DB().Preload(clause.Associations).Where("`id` = ?", id).First(m).Error
 	return m, err
 }
 
 func GetExceptionTraceByIDs(ids []string) ([]*model.ExceptionTrace, error) {
 	var m []*model.ExceptionTrace
-	err := model.DB.DB().Preload(clause.Associations).Where("id in (?)", ids).Find(&m).Error
+	err := model.DB.DB().Preload(clause.Associations).Where("`id` in (?)", ids).Find(&m).Error
 	return m, err
 }
 
 func DeleteExceptionTrace(id string) (err error) {
-	return model.DB.DB().Delete(&model.ExceptionTrace{}, "id=?", id).Error
+	return model.DB.DB().Delete(&model.ExceptionTrace{}, "`id` = ?", id).Error
 }

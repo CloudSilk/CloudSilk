@@ -10,21 +10,21 @@ import (
 // 产品工单BOM
 type ProductOrderBom struct {
 	ModelID
-	ItemNo              string        `json:"itemNo" gorm:"size:100;comment:项目号"`
-	MaterialNo          string        `json:"materialNo" gorm:"size:100;comment:物料号"`
-	MaterialDescription string        `json:"materialDescription" gorm:"size:1000;comment:物料描述"`
-	PieceQTY            float32       `json:"pieceQTY" gorm:"comment:单件数量"`
-	RequireQTY          float32       `json:"requireQTY" gorm:"comment:需求数量"`
-	Unit                string        `json:"unit" gorm:"size:20;comment:单位"`
-	EnableControl       bool          `json:"enableControl" gorm:"comment:是否管控"`
-	ControlType         int32         `json:"controlType" gorm:"comment:管控类型"`
-	ProductionProcess   string        `json:"productionProcess" gorm:"size:20;comment:需求工序"`
-	Warehouse           string        `json:"warehouse" gorm:"size:100;comment:物料仓库"`
-	CreateTime          time.Time     `json:"createTime" gorm:"autoCreateTime:nano;comment:创建时间"`
-	CreateUserID        string        `json:"createUserID" gorm:"size:36;comment:创建人员ID"`
-	Remark              string        `json:"remark" gorm:"size:1000;comment:备注"`
-	ProductOrderID      string        `json:"productOrderID" gorm:"size:36;comment:隶属工单ID"`
-	ProductOrder        *ProductOrder `json:"productOrder"` //工单
+	ItemNo              string        `json:"itemNo" gorm:"size:100;comment:项目号"`                 //项目号
+	MaterialNo          string        `json:"materialNo" gorm:"size:100;comment:物料号"`             //物料号
+	MaterialDescription string        `json:"materialDescription" gorm:"size:1000;comment:物料描述"`  //物料描述
+	PieceQTY            float32       `json:"pieceQTY" gorm:"comment:单件数量"`                       //单件数量
+	RequireQTY          float32       `json:"requireQTY" gorm:"comment:需求数量"`                     //需求数量
+	Unit                string        `json:"unit" gorm:"size:20;comment:单位"`                     //单位
+	EnableControl       bool          `json:"enableControl" gorm:"comment:是否管控"`                  //是否管控
+	ControlType         int32         `json:"controlType" gorm:"comment:管控类型"`                    //管控类型
+	ProductionProcess   string        `json:"productionProcess" gorm:"size:20;comment:需求工序"`      //需求工序
+	Warehouse           string        `json:"warehouse" gorm:"size:100;comment:物料仓库"`             //物料仓库
+	CreateTime          time.Time     `json:"createTime" gorm:"autoCreateTime:nano;comment:创建时间"` //创建时间
+	CreateUserID        string        `json:"createUserID" gorm:"size:36;comment:创建人员ID"`         //创建人员ID
+	Remark              string        `json:"remark" gorm:"size:1000;comment:备注"`                 //备注
+	ProductOrderID      string        `json:"productOrderID" gorm:"size:36;comment:隶属工单ID"`       //隶属工单ID
+	ProductOrder        *ProductOrder `json:"productOrder" gorm:"constraint:OnDelete:CASCADE"`    //工单
 }
 
 func PBToProductOrderBoms(in []*proto.ProductOrderBomInfo) []*ProductOrderBom {

@@ -16,7 +16,7 @@ type ProductionStationSignup struct {
 	LogoutTime          sql.NullTime       `json:"logoutTime" gorm:"comment:注销时间"`
 	Duration            int32              `json:"duration" gorm:"comment:上机时长"`
 	ProductionStationID string             `json:"productionStationID" gorm:"index;size:36;comment:生产工站ID"`
-	ProductionStation   *ProductionStation `json:"productionStation"` //生产工站
+	ProductionStation   *ProductionStation `json:"productionStation" gorm:"constraint:OnDelete:CASCADE"` //生产工站
 	LoginUserID         string             `json:"loginUserID" gorm:"index;size:36;comment:登录人员ID"`
 	Remark              string             `json:"remark" gorm:"column:Remark;size:1000;comment:备注信息"`
 }

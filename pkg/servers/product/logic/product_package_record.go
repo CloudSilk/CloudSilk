@@ -13,7 +13,7 @@ func CreateProductPackageRecord(m *model.ProductPackageRecord) (string, error) {
 }
 
 func UpdateProductPackageRecord(m *model.ProductPackageRecord) error {
-	return model.DB.DB().Save(m).Error
+	return model.DB.DB().Omit("created_at").Save(m).Error
 }
 
 func QueryProductPackageRecord(req *proto.QueryProductPackageRecordRequest, resp *proto.QueryProductPackageRecordResponse, preload bool) {
@@ -37,7 +37,7 @@ func QueryProductPackageRecord(req *proto.QueryProductPackageRecordRequest, resp
 			Where("product_infos.product_serial_no LIKE ? or product_orders.product_order_no LIKE ? or product_orders.sales_order_no LIKE ?", "%"+req.ProductSerialNo+"%", "%"+req.ProductSerialNo+"%", "%"+req.ProductSerialNo+"%")
 	}
 
-	orderStr, err := utils.GenerateOrderString(req.SortConfig, "id")
+	orderStr, err := utils.GenerateOrderString(req.SortConfig, "created_at desc")
 	if err != nil {
 		resp.Code = proto.Code_BadRequest
 		resp.Message = err.Error()
@@ -62,22 +62,22 @@ func GetAllProductPackageRecords() (list []*model.ProductPackageRecord, err erro
 
 func GetProductPackageRecordByID(id string) (*model.ProductPackageRecord, error) {
 	m := &model.ProductPackageRecord{}
-	err := model.DB.DB().Preload(clause.Associations).Where("id = ?", id).First(m).Error
+	err := model.DB.DB().Preload(clause.Associations).Where("`id` = ?", id).First(m).Error
 	return m, err
 }
 
 func GetProductPackageRecordByPackageNo(packageNo string) (*model.ProductPackageRecord, error) {
 	m := &model.ProductPackageRecord{}
-	err := model.DB.DB().Preload("ProductOrderPackage").Preload(clause.Associations).Where("package_no = ?", packageNo).First(m).Error
+	err := model.DB.DB().Preload("ProductOrderPackage").Preload(clause.Associations).Where("`package_no` = ?", packageNo).First(m).Error
 	return m, err
 }
 
 func GetProductPackageRecordByIDs(ids []string) ([]*model.ProductPackageRecord, error) {
 	var m []*model.ProductPackageRecord
-	err := model.DB.DB().Preload(clause.Associations).Where("id in (?)", ids).Find(&m).Error
+	err := model.DB.DB().Preload(clause.Associations).Where("`id` in (?)", ids).Find(&m).Error
 	return m, err
 }
 
 func DeleteProductPackageRecord(id string) (err error) {
-	return model.DB.DB().Delete(&model.ProductPackageRecord{}, "id=?", id).Error
+	return model.DB.DB().Delete(&model.ProductPackageRecord{}, "`id` = ?", id).Error
 }

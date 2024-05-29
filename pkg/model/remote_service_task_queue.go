@@ -20,7 +20,7 @@ type RemoteServiceTaskQueue struct {
 	CurrentState                     string                             `json:"currentState" gorm:"size:-1;comment:当前状态"`
 	TransactionState                 string                             `json:"transactionState" gorm:"size:-1;comment:事务状态"`
 	RemoteServiceTaskID              string                             `json:"remoteServiceTaskID" gorm:"index;size:36;comment:远程任务ID"`
-	RemoteServiceTask                *RemoteServiceTask                 `json:"remoteServiceTask"`                                                    //远程任务
+	RemoteServiceTask                *RemoteServiceTask                 `json:"remoteServiceTask" gorm:"constraint:OnDelete:CASCADE"`                 //远程任务
 	RemoteServiceTaskQueueParameters []*RemoteServiceTaskQueueParameter `json:"remoteServiceTaskQueueParameters" gorm:"constraint:OnDelete:CASCADE;"` //远程任务队列参数
 }
 

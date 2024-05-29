@@ -17,10 +17,10 @@ type ProductProcessRecord struct {
 	WorkUserID          string             `json:"workUserID" gorm:"size:36;comment:作业人员ID"`
 	Remark              string             `json:"remark" gorm:"size:1000;comment:备注"`
 	ProductionStationID string             `json:"productionStationID" gorm:"size:36;comment:生产工站ID"`
-	ProductionStation   *ProductionStation ``
+	ProductionStation   *ProductionStation `gorm:"constraint:OnDelete:CASCADE"`
 	ProductionProcessID string             `json:"productionProcessID" gorm:"size:36;comment:生产工序ID"`
 	ProductInfoID       string             `json:"productInfoID" gorm:"size:36;comment:产品信息ID"`
-	ProductInfo         *ProductInfo       ``
+	ProductInfo         *ProductInfo       `gorm:"constraint:OnDelete:CASCADE"`
 }
 
 func PBToProductProcessRecords(in []*proto.ProductProcessRecordInfo) []*ProductProcessRecord {

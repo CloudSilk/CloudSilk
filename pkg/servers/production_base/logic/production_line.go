@@ -11,7 +11,7 @@ import (
 )
 
 func CreateProductionLine(m *model.ProductionLine) (string, error) {
-	duplication, err := model.DB.CreateWithCheckDuplication(m, " code =? ", m.Code)
+	duplication, err := model.DB.CreateWithCheckDuplication(m, " code  = ? ", m.Code)
 	if err != nil {
 		return "", err
 	}
@@ -23,17 +23,17 @@ func CreateProductionLine(m *model.ProductionLine) (string, error) {
 
 func UpdateProductionLine(m *model.ProductionLine) error {
 	return model.DB.DB().Transaction(func(tx *gorm.DB) error {
-		if err := tx.Delete(&model.ProductionStation{}, "production_line_id=?", m.ID).Error; err != nil {
+		if err := tx.Delete(&model.ProductionStation{}, "`production_line_id` = ?", m.ID).Error; err != nil {
 			return err
 		}
-		if err := tx.Delete(&model.ProductionCrossway{}, "production_line_id=?", m.ID).Error; err != nil {
+		if err := tx.Delete(&model.ProductionCrossway{}, "`production_line_id` = ?", m.ID).Error; err != nil {
 			return err
 		}
-		if err := tx.Delete(&model.ProductionLineSupportableCategory{}, "production_line_id=?", m.ID).Error; err != nil {
+		if err := tx.Delete(&model.ProductionLineSupportableCategory{}, "`production_line_id` = ?", m.ID).Error; err != nil {
 			return err
 		}
 
-		duplication, err := model.DB.UpdateWithCheckDuplicationAndOmit(tx, m, true, []string{}, "id <> ?  and  code =? ", m.ID, m.Code)
+		duplication, err := model.DB.UpdateWithCheckDuplicationAndOmit(tx, m, true, []string{"created_at"}, "`id` <> ?  and  `code`  = ? ", m.ID, m.Code)
 		if err != nil {
 			return err
 		}
@@ -54,7 +54,7 @@ func QueryProductionLine(req *proto.QueryProductionLineRequest, resp *proto.Quer
 		db = db.Where("`code` LIKE ? OR `description` LIKE ?", "%"+req.Code+"%", "%"+req.Code+"%")
 	}
 
-	orderStr, err := utils.GenerateOrderString(req.SortConfig, "id")
+	orderStr, err := utils.GenerateOrderString(req.SortConfig, "created_at desc")
 	if err != nil {
 		resp.Code = proto.Code_BadRequest
 		resp.Message = err.Error()
@@ -83,7 +83,7 @@ func GetProductionLineByID(id string) (*model.ProductionLine, error) {
 		Preload("ProductionStations").
 		Preload("ProductionCrossways").
 		Preload("ProductionLineSupportableCategorys").
-		Preload(clause.Associations).Where("id = ?", id).First(m).Error
+		Preload(clause.Associations).Where("`id` = ?", id).First(m).Error
 	return m, err
 }
 
@@ -93,34 +93,10 @@ func GetProductionLineByIDs(ids []string) ([]*model.ProductionLine, error) {
 		Preload("ProductionStations").
 		Preload("ProductionCrossways").
 		Preload("ProductionLineSupportableCategorys").
-		Preload(clause.Associations).Where("id in (?)", ids).Find(&m).Error
+		Preload(clause.Associations).Where("`id` in (?)", ids).Find(&m).Error
 	return m, err
 }
 
 func DeleteProductionLine(id string) (err error) {
-	return model.DB.DB().Delete(&model.ProductionLine{}, "id=?", id).Error
+	return model.DB.DB().Delete(&model.ProductionLine{}, "`id` = ?", id).Error
 }
-
-// func DeleteProductionLine(id string) (err error) {
-
-// productionLine := []interface{}{&ProductionStation{}, &ProductionCrossway{}, &ProductionProcess{}, &ProductOrderReleaseRule{},
-// 	&ProductOrder{}, &ProductReleaseStrategy{}, &ProductionCrosswayRightTurnStation{}, &ProductionLineSupportableCategory{}, &ProductionRhythm{}}
-
-// if err := model.DB.DB().Transaction(func(tx *gorm.DB) error {
-// 	for _, model := range productionLine {
-// 		if err := tx.Delete(model, "ProductionLineID=?", id).Error; err != nil {
-// 			return err
-// 		}
-// 	}
-
-// 	if err := tx.Delete(&ProductionLine{}, "id=?", id).Error; err != nil {
-// 		return err
-// 	}
-
-// 	return nil
-// }); err != nil {
-// 	return fmt.Errorf("数据冲突，先删除关联数据")
-// }
-
-// 	return nil
-// }

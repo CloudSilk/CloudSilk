@@ -13,13 +13,13 @@ func CreateMaterialCategory(m *model.MaterialCategory) (string, error) {
 }
 
 func UpdateMaterialCategory(m *model.MaterialCategory) error {
-	return model.DB.DB().Save(m).Error
+	return model.DB.DB().Omit("created_at").Save(m).Error
 }
 
 func QueryMaterialCategory(req *proto.QueryMaterialCategoryRequest, resp *proto.QueryMaterialCategoryResponse, preload bool) {
 	db := model.DB.DB().Model(&model.MaterialCategory{})
 
-	orderStr, err := utils.GenerateOrderString(req.SortConfig, "id")
+	orderStr, err := utils.GenerateOrderString(req.SortConfig, "created_at desc")
 	if err != nil {
 		resp.Code = proto.Code_BadRequest
 		resp.Message = err.Error()
@@ -44,7 +44,7 @@ func GetAllMaterialCategorys() (list []*model.MaterialCategory, err error) {
 
 func GetMaterialCategoryByID(id string) (*model.MaterialCategory, error) {
 	m := &model.MaterialCategory{}
-	err := model.DB.DB().Preload(clause.Associations).Where("id = ?", id).First(m).Error
+	err := model.DB.DB().Preload(clause.Associations).Where("`id` = ?", id).First(m).Error
 	return m, err
 }
 
@@ -55,5 +55,5 @@ func GetMaterialCategoryByIDs(ids []string) ([]*model.MaterialCategory, error) {
 }
 
 func DeleteMaterialCategory(id string) (err error) {
-	return model.DB.DB().Delete(&model.MaterialCategory{}, "id=?", id).Error
+	return model.DB.DB().Delete(&model.MaterialCategory{}, "`id` = ?", id).Error
 }

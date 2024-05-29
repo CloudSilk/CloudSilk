@@ -13,7 +13,7 @@ func CreateProductOrderPackage(m *model.ProductOrderPackage) (string, error) {
 }
 
 func UpdateProductOrderPackage(m *model.ProductOrderPackage) error {
-	return model.DB.DB().Omit("create_time").Save(m).Error
+	return model.DB.DB().Omit("created_at", "create_time").Save(m).Error
 }
 
 func QueryProductOrderPackage(req *proto.QueryProductOrderPackageRequest, resp *proto.QueryProductOrderPackageResponse, preload bool) {
@@ -35,7 +35,7 @@ func QueryProductOrderPackage(req *proto.QueryProductOrderPackageRequest, resp *
 			Where("product_orders.product_order_no like ?", "%"+req.ProductOrderNo+"%")
 	}
 
-	orderStr, err := utils.GenerateOrderString(req.SortConfig, "id")
+	orderStr, err := utils.GenerateOrderString(req.SortConfig, "created_at desc")
 	if err != nil {
 		resp.Code = proto.Code_BadRequest
 		resp.Message = err.Error()
@@ -60,16 +60,16 @@ func GetAllProductOrderPackages() (list []*model.ProductOrderPackage, err error)
 
 func GetProductOrderPackageByID(id string) (*model.ProductOrderPackage, error) {
 	m := &model.ProductOrderPackage{}
-	err := model.DB.DB().Preload(clause.Associations).Where("id = ?", id).First(m).Error
+	err := model.DB.DB().Preload(clause.Associations).Where("`id` = ?", id).First(m).Error
 	return m, err
 }
 
 func GetProductOrderPackageByIDs(ids []string) ([]*model.ProductOrderPackage, error) {
 	var m []*model.ProductOrderPackage
-	err := model.DB.DB().Preload(clause.Associations).Where("id in (?)", ids).Find(&m).Error
+	err := model.DB.DB().Preload(clause.Associations).Where("`id` in (?)", ids).Find(&m).Error
 	return m, err
 }
 
 func DeleteProductOrderPackage(id string) (err error) {
-	return model.DB.DB().Delete(&model.ProductOrderPackage{}, "id=?", id).Error
+	return model.DB.DB().Delete(&model.ProductOrderPackage{}, "`id` = ?", id).Error
 }

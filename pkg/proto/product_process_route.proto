@@ -4,7 +4,6 @@ package proto;
 option go_package = "./;proto";
 
 import "mom_common.proto";
-import "production_process.proto";
 import "production_line.proto";
 import "product_order.proto";
 

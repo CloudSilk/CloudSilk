@@ -49,6 +49,8 @@ definitions:
         $ref: '#/definitions/proto.ProductionProcessInfo'
       productionProcessID:
         type: string
+      productionProcessStep:
+        $ref: '#/definitions/proto.ProductionProcessStepInfo'
       productionProcessStepID:
         type: string
     type: object
@@ -90,6 +92,122 @@ definitions:
     - Code_TokenInvalid
     - Code_TokenExpired
     - Code_UserDisabled
+  proto.CodingElementInfo:
+    properties:
+      CodingTemplateID:
+        description: 编码模板ID
+        type: string
+      DataBits:
+        description: 数据位数
+        type: integer
+      DefaultValue:
+        description: 预设值
+        type: string
+      ElementType:
+        description: 元素类型
+        type: integer
+      Name:
+        description: 名称
+        type: string
+      PlaceHolder:
+        description: 占位符
+        type: string
+      Remark:
+        description: 备注
+        type: string
+      SortIndex:
+        description: 顺序
+        type: integer
+      codingElementValues:
+        description: 编码元素值
+        items:
+          $ref: '#/definitions/proto.CodingElementValueInfo'
+        type: array
+      id:
+        description: ID
+        type: string
+    type: object
+  proto.CodingElementValueInfo:
+    properties:
+      CodingElementID:
+        description: 编码元素ID
+        type: string
+      Description:
+        description: 描述
+        type: string
+      Value:
+        description: 值
+        type: string
+      id:
+        description: ID
+        type: string
+    type: object
+  proto.CodingGenerationInfo:
+    properties:
+      code:
+        description: 编码
+        type: string
+      codingTemplate:
+        allOf:
+        - $ref: '#/definitions/proto.CodingTemplateInfo'
+        description: 编码模板
+      codingTemplateID:
+        description: 编码模板ID
+        type: string
+      createTime:
+        description: 创建时间
+        type: string
+      createUserID:
+        description: 创建人员ID
+        type: string
+      id:
+        description: ID
+        type: string
+    type: object
+  proto.CodingSerialInfo:
+    properties:
+      createTime:
+        description: 创建时间
+        type: string
+      id:
+        description: ID
+        type: string
+      lastIncreaseTime:
+        description: 最后增长时间
+        type: string
+      prefix:
+        description: 前缀
+        type: string
+      seed:
+        description: 种子
+        type: integer
+    type: object
+  proto.CodingTemplateInfo:
+    properties:
+      code:
+        description: 代号
+        type: string
+      codingElements:
+        description: 编码元素
+        items:
+          $ref: '#/definitions/proto.CodingElementInfo'
+        type: array
+      description:
+        description: 描述
+        type: string
+      id:
+        description: ID
+        type: string
+      indexBits:
+        description: 索引位数
+        type: integer
+      indexType:
+        description: 索引类型
+        type: integer
+      remark:
+        description: 备注
+        type: string
+    type: object
   proto.CommonResponse:
     properties:
       code:
@@ -273,6 +391,39 @@ definitions:
       waitTime:
         type: integer
     type: object
+  proto.GetAllCodingGenerationResponse:
+    properties:
+      code:
+        $ref: '#/definitions/proto.Code'
+      data:
+        items:
+          $ref: '#/definitions/proto.CodingGenerationInfo'
+        type: array
+      message:
+        type: string
+    type: object
+  proto.GetAllCodingSerialResponse:
+    properties:
+      code:
+        $ref: '#/definitions/proto.Code'
+      data:
+        items:
+          $ref: '#/definitions/proto.CodingSerialInfo'
+        type: array
+      message:
+        type: string
+    type: object
+  proto.GetAllCodingTemplateResponse:
+    properties:
+      code:
+        $ref: '#/definitions/proto.Code'
+      data:
+        items:
+          $ref: '#/definitions/proto.CodingTemplateInfo'
+        type: array
+      message:
+        type: string
+    type: object
   proto.GetAllDataMappingResponse:
     properties:
       code:
@@ -427,13 +578,13 @@ definitions:
       message:
         type: string
     type: object
-  proto.GetAllProcessStepMatchRuleResponse:
+  proto.GetAllProcessStepParameterResponse:
     properties:
       code:
         $ref: '#/definitions/proto.Code'
       data:
         items:
-          $ref: '#/definitions/proto.ProcessStepMatchRuleInfo'
+          $ref: '#/definitions/proto.ProcessStepParameterInfo'
         type: array
       message:
         type: string
@@ -1087,6 +1238,40 @@ definitions:
       message:
         type: string
     type: object
+  proto.GetByIDsRequest:
+    properties:
+      ids:
+        items:
+          type: string
+        type: array
+    type: object
+  proto.GetCodingGenerationDetailResponse:
+    properties:
+      code:
+        $ref: '#/definitions/proto.Code'
+      data:
+        $ref: '#/definitions/proto.CodingGenerationInfo'
+      message:
+        type: string
+    type: object
+  proto.GetCodingSerialDetailResponse:
+    properties:
+      code:
+        $ref: '#/definitions/proto.Code'
+      data:
+        $ref: '#/definitions/proto.CodingSerialInfo'
+      message:
+        type: string
+    type: object
+  proto.GetCodingTemplateDetailResponse:
+    properties:
+      code:
+        $ref: '#/definitions/proto.Code'
+      data:
+        $ref: '#/definitions/proto.CodingTemplateInfo'
+      message:
+        type: string
+    type: object
   proto.GetDataMappingDetailResponse:
     properties:
       code:
@@ -1213,12 +1398,12 @@ definitions:
       message:
         type: string
     type: object
-  proto.GetProcessStepMatchRuleDetailResponse:
+  proto.GetProcessStepParameterDetailResponse:
     properties:
       code:
         $ref: '#/definitions/proto.Code'
       data:
-        $ref: '#/definitions/proto.ProcessStepMatchRuleInfo'
+        $ref: '#/definitions/proto.ProcessStepParameterInfo'
       message:
         type: string
     type: object
@@ -1753,27 +1938,6 @@ definitions:
       message:
         type: string
     type: object
-  proto.GetTestProjectWithParameterRequest:
-    properties:
-      productSerialNo:
-        description: 产品序列号
-        type: string
-      productionStation:
-        description: 工位代号
-        type: string
-      trayNo:
-        description: 托盘号
-        type: string
-    type: object
-  proto.GetTestProjectWithParameterResponse:
-    properties:
-      code:
-        type: integer
-      data:
-        $ref: '#/definitions/proto.TestProjectWithParameterInfo'
-      message:
-        type: string
-    type: object
   proto.InvocationAuthenticationInfo:
     properties:
       aPIKey:
@@ -2048,25 +2212,6 @@ definitions:
         description: 提交内容
         type: string
     type: object
-  proto.ParameterInfo:
-    properties:
-      code:
-        type: string
-      description:
-        type: string
-      groupCode:
-        type: string
-      maximumValue:
-        type: string
-      minimumValue:
-        type: string
-      projectCode:
-        type: string
-      standardValue:
-        type: string
-      unit:
-        type: string
-    type: object
   proto.PersonnelQualificationInfo:
     properties:
       authorizedTime:
@@ -2168,39 +2313,73 @@ definitions:
         description: 打印服务器ID
         type: string
     type: object
-  proto.ProcessStepMatchRuleInfo:
+  proto.ProcessStepParameterInfo:
     properties:
-      AttributeExpressions:
+      attributeExpressions:
+        description: 特性表达式
         items:
           $ref: '#/definitions/proto.AttributeExpressionInfo'
         type: array
+      code:
+        description: 代号
+        type: string
       description:
         description: 描述
         type: string
       enable:
         description: 是否启用
         type: boolean
-      groupCode:
-        description: 采集组
-        type: string
       id:
         description: ID
         type: string
-      initialValue:
-        description: 默认匹配
-        type: boolean
       priority:
         description: 优先级
         type: integer
+      processStepParameterValues:
+        description: 生产工步参数值
+        items:
+          $ref: '#/definitions/proto.ProcessStepParameterValueInfo'
+        type: array
+      productionLine:
+        allOf:
+        - $ref: '#/definitions/proto.ProductionLineInfo'
+        description: 生产产线
       productionLineID:
-        description: 生产产线ID
-        type: string
-      productionProcessStep:
-        $ref: '#/definitions/proto.ProductionProcessStepInfo'
-      productionProcessStepID:
+        description: 产线ID
         type: string
       remark:
         description: 备注
+        type: string
+    type: object
+  proto.ProcessStepParameterValueInfo:
+    properties:
+      id:
+        description: ID
+        type: string
+      maximumValue:
+        description: 最大值
+        type: string
+      minimumValue:
+        description: 最小值
+        type: string
+      processStepParameterID:
+        description: 生产工步参数ID
+        type: string
+      processStepTypeParameterID:
+        description: 生产工步类型参数ID
+        type: string
+      productionProcessID:
+        description: 生产工序ID
+        type: string
+      productionProcessStep:
+        allOf:
+        - $ref: '#/definitions/proto.ProductionProcessStepInfo'
+        description: 生产工步
+      productionProcessStepID:
+        description: 生产工步ID
+        type: string
+      standardValue:
+        description: 标准值
         type: string
     type: object
   proto.ProcessStepTypeInfo:
@@ -2240,14 +2419,14 @@ definitions:
       description:
         description: 描述
         type: string
-      groupCode:
-        type: string
       id:
         description: ID
         type: string
       maximumValue:
+        description: 最大值
         type: string
       minimumValue:
+        description: 最小值
         type: string
       parameterType:
         description: 参数类型 true-输入 false-输出
@@ -2261,7 +2440,11 @@ definitions:
       required:
         description: 是否必填
         type: boolean
+      standardValue:
+        description: 标准值
+        type: string
       unit:
+        description: 单位
         type: string
     type: object
   proto.ProductAttributeIdentifierAvailableCategoryInfo:
@@ -2560,6 +2743,9 @@ definitions:
     type: object
   proto.ProductModelAttributeValueInfo:
     properties:
+      allowNullOrBlank:
+        description: 允许空缺
+        type: boolean
       assignedValue:
         description: 设定值
         type: string
@@ -4002,6 +4188,10 @@ definitions:
       materialControl:
         description: 物料管控
         type: boolean
+      processStepParameters:
+        items:
+          $ref: '#/definitions/proto.ProcessStepParameterInfo'
+        type: array
       productModelID:
         description: 当前型号ID
         type: string
@@ -4017,6 +4207,10 @@ definitions:
         description: 产线支持产品类别
         items:
           $ref: '#/definitions/proto.ProductionLineSupportableCategoryInfo'
+        type: array
+      productionProcesses:
+        items:
+          $ref: '#/definitions/proto.ProductionProcessInfo'
         type: array
       productionStations:
         description: 工站
@@ -4052,11 +4246,14 @@ definitions:
   proto.ProductionProcessInfo:
     properties:
       attributeExpressions:
-        description: |-
-          支援工序
-          repeated ProductionProcessInfo productionProcesses=20;
+        description: 特性表达式
         items:
           $ref: '#/definitions/proto.AttributeExpressionInfo'
+        type: array
+      availableStationIDs:
+        description: 支持工站
+        items:
+          type: string
         type: array
       code:
         description: 代号
@@ -4094,16 +4291,16 @@ definitions:
         description: 生产产线ID
         type: string
       productionProcessAvailableStations:
-        description: 支持工站
         items:
           $ref: '#/definitions/proto.ProductionProcessAvailableStationInfo'
+        type: array
+      productionProcessSteps:
+        items:
+          $ref: '#/definitions/proto.AvailableProcessInfo'
         type: array
       remark:
         description: 备注
         type: string
-      simulateExecution:
-        description: 模拟执行
-        type: boolean
       sortIndex:
         description: 顺序
         type: integer
@@ -4166,9 +4363,6 @@ definitions:
       graphic:
         description: 图示
         type: string
-      groupCode:
-        description: 采集组
-        type: string
       id:
         description: ID
         type: string
@@ -4182,9 +4376,6 @@ definitions:
         $ref: '#/definitions/proto.ProcessStepTypeInfo'
       processStepTypeID:
         description: 工步类型ID
-        type: string
-      productionLineID:
-        description: 生产产线ID
         type: string
       remark:
         description: 备注
@@ -4476,6 +4667,57 @@ definitions:
         description: 顺序
         type: integer
     type: object
+  proto.QueryCodingGenerationResponse:
+    properties:
+      code:
+        $ref: '#/definitions/proto.Code'
+      data:
+        items:
+          $ref: '#/definitions/proto.CodingGenerationInfo'
+        type: array
+      message:
+        type: string
+      pages:
+        type: integer
+      records:
+        type: integer
+      total:
+        type: integer
+    type: object
+  proto.QueryCodingSerialResponse:
+    properties:
+      code:
+        $ref: '#/definitions/proto.Code'
+      data:
+        items:
+          $ref: '#/definitions/proto.CodingSerialInfo'
+        type: array
+      message:
+        type: string
+      pages:
+        type: integer
+      records:
+        type: integer
+      total:
+        type: integer
+    type: object
+  proto.QueryCodingTemplateResponse:
+    properties:
+      code:
+        $ref: '#/definitions/proto.Code'
+      data:
+        items:
+          $ref: '#/definitions/proto.CodingTemplateInfo'
+        type: array
+      message:
+        type: string
+      pages:
+        type: integer
+      records:
+        type: integer
+      total:
+        type: integer
+    type: object
   proto.QueryDataMappingResponse:
     properties:
       code:
@@ -4714,13 +4956,13 @@ definitions:
       total:
         type: integer
     type: object
-  proto.QueryProcessStepMatchRuleResponse:
+  proto.QueryProcessStepParameterResponse:
     properties:
       code:
         $ref: '#/definitions/proto.Code'
       data:
         items:
-          $ref: '#/definitions/proto.ProcessStepMatchRuleInfo'
+          $ref: '#/definitions/proto.ProcessStepParameterInfo'
         type: array
       message:
         type: string
@@ -6155,33 +6397,504 @@ definitions:
         description: 值
         type: string
     type: object
-  proto.TestProjectInfo:
-    properties:
-      code:
-        type: string
-      description:
-        type: string
-      id:
-        type: string
-    type: object
-  proto.TestProjectWithParameterInfo:
-    properties:
-      InputParameters:
-        items:
-          $ref: '#/definitions/proto.ParameterInfo'
-        type: array
-      OutputParameters:
-        items:
-          $ref: '#/definitions/proto.ParameterInfo'
-        type: array
-      TestProjects:
-        items:
-          $ref: '#/definitions/proto.TestProjectInfo'
-        type: array
-    type: object
 info:
   contact: {}
 paths:
+  /api/mom/codinggeneration/add:
+    post:
+      consumes:
+      - application/json
+      description: 新增
+      parameters:
+      - description: jwt token
+        in: header
+        name: authorization
+        required: true
+        type: string
+      - description: Add CodingGeneration
+        in: body
+        name: account
+        required: true
+        schema:
+          $ref: '#/definitions/proto.CodingGenerationInfo'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/proto.CommonResponse'
+      summary: 新增
+      tags:
+      - 编码序列记录
+  /api/mom/codinggeneration/all:
+    get:
+      consumes:
+      - application/json
+      description: 查询所有
+      parameters:
+      - description: jwt token
+        in: header
+        name: authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/proto.GetAllCodingGenerationResponse'
+      summary: 查询所有
+      tags:
+      - 编码序列记录
+  /api/mom/codinggeneration/delete:
+    delete:
+      consumes:
+      - application/json
+      description: 删除
+      parameters:
+      - description: jwt token
+        in: header
+        name: authorization
+        required: true
+        type: string
+      - description: Delete CodingGeneration
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/proto.DelRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/proto.CommonResponse'
+      summary: 删除
+      tags:
+      - 编码序列记录
+  /api/mom/codinggeneration/detail:
+    get:
+      consumes:
+      - application/json
+      description: 查询明细
+      parameters:
+      - description: ID
+        in: query
+        name: id
+        required: true
+        type: string
+      - description: jwt token
+        in: header
+        name: authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/proto.GetCodingGenerationDetailResponse'
+      summary: 查询明细
+      tags:
+      - 编码序列记录
+  /api/mom/codinggeneration/query:
+    get:
+      consumes:
+      - application/json
+      description: 分页查询
+      parameters:
+      - description: jwt token
+        in: header
+        name: authorization
+        required: true
+        type: string
+      - description: 从1开始
+        in: query
+        name: pageIndex
+        type: integer
+      - description: 默认每页10条
+        in: query
+        name: pageSize
+        type: integer
+      - description: 排序字段
+        in: query
+        name: orderField
+        type: string
+      - description: 是否倒序排序
+        in: query
+        name: desc
+        type: boolean
+      produces:
+      - application/octet-stream
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/proto.QueryCodingGenerationResponse'
+      summary: 分页查询
+      tags:
+      - 编码序列记录
+  /api/mom/codinggeneration/update:
+    put:
+      consumes:
+      - application/json
+      description: 更新
+      parameters:
+      - description: jwt token
+        in: header
+        name: authorization
+        required: true
+        type: string
+      - description: Update CodingGeneration
+        in: body
+        name: account
+        required: true
+        schema:
+          $ref: '#/definitions/proto.CodingGenerationInfo'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/proto.CommonResponse'
+      summary: 更新
+      tags:
+      - 编码序列记录
+  /api/mom/codingserial/add:
+    post:
+      consumes:
+      - application/json
+      description: 新增
+      parameters:
+      - description: jwt token
+        in: header
+        name: authorization
+        required: true
+        type: string
+      - description: Add CodingSerial
+        in: body
+        name: account
+        required: true
+        schema:
+          $ref: '#/definitions/proto.CodingSerialInfo'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/proto.CommonResponse'
+      summary: 新增
+      tags:
+      - 编码序列管理
+  /api/mom/codingserial/all:
+    get:
+      consumes:
+      - application/json
+      description: 查询所有
+      parameters:
+      - description: jwt token
+        in: header
+        name: authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/proto.GetAllCodingSerialResponse'
+      summary: 查询所有
+      tags:
+      - 编码序列管理
+  /api/mom/codingserial/delete:
+    delete:
+      consumes:
+      - application/json
+      description: 删除
+      parameters:
+      - description: jwt token
+        in: header
+        name: authorization
+        required: true
+        type: string
+      - description: Delete CodingSerial
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/proto.DelRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/proto.CommonResponse'
+      summary: 删除
+      tags:
+      - 编码序列管理
+  /api/mom/codingserial/detail:
+    get:
+      consumes:
+      - application/json
+      description: 查询明细
+      parameters:
+      - description: ID
+        in: query
+        name: id
+        required: true
+        type: string
+      - description: jwt token
+        in: header
+        name: authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/proto.GetCodingSerialDetailResponse'
+      summary: 查询明细
+      tags:
+      - 编码序列管理
+  /api/mom/codingserial/query:
+    get:
+      consumes:
+      - application/json
+      description: 分页查询
+      parameters:
+      - description: jwt token
+        in: header
+        name: authorization
+        required: true
+        type: string
+      - description: 从1开始
+        in: query
+        name: pageIndex
+        type: integer
+      - description: 默认每页10条
+        in: query
+        name: pageSize
+        type: integer
+      - description: 排序字段
+        in: query
+        name: orderField
+        type: string
+      - description: 是否倒序排序
+        in: query
+        name: desc
+        type: boolean
+      produces:
+      - application/octet-stream
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/proto.QueryCodingSerialResponse'
+      summary: 分页查询
+      tags:
+      - 编码序列管理
+  /api/mom/codingserial/update:
+    put:
+      consumes:
+      - application/json
+      description: 更新
+      parameters:
+      - description: jwt token
+        in: header
+        name: authorization
+        required: true
+        type: string
+      - description: Update CodingSerial
+        in: body
+        name: account
+        required: true
+        schema:
+          $ref: '#/definitions/proto.CodingSerialInfo'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/proto.CommonResponse'
+      summary: 更新
+      tags:
+      - 编码序列管理
+  /api/mom/codingtemplate/add:
+    post:
+      consumes:
+      - application/json
+      description: 新增
+      parameters:
+      - description: jwt token
+        in: header
+        name: authorization
+        required: true
+        type: string
+      - description: Add CodingTemplate
+        in: body
+        name: account
+        required: true
+        schema:
+          $ref: '#/definitions/proto.CodingTemplateInfo'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/proto.CommonResponse'
+      summary: 新增
+      tags:
+      - 编码模版管理
+  /api/mom/codingtemplate/all:
+    get:
+      consumes:
+      - application/json
+      description: 查询所有
+      parameters:
+      - description: jwt token
+        in: header
+        name: authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/proto.GetAllCodingTemplateResponse'
+      summary: 查询所有
+      tags:
+      - 编码模版管理
+  /api/mom/codingtemplate/delete:
+    delete:
+      consumes:
+      - application/json
+      description: 删除
+      parameters:
+      - description: jwt token
+        in: header
+        name: authorization
+        required: true
+        type: string
+      - description: Delete CodingTemplate
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/proto.DelRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/proto.CommonResponse'
+      summary: 删除
+      tags:
+      - 编码模版管理
+  /api/mom/codingtemplate/detail:
+    get:
+      consumes:
+      - application/json
+      description: 查询明细
+      parameters:
+      - description: ID
+        in: query
+        name: id
+        required: true
+        type: string
+      - description: jwt token
+        in: header
+        name: authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/proto.GetCodingTemplateDetailResponse'
+      summary: 查询明细
+      tags:
+      - 编码模版管理
+  /api/mom/codingtemplate/query:
+    get:
+      consumes:
+      - application/json
+      description: 分页查询
+      parameters:
+      - description: jwt token
+        in: header
+        name: authorization
+        required: true
+        type: string
+      - description: 从1开始
+        in: query
+        name: pageIndex
+        type: integer
+      - description: 默认每页10条
+        in: query
+        name: pageSize
+        type: integer
+      - description: 排序字段
+        in: query
+        name: orderField
+        type: string
+      - description: 是否倒序排序
+        in: query
+        name: desc
+        type: boolean
+      produces:
+      - application/octet-stream
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/proto.QueryCodingTemplateResponse'
+      summary: 分页查询
+      tags:
+      - 编码模版管理
+  /api/mom/codingtemplate/update:
+    put:
+      consumes:
+      - application/json
+      description: 更新
+      parameters:
+      - description: jwt token
+        in: header
+        name: authorization
+        required: true
+        type: string
+      - description: Update CodingTemplate
+        in: body
+        name: account
+        required: true
+        schema:
+          $ref: '#/definitions/proto.CodingTemplateInfo'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/proto.CommonResponse'
+      summary: 更新
+      tags:
+      - 编码模版管理
   /api/mom/label/labeltemplate/add:
     post:
       consumes:
@@ -6550,7 +7263,7 @@ paths:
             $ref: '#/definitions/proto.CommonResponse'
       summary: 新增
       tags:
-      - 物料托盘管理
+      - 物料类别管理
   /api/mom/material/materialcategory/all:
     get:
       consumes:
@@ -6571,7 +7284,7 @@ paths:
             $ref: '#/definitions/proto.GetAllMaterialCategoryResponse'
       summary: 查询所有
       tags:
-      - 物料托盘管理
+      - 物料类别管理
   /api/mom/material/materialcategory/delete:
     delete:
       consumes:
@@ -6598,7 +7311,7 @@ paths:
             $ref: '#/definitions/proto.CommonResponse'
       summary: 删除
       tags:
-      - 物料托盘管理
+      - 物料类别管理
   /api/mom/material/materialcategory/detail:
     get:
       consumes:
@@ -6624,7 +7337,7 @@ paths:
             $ref: '#/definitions/proto.GetMaterialCategoryDetailResponse'
       summary: 查询明细
       tags:
-      - 物料托盘管理
+      - 物料类别管理
   /api/mom/material/materialcategory/query:
     get:
       consumes:
@@ -6665,7 +7378,7 @@ paths:
             $ref: '#/definitions/proto.QueryMaterialCategoryResponse'
       summary: 分页查询
       tags:
-      - 物料托盘管理
+      - 物料类别管理
   /api/mom/material/materialcategory/update:
     put:
       consumes:
@@ -6692,7 +7405,7 @@ paths:
             $ref: '#/definitions/proto.CommonResponse'
       summary: 更新
       tags:
-      - 物料托盘管理
+      - 物料类别管理
   /api/mom/material/materialinfo/add:
     post:
       consumes:
@@ -6719,7 +7432,7 @@ paths:
             $ref: '#/definitions/proto.CommonResponse'
       summary: 新增
       tags:
-      - 物料托盘管理
+      - 物料信息管理
   /api/mom/material/materialinfo/all:
     get:
       consumes:
@@ -6740,7 +7453,7 @@ paths:
             $ref: '#/definitions/proto.GetAllMaterialInfoResponse'
       summary: 查询所有
       tags:
-      - 物料托盘管理
+      - 物料信息管理
   /api/mom/material/materialinfo/delete:
     delete:
       consumes:
@@ -6767,7 +7480,7 @@ paths:
             $ref: '#/definitions/proto.CommonResponse'
       summary: 删除
       tags:
-      - 物料托盘管理
+      - 物料信息管理
   /api/mom/material/materialinfo/detail:
     get:
       consumes:
@@ -6793,7 +7506,7 @@ paths:
             $ref: '#/definitions/proto.GetMaterialInfoDetailResponse'
       summary: 查询明细
       tags:
-      - 物料托盘管理
+      - 物料信息管理
   /api/mom/material/materialinfo/query:
     get:
       consumes:
@@ -6834,7 +7547,7 @@ paths:
             $ref: '#/definitions/proto.QueryMaterialInfoResponse'
       summary: 分页查询
       tags:
-      - 物料托盘管理
+      - 物料信息管理
   /api/mom/material/materialinfo/update:
     put:
       consumes:
@@ -6861,7 +7574,7 @@ paths:
             $ref: '#/definitions/proto.CommonResponse'
       summary: 更新
       tags:
-      - 物料托盘管理
+      - 物料信息管理
   /api/mom/material/materialsupplier/add:
     post:
       consumes:
@@ -6888,7 +7601,7 @@ paths:
             $ref: '#/definitions/proto.CommonResponse'
       summary: 新增
       tags:
-      - 物料托盘管理
+      - 物料供应商管理
   /api/mom/material/materialsupplier/all:
     get:
       consumes:
@@ -6909,7 +7622,7 @@ paths:
             $ref: '#/definitions/proto.GetAllMaterialSupplierResponse'
       summary: 查询所有
       tags:
-      - 物料托盘管理
+      - 物料供应商管理
   /api/mom/material/materialsupplier/delete:
     delete:
       consumes:
@@ -6936,7 +7649,7 @@ paths:
             $ref: '#/definitions/proto.CommonResponse'
       summary: 删除
       tags:
-      - 物料托盘管理
+      - 物料供应商管理
   /api/mom/material/materialsupplier/detail:
     get:
       consumes:
@@ -6962,7 +7675,7 @@ paths:
             $ref: '#/definitions/proto.GetMaterialSupplierDetailResponse'
       summary: 查询明细
       tags:
-      - 物料托盘管理
+      - 物料供应商管理
   /api/mom/material/materialsupplier/query:
     get:
       consumes:
@@ -7003,7 +7716,7 @@ paths:
             $ref: '#/definitions/proto.QueryMaterialSupplierResponse'
       summary: 分页查询
       tags:
-      - 物料托盘管理
+      - 物料供应商管理
   /api/mom/material/materialsupplier/update:
     put:
       consumes:
@@ -7030,7 +7743,7 @@ paths:
             $ref: '#/definitions/proto.CommonResponse'
       summary: 更新
       tags:
-      - 物料托盘管理
+      - 物料供应商管理
   /api/mom/material/materialtray/add:
     post:
       consumes:
@@ -7960,6 +8673,33 @@ paths:
       summary: 查询所有
       tags:
       - 生产工单管理
+  /api/mom/product/productorder/cancel:
+    put:
+      consumes:
+      - application/json
+      description: 取消
+      parameters:
+      - description: jwt token
+        in: header
+        name: authorization
+        required: true
+        type: string
+      - description: Cancel ProductOrder
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/proto.GetByIDsRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/proto.CommonResponse'
+      summary: 取消
+      tags:
+      - 生产工单管理
   /api/mom/product/productorder/delete:
     delete:
       consumes:
@@ -8072,6 +8812,114 @@ paths:
           schema:
             $ref: '#/definitions/proto.QueryProductOrderResponse'
       summary: 分页查询
+      tags:
+      - 生产工单管理
+  /api/mom/product/productorder/receive:
+    put:
+      consumes:
+      - application/json
+      description: 接收
+      parameters:
+      - description: jwt token
+        in: header
+        name: authorization
+        required: true
+        type: string
+      - description: Receive ProductOrder
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/proto.GetByIDsRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/proto.CommonResponse'
+      summary: 接收
+      tags:
+      - 生产工单管理
+  /api/mom/product/productorder/release:
+    put:
+      consumes:
+      - application/json
+      description: 发放
+      parameters:
+      - description: jwt token
+        in: header
+        name: authorization
+        required: true
+        type: string
+      - description: Release ProductOrder
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/proto.GetByIDsRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/proto.CommonResponse'
+      summary: 发放
+      tags:
+      - 生产工单管理
+  /api/mom/product/productorder/resume:
+    put:
+      consumes:
+      - application/json
+      description: 恢复
+      parameters:
+      - description: jwt token
+        in: header
+        name: authorization
+        required: true
+        type: string
+      - description: Resume ProductOrder
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/proto.GetByIDsRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/proto.CommonResponse'
+      summary: 恢复
+      tags:
+      - 生产工单管理
+  /api/mom/product/productorder/suspend:
+    put:
+      consumes:
+      - application/json
+      description: 暂缓
+      parameters:
+      - description: jwt token
+        in: header
+        name: authorization
+        required: true
+        type: string
+      - description: Suspend ProductOrder
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/proto.GetByIDsRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/proto.CommonResponse'
+      summary: 暂缓
       tags:
       - 生产工单管理
   /api/mom/product/productorder/update:
@@ -9648,7 +10496,7 @@ paths:
       - description: 工单工序ID
         in: query
         name: productOrderProcessID
-        type: integer
+        type: string
       produces:
       - application/octet-stream
       responses:
@@ -10328,7 +11176,7 @@ paths:
       - description: 生产产线ID
         in: query
         name: productionLineID
-        type: integer
+        type: string
       - description: 装箱时间开始
         in: query
         name: createTime0
@@ -11048,7 +11896,7 @@ paths:
       - description: 当前工序
         in: query
         name: currentProcessID
-        type: integer
+        type: string
       - description: 序列号
         in: query
         name: productSerialNo
@@ -11760,7 +12608,7 @@ paths:
       - description: 生产产线ID
         in: query
         name: productionLineID
-        type: integer
+        type: string
       - description: 产品序列号
         in: query
         name: productSerialNo
@@ -12484,7 +13332,7 @@ paths:
       - description: 作业产线
         in: query
         name: productionLineID
-        type: integer
+        type: string
       produces:
       - application/octet-stream
       responses:
@@ -12669,7 +13517,7 @@ paths:
       - description: 作业产线
         in: query
         name: productionLineID
-        type: integer
+        type: string
       produces:
       - application/octet-stream
       responses:
@@ -13180,7 +14028,7 @@ paths:
       - description: 产品品牌ID
         in: query
         name: productBrandID
-        type: integer
+        type: string
       produces:
       - application/octet-stream
       responses:
@@ -13349,7 +14197,7 @@ paths:
       - description: 产品类别ID
         in: query
         name: productCategoryID
-        type: integer
+        type: string
       - description: 特性或描述
         in: query
         name: productAtribute
@@ -13557,7 +14405,11 @@ paths:
       - description: 产品类别ID
         in: query
         name: productCategoryID
-        type: integer
+        type: string
+      - description: 是否预制
+        in: query
+        name: IsPrefabricated
+        type: boolean
       produces:
       - application/octet-stream
       responses:
@@ -13726,7 +14578,11 @@ paths:
       - description: 产品类别ID
         in: query
         name: productCategoryID
-        type: integer
+        type: string
+      - description: 产品型号ID
+        in: query
+        name: productModelID
+        type: string
       produces:
       - application/octet-stream
       responses:
@@ -13764,7 +14620,7 @@ paths:
       summary: 更新
       tags:
       - 产品型号Bom管理
-  /api/mom/production/processstepmatchrule/add:
+  /api/mom/production/processstepparameter/add:
     post:
       consumes:
       - application/json
@@ -13775,12 +14631,12 @@ paths:
         name: authorization
         required: true
         type: string
-      - description: Add ProcessStepMatchRule
+      - description: Add ProcessStepParameter
         in: body
         name: account
         required: true
         schema:
-          $ref: '#/definitions/proto.ProcessStepMatchRuleInfo'
+          $ref: '#/definitions/proto.ProcessStepParameterInfo'
       produces:
       - application/json
       responses:
@@ -13790,8 +14646,8 @@ paths:
             $ref: '#/definitions/proto.CommonResponse'
       summary: 新增
       tags:
-      - 工步匹配规则管理
-  /api/mom/production/processstepmatchrule/all:
+      - 工步参数管理
+  /api/mom/production/processstepparameter/all:
     get:
       consumes:
       - application/json
@@ -13808,11 +14664,37 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/proto.GetAllProcessStepMatchRuleResponse'
+            $ref: '#/definitions/proto.GetAllProcessStepParameterResponse'
       summary: 查询所有
       tags:
-      - 工步匹配规则管理
-  /api/mom/production/processstepmatchrule/delete:
+      - 工步参数管理
+  /api/mom/production/processstepparameter/all/productionlineid:
+    get:
+      consumes:
+      - application/json
+      description: 查询产线下所有工步参数
+      parameters:
+      - description: 生产产线ID
+        in: query
+        name: productionLineID
+        required: true
+        type: string
+      - description: jwt token
+        in: header
+        name: authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/proto.GetProductionLineDetailResponse'
+      summary: 查询产线下所有工步参数
+      tags:
+      - 工步参数管理
+  /api/mom/production/processstepparameter/delete:
     delete:
       consumes:
       - application/json
@@ -13823,7 +14705,7 @@ paths:
         name: authorization
         required: true
         type: string
-      - description: Delete ProcessStepMatchRule
+      - description: Delete ProcessStepParameter
         in: body
         name: data
         required: true
@@ -13838,8 +14720,8 @@ paths:
             $ref: '#/definitions/proto.CommonResponse'
       summary: 删除
       tags:
-      - 工步匹配规则管理
-  /api/mom/production/processstepmatchrule/detail:
+      - 工步参数管理
+  /api/mom/production/processstepparameter/detail:
     get:
       consumes:
       - application/json
@@ -13861,11 +14743,11 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/proto.GetProcessStepMatchRuleDetailResponse'
+            $ref: '#/definitions/proto.GetProcessStepParameterDetailResponse'
       summary: 查询明细
       tags:
-      - 工步匹配规则管理
-  /api/mom/production/processstepmatchrule/query:
+      - 工步参数管理
+  /api/mom/production/processstepparameter/query:
     get:
       consumes:
       - application/json
@@ -13892,17 +14774,25 @@ paths:
         in: query
         name: desc
         type: boolean
+      - description: 代号或描述
+        in: query
+        name: code
+        type: string
+      - description: 产线ID
+        in: query
+        name: productionLineID
+        type: string
       produces:
       - application/octet-stream
       responses:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/proto.QueryProcessStepMatchRuleResponse'
+            $ref: '#/definitions/proto.QueryProcessStepParameterResponse'
       summary: 分页查询
       tags:
-      - 工步匹配规则管理
-  /api/mom/production/processstepmatchrule/update:
+      - 工步参数管理
+  /api/mom/production/processstepparameter/update:
     put:
       consumes:
       - application/json
@@ -13913,12 +14803,12 @@ paths:
         name: authorization
         required: true
         type: string
-      - description: Update ProcessStepMatchRule
+      - description: Update ProcessStepParameter
         in: body
         name: account
         required: true
         schema:
-          $ref: '#/definitions/proto.ProcessStepMatchRuleInfo'
+          $ref: '#/definitions/proto.ProcessStepParameterInfo'
       produces:
       - application/json
       responses:
@@ -13928,7 +14818,7 @@ paths:
             $ref: '#/definitions/proto.CommonResponse'
       summary: 更新
       tags:
-      - 工步匹配规则管理
+      - 工步参数管理
   /api/mom/production/processsteptype/add:
     post:
       consumes:
@@ -14229,7 +15119,7 @@ paths:
       - description: 生产产线ID
         in: query
         name: productionLineID
-        type: integer
+        type: string
       produces:
       - application/octet-stream
       responses:
@@ -14398,7 +15288,7 @@ paths:
       - description: 生产产线ID
         in: query
         name: productionLineID
-        type: integer
+        type: string
       produces:
       - application/octet-stream
       responses:
@@ -14567,7 +15457,7 @@ paths:
       - description: 生产工序ID
         in: query
         name: productionProcessID
-        type: integer
+        type: string
       produces:
       - application/octet-stream
       responses:
@@ -14736,7 +15626,7 @@ paths:
       - description: 生产产线ID
         in: query
         name: productionLineID
-        type: integer
+        type: string
       produces:
       - application/octet-stream
       responses:
@@ -14913,7 +15803,7 @@ paths:
       - description: 生产产线ID
         in: query
         name: productionLineID
-        type: integer
+        type: string
       - description: 生产工单号
         in: query
         name: productOrderNo
@@ -15102,7 +15992,7 @@ paths:
       - description: 生产产线ID
         in: query
         name: productionLineID
-        type: integer
+        type: string
       produces:
       - application/octet-stream
       responses:
@@ -15814,7 +16704,7 @@ paths:
       - description: 生产产线ID
         in: query
         name: productionLineID
-        type: integer
+        type: string
       produces:
       - application/octet-stream
       responses:
@@ -16156,7 +17046,7 @@ paths:
       - description: '生产工厂ID '
         in: query
         name: productionFactoryID
-        type: integer
+        type: string
       produces:
       - application/octet-stream
       responses:
@@ -16333,7 +17223,7 @@ paths:
       - description: 生产产线ID
         in: query
         name: productionLineID
-        type: integer
+        type: string
       produces:
       - application/octet-stream
       responses:
@@ -18212,7 +19102,7 @@ paths:
       - description: 任务队列ID
         in: query
         name: taskQueueID
-        type: integer
+        type: string
       - description: 数据跟踪或失败原因
         in: query
         name: dataTrace
@@ -18932,7 +19822,7 @@ paths:
       - description: 生产产线ID
         in: query
         name: productionLineID
-        type: integer
+        type: string
       - description: 认证人员信息
         in: query
         name: name
@@ -19105,7 +19995,7 @@ paths:
       - description: 生产产线ID
         in: query
         name: productionLineID
-        type: integer
+        type: string
       - description: 认证人员信息
         in: query
         name: name
@@ -19399,33 +20289,6 @@ paths:
           schema:
             $ref: '#/definitions/proto.CommonResponse'
       summary: 请求出站接口
-      tags:
-      - WebAPI
-  /api/mom/webapi/quality/getTestProjectWithParameter:
-    post:
-      consumes:
-      - application/json
-      description: 获取测试项接口数据接口
-      parameters:
-      - description: jwt token
-        in: header
-        name: authorization
-        required: true
-        type: string
-      - description: GetTestProjectWithParameterRequest
-        in: body
-        name: account
-        required: true
-        schema:
-          $ref: '#/definitions/proto.GetTestProjectWithParameterRequest'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/proto.GetTestProjectWithParameterResponse'
-      summary: 获取测试项接口数据接口
       tags:
       - WebAPI
 swagger: "2.0"

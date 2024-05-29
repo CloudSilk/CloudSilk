@@ -11,7 +11,7 @@ import (
 )
 
 func CreateProductionProcess(m *model.ProductionProcess) (string, error) {
-	duplication, err := model.DB.CreateWithCheckDuplication(m, " code =? ", m.Code)
+	duplication, err := model.DB.CreateWithCheckDuplication(m, " `code`  = ? ", m.Code)
 	if err != nil {
 		return "", err
 	}
@@ -23,15 +23,15 @@ func CreateProductionProcess(m *model.ProductionProcess) (string, error) {
 
 func UpdateProductionProcess(m *model.ProductionProcess) error {
 	return model.DB.DB().Transaction(func(tx *gorm.DB) error {
-		if err := tx.Delete(&model.ProductionProcessAvailableStation{}, "production_process_id=?", m.ID).Error; err != nil {
+		if err := tx.Delete(&model.ProductionProcessAvailableStation{}, "`production_process_id` = ?", m.ID).Error; err != nil {
 			return err
 		}
 
-		if err := tx.Delete(&model.AttributeExpression{}, "rule_id=? AND rule_type=?", m.ID, "ProductionProcess").Error; err != nil {
+		if err := tx.Delete(&model.AttributeExpression{}, "`rule_id` = ? AND `rule_type` = ?", m.ID, "ProductionProcess").Error; err != nil {
 			return err
 		}
 
-		duplication, err := model.DB.UpdateWithCheckDuplication(tx, m, true, "id <> ?  and  code =? ", m.ID, m.Code)
+		duplication, err := model.DB.UpdateWithCheckDuplicationAndOmit(tx, m, true, []string{"created_at"}, "`id` <> ?  and  `code`  = ? ", m.ID, m.Code)
 		if err != nil {
 			return err
 		}
@@ -80,7 +80,7 @@ func GetProductionProcessByID(id string) (*model.ProductionProcess, error) {
 	err := model.DB.DB().Preload("ProductionLine").Preload("ProductionProcessAvailableStations").Preload("ProductionProcessAvailableStations.ProductionStation").
 		Preload("AttributeExpressions", func(db *gorm.DB) *gorm.DB {
 			return db.Where("rule_type", "ProductionProcess")
-		}).Preload(clause.Associations).Where("id = ?", id).First(m).Error
+		}).Preload(clause.Associations).Where("`id` = ?", id).First(m).Error
 	return m, err
 }
 
@@ -89,10 +89,10 @@ func GetProductionProcessByIDs(ids []string) ([]*model.ProductionProcess, error)
 	err := model.DB.DB().Preload("ProductionLine").Preload("ProductionProcessAvailableStations").Preload("ProductionProcessAvailableStations.ProductionStation").
 		Preload("AttributeExpressions", func(db *gorm.DB) *gorm.DB {
 			return db.Where("rule_type", "ProductionProcess")
-		}).Preload(clause.Associations).Where("id in (?)", ids).Find(&m).Error
+		}).Preload(clause.Associations).Where("`id` in (?)", ids).Find(&m).Error
 	return m, err
 }
 
 func DeleteProductionProcess(id string) (err error) {
-	return model.DB.DB().Delete(&model.ProductionProcess{}, "id=?", id).Error
+	return model.DB.DB().Delete(&model.ProductionProcess{}, "`id` = ?", id).Error
 }

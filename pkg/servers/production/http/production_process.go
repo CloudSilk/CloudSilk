@@ -4,9 +4,9 @@ import (
 	"context"
 	"net/http"
 
-	"github.com/CloudSilk/CloudSilk/pkg/servers/production/logic"
 	"github.com/CloudSilk/CloudSilk/pkg/model"
 	"github.com/CloudSilk/CloudSilk/pkg/proto"
+	"github.com/CloudSilk/CloudSilk/pkg/servers/production/logic"
 	"github.com/CloudSilk/pkg/utils/log"
 	"github.com/CloudSilk/pkg/utils/middleware"
 	"github.com/gin-gonic/gin"
@@ -42,6 +42,16 @@ func AddProductionProcess(c *gin.Context) {
 		resp.Message = err.Error()
 		c.JSON(http.StatusOK, resp)
 		return
+	}
+
+	if len(req.AvailableStationIDs) > 0 {
+		var availableStations []*proto.ProductionProcessAvailableStationInfo
+		for _, productionStationID := range req.AvailableStationIDs {
+			availableStations = append(availableStations, &proto.ProductionProcessAvailableStationInfo{
+				ProductionStationID: productionStationID,
+			})
+		}
+		req.ProductionProcessAvailableStations = availableStations
 	}
 
 	id, err := logic.CreateProductionProcess(model.PBToProductionProcess(req))
@@ -85,6 +95,17 @@ func UpdateProductionProcess(c *gin.Context) {
 		c.JSON(http.StatusOK, resp)
 		return
 	}
+
+	if len(req.AvailableStationIDs) > 0 {
+		var availableStations []*proto.ProductionProcessAvailableStationInfo
+		for _, productionStationID := range req.AvailableStationIDs {
+			availableStations = append(availableStations, &proto.ProductionProcessAvailableStationInfo{
+				ProductionStationID: productionStationID,
+			})
+		}
+		req.ProductionProcessAvailableStations = availableStations
+	}
+
 	err = logic.UpdateProductionProcess(model.PBToProductionProcess(req))
 	if err != nil {
 		resp.Code = proto.Code_InternalServerError
@@ -104,7 +125,7 @@ func UpdateProductionProcess(c *gin.Context) {
 // @Param pageSize query int false "默认每页10条"
 // @Param orderField query string false "排序字段"
 // @Param desc query bool false "是否倒序排序"
-// @Param productionLineID query int false "生产产线ID"
+// @Param productionLineID query string false "生产产线ID"
 // @Success 200 {object} proto.QueryProductionProcessResponse
 // @Router /api/mom/production/productionprocess/query [get]
 func QueryProductionProcess(c *gin.Context) {

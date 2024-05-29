@@ -13,7 +13,7 @@ func CreateProductOrderBom(m *model.ProductOrderBom) (string, error) {
 }
 
 func UpdateProductOrderBom(m *model.ProductOrderBom) error {
-	return model.DB.DB().Omit("create_time").Save(m).Error
+	return model.DB.DB().Omit("created_at", "create_time").Save(m).Error
 }
 
 func QueryProductOrderBom(req *proto.QueryProductOrderBomRequest, resp *proto.QueryProductOrderBomResponse, preload bool) {
@@ -26,7 +26,7 @@ func QueryProductOrderBom(req *proto.QueryProductOrderBomRequest, resp *proto.Qu
 		db = db.Where("`material_no` LIKE ? OR `material_description` LIKE ?", "%"+req.MaterialNo+"%", "%"+req.MaterialNo+"%")
 	}
 
-	orderStr, err := utils.GenerateOrderString(req.SortConfig, "id")
+	orderStr, err := utils.GenerateOrderString(req.SortConfig, "created_at desc")
 	if err != nil {
 		resp.Code = proto.Code_BadRequest
 		resp.Message = err.Error()
@@ -51,16 +51,16 @@ func GetAllProductOrderBoms() (list []*model.ProductOrderBom, err error) {
 
 func GetProductOrderBomByID(id string) (*model.ProductOrderBom, error) {
 	m := &model.ProductOrderBom{}
-	err := model.DB.DB().Preload(clause.Associations).Where("id = ?", id).First(m).Error
+	err := model.DB.DB().Preload(clause.Associations).Where("`id` = ?", id).First(m).Error
 	return m, err
 }
 
 func GetProductOrderBomByIDs(ids []string) ([]*model.ProductOrderBom, error) {
 	var m []*model.ProductOrderBom
-	err := model.DB.DB().Preload(clause.Associations).Where("id in (?)", ids).Find(&m).Error
+	err := model.DB.DB().Preload(clause.Associations).Where("`id` in (?)", ids).Find(&m).Error
 	return m, err
 }
 
 func DeleteProductOrderBom(id string) (err error) {
-	return model.DB.DB().Delete(&model.ProductOrderBom{}, "id=?", id).Error
+	return model.DB.DB().Delete(&model.ProductOrderBom{}, "`id` = ?", id).Error
 }

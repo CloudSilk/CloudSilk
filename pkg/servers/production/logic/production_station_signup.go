@@ -13,7 +13,7 @@ func CreateProductionStationSignup(m *model.ProductionStationSignup) (string, er
 }
 
 func UpdateProductionStationSignup(m *model.ProductionStationSignup) error {
-	return model.DB.DB().Omit("login_time").Save(m).Error
+	return model.DB.DB().Omit("created_at", "login_time").Save(m).Error
 }
 
 func QueryProductionStationSignup(req *proto.QueryProductionStationSignupRequest, resp *proto.QueryProductionStationSignupResponse, preload bool) {
@@ -26,7 +26,7 @@ func QueryProductionStationSignup(req *proto.QueryProductionStationSignupRequest
 		db = db.Where("`login_time` BETWEEN ? and ?", req.LoginTime0, req.LoginTime1)
 	}
 
-	orderStr, err := utils.GenerateOrderString(req.SortConfig, "id")
+	orderStr, err := utils.GenerateOrderString(req.SortConfig, "created_at desc")
 	if err != nil {
 		resp.Code = proto.Code_BadRequest
 		resp.Message = err.Error()
@@ -51,18 +51,18 @@ func GetAllProductionStationSignups() (list []*model.ProductionStationSignup, er
 
 func GetProductionStationSignupByID(id string) (*model.ProductionStationSignup, error) {
 	m := &model.ProductionStationSignup{}
-	err := model.DB.DB().Preload(clause.Associations).Where("id = ?", id).First(m).Error
+	err := model.DB.DB().Preload(clause.Associations).Where("`id` = ?", id).First(m).Error
 	return m, err
 }
 
 func GetProductionStationSignupByIDs(ids []string) ([]*model.ProductionStationSignup, error) {
 	var m []*model.ProductionStationSignup
-	err := model.DB.DB().Preload(clause.Associations).Where("id in (?)", ids).Find(&m).Error
+	err := model.DB.DB().Preload(clause.Associations).Where("`id` in (?)", ids).Find(&m).Error
 	return m, err
 }
 
 func DeleteProductionStationSignup(id string) (err error) {
-	return model.DB.DB().Delete(&model.ProductionStationSignup{}, "id=?", id).Error
+	return model.DB.DB().Delete(&model.ProductionStationSignup{}, "`id` = ?", id).Error
 }
 
 func GetProductionStationSignup(productionStationID, loginUserID string, hasLogoutTime bool) (*model.ProductionStationSignup, error) {
@@ -73,7 +73,7 @@ func GetProductionStationSignup(productionStationID, loginUserID string, hasLogo
 		logoutTime = " and logout_time IS NULL"
 	}
 
-	err := model.DB.DB().Preload(clause.Associations).Where("productionStationID = ? and loginUserID=?"+logoutTime,
+	err := model.DB.DB().Preload(clause.Associations).Where("`production_station_id` = ? and `login_user_id` = ?"+logoutTime,
 		productionStationID, loginUserID).First(m).Error
 	return m, err
 }

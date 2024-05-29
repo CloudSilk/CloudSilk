@@ -15,7 +15,7 @@ func CreateTaskQueue(m *model.TaskQueue) (string, error) {
 		m.CauseOfState = "处理中"
 		m.RunningState = "队列启用"
 	}
-	duplication, err := model.DB.CreateWithCheckDuplication(m, " name=? ", m.Name)
+	duplication, err := model.DB.CreateWithCheckDuplication(m, " `name` = ? ", m.Name)
 	if err != nil {
 		return "", err
 	}
@@ -27,11 +27,11 @@ func CreateTaskQueue(m *model.TaskQueue) (string, error) {
 
 func UpdateTaskQueue(m *model.TaskQueue) error {
 	return model.DB.DB().Transaction(func(tx *gorm.DB) error {
-		if err := tx.Delete(&model.TaskQueueParameter{}, "task_queue_id = ?", m.ID).Error; err != nil {
+		if err := tx.Delete(&model.TaskQueueParameter{}, "`task_queue_id` = ?", m.ID).Error; err != nil {
 			return err
 		}
 
-		duplication, err := model.DB.UpdateWithCheckDuplicationAndOmit(tx, m, true, []string{"CreateTime"}, "id <> ? and name=? ", m.ID, m.Name)
+		duplication, err := model.DB.UpdateWithCheckDuplicationAndOmit(tx, m, true, []string{"created_at"}, "`id` <> ? and `name` = ? ", m.ID, m.Name)
 		if err != nil {
 			return err
 		}
@@ -46,7 +46,7 @@ func UpdateTaskQueue(m *model.TaskQueue) error {
 func QueryTaskQueue(req *proto.QueryTaskQueueRequest, resp *proto.QueryTaskQueueResponse, preload bool) {
 	db := model.DB.DB().Model(&model.TaskQueue{})
 
-	orderStr, err := utils.GenerateOrderString(req.SortConfig, "id")
+	orderStr, err := utils.GenerateOrderString(req.SortConfig, "created_at desc")
 	if err != nil {
 		resp.Code = proto.Code_BadRequest
 		resp.Message = err.Error()
@@ -71,16 +71,16 @@ func GetAllTaskQueues() (list []*model.TaskQueue, err error) {
 
 func GetTaskQueueByID(id string) (*model.TaskQueue, error) {
 	m := &model.TaskQueue{}
-	err := model.DB.DB().Preload("TaskQueueParameters").Preload(clause.Associations).Where("id = ?", id).First(m).Error
+	err := model.DB.DB().Preload("TaskQueueParameters").Preload(clause.Associations).Where("`id` = ?", id).First(m).Error
 	return m, err
 }
 
 func GetTaskQueueByIDs(ids []string) ([]*model.TaskQueue, error) {
 	var m []*model.TaskQueue
-	err := model.DB.DB().Preload("TaskQueueParameters").Preload(clause.Associations).Where("id in (?)", ids).Find(&m).Error
+	err := model.DB.DB().Preload("TaskQueueParameters").Preload(clause.Associations).Where("`id` in (?)", ids).Find(&m).Error
 	return m, err
 }
 
 func DeleteTaskQueue(id string) (err error) {
-	return model.DB.DB().Delete(&model.TaskQueue{}, "id=?", id).Error
+	return model.DB.DB().Delete(&model.TaskQueue{}, "`id` = ?", id).Error
 }

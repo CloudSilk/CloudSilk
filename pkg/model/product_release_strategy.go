@@ -8,7 +8,7 @@ type ProductReleaseStrategy struct {
 	ModelID
 	ProductionLineID                           string                                       `json:"productionLineID" gorm:"index;size:36;comment:工厂产线ID"`
 	ProductCategoryID                          string                                       `json:"productCategoryID" gorm:"index;size:36;comment:产品类别ID"`
-	ProductCategory                            *ProductCategory                             `json:"productCategory"` //产品类别
+	ProductCategory                            *ProductCategory                             `json:"productCategory" gorm:"constraint:OnDelete:CASCADE"` //产品类别
 	ReleaseMethod                              int32                                        `json:"releaseMethod" gorm:"comment:投料方式"`
 	Remark                                     string                                       `json:"remark" gorm:"column:Remark;comment:备注"`
 	ProductReleaseStrategyComparableAttributes []*ProductReleaseStrategyComparableAttribute `json:"productReleaseStrategyComparableAttributes" gorm:"constraint:OnDelete:CASCADE"` //产品类别特性

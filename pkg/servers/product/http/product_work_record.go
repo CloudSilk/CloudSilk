@@ -4,9 +4,9 @@ import (
 	"context"
 	"net/http"
 
-	"github.com/CloudSilk/CloudSilk/pkg/servers/product/logic"
 	"github.com/CloudSilk/CloudSilk/pkg/model"
 	"github.com/CloudSilk/CloudSilk/pkg/proto"
+	"github.com/CloudSilk/CloudSilk/pkg/servers/product/logic"
 	"github.com/CloudSilk/pkg/utils/log"
 	"github.com/CloudSilk/pkg/utils/middleware"
 	"github.com/gin-gonic/gin"
@@ -108,7 +108,7 @@ func UpdateProductWorkRecord(c *gin.Context) {
 // @Param productSerialNo query string false "产品序列号"
 // @Param workStartTime0 query string false "开始作业时间开始"
 // @Param workStartTime1 query string false "开始作业时间结束"
-// @Param productionLineID query int false "作业产线"
+// @Param productionLineID query string false "作业产线"
 // @Success 200 {object} proto.QueryProductWorkRecordResponse
 // @Router /api/mom/product/productworkrecord/query [get]
 func QueryProductWorkRecord(c *gin.Context) {

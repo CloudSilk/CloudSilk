@@ -14,11 +14,11 @@ type ProductionStationAlarm struct {
 	CreateTime          time.Time          `json:"createTime" gorm:"autoCreateTime:nano;comment:创建时间"`
 	CreateUserID        string             `json:"createUserID" gorm:"size:36;column:创建人员ID"`
 	ProductionStationID string             `json:"productionStationID" gorm:"size:36;comment:生产工站ID"`
-	ProductionStation   *ProductionStation ``
+	ProductionStation   *ProductionStation `gorm:"constraint:OnDelete:CASCADE"`
 	ProductionProcessID string             `json:"productionProcessID" gorm:"size:36;comment:生产工序ID"`
-	ProductionProcess   *ProductionProcess ``
+	ProductionProcess   *ProductionProcess `gorm:"constraint:OnDelete:CASCADE"`
 	ProductInfoID       string             `json:"productInfoID" gorm:"size:36;comment:产品信息ID"`
-	ProductInfo         *ProductInfo       ``
+	ProductInfo         *ProductInfo       `gorm:"constraint:OnDelete:CASCADE"`
 	AlarmNo             string             `json:"alarmNo" gorm:"size:100;comment:报警编号"`
 	AlarmMessage        string             `json:"alarmMessage" gorm:"size:1000;comment:报警信息"`
 	CurrentState        string             `json:"currentState" gorm:"size:100;comment:当前状态"`

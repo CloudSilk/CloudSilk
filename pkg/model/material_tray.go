@@ -19,9 +19,9 @@ type MaterialTray struct {
 	LastUpdateTime   time.Time       `json:"lastUpdateTime" gorm:"autoUpdateTime:nano;comment:状态变更时间"`
 	Remark           string          `json:"remark" gorm:"size:500;comment:备注"`
 	ProductionLineID string          `json:"productionLineID" gorm:"size:36;comment:隶属产线ID;"`
-	ProductionLine   *ProductionLine `json:"productionLine"` //隶属产线
+	ProductionLine   *ProductionLine `json:"productionLine" gorm:"constraint:OnDelete:CASCADE"` //隶属产线
 	ProductInfoID    string          `json:"productInfoID" gorm:"size:36;comment:当前产品ID;"`
-	ProductInfo      *ProductInfo    `json:"productInfo"` //当前产品
+	ProductInfo      *ProductInfo    `json:"productInfo" gorm:"constraint:OnDelete:CASCADE"` //当前产品
 }
 
 func PBToMaterialTrays(in []*proto.MaterialTrayInfo) []*MaterialTray {

@@ -17,9 +17,9 @@ type ProductOrderPallet struct {
 	LastUpdateTime            time.Time                `json:"lastUpdateTime" gorm:"autoUpdateTime:nano;comment:状态变更时间"`
 	Remark                    string                   `json:"remark" gorm:"size:1000;comment:备注"`
 	ProductPackageStackRuleID string                   `json:"productPackageStackRuleID" gorm:"size:36;comment:码垛规则ID"`
-	ProductPackageStackRule   *ProductPackageStackRule `json:"productPackageStackRule"`
+	ProductPackageStackRule   *ProductPackageStackRule `json:"productPackageStackRule" gorm:"constraint:OnDelete:CASCADE"`
 	ProductOrderID            string                   `json:"productOrderID" gorm:"size:36;comment:归属工单ID"`
-	ProductOrder              *ProductOrder            `json:"productOrder"`
+	ProductOrder              *ProductOrder            `json:"productOrder" gorm:"constraint:OnDelete:CASCADE"`
 }
 
 func PBToProductOrderPallets(in []*proto.ProductOrderPalletInfo) []*ProductOrderPallet {

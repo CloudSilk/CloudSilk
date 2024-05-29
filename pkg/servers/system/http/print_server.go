@@ -2,12 +2,11 @@ package http
 
 import (
 	"context"
-	"fmt"
 	"net/http"
 
-	"github.com/CloudSilk/CloudSilk/pkg/servers/system/logic"
 	model "github.com/CloudSilk/CloudSilk/pkg/model"
 	apipb "github.com/CloudSilk/CloudSilk/pkg/proto"
+	"github.com/CloudSilk/CloudSilk/pkg/servers/system/logic"
 	"github.com/CloudSilk/pkg/utils/log"
 	"github.com/CloudSilk/pkg/utils/middleware"
 	"github.com/gin-gonic/gin"
@@ -50,7 +49,7 @@ func AddPrintServer(c *gin.Context) {
 		resp.Code = apipb.Code_InternalServerError
 		resp.Message = err.Error()
 	} else {
-		resp.Message = fmt.Sprintf("%s", id)
+		resp.Message = id
 	}
 	c.JSON(http.StatusOK, resp)
 }

@@ -13,7 +13,7 @@ func CreateProductProcessRoute(m *model.ProductProcessRoute) (string, error) {
 }
 
 func UpdateProductProcessRoute(m *model.ProductProcessRoute) error {
-	return model.DB.DB().Save(m).Error
+	return model.DB.DB().Omit("created_at").Save(m).Error
 }
 
 func QueryProductProcessRoute(req *proto.QueryProductProcessRouteRequest, resp *proto.QueryProductProcessRouteResponse, preload bool) {
@@ -35,16 +35,16 @@ func QueryProductProcessRoute(req *proto.QueryProductProcessRouteRequest, resp *
 	}
 
 	if req.ProductInfoID != "" {
-		db = db.Where("`product_info_id`=?", req.ProductInfoID)
+		db = db.Where("`product_info_id` = ?", req.ProductInfoID)
 	}
 	if req.RouteIndex > 0 {
-		db = db.Where("`route_index`=?", req.RouteIndex)
+		db = db.Where("`route_index` = ?", req.RouteIndex)
 	}
 	if req.CurrentState != "" {
-		db = db.Where("`current_state`=?", req.CurrentState)
+		db = db.Where("`current_state` = ?", req.CurrentState)
 	}
 
-	orderStr, err := utils.GenerateOrderString(req.SortConfig, "id")
+	orderStr, err := utils.GenerateOrderString(req.SortConfig, "created_at desc")
 	if err != nil {
 		resp.Code = proto.Code_BadRequest
 		resp.Message = err.Error()
@@ -69,7 +69,7 @@ func GetAllProductProcessRoutes() (list []*model.ProductProcessRoute, err error)
 
 func GetProductProcessRouteByID(id string) (*model.ProductProcessRoute, error) {
 	m := &model.ProductProcessRoute{}
-	err := model.DB.DB().Preload(clause.Associations).Where("id = ?", id).First(m).Error
+	err := model.DB.DB().Preload(clause.Associations).Where("`id` = ?", id).First(m).Error
 	return m, err
 }
 
@@ -86,10 +86,10 @@ func GetProductProcessRoute(req *proto.GetProductProcessRouteRequest) (*model.Pr
 
 func GetProductProcessRouteByIDs(ids []string) ([]*model.ProductProcessRoute, error) {
 	var m []*model.ProductProcessRoute
-	err := model.DB.DB().Preload(clause.Associations).Where("id in (?)", ids).Find(&m).Error
+	err := model.DB.DB().Preload(clause.Associations).Where("`id` in (?)", ids).Find(&m).Error
 	return m, err
 }
 
 func DeleteProductProcessRoute(id string) (err error) {
-	return model.DB.DB().Delete(&model.ProductProcessRoute{}, "id=?", id).Error
+	return model.DB.DB().Delete(&model.ProductProcessRoute{}, "`id` = ?", id).Error
 }

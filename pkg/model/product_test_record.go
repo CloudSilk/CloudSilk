@@ -11,13 +11,13 @@ import (
 type ProductTestRecord struct {
 	ModelID
 	ProductionStationID     string                 `json:"productionStationID" gorm:"size:36;comment:测试工站ID"`
-	ProductionStation       *ProductionStation     `json:"productionStation"` //测试工站
+	ProductionStation       *ProductionStation     `json:"productionStation" gorm:"constraint:OnDelete:CASCADE"` //测试工站
 	ProductionProcessID     string                 `json:"productionProcessID" gorm:"size:36;comment:生产工序ID"`
-	ProductionProcess       *ProductionProcess     `json:"productionProcess"` //生产工序
+	ProductionProcess       *ProductionProcess     `json:"productionProcess" gorm:"constraint:OnDelete:CASCADE"` //生产工序
 	ProductInfoID           string                 `json:"productInfoID" gorm:"size:36;comment:产品信息ID"`
-	ProductInfo             *ProductInfo           `json:"productInfo"` //产品信息
+	ProductInfo             *ProductInfo           `json:"productInfo" gorm:"constraint:OnDelete:CASCADE"` //产品信息
 	ProductionProcessStepID string                 `json:"productionProcessStepID" gorm:"size:36;comment:生产工步ID"`
-	ProductionProcessStep   *ProductionProcessStep `json:"productionProcessStep"` //生产工步
+	ProductionProcessStep   *ProductionProcessStep `json:"productionProcessStep" gorm:"constraint:OnDelete:CASCADE"` //生产工步
 	TestStartTime           sql.NullTime           `json:"testStartTime" gorm:"comment:开始测试时间"`
 	TestEndTime             sql.NullTime           `json:"testEndTime" gorm:"comment:结束测试时间"`
 	Duration                int32                  `json:"duration" gorm:"comment:耗时(秒)"`

@@ -15,11 +15,11 @@ func CreateProductOrderPriorityRule(m *model.ProductOrderPriorityRule) (string, 
 
 func UpdateProductOrderPriorityRule(m *model.ProductOrderPriorityRule) error {
 	return model.DB.DB().Transaction(func(tx *gorm.DB) error {
-		if err := tx.Delete(&model.AttributeExpression{}, "rule_id = ? AND rule_type = ?", m.ID, "ProductOrderPriorityRule").Error; err != nil {
+		if err := tx.Delete(&model.AttributeExpression{}, "`rule_id` = ? AND `rule_type` = ?", m.ID, "ProductOrderPriorityRule").Error; err != nil {
 			return err
 		}
 
-		if err := tx.Save(m).Error; err != nil {
+		if err := tx.Omit("created_at").Save(m).Error; err != nil {
 			return err
 		}
 
@@ -33,7 +33,7 @@ func QueryProductOrderPriorityRule(req *proto.QueryProductOrderPriorityRuleReque
 		db = db.Where("`priority_level` = ?", req.PriorityLevel)
 	}
 
-	orderStr, err := utils.GenerateOrderString(req.SortConfig, "id")
+	orderStr, err := utils.GenerateOrderString(req.SortConfig, "created_at desc")
 	if err != nil {
 		resp.Code = proto.Code_BadRequest
 		resp.Message = err.Error()
@@ -60,7 +60,7 @@ func GetProductOrderPriorityRuleByID(id string) (*model.ProductOrderPriorityRule
 	m := &model.ProductOrderPriorityRule{}
 	err := model.DB.DB().Preload("AttributeExpressions", func(db *gorm.DB) *gorm.DB {
 		return db.Where("rule_type", "ProductOrderPriorityRule")
-	}).Preload(clause.Associations).Where("id = ?", id).First(m).Error
+	}).Preload(clause.Associations).Where("`id` = ?", id).First(m).Error
 	return m, err
 }
 
@@ -68,10 +68,10 @@ func GetProductOrderPriorityRuleByIDs(ids []string) ([]*model.ProductOrderPriori
 	var m []*model.ProductOrderPriorityRule
 	err := model.DB.DB().Preload("AttributeExpressions", func(db *gorm.DB) *gorm.DB {
 		return db.Where("rule_type", "ProductOrderPriorityRule")
-	}).Preload(clause.Associations).Where("id in (?)", ids).Find(&m).Error
+	}).Preload(clause.Associations).Where("`id` in (?)", ids).Find(&m).Error
 	return m, err
 }
 
 func DeleteProductOrderPriorityRule(id string) (err error) {
-	return model.DB.DB().Delete(&model.ProductOrderPriorityRule{}, "id=?", id).Error
+	return model.DB.DB().Delete(&model.ProductOrderPriorityRule{}, "`id` = ?", id).Error
 }

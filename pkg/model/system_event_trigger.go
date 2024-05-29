@@ -15,7 +15,7 @@ type SystemEventTrigger struct {
 	CreateTime     time.Time    `json:"createTime" gorm:"autoCreateTime;comment:触发时间"`
 	LastUpdateTime time.Time    `json:"lastUpdateTime" gorm:"autoCreateTime;comment:状态变更时间"`
 	SystemEventID  string       `json:"systemEventID" gorm:"size:36;comment:系统事件ID"`
-	SystemEvent    *SystemEvent `json:"systemEvent"` //系统事件
+	SystemEvent    *SystemEvent `json:"systemEvent" gorm:"constraint:OnDelete:CASCADE"` //系统事件
 }
 
 func PBToSystemEventTriggers(in []*proto.SystemEventTriggerInfo) []*SystemEventTrigger {

@@ -15,11 +15,11 @@ func CreateLabelTemplate(m *model.LabelTemplate) (string, error) {
 
 func UpdateLabelTemplate(m *model.LabelTemplate) error {
 	return model.DB.DB().Transaction(func(tx *gorm.DB) error {
-		if err := tx.Delete(&model.LabelParameter{}, "label_template_id=?", m.ID).Error; err != nil {
+		if err := tx.Delete(&model.LabelParameter{}, "`label_template_id` = ?", m.ID).Error; err != nil {
 			return err
 		}
 
-		if err := tx.Save(m).Error; err != nil {
+		if err := tx.Omit("created_at").Save(m).Error; err != nil {
 			return err
 		}
 
@@ -34,10 +34,10 @@ func QueryLabelTemplate(req *proto.QueryLabelTemplateRequest, resp *proto.QueryL
 		db.Where("code LIKE ? OR description LIKE ?", "%"+req.Code+"%", "%"+req.Code+"%")
 	}
 	if req.LabelTypeID != "" {
-		db.Where("label_type_id = ?", req.LabelTypeID)
+		db.Where("`label_type_id` = ?", req.LabelTypeID)
 	}
 
-	orderStr, err := utils.GenerateOrderString(req.SortConfig, "id")
+	orderStr, err := utils.GenerateOrderString(req.SortConfig, "created_at desc")
 	if err != nil {
 		resp.Code = proto.Code_BadRequest
 		resp.Message = err.Error()
@@ -62,16 +62,16 @@ func GetAllLabelTemplates() (list []*model.LabelTemplate, err error) {
 
 func GetLabelTemplateByID(id string) (*model.LabelTemplate, error) {
 	m := &model.LabelTemplate{}
-	err := model.DB.DB().Preload("LabelParameters").Preload(clause.Associations).Where("id = ?", id).First(m).Error
+	err := model.DB.DB().Preload("LabelParameters").Preload(clause.Associations).Where("`id` = ?", id).First(m).Error
 	return m, err
 }
 
 func GetLabelTemplateByIDs(ids []string) ([]*model.LabelTemplate, error) {
 	var m []*model.LabelTemplate
-	err := model.DB.DB().Preload(clause.Associations).Where("id in (?)", ids).Find(&m).Error
+	err := model.DB.DB().Preload(clause.Associations).Where("`id` in (?)", ids).Find(&m).Error
 	return m, err
 }
 
 func DeleteLabelTemplate(id string) (err error) {
-	return model.DB.DB().Delete(&model.LabelTemplate{}, "id=?", id).Error
+	return model.DB.DB().Delete(&model.LabelTemplate{}, "`id` = ?", id).Error
 }

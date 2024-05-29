@@ -13,7 +13,7 @@ type PersonnelQualificationType struct {
 	ExpirationEarlyWarning bool               `json:"expirationEarlyWarning" gorm:"comment:失效预警"`
 	ProductModels          []*ProductModel    `json:"productModels" gorm:"-"` //产品型号
 	ProductionProcessID    string             `json:"productionProcessID" gorm:"index;size:36;comment:生产工序ID;"`
-	ProductionProcess      *ProductionProcess `json:"productionProcess"` //生产工序
+	ProductionProcess      *ProductionProcess `json:"productionProcess" gorm:"constraint:OnDelete:CASCADE"` //生产工序
 	Remark                 string             `json:"remark" gorm:"size:500;comment:备注"`
 }
 

@@ -15,11 +15,11 @@ func CreateProductReleaseStrategy(m *model.ProductReleaseStrategy) (string, erro
 
 func UpdateProductReleaseStrategy(m *model.ProductReleaseStrategy) error {
 	return model.DB.DB().Transaction(func(tx *gorm.DB) error {
-		if err := tx.Delete(&model.ProductReleaseStrategyComparableAttribute{}, "product_release_strategy_id=?", m.ID).Error; err != nil {
+		if err := tx.Delete(&model.ProductReleaseStrategyComparableAttribute{}, "`product_release_strategy_id` = ?", m.ID).Error; err != nil {
 			return err
 		}
 
-		return tx.Save(m).Error
+		return tx.Omit("created_at").Save(m).Error
 	})
 }
 
@@ -32,7 +32,7 @@ func QueryProductReleaseStrategy(req *proto.QueryProductReleaseStrategyRequest, 
 		db = db.Where("`production_line_id` = ?", req.ProductionLineID)
 	}
 
-	orderStr, err := utils.GenerateOrderString(req.SortConfig, "id")
+	orderStr, err := utils.GenerateOrderString(req.SortConfig, "created_at desc")
 	if err != nil {
 		resp.Code = proto.Code_BadRequest
 		resp.Message = err.Error()
@@ -57,16 +57,16 @@ func GetAllProductReleaseStrategys() (list []*model.ProductReleaseStrategy, err 
 
 func GetProductReleaseStrategyByID(id string) (*model.ProductReleaseStrategy, error) {
 	m := &model.ProductReleaseStrategy{}
-	err := model.DB.DB().Preload("ProductReleaseStrategyComparableAttributes").Preload(clause.Associations).Where("id = ?", id).First(m).Error
+	err := model.DB.DB().Preload("ProductReleaseStrategyComparableAttributes").Preload(clause.Associations).Where("`id` = ?", id).First(m).Error
 	return m, err
 }
 
 func GetProductReleaseStrategyByIDs(ids []string) ([]*model.ProductReleaseStrategy, error) {
 	var m []*model.ProductReleaseStrategy
-	err := model.DB.DB().Preload(clause.Associations).Where("id in (?)", ids).Find(&m).Error
+	err := model.DB.DB().Preload(clause.Associations).Where("`id` in (?)", ids).Find(&m).Error
 	return m, err
 }
 
 func DeleteProductReleaseStrategy(id string) (err error) {
-	return model.DB.DB().Delete(&model.ProductReleaseStrategy{}, "id=?", id).Error
+	return model.DB.DB().Delete(&model.ProductReleaseStrategy{}, "`id` = ?", id).Error
 }

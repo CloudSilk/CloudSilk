@@ -15,11 +15,11 @@ func CreateProductPackageMatchRule(m *model.ProductPackageMatchRule) (string, er
 
 func UpdateProductPackageMatchRule(m *model.ProductPackageMatchRule) error {
 	return model.DB.DB().Transaction(func(tx *gorm.DB) error {
-		if err := tx.Delete(&model.AttributeExpression{}, "rule_id=? AND rule_type=?", m.ID, "ProductPackageMatchRule").Error; err != nil {
+		if err := tx.Delete(&model.AttributeExpression{}, "`rule_id` = ? AND `rule_type` = ?", m.ID, "ProductPackageMatchRule").Error; err != nil {
 			return err
 		}
 
-		if err := tx.Save(m).Error; err != nil {
+		if err := tx.Omit("created_at").Save(m).Error; err != nil {
 			return err
 		}
 
@@ -30,7 +30,7 @@ func UpdateProductPackageMatchRule(m *model.ProductPackageMatchRule) error {
 func QueryProductPackageMatchRule(req *proto.QueryProductPackageMatchRuleRequest, resp *proto.QueryProductPackageMatchRuleResponse, preload bool) {
 	db := model.DB.DB().Model(&model.ProductPackageMatchRule{}).Preload("ProductPackage").Preload(clause.Associations)
 
-	orderStr, err := utils.GenerateOrderString(req.SortConfig, "id")
+	orderStr, err := utils.GenerateOrderString(req.SortConfig, "created_at desc")
 	if err != nil {
 		resp.Code = proto.Code_BadRequest
 		resp.Message = err.Error()
@@ -57,7 +57,7 @@ func GetProductPackageMatchRuleByID(id string) (*model.ProductPackageMatchRule, 
 	m := &model.ProductPackageMatchRule{}
 	err := model.DB.DB().Preload("AttributeExpressions", func(db *gorm.DB) *gorm.DB {
 		return db.Where("rule_type", "ProductPackageMatchRule")
-	}).Preload(clause.Associations).Where("id = ?", id).First(m).Error
+	}).Preload(clause.Associations).Where("`id` = ?", id).First(m).Error
 	return m, err
 }
 
@@ -65,16 +65,16 @@ func GetProductPackageMatchRuleByIDs(ids []string) ([]*model.ProductPackageMatch
 	var m []*model.ProductPackageMatchRule
 	err := model.DB.DB().Preload("AttributeExpressions", func(db *gorm.DB) *gorm.DB {
 		return db.Where("rule_type", "ProductPackageMatchRule")
-	}).Preload(clause.Associations).Where("id in (?)", ids).Find(&m).Error
+	}).Preload(clause.Associations).Where("`id` in (?)", ids).Find(&m).Error
 	return m, err
 }
 
 func DeleteProductPackageMatchRule(id string) (err error) {
 	return model.DB.DB().Transaction(func(tx *gorm.DB) error {
-		if err := tx.Delete(&model.ProductPackageMatchRule{}, "id=?", id).Error; err != nil {
+		if err := tx.Delete(&model.ProductPackageMatchRule{}, "`id` = ?", id).Error; err != nil {
 			return err
 		}
-		if err := tx.Delete(&model.AttributeExpression{}, "rule_id=? AND rule_type=?", id, "ProductPackageMatchRule").Error; err != nil {
+		if err := tx.Delete(&model.AttributeExpression{}, "`rule_id` = ? AND `rule_type` = ?", id, "ProductPackageMatchRule").Error; err != nil {
 			return err
 		}
 		return nil

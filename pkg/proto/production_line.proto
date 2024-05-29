@@ -5,6 +5,8 @@ option go_package = "./;proto";
 
 import "mom_common.proto";
 import "production_crossway.proto";
+import "attribute_expression.proto";
+import "process_step_type.proto";
 
 service ProductionLine{
     rpc Add(ProductionLineInfo)returns(CommonResponse){}
@@ -42,6 +44,8 @@ message ProductionLineInfo {
  	repeated ProductionCrosswayInfo productionCrossways=13;
     //产线支持产品类别 
  	repeated ProductionLineSupportableCategoryInfo productionLineSupportableCategorys=14;
+    repeated ProductionProcessInfo productionProcesses=15;
+    repeated ProcessStepParameterInfo processStepParameters=16;
 }
 
 message ProductionLineSupportableCategoryInfo {
@@ -172,4 +176,264 @@ message GetProductionStationDetailResponse{
     Code code=1;
     string message=2;
     ProductionStationInfo data=3;
+}
+
+service ProductionProcess{
+    rpc Query(QueryProductionProcessRequest)returns(QueryProductionProcessResponse){}
+    rpc GetDetail(GetDetailRequest)returns(GetProductionProcessDetailResponse){}
+}
+
+message ProductionProcessInfo {
+	//ID 
+    string id=3;
+	//顺序 
+ 	int32 sortIndex=4;
+	//代号 
+ 	string code=5;
+	//描述 
+ 	string description=6;
+	//识别码 
+ 	string identifier=7;
+	//是否启用 
+ 	bool enable=8;
+	//默认匹配 
+ 	bool initialValue=9;
+	//是否报工 
+ 	bool enableReport=10;
+	//是否管控 
+ 	bool enableControl=11;
+	//工序类型 
+ 	int32 processType=13;
+	//载具类型 
+ 	int32 vehicleType=14;
+	//产品状态 
+ 	string productState=15;
+	//备注 
+ 	string remark=16;
+	//生产产线ID 
+    string productionLineID=17;
+	ProductionLineInfo productionLine=18;
+	//支持工站
+	repeated string availableStationIDs=19;
+	repeated ProductionProcessAvailableStationInfo productionProcessAvailableStations=22;
+	//特性表达式
+	repeated AttributeExpressionInfo attributeExpressions=21;
+	repeated AvailableProcessInfo productionProcessSteps=23;
+}
+
+message ProductionProcessAvailableStationInfo{
+    string id=4;
+	string productionProcessID=1;
+	string productionStationID=2;
+	ProductionStationInfo productionStation=3;
+}
+
+message QueryProductionProcessRequest{
+    // @inject_tag: uri:"pageIndex" form:"pageIndex"
+    int64 pageIndex=1;
+    // @inject_tag: uri:"pageSize" form:"pageSize"
+    int64 pageSize=2;
+    // @inject_tag: uri:"sortConfig" form:"sortConfig"
+    string sortConfig=3;
+	//生产产线ID 
+    // @inject_tag: uri:"productionLineID" form:"productionLineID"
+    string productionLineID=4;
+	// @inject_tag: uri:"productionStationID" form:"productionStationID"
+	string productionStationID=5;
+	// @inject_tag: uri:"code" form:"code"
+	string code=6;
+}
+
+message QueryProductionProcessResponse{
+    Code code=1;
+    string message=2;
+    repeated ProductionProcessInfo data=3;
+    int64 pages=4;
+    int64 records=5;
+    int64 total=6;
+}
+
+message GetAllProductionProcessResponse{
+    Code code=1;
+    string message=2;
+    repeated ProductionProcessInfo data=3;
+}
+
+message GetProductionProcessDetailResponse{
+    Code code=1;
+    string message=2;
+    ProductionProcessInfo data=3;
+}
+
+
+service ProcessStepParameter{
+    rpc Query(QueryProcessStepParameterRequest)returns(QueryProcessStepParameterResponse);
+}
+
+message ProcessStepParameterInfo {
+	//ID 
+ 	string id=1;
+	//代号 
+    string code=2;
+	//优先级 
+    int32 priority=3;
+	//描述 
+    string description=4;
+	//是否启用 
+    bool enable=5;
+	//备注 
+    string remark=6;
+	//产线ID 
+    string productionLineID=7;
+	//生产产线 
+    ProductionLineInfo productionLine=8;
+	//生产工步参数值 
+    repeated ProcessStepParameterValueInfo processStepParameterValues=9;
+	//特性表达式 
+    repeated AttributeExpressionInfo attributeExpressions=10;
+}
+
+message ProcessStepParameterValueInfo {
+	//ID 
+ 	string id=1;
+	//生产工步参数ID 
+    string processStepParameterID=2;
+	//生产工序ID 
+    string productionProcessID=3;
+	//生产工步ID 
+ 	string productionProcessStepID=4;
+	//生产工步 
+    ProductionProcessStepInfo productionProcessStep=5;
+	//生产工步类型参数ID 
+ 	string processStepTypeParameterID=6;
+	//标准值 
+ 	string standardValue=7;
+	//最大值 
+ 	string maximumValue=8;
+	//最小值 
+ 	string minimumValue=9;
+}
+
+message QueryProcessStepParameterRequest{
+    // @inject_tag: uri:"pageIndex" form:"pageIndex"
+    int64 pageIndex=1;
+    // @inject_tag: uri:"pageSize" form:"pageSize"
+    int64 pageSize=2;
+    // @inject_tag: uri:"sortConfig" form:"sortConfig"
+    string sortConfig=3;
+    // @inject_tag: uri:"enable" form:"enable"
+    bool enable=4;
+    // @inject_tag: uri:"hasProductionProcessStepID" form:"hasProductionProcessStepID"
+    bool hasProductionProcessStepID=5;
+    // 代号或描述
+    // @inject_tag: uri:"code" form:"code"
+    string code=6;
+    // 产线ID
+    // @inject_tag: uri:"productionLineID" form:"productionLineID"
+    string productionLineID=7;
+}
+
+message QueryProcessStepParameterResponse{
+    Code code=1;
+    string message=2;
+    repeated ProcessStepParameterInfo data=3;
+    int64 pages=4;
+    int64 records=5;
+    int64 total=6;
+}
+
+message GetAllProcessStepParameterResponse{
+    Code code=1;
+    string message=2;
+    repeated ProcessStepParameterInfo data=3;
+}
+
+message GetProcessStepParameterDetailResponse{
+    Code code=1;
+    string message=2;
+    ProcessStepParameterInfo data=3;
+}
+
+
+service ProductionProcessStep{
+    rpc Get(GetProductionProcessStepRequest)returns(GetProductionProcessStepDetailResponse){}
+    rpc Query(QueryProductionProcessStepRequest)returns(QueryProductionProcessStepResponse){}
+}
+
+message GetProductionProcessStepRequest{
+    string productionProcessID=1;
+    string productModelID=2;
+    string code=3;
+}
+
+message ProductionProcessStepInfo {
+	//ID 
+	string id=1;
+    //排序
+    int32 sortIndex=2;
+    //代号
+    string code=3;
+    //描述
+    string description=4;
+    //图示
+    string graphic=5;
+    //是否启用
+    bool enable=7;
+    //默认匹配
+    bool initialValue=8;
+    //工序管控
+    bool processControl=9;
+    //备注
+    string remark=10;
+    //工步类型ID
+    string processStepTypeID=12;
+    ProcessStepTypeInfo processStepType=13;
+    //特性表达式
+    repeated AttributeExpressionInfo attributeExpressions=14;
+    //可使用的工序
+    repeated string availableProcessIDs=16;
+    repeated AvailableProcessInfo availableProcesses=15;
+}
+
+message AvailableProcessInfo{
+    string id=1;
+    string productionProcessStepID=2;
+    ProductionProcessStepInfo productionProcessStep=5;
+    string productionProcessID=3;
+    ProductionProcessInfo productionProcess=4;
+}
+
+message QueryProductionProcessStepRequest{
+    // @inject_tag: uri:"pageIndex" form:"pageIndex"
+    int64 pageIndex=1;
+    // @inject_tag: uri:"pageSize" form:"pageSize"
+    int64 pageSize=2;
+    // @inject_tag: uri:"sortConfig" form:"sortConfig"
+    string sortConfig=3;
+	//生产工序ID 
+    // @inject_tag: uri:"productionProcessID" form:"productionProcessID"
+    string productionProcessID=5;
+    // @inject_tag: uri:"ids" form:"ids"
+    repeated string ids=6;
+}
+
+message QueryProductionProcessStepResponse{
+    Code code=1;
+    string message=2;
+    repeated ProductionProcessStepInfo data=3;
+    int64 pages=4;
+    int64 records=5;
+    int64 total=6;
+}
+
+message GetAllProductionProcessStepResponse{
+    Code code=1;
+    string message=2;
+    repeated ProductionProcessStepInfo data=3;
+}
+
+message GetProductionProcessStepDetailResponse{
+    Code code=1;
+    string message=2;
+    ProductionProcessStepInfo data=3;
 }

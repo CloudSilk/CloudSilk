@@ -3,9 +3,6 @@ dbConfigs:
     connectionStr: "root:123456@(127.0.0.1:3306)/usercenter?charset=utf8mb4&parseTime=True&loc=Local"
     dbType: "mysql"
   Curd:
-    connectionStr: "root:123456@(127.0.0.1:3306)/curd?charset=utf8mb4&parseTime=True&loc=Local"
-    dbType: "mysql"
-  CloudSilk:
     fileName: "./CloudSilk.s3db"
     dbType: "sqlite"
   all:

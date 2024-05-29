@@ -11,7 +11,7 @@ type ProductCategoryAttribute struct {
 	DefaultValue                  string                           `json:"defaultValue" gorm:"size:200;comment:预设值"`
 	ProductCategoryID             string                           `json:"productCategoryID" gorm:"size:36;comment:产品类别ID"`
 	ProductAttributeID            string                           `json:"productAttributeID" gorm:"size:36;comment:产品特性ID"`
-	ProductAttribute              *ProductAttribute                `json:"productAttribute"`                                                  ///产品特性
+	ProductAttribute              *ProductAttribute                `json:"productAttribute" gorm:"constraint:OnDelete:CASCADE"`               ///产品特性
 	ProductCategoryAttributeValue []*ProductCategoryAttributeValue `json:"productCategoryAttributeValue" gorm:"constraint:OnDelete:CASCADE;"` //产品类别特征值
 }
 

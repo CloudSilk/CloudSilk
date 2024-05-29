@@ -13,13 +13,13 @@ func CreateMaterialInfo(m *model.MaterialInfo) (string, error) {
 }
 
 func UpdateMaterialInfo(m *model.MaterialInfo) error {
-	return model.DB.DB().Save(m).Error
+	return model.DB.DB().Omit("created_at").Save(m).Error
 }
 
 func QueryMaterialInfo(req *proto.QueryMaterialInfoRequest, resp *proto.QueryMaterialInfoResponse, preload bool) {
 	db := model.DB.DB().Model(&model.MaterialInfo{})
 
-	orderStr, err := utils.GenerateOrderString(req.SortConfig, "id")
+	orderStr, err := utils.GenerateOrderString(req.SortConfig, "created_at desc")
 	if err != nil {
 		resp.Code = proto.Code_BadRequest
 		resp.Message = err.Error()
@@ -55,5 +55,5 @@ func GetMaterialInfoByIDs(ids []string) ([]*model.MaterialInfo, error) {
 }
 
 func DeleteMaterialInfo(id string) (err error) {
-	return model.DB.DB().Delete(&model.MaterialInfo{}, "id=?", id).Error
+	return model.DB.DB().Delete(&model.MaterialInfo{}, "`id` = ?", id).Error
 }

@@ -13,13 +13,13 @@ func CreateMaterialTray(m *model.MaterialTray) (string, error) {
 }
 
 func UpdateMaterialTray(m *model.MaterialTray) error {
-	return model.DB.DB().Save(m).Error
+	return model.DB.DB().Omit("created_at").Save(m).Error
 }
 
 func QueryMaterialTray(req *proto.QueryMaterialTrayRequest, resp *proto.QueryMaterialTrayResponse, preload bool) {
 	db := model.DB.DB().Model(&model.MaterialTray{})
 
-	orderStr, err := utils.GenerateOrderString(req.SortConfig, "id")
+	orderStr, err := utils.GenerateOrderString(req.SortConfig, "created_at desc")
 	if err != nil {
 		resp.Code = proto.Code_BadRequest
 		resp.Message = err.Error()
@@ -44,7 +44,7 @@ func GetAllMaterialTrays() (list []*model.MaterialTray, err error) {
 
 func GetMaterialTrayByID(id string) (*model.MaterialTray, error) {
 	m := &model.MaterialTray{}
-	err := model.DB.DB().Preload(clause.Associations).Where("id = ?", id).First(m).Error
+	err := model.DB.DB().Preload(clause.Associations).Where("`id` = ?", id).First(m).Error
 	return m, err
 }
 
@@ -64,10 +64,10 @@ func GetMaterialTray(req *proto.GetMaterialTrayRequest) (*model.MaterialTray, er
 
 func GetMaterialTrayByIDs(ids []string) ([]*model.MaterialTray, error) {
 	var m []*model.MaterialTray
-	err := model.DB.DB().Preload(clause.Associations).Where("id in (?)", ids).Find(&m).Error
+	err := model.DB.DB().Preload(clause.Associations).Where("`id` in (?)", ids).Find(&m).Error
 	return m, err
 }
 
 func DeleteMaterialTray(id string) (err error) {
-	return model.DB.DB().Delete(&model.MaterialTray{}, "id=?", id).Error
+	return model.DB.DB().Delete(&model.MaterialTray{}, "`id` = ?", id).Error
 }

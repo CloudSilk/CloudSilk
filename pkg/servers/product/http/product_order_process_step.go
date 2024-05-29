@@ -107,7 +107,7 @@ func UpdateProductOrderProcessStep(c *gin.Context) {
 // @Param pageSize query int false "默认每页10条"
 // @Param orderField query string false "排序字段"
 // @Param desc query bool false "是否倒序排序"
-// @Param productOrderProcessID query int false "工单工序ID"
+// @Param productOrderProcessID query string false "工单工序ID"
 // @Success 200 {object} proto.QueryProductOrderProcessStepResponse
 // @Router /api/mom/product/productorderprocessstep/query [get]
 func QueryProductOrderProcessStep(c *gin.Context) {

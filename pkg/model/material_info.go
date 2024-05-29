@@ -8,7 +8,7 @@ import (
 type MaterialInfo struct {
 	ModelID
 	MaterialCategoryID  string            `json:"materialCategoryID" gorm:"size:36;comment:物料类别ID;"`
-	MaterialCategory    *MaterialCategory `json:"materialCategory"` //物料类别
+	MaterialCategory    *MaterialCategory `json:"materialCategory" gorm:"constraint:OnDelete:CASCADE"` //物料类别
 	MaterialNo          string            `json:"materialNo" gorm:"size:50;comment:物料号"`
 	MaterialDescription string            `json:"materialDescription" gorm:"size:500;comment:物料描述"`
 	Unit                string            `json:"unit" gorm:"size:10;comment:单位"`

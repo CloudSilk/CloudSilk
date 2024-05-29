@@ -1,0 +1,61 @@
+syntax="proto3";
+
+package proto;
+option go_package = "./;proto";
+
+import "mom_common.proto";
+
+message CodingSerialInfo {
+	//ID 
+ 	string id=1;
+    //前缀
+    string prefix=2;
+    //种子
+    int32 seed=3;
+    //创建时间
+    string createTime=4;
+    //最后增长时间
+    string lastIncreaseTime=5;
+}
+
+message QueryCodingSerialRequest{
+    // @inject_tag: uri:"pageIndex" form:"pageIndex"
+    int64 pageIndex=1;
+    // @inject_tag: uri:"pageSize" form:"pageSize"
+    int64 pageSize=2;
+    // @inject_tag: uri:"sortConfig" form:"sortConfig"
+    string sortConfig=3;
+    //前缀
+    // @inject_tag: uri:"prefix" form:"prefix"
+    string prefix=4;
+    //种子
+    // @inject_tag: uri:"seed" form:"seed"
+    int32 seed=5;
+    //创建时间开始
+    // @inject_tag: uri:"createTime0" form:"createTime0"
+    string createTime0=6;
+    //创建时间结束
+    // @inject_tag: uri:"createTime1" form:"createTime1"
+    string createTime1=7;
+}
+
+message QueryCodingSerialResponse{
+    Code code=1;
+    string message=2;
+    repeated CodingSerialInfo data=3;
+    int64 pages=4;
+    int64 records=5;
+    int64 total=6;
+}
+
+message GetAllCodingSerialResponse{
+    Code code=1;
+    string message=2;
+    repeated CodingSerialInfo data=3;
+}
+
+message GetCodingSerialDetailResponse{
+    Code code=1;
+    string message=2;
+    CodingSerialInfo data=3;
+}

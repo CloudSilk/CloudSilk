@@ -13,7 +13,7 @@ func CreateProductProcessRecord(m *model.ProductProcessRecord) (string, error) {
 }
 
 func UpdateProductProcessRecord(m *model.ProductProcessRecord) error {
-	return model.DB.DB().Save(m).Error
+	return model.DB.DB().Omit("created_at").Save(m).Error
 }
 
 func QueryProductProcessRecord(req *proto.QueryProductProcessRecordRequest, resp *proto.QueryProductProcessRecordResponse, preload bool) {
@@ -37,7 +37,7 @@ func QueryProductProcessRecord(req *proto.QueryProductProcessRecordRequest, resp
 		db = db.Where("product_process_records.work_description LIKE ?", "%"+req.WorkDescription+"%")
 	}
 
-	orderStr, err := utils.GenerateOrderString(req.SortConfig, "id")
+	orderStr, err := utils.GenerateOrderString(req.SortConfig, "created_at desc")
 	if err != nil {
 		resp.Code = proto.Code_BadRequest
 		resp.Message = err.Error()
@@ -62,16 +62,16 @@ func GetAllProductProcessRecords() (list []*model.ProductProcessRecord, err erro
 
 func GetProductProcessRecordByID(id string) (*model.ProductProcessRecord, error) {
 	m := &model.ProductProcessRecord{}
-	err := model.DB.DB().Preload(clause.Associations).Where("id = ?", id).First(m).Error
+	err := model.DB.DB().Preload(clause.Associations).Where("`id` = ?", id).First(m).Error
 	return m, err
 }
 
 func GetProductProcessRecordByIDs(ids []string) ([]*model.ProductProcessRecord, error) {
 	var m []*model.ProductProcessRecord
-	err := model.DB.DB().Preload(clause.Associations).Where("id in (?)", ids).Find(&m).Error
+	err := model.DB.DB().Preload(clause.Associations).Where("`id` in (?)", ids).Find(&m).Error
 	return m, err
 }
 
 func DeleteProductProcessRecord(id string) (err error) {
-	return model.DB.DB().Delete(&model.ProductProcessRecord{}, "id=?", id).Error
+	return model.DB.DB().Delete(&model.ProductProcessRecord{}, "i`d = ?", id).Error
 }

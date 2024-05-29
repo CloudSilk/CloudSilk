@@ -84,7 +84,7 @@ func GetTestProjectWithParameter(req *proto.GetTestProjectWithParameterRequest) 
 	productOrderAttributes := _productOrderAttributes.Data
 
 	//查找匹配的测试规则
-	_processStepMatchRules, err := clients.ProcessStepMatchRuleClient.Query(context.Background(), &proto.QueryProcessStepMatchRuleRequest{
+	_processStepMatchRules, err := clients.ProcessStepParameterClient.Query(context.Background(), &proto.QueryProcessStepParameterRequest{
 		PageSize:                   1000,
 		SortConfig:                 "priority",
 		Enable:                     true,
@@ -100,11 +100,12 @@ func GetTestProjectWithParameter(req *proto.GetTestProjectWithParameterRequest) 
 		productAttributeID := _productOrderAttributes.ProductAttributeID
 		value := _productOrderAttributes.ProductAttribute.DefaultValue
 		for _, _processStepMatchRule := range _processStepMatchRules.Data {
-			initialValue := _processStepMatchRule.InitialValue
+			// initialValue := _processStepMatchRule.InitialValue
+			initialValue := true
 			// match := initialValue
 			for _, _attributeExpression := range _processStepMatchRule.AttributeExpressions {
 				if _attributeExpression.ProductAttributeID == productAttributeID && evaluateMathOperator(_attributeExpression.MathOperator, _attributeExpression.AttributeValue, value) && initialValue {
-					productionProcessStepIDs = append(productionProcessStepIDs, _processStepMatchRule.ProductionProcessStepID)
+					// productionProcessStepIDs = append(productionProcessStepIDs, _processStepMatchRule.ProductionProcessStepID)
 					break
 				}
 

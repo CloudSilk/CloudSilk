@@ -13,7 +13,7 @@ func CreateSystemEventTrigger(m *model.SystemEventTrigger) (string, error) {
 }
 
 func UpdateSystemEventTrigger(m *model.SystemEventTrigger) error {
-	return model.DB.DB().Save(m).Error
+	return model.DB.DB().Omit("created_at").Save(m).Error
 }
 
 func QuerySystemEventTrigger(req *proto.QuerySystemEventTriggerRequest, resp *proto.QuerySystemEventTriggerResponse, preload bool) {
@@ -29,7 +29,7 @@ func QuerySystemEventTrigger(req *proto.QuerySystemEventTriggerRequest, resp *pr
 			Where("system_events.description = ?", req.SystemEvent)
 	}
 
-	orderStr, err := utils.GenerateOrderString(req.SortConfig, "id")
+	orderStr, err := utils.GenerateOrderString(req.SortConfig, "created_at desc")
 	if err != nil {
 		resp.Code = proto.Code_BadRequest
 		resp.Message = err.Error()
@@ -54,16 +54,16 @@ func GetAllSystemEventTriggers() (list []*model.SystemEventTrigger, err error) {
 
 func GetSystemEventTriggerByID(id string) (*model.SystemEventTrigger, error) {
 	m := &model.SystemEventTrigger{}
-	err := model.DB.DB().Preload(clause.Associations).Where("id = ?", id).First(m).Error
+	err := model.DB.DB().Preload(clause.Associations).Where("`id` = ?", id).First(m).Error
 	return m, err
 }
 
 func GetSystemEventTriggerByIDs(ids []string) ([]*model.SystemEventTrigger, error) {
 	var m []*model.SystemEventTrigger
-	err := model.DB.DB().Preload(clause.Associations).Where("id in (?)", ids).Find(&m).Error
+	err := model.DB.DB().Preload(clause.Associations).Where("`id` in (?)", ids).Find(&m).Error
 	return m, err
 }
 
 func DeleteSystemEventTrigger(id string) (err error) {
-	return model.DB.DB().Delete(&model.SystemEventTrigger{}, "id=?", id).Error
+	return model.DB.DB().Delete(&model.SystemEventTrigger{}, "`id` = ?", id).Error
 }

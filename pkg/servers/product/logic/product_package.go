@@ -6,12 +6,11 @@ import (
 	"github.com/CloudSilk/CloudSilk/pkg/model"
 	"github.com/CloudSilk/CloudSilk/pkg/proto"
 	"github.com/CloudSilk/pkg/utils"
-	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
 )
 
 func CreateProductPackage(m *model.ProductPackage) (string, error) {
-	duplication, err := model.DB.CreateWithCheckDuplication(m, " code =? ", m.Code)
+	duplication, err := model.DB.CreateWithCheckDuplication(m, " `code`  = ? ", m.Code)
 	if err != nil {
 		return "", err
 	}
@@ -22,7 +21,7 @@ func CreateProductPackage(m *model.ProductPackage) (string, error) {
 }
 
 func UpdateProductPackage(m *model.ProductPackage) error {
-	duplication, err := model.DB.UpdateWithCheckDuplicationAndOmit(model.DB.DB(), m, false, []string{}, "id != ? and  code =? ", m.ID, m.Code)
+	duplication, err := model.DB.UpdateWithCheckDuplicationAndOmit(model.DB.DB(), m, false, []string{"created_at"}, "`id` != ? and  `code`  = ? ", m.ID, m.Code)
 	if err != nil {
 		return err
 	}
@@ -64,33 +63,22 @@ func GetAllProductPackages() (list []*model.ProductPackage, err error) {
 
 func GetProductPackageByID(id string) (*model.ProductPackage, error) {
 	m := &model.ProductPackage{}
-	err := model.DB.DB().Preload(clause.Associations).Where("id = ?", id).First(m).Error
+	err := model.DB.DB().Preload(clause.Associations).Where("`id` = ?", id).First(m).Error
 	return m, err
 }
 
 func GetProductPackageByIDs(ids []string) ([]*model.ProductPackage, error) {
 	var m []*model.ProductPackage
-	err := model.DB.DB().Preload(clause.Associations).Where("id in (?)", ids).Find(&m).Error
+	err := model.DB.DB().Preload(clause.Associations).Where("`id` in (?)", ids).Find(&m).Error
 	return m, err
 }
 
-// 删除子表
 func DeleteProductPackage(id string) (err error) {
-	deleteProductPackages := []interface{}{&model.ProductOrderPackage{}, &model.ProductPackageMatchRule{}}
-
-	return model.DB.DB().Transaction(func(tx *gorm.DB) error {
-		for _, model := range deleteProductPackages {
-			if err := tx.Delete(model, "ProductPackageID=?", id).Error; err != nil {
-				return err
-			}
-		}
-
-		return tx.Delete(&model.ProductPackage{}, "id=?", id).Error
-	})
+	return model.DB.DB().Delete(&model.ProductPackage{}, "id=?", id).Error
 }
 
 func UpdateProductPackageAll(m *model.ProductPackage) error {
-	duplication, err := model.DB.UpdateWithCheckDuplicationAndOmit(model.DB.DB(), m, true, []string{"CreateTime"}, "id != ? and  code =? ", m.ID, m.Code)
+	duplication, err := model.DB.UpdateWithCheckDuplicationAndOmit(model.DB.DB(), m, true, []string{"CreateTime"}, "`id` <> ? and  `code`  = ? ", m.ID, m.Code)
 	if err != nil {
 		return err
 	}

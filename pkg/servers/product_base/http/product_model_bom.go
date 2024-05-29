@@ -4,9 +4,9 @@ import (
 	"context"
 	"net/http"
 
-	"github.com/CloudSilk/CloudSilk/pkg/servers/product_base/logic"
 	"github.com/CloudSilk/CloudSilk/pkg/model"
 	"github.com/CloudSilk/CloudSilk/pkg/proto"
+	"github.com/CloudSilk/CloudSilk/pkg/servers/product_base/logic"
 	"github.com/CloudSilk/pkg/utils/log"
 	"github.com/CloudSilk/pkg/utils/middleware"
 	"github.com/gin-gonic/gin"
@@ -104,7 +104,8 @@ func UpdateProductModelBom(c *gin.Context) {
 // @Param pageSize query int false "默认每页10条"
 // @Param orderField query string false "排序字段"
 // @Param desc query bool false "是否倒序排序"
-// @Param productCategoryID query int false "产品类别ID"
+// @Param productCategoryID query string false "产品类别ID"
+// @Param productModelID query string false "产品型号ID"
 // @Success 200 {object} proto.QueryProductModelBomResponse
 // @Router /api/mom/productbase/productmodelbom/query [get]
 func QueryProductModelBom(c *gin.Context) {

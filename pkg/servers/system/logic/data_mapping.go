@@ -13,7 +13,7 @@ func CreateDataMapping(m *model.DataMapping) (string, error) {
 }
 
 func UpdateDataMapping(m *model.DataMapping) error {
-	return model.DB.DB().Save(m).Error
+	return model.DB.DB().Omit("created_at").Save(m).Error
 }
 
 func QueryDataMapping(req *proto.QueryDataMappingRequest, resp *proto.QueryDataMappingResponse, preload bool) {
@@ -25,7 +25,7 @@ func QueryDataMapping(req *proto.QueryDataMappingRequest, resp *proto.QueryDataM
 		db = db.Where("`code` LIKE ? OR `description` LIKE ?", "%"+req.Code+"%", "%"+req.Code+"%")
 	}
 
-	orderStr, err := utils.GenerateOrderString(req.SortConfig, "id")
+	orderStr, err := utils.GenerateOrderString(req.SortConfig, "created_at desc")
 	if err != nil {
 		resp.Code = proto.Code_BadRequest
 		resp.Message = err.Error()
@@ -50,16 +50,16 @@ func GetAllDataMappings() (list []*model.DataMapping, err error) {
 
 func GetDataMappingByID(id string) (*model.DataMapping, error) {
 	m := &model.DataMapping{}
-	err := model.DB.DB().Preload(clause.Associations).Where("id = ?", id).First(m).Error
+	err := model.DB.DB().Preload(clause.Associations).Where("`id` = ?", id).First(m).Error
 	return m, err
 }
 
 func GetDataMappingByIDs(ids []string) ([]*model.DataMapping, error) {
 	var m []*model.DataMapping
-	err := model.DB.DB().Preload(clause.Associations).Where("id in (?)", ids).Find(&m).Error
+	err := model.DB.DB().Preload(clause.Associations).Where("`id` in (?)", ids).Find(&m).Error
 	return m, err
 }
 
 func DeleteDataMapping(id string) (err error) {
-	return model.DB.DB().Delete(&model.DataMapping{}, "id=?", id).Error
+	return model.DB.DB().Delete(&model.DataMapping{}, "`id` = ?", id).Error
 }

@@ -4,11 +4,12 @@ import (
 	"github.com/CloudSilk/CloudSilk/pkg/proto"
 )
 
+// 产品包装匹配规则
 type ProductPackageMatchRule struct {
 	ModelID
 	Priority             int32                  `json:"priority" gorm:"comment:优先级"`
 	ProductPackageID     *string                `json:"productPackageID" gorm:"size:36;comment:使用包装ID"`
-	ProductPackage       *ProductPackage        `json:"productPackage" gorm:"comment:使用包装ID"`
+	ProductPackage       *ProductPackage        `json:"productPackage" gorm:"constraint:OnDelete:SET NULL"`
 	Enable               bool                   `json:"enable" gorm:"comment:是否启用"`
 	InitialValue         bool                   `json:"initialValue" gorm:"comment:默认匹配"`
 	Remark               string                 `json:"remark" gorm:"size:1000;comment:备注"`

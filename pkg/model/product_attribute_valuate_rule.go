@@ -9,9 +9,9 @@ type ProductAttributeValuateRule struct {
 	ModelID
 	Priority            int32                 `json:"priority" gorm:"comment:优先级"`
 	ProductCategoryID   *string               `json:"productCategoryID" gorm:"size:36;comment:产品类别ID"`
-	ProductCategory     *ProductCategory      `json:"productCategory"`
+	ProductCategory     *ProductCategory      `json:"productCategory" gorm:"constraint:OnDelete:SET NULL"`
 	ProductAttributeID  string                `json:"productAttributeID" gorm:"size:36;comment:目标特性ID"`
-	ProductAttribute    *ProductAttribute     `json:"productAttribute"`
+	ProductAttribute    *ProductAttribute     `json:"productAttribute" gorm:"constraint:OnDelete:CASCADE"`
 	Value               string                `json:"value" gorm:"size:200;comment:设定值"`
 	Description         string                `json:"description" gorm:"size:1000;comment:值描述"`
 	Enable              bool                  `json:"enable" gorm:"comment:是否启用"`

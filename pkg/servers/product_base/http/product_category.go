@@ -4,9 +4,9 @@ import (
 	"context"
 	"net/http"
 
-	"github.com/CloudSilk/CloudSilk/pkg/servers/product_base/logic"
 	"github.com/CloudSilk/CloudSilk/pkg/model"
 	"github.com/CloudSilk/CloudSilk/pkg/proto"
+	"github.com/CloudSilk/CloudSilk/pkg/servers/product_base/logic"
 	"github.com/CloudSilk/pkg/utils/log"
 	"github.com/CloudSilk/pkg/utils/middleware"
 	"github.com/gin-gonic/gin"
@@ -105,7 +105,7 @@ func UpdateProductCategory(c *gin.Context) {
 // @Param orderField query string false "排序字段"
 // @Param desc query bool false "是否倒序排序"
 // @Param code query string false "代号或描述"
-// @Param productBrandID query int false "产品品牌ID"
+// @Param productBrandID query string false "产品品牌ID"
 // @Success 200 {object} proto.QueryProductCategoryResponse
 // @Router /api/mom/productbase/productcategory/query [get]
 func QueryProductCategory(c *gin.Context) {
