@@ -189,6 +189,7 @@ func ProductOrderToPB(in *ProductOrder) *proto.ProductOrderInfo {
 		ProductModelID:              productModelID,
 		ProductModel:                ProductModelToPB(in.ProductModel),
 		ProductionLineID:            productionLineID,
+		ProductionLine:              ProductionLineToPB(in.ProductionLine),
 		ProductOrderAttachments:     ProductOrderAttachmentsToPB(in.ProductOrderAttachments),
 		ProductOrderBoms:            ProductOrderBomsToPB(in.ProductOrderBoms),
 		ProductInfos:                ProductInfosToPB(in.ProductInfos),

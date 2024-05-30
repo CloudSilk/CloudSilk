@@ -235,6 +235,7 @@ func GetProductOrderByID(id string) (*model.ProductOrder, error) {
 		Preload("ProductOrderLabels.LabelType").
 		Preload("ProductOrderPackages").
 		Preload("ProductOrderPallets").
+		Preload("ProductionLine").
 		Preload(clause.Associations).Where("`id` = ?", id).First(m).Error
 	return m, err
 }
@@ -253,6 +254,7 @@ func GetProductOrderByIDs(ids []string) ([]*model.ProductOrder, error) {
 		Preload("ProductOrderLabels.LabelType").
 		Preload("ProductOrderPackages").
 		Preload("ProductOrderPallets").
+		Preload("ProductionLine").
 		Preload(clause.Associations).Where("`id` in (?)", ids).Find(&m).Error
 	return m, err
 }
