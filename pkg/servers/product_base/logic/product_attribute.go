@@ -2,6 +2,7 @@ package logic
 
 import (
 	"errors"
+	"fmt"
 
 	"github.com/CloudSilk/CloudSilk/pkg/model"
 	"github.com/CloudSilk/CloudSilk/pkg/proto"
@@ -81,5 +82,13 @@ func GetProductAttributeByIDs(ids []string) ([]*model.ProductAttribute, error) {
 }
 
 func DeleteProductAttribute(id string) (err error) {
+	var count int64
+	if err = model.DB.DB().Where(&model.ProductCategoryAttribute{ProductAttributeID: id}).Count(&count).Error; err != nil {
+		return
+	}
+	if count > 0 {
+		return fmt.Errorf("数据冲突，请先清空关联此特性的产品类别特性")
+	}
+	
 	return model.DB.DB().Delete(&model.ProductAttribute{}, "`id` = ?", id).Error
 }
