@@ -11,7 +11,7 @@ dbConfigs:
   all:
     fileName: "./CloudSilk.s3db"
     dbType: "sqlite"
-debug: true
+debug: false
 token:
   key: "CloudSilk"
   redisAddr: ""

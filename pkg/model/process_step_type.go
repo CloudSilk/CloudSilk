@@ -93,7 +93,6 @@ func PBToProcessStepTypeParameter(in *proto.ProcessStepTypeParameterInfo) *Proce
 		Code:           in.Code,
 		Description:    in.Description,
 		DefaultValue:   in.DefaultValue,
-		StandardValue:  in.StandardValue,
 		MaximumValue:   in.MaximumValue,
 		MinimumValue:   in.MinimumValue,
 		Unit:           in.Unit,

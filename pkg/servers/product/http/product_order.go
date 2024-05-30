@@ -254,84 +254,6 @@ func DeleteProductOrder(c *gin.Context) {
 	c.JSON(http.StatusOK, resp)
 }
 
-// ReleaseProductOrder godoc
-// @Summary 发放
-// @Description 发放
-// @Tags 生产工单管理
-// @Accept  json
-// @Produce  json
-// @Param authorization header string true "jwt token"
-// @Param data body proto.GetByIDsRequest true "Release ProductOrder"
-// @Success 200 {object} proto.CommonResponse
-// @Router /api/mom/product/productorder/release [put]
-func ReleaseProductOrder(c *gin.Context) {
-	transID := middleware.GetTransID(c)
-	req := &proto.GetByIDsRequest{}
-	resp := &proto.CommonResponse{
-		Code: proto.Code_Success,
-	}
-	err := c.BindJSON(req)
-	if err != nil {
-		resp.Code = proto.Code_BadRequest
-		resp.Message = err.Error()
-		c.JSON(http.StatusOK, resp)
-		log.Warnf(context.Background(), "TransID:%s,发放生产工单请求参数无效:%v", transID, err)
-		return
-	}
-	err = middleware.Validate.Struct(req)
-	if err != nil {
-		resp.Code = proto.Code_BadRequest
-		resp.Message = err.Error()
-		c.JSON(http.StatusOK, resp)
-		return
-	}
-	err = logic.ReleaseProductOrder(req.Ids)
-	if err != nil {
-		resp.Code = proto.Code_InternalServerError
-		resp.Message = err.Error()
-	}
-	c.JSON(http.StatusOK, resp)
-}
-
-// ReceiveProductOrder godoc
-// @Summary 接收
-// @Description 接收
-// @Tags 生产工单管理
-// @Accept  json
-// @Produce  json
-// @Param authorization header string true "jwt token"
-// @Param data body proto.GetByIDsRequest true "Receive ProductOrder"
-// @Success 200 {object} proto.CommonResponse
-// @Router /api/mom/product/productorder/receive [put]
-func ReceiveProductOrder(c *gin.Context) {
-	transID := middleware.GetTransID(c)
-	req := &proto.GetByIDsRequest{}
-	resp := &proto.CommonResponse{
-		Code: proto.Code_Success,
-	}
-	err := c.BindJSON(req)
-	if err != nil {
-		resp.Code = proto.Code_BadRequest
-		resp.Message = err.Error()
-		c.JSON(http.StatusOK, resp)
-		log.Warnf(context.Background(), "TransID:%s,接收生产工单请求参数无效:%v", transID, err)
-		return
-	}
-	err = middleware.Validate.Struct(req)
-	if err != nil {
-		resp.Code = proto.Code_BadRequest
-		resp.Message = err.Error()
-		c.JSON(http.StatusOK, resp)
-		return
-	}
-	err = logic.ReceiveProductOrder(req.Ids)
-	if err != nil {
-		resp.Code = proto.Code_InternalServerError
-		resp.Message = err.Error()
-	}
-	c.JSON(http.StatusOK, resp)
-}
-
 // CancelProductOrder godoc
 // @Summary 取消
 // @Description 取消
@@ -458,8 +380,6 @@ func RegisterProductOrderRouter(r *gin.Engine) {
 	g.DELETE("delete", DeleteProductOrder)
 	g.GET("all", GetAllProductOrder)
 	g.GET("detail", GetProductOrderDetail)
-	g.PUT("release", ReleaseProductOrder)
-	g.PUT("receive", ReceiveProductOrder)
 	g.PUT("cancel", CancelProductOrder)
 	g.PUT("suspend", SuspendProductOrder)
 	g.PUT("resume", ResumeProductOrder)

@@ -1,6 +1,8 @@
 package logic
 
 import (
+	"errors"
+
 	"github.com/CloudSilk/CloudSilk/pkg/model"
 	"github.com/CloudSilk/CloudSilk/pkg/proto"
 	"github.com/CloudSilk/pkg/utils"
@@ -8,12 +10,26 @@ import (
 )
 
 func CreateProductInfo(m *model.ProductInfo) (string, error) {
-	err := model.DB.DB().Create(m).Error
-	return m.ID, err
+	duplication, err := model.DB.CreateWithCheckDuplication(m, "`product_serial_no` = ?", m.ProductSerialNo)
+	if err != nil {
+		return "", err
+	}
+	if duplication {
+		return "", errors.New("存在相同产品信息配置")
+	}
+	return m.ID, nil
 }
 
 func UpdateProductInfo(m *model.ProductInfo) error {
-	return model.DB.DB().Omit("created_at", "create_time").Save(m).Error
+	duplication, err := model.DB.UpdateWithCheckDuplicationAndOmit(model.DB.DB(), m, false, []string{"created_at", "create_time"}, "`id` <> ? and  `product_serial_no` = ?", m.ID, m.ProductSerialNo)
+	if err != nil {
+		return err
+	}
+	if duplication {
+		return errors.New("存在相同产品信息配置")
+	}
+
+	return nil
 }
 
 func QueryProductInfo(req *proto.QueryProductInfoRequest, resp *proto.QueryProductInfoResponse, preload bool) {
