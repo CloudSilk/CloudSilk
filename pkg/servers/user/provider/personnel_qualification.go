@@ -20,11 +20,11 @@ func (u *PersonnelQualificationProvider) Query(ctx context.Context, in *proto.Qu
 	return resp, nil
 }
 
-func (u *PersonnelQualificationProvider) GetDetail(ctx context.Context, in *proto.GetDetailRequest) (*proto.GetPersonnelQualificationDetailResponse, error) {
+func (u *PersonnelQualificationProvider) Get(ctx context.Context, in *proto.GetPersonnelQualificationRequest) (*proto.GetPersonnelQualificationDetailResponse, error) {
 	resp := &proto.GetPersonnelQualificationDetailResponse{
 		Code: proto.Code_Success,
 	}
-	f, err := logic.GetPersonnelQualificationByID(in.Id)
+	f, err := logic.GetPersonnelQualification(in)
 	if err != nil {
 		resp.Code = proto.Code_InternalServerError
 		resp.Message = err.Error()

@@ -19,6 +19,7 @@ import (
 	"github.com/CloudSilk/CloudSilk/pkg/servers/system"
 	"github.com/CloudSilk/CloudSilk/pkg/servers/trace"
 	"github.com/CloudSilk/CloudSilk/pkg/servers/user"
+	"github.com/CloudSilk/CloudSilk/pkg/servers/webapi"
 	"github.com/CloudSilk/CloudSilk/pkg/servers/webapi/http"
 	"github.com/CloudSilk/curd/gen"
 	curdhttp "github.com/CloudSilk/curd/http"
@@ -86,8 +87,9 @@ func StartAll(webPath string, port int, singleDB bool) {
 	gen.LoadCache()
 
 	r := gin.Default()
-	r.Use(ucmiddleware.AuthRequired)
 	r.Use(utils.Cors())
+	http.RegisterAdminRouter(r)
+	r.Use(ucmiddleware.AuthRequired)
 
 	uchttp.RegisterAuthRouter(r)
 	curdhttp.RegisterRouter(r)
@@ -107,8 +109,6 @@ func startMom(r *gin.Engine) {
 	docs.SwaggerInfo.Schemes = []string{"http", "https"}
 	r.GET("/swagger/mom/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
-	http.RegisterAdminRouter(r)
-
 	servers := []IServer{
 		&production_base.Server{},
 		&production.Server{},
@@ -119,6 +119,7 @@ func startMom(r *gin.Engine) {
 		&material.Server{},
 		&user.Server{},
 		&trace.Server{},
+		&webapi.Server{},
 	}
 	for _, server := range servers {
 		server.Start(r)
@@ -129,6 +130,7 @@ func startMom(r *gin.Engine) {
 func StartOne(dbType string, port int) {
 	r := gin.Default()
 	r.Use(utils.Cors())
+	http.RegisterAdminRouter(r)
 
 	if os.Getenv("MOM_DISABLE_AUTH") != "true" {
 		ucmiddleware.InitIdentity()

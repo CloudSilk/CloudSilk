@@ -19,9 +19,9 @@ message GetTestProjectWithParameterResponse{
 }
 
 message TestProjectWithParameterInfo{
-    repeated TestProjectInfo TestProjects=1;
-    repeated ParameterInfo InputParameters=2;
-    repeated ParameterInfo OutputParameters=3;
+    repeated TestProjectInfo testProjects=1;
+    repeated ParameterInfo inputParameters=2;
+    repeated ParameterInfo outputParameters=3;
 }
 
 message TestProjectInfo {

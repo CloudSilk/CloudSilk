@@ -21277,25 +21277,25 @@ const docTemplate = `{
         "proto.CreateProductTestRecordRequest": {
             "type": "object",
             "properties": {
-                "IsQualified": {
+                "isQualified": {
                     "type": "boolean"
                 },
-                "ProductSerialNo": {
+                "productSerialNo": {
                     "type": "string"
                 },
-                "ProductionStation": {
+                "productionStation": {
                     "type": "string"
                 },
-                "TestData": {
+                "testData": {
                     "type": "string"
                 },
-                "TestEndTime": {
+                "testEndTime": {
                     "type": "string"
                 },
-                "TestProject": {
+                "testProject": {
                     "type": "string"
                 },
-                "TestStartTime": {
+                "testStartTime": {
                     "type": "string"
                 }
             }
@@ -24090,16 +24090,16 @@ const docTemplate = `{
         "proto.LoginRequest": {
             "type": "object",
             "properties": {
-                "CardNo": {
+                "cardNo": {
                     "type": "string"
                 },
-                "Name": {
+                "name": {
                     "type": "string"
                 },
-                "Password": {
+                "password": {
                     "type": "string"
                 },
-                "ProductionStation": {
+                "productionStation": {
                     "type": "string"
                 }
             }
@@ -24107,10 +24107,10 @@ const docTemplate = `{
         "proto.LogoutRequest": {
             "type": "object",
             "properties": {
-                "Name": {
+                "name": {
                     "type": "string"
                 },
-                "ProductionStation": {
+                "productionStation": {
                     "type": "string"
                 }
             }
@@ -29973,10 +29973,10 @@ const docTemplate = `{
         "proto.RetrieveProductAttributeRequest": {
             "type": "object",
             "properties": {
-                "Code": {
+                "code": {
                     "type": "string"
                 },
-                "Description": {
+                "description": {
                     "type": "string"
                 }
             }
@@ -29984,7 +29984,7 @@ const docTemplate = `{
         "proto.RetrieveProductionCrosswayRequest": {
             "type": "object",
             "properties": {
-                "ProductionLine": {
+                "productionLine": {
                     "type": "string"
                 }
             }

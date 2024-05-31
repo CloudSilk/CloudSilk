@@ -28,12 +28,7 @@ const _ = grpc_go.SupportPackageIsVersion7
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type ProductAttributeClient interface {
-	Add(ctx context.Context, in *ProductAttributeInfo, opts ...grpc_go.CallOption) (*CommonResponse, common.ErrorWithAttachment)
-	Update(ctx context.Context, in *ProductAttributeInfo, opts ...grpc_go.CallOption) (*CommonResponse, common.ErrorWithAttachment)
-	Delete(ctx context.Context, in *DelRequest, opts ...grpc_go.CallOption) (*CommonResponse, common.ErrorWithAttachment)
 	Query(ctx context.Context, in *QueryProductAttributeRequest, opts ...grpc_go.CallOption) (*QueryProductAttributeResponse, common.ErrorWithAttachment)
-	GetAll(ctx context.Context, in *GetAllRequest, opts ...grpc_go.CallOption) (*GetAllProductAttributeResponse, common.ErrorWithAttachment)
-	GetDetail(ctx context.Context, in *GetDetailRequest, opts ...grpc_go.CallOption) (*GetProductAttributeDetailResponse, common.ErrorWithAttachment)
 }
 
 type productAttributeClient struct {
@@ -41,12 +36,7 @@ type productAttributeClient struct {
 }
 
 type ProductAttributeClientImpl struct {
-	Add       func(ctx context.Context, in *ProductAttributeInfo) (*CommonResponse, error)
-	Update    func(ctx context.Context, in *ProductAttributeInfo) (*CommonResponse, error)
-	Delete    func(ctx context.Context, in *DelRequest) (*CommonResponse, error)
-	Query     func(ctx context.Context, in *QueryProductAttributeRequest) (*QueryProductAttributeResponse, error)
-	GetAll    func(ctx context.Context, in *GetAllRequest) (*GetAllProductAttributeResponse, error)
-	GetDetail func(ctx context.Context, in *GetDetailRequest) (*GetProductAttributeDetailResponse, error)
+	Query func(ctx context.Context, in *QueryProductAttributeRequest) (*QueryProductAttributeResponse, error)
 }
 
 func (c *ProductAttributeClientImpl) GetDubboStub(cc *triple.TripleConn) ProductAttributeClient {
@@ -61,52 +51,17 @@ func NewProductAttributeClient(cc *triple.TripleConn) ProductAttributeClient {
 	return &productAttributeClient{cc}
 }
 
-func (c *productAttributeClient) Add(ctx context.Context, in *ProductAttributeInfo, opts ...grpc_go.CallOption) (*CommonResponse, common.ErrorWithAttachment) {
-	out := new(CommonResponse)
-	interfaceKey := ctx.Value(constant.InterfaceKey).(string)
-	return out, c.cc.Invoke(ctx, "/"+interfaceKey+"/Add", in, out)
-}
-
-func (c *productAttributeClient) Update(ctx context.Context, in *ProductAttributeInfo, opts ...grpc_go.CallOption) (*CommonResponse, common.ErrorWithAttachment) {
-	out := new(CommonResponse)
-	interfaceKey := ctx.Value(constant.InterfaceKey).(string)
-	return out, c.cc.Invoke(ctx, "/"+interfaceKey+"/Update", in, out)
-}
-
-func (c *productAttributeClient) Delete(ctx context.Context, in *DelRequest, opts ...grpc_go.CallOption) (*CommonResponse, common.ErrorWithAttachment) {
-	out := new(CommonResponse)
-	interfaceKey := ctx.Value(constant.InterfaceKey).(string)
-	return out, c.cc.Invoke(ctx, "/"+interfaceKey+"/Delete", in, out)
-}
-
 func (c *productAttributeClient) Query(ctx context.Context, in *QueryProductAttributeRequest, opts ...grpc_go.CallOption) (*QueryProductAttributeResponse, common.ErrorWithAttachment) {
 	out := new(QueryProductAttributeResponse)
 	interfaceKey := ctx.Value(constant.InterfaceKey).(string)
 	return out, c.cc.Invoke(ctx, "/"+interfaceKey+"/Query", in, out)
 }
 
-func (c *productAttributeClient) GetAll(ctx context.Context, in *GetAllRequest, opts ...grpc_go.CallOption) (*GetAllProductAttributeResponse, common.ErrorWithAttachment) {
-	out := new(GetAllProductAttributeResponse)
-	interfaceKey := ctx.Value(constant.InterfaceKey).(string)
-	return out, c.cc.Invoke(ctx, "/"+interfaceKey+"/GetAll", in, out)
-}
-
-func (c *productAttributeClient) GetDetail(ctx context.Context, in *GetDetailRequest, opts ...grpc_go.CallOption) (*GetProductAttributeDetailResponse, common.ErrorWithAttachment) {
-	out := new(GetProductAttributeDetailResponse)
-	interfaceKey := ctx.Value(constant.InterfaceKey).(string)
-	return out, c.cc.Invoke(ctx, "/"+interfaceKey+"/GetDetail", in, out)
-}
-
 // ProductAttributeServer is the server API for ProductAttribute service.
 // All implementations must embed UnimplementedProductAttributeServer
 // for forward compatibility
 type ProductAttributeServer interface {
-	Add(context.Context, *ProductAttributeInfo) (*CommonResponse, error)
-	Update(context.Context, *ProductAttributeInfo) (*CommonResponse, error)
-	Delete(context.Context, *DelRequest) (*CommonResponse, error)
 	Query(context.Context, *QueryProductAttributeRequest) (*QueryProductAttributeResponse, error)
-	GetAll(context.Context, *GetAllRequest) (*GetAllProductAttributeResponse, error)
-	GetDetail(context.Context, *GetDetailRequest) (*GetProductAttributeDetailResponse, error)
 	mustEmbedUnimplementedProductAttributeServer()
 }
 
@@ -115,23 +70,8 @@ type UnimplementedProductAttributeServer struct {
 	proxyImpl protocol.Invoker
 }
 
-func (UnimplementedProductAttributeServer) Add(context.Context, *ProductAttributeInfo) (*CommonResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method Add not implemented")
-}
-func (UnimplementedProductAttributeServer) Update(context.Context, *ProductAttributeInfo) (*CommonResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method Update not implemented")
-}
-func (UnimplementedProductAttributeServer) Delete(context.Context, *DelRequest) (*CommonResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method Delete not implemented")
-}
 func (UnimplementedProductAttributeServer) Query(context.Context, *QueryProductAttributeRequest) (*QueryProductAttributeResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Query not implemented")
-}
-func (UnimplementedProductAttributeServer) GetAll(context.Context, *GetAllRequest) (*GetAllProductAttributeResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GetAll not implemented")
-}
-func (UnimplementedProductAttributeServer) GetDetail(context.Context, *GetDetailRequest) (*GetProductAttributeDetailResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GetDetail not implemented")
 }
 func (s *UnimplementedProductAttributeServer) XXX_SetProxyImpl(impl protocol.Invoker) {
 	s.proxyImpl = impl
@@ -159,93 +99,6 @@ type UnsafeProductAttributeServer interface {
 
 func RegisterProductAttributeServer(s grpc_go.ServiceRegistrar, srv ProductAttributeServer) {
 	s.RegisterService(&ProductAttribute_ServiceDesc, srv)
-}
-
-func _ProductAttribute_Add_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc_go.UnaryServerInterceptor) (interface{}, error) {
-	in := new(ProductAttributeInfo)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	base := srv.(dubbo3.Dubbo3GrpcService)
-	args := []interface{}{}
-	args = append(args, in)
-	md, _ := metadata.FromIncomingContext(ctx)
-	invAttachment := make(map[string]interface{}, len(md))
-	for k, v := range md {
-		invAttachment[k] = v
-	}
-	invo := invocation.NewRPCInvocation("Add", args, invAttachment)
-	if interceptor == nil {
-		result := base.XXX_GetProxyImpl().Invoke(ctx, invo)
-		return result, result.Error()
-	}
-	info := &grpc_go.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: ctx.Value("XXX_TRIPLE_GO_INTERFACE_NAME").(string),
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		result := base.XXX_GetProxyImpl().Invoke(ctx, invo)
-		return result, result.Error()
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _ProductAttribute_Update_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc_go.UnaryServerInterceptor) (interface{}, error) {
-	in := new(ProductAttributeInfo)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	base := srv.(dubbo3.Dubbo3GrpcService)
-	args := []interface{}{}
-	args = append(args, in)
-	md, _ := metadata.FromIncomingContext(ctx)
-	invAttachment := make(map[string]interface{}, len(md))
-	for k, v := range md {
-		invAttachment[k] = v
-	}
-	invo := invocation.NewRPCInvocation("Update", args, invAttachment)
-	if interceptor == nil {
-		result := base.XXX_GetProxyImpl().Invoke(ctx, invo)
-		return result, result.Error()
-	}
-	info := &grpc_go.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: ctx.Value("XXX_TRIPLE_GO_INTERFACE_NAME").(string),
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		result := base.XXX_GetProxyImpl().Invoke(ctx, invo)
-		return result, result.Error()
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _ProductAttribute_Delete_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc_go.UnaryServerInterceptor) (interface{}, error) {
-	in := new(DelRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	base := srv.(dubbo3.Dubbo3GrpcService)
-	args := []interface{}{}
-	args = append(args, in)
-	md, _ := metadata.FromIncomingContext(ctx)
-	invAttachment := make(map[string]interface{}, len(md))
-	for k, v := range md {
-		invAttachment[k] = v
-	}
-	invo := invocation.NewRPCInvocation("Delete", args, invAttachment)
-	if interceptor == nil {
-		result := base.XXX_GetProxyImpl().Invoke(ctx, invo)
-		return result, result.Error()
-	}
-	info := &grpc_go.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: ctx.Value("XXX_TRIPLE_GO_INTERFACE_NAME").(string),
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		result := base.XXX_GetProxyImpl().Invoke(ctx, invo)
-		return result, result.Error()
-	}
-	return interceptor(ctx, in, info, handler)
 }
 
 func _ProductAttribute_Query_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc_go.UnaryServerInterceptor) (interface{}, error) {
@@ -277,64 +130,6 @@ func _ProductAttribute_Query_Handler(srv interface{}, ctx context.Context, dec f
 	return interceptor(ctx, in, info, handler)
 }
 
-func _ProductAttribute_GetAll_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc_go.UnaryServerInterceptor) (interface{}, error) {
-	in := new(GetAllRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	base := srv.(dubbo3.Dubbo3GrpcService)
-	args := []interface{}{}
-	args = append(args, in)
-	md, _ := metadata.FromIncomingContext(ctx)
-	invAttachment := make(map[string]interface{}, len(md))
-	for k, v := range md {
-		invAttachment[k] = v
-	}
-	invo := invocation.NewRPCInvocation("GetAll", args, invAttachment)
-	if interceptor == nil {
-		result := base.XXX_GetProxyImpl().Invoke(ctx, invo)
-		return result, result.Error()
-	}
-	info := &grpc_go.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: ctx.Value("XXX_TRIPLE_GO_INTERFACE_NAME").(string),
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		result := base.XXX_GetProxyImpl().Invoke(ctx, invo)
-		return result, result.Error()
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _ProductAttribute_GetDetail_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc_go.UnaryServerInterceptor) (interface{}, error) {
-	in := new(GetDetailRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	base := srv.(dubbo3.Dubbo3GrpcService)
-	args := []interface{}{}
-	args = append(args, in)
-	md, _ := metadata.FromIncomingContext(ctx)
-	invAttachment := make(map[string]interface{}, len(md))
-	for k, v := range md {
-		invAttachment[k] = v
-	}
-	invo := invocation.NewRPCInvocation("GetDetail", args, invAttachment)
-	if interceptor == nil {
-		result := base.XXX_GetProxyImpl().Invoke(ctx, invo)
-		return result, result.Error()
-	}
-	info := &grpc_go.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: ctx.Value("XXX_TRIPLE_GO_INTERFACE_NAME").(string),
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		result := base.XXX_GetProxyImpl().Invoke(ctx, invo)
-		return result, result.Error()
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
 // ProductAttribute_ServiceDesc is the grpc_go.ServiceDesc for ProductAttribute service.
 // It's only intended for direct use with grpc_go.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -343,28 +138,8 @@ var ProductAttribute_ServiceDesc = grpc_go.ServiceDesc{
 	HandlerType: (*ProductAttributeServer)(nil),
 	Methods: []grpc_go.MethodDesc{
 		{
-			MethodName: "Add",
-			Handler:    _ProductAttribute_Add_Handler,
-		},
-		{
-			MethodName: "Update",
-			Handler:    _ProductAttribute_Update_Handler,
-		},
-		{
-			MethodName: "Delete",
-			Handler:    _ProductAttribute_Delete_Handler,
-		},
-		{
 			MethodName: "Query",
 			Handler:    _ProductAttribute_Query_Handler,
-		},
-		{
-			MethodName: "GetAll",
-			Handler:    _ProductAttribute_GetAll_Handler,
-		},
-		{
-			MethodName: "GetDetail",
-			Handler:    _ProductAttribute_GetDetail_Handler,
 		},
 	},
 	Streams:  []grpc_go.StreamDesc{},

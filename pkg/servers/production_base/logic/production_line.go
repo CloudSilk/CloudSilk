@@ -73,7 +73,7 @@ func QueryProductionLine(req *proto.QueryProductionLineRequest, resp *proto.Quer
 }
 
 func GetAllProductionLines() (list []*model.ProductionLine, err error) {
-	err = model.DB.DB().Find(&list).Error
+	err = model.DB.DB().Preload("ProductionStations").Find(&list).Error
 	return
 }
 

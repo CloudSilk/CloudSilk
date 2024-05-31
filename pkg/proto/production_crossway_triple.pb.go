@@ -28,12 +28,7 @@ const _ = grpc_go.SupportPackageIsVersion7
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type ProductionCrosswayClient interface {
-	Add(ctx context.Context, in *ProductionCrosswayInfo, opts ...grpc_go.CallOption) (*CommonResponse, common.ErrorWithAttachment)
-	Update(ctx context.Context, in *ProductionCrosswayInfo, opts ...grpc_go.CallOption) (*CommonResponse, common.ErrorWithAttachment)
-	Delete(ctx context.Context, in *DelRequest, opts ...grpc_go.CallOption) (*CommonResponse, common.ErrorWithAttachment)
 	Query(ctx context.Context, in *QueryProductionCrosswayRequest, opts ...grpc_go.CallOption) (*QueryProductionCrosswayResponse, common.ErrorWithAttachment)
-	GetAll(ctx context.Context, in *GetAllRequest, opts ...grpc_go.CallOption) (*GetAllProductionCrosswayResponse, common.ErrorWithAttachment)
-	GetDetail(ctx context.Context, in *GetDetailRequest, opts ...grpc_go.CallOption) (*GetProductionCrosswayDetailResponse, common.ErrorWithAttachment)
 }
 
 type productionCrosswayClient struct {
@@ -41,12 +36,7 @@ type productionCrosswayClient struct {
 }
 
 type ProductionCrosswayClientImpl struct {
-	Add       func(ctx context.Context, in *ProductionCrosswayInfo) (*CommonResponse, error)
-	Update    func(ctx context.Context, in *ProductionCrosswayInfo) (*CommonResponse, error)
-	Delete    func(ctx context.Context, in *DelRequest) (*CommonResponse, error)
-	Query     func(ctx context.Context, in *QueryProductionCrosswayRequest) (*QueryProductionCrosswayResponse, error)
-	GetAll    func(ctx context.Context, in *GetAllRequest) (*GetAllProductionCrosswayResponse, error)
-	GetDetail func(ctx context.Context, in *GetDetailRequest) (*GetProductionCrosswayDetailResponse, error)
+	Query func(ctx context.Context, in *QueryProductionCrosswayRequest) (*QueryProductionCrosswayResponse, error)
 }
 
 func (c *ProductionCrosswayClientImpl) GetDubboStub(cc *triple.TripleConn) ProductionCrosswayClient {
@@ -61,52 +51,17 @@ func NewProductionCrosswayClient(cc *triple.TripleConn) ProductionCrosswayClient
 	return &productionCrosswayClient{cc}
 }
 
-func (c *productionCrosswayClient) Add(ctx context.Context, in *ProductionCrosswayInfo, opts ...grpc_go.CallOption) (*CommonResponse, common.ErrorWithAttachment) {
-	out := new(CommonResponse)
-	interfaceKey := ctx.Value(constant.InterfaceKey).(string)
-	return out, c.cc.Invoke(ctx, "/"+interfaceKey+"/Add", in, out)
-}
-
-func (c *productionCrosswayClient) Update(ctx context.Context, in *ProductionCrosswayInfo, opts ...grpc_go.CallOption) (*CommonResponse, common.ErrorWithAttachment) {
-	out := new(CommonResponse)
-	interfaceKey := ctx.Value(constant.InterfaceKey).(string)
-	return out, c.cc.Invoke(ctx, "/"+interfaceKey+"/Update", in, out)
-}
-
-func (c *productionCrosswayClient) Delete(ctx context.Context, in *DelRequest, opts ...grpc_go.CallOption) (*CommonResponse, common.ErrorWithAttachment) {
-	out := new(CommonResponse)
-	interfaceKey := ctx.Value(constant.InterfaceKey).(string)
-	return out, c.cc.Invoke(ctx, "/"+interfaceKey+"/Delete", in, out)
-}
-
 func (c *productionCrosswayClient) Query(ctx context.Context, in *QueryProductionCrosswayRequest, opts ...grpc_go.CallOption) (*QueryProductionCrosswayResponse, common.ErrorWithAttachment) {
 	out := new(QueryProductionCrosswayResponse)
 	interfaceKey := ctx.Value(constant.InterfaceKey).(string)
 	return out, c.cc.Invoke(ctx, "/"+interfaceKey+"/Query", in, out)
 }
 
-func (c *productionCrosswayClient) GetAll(ctx context.Context, in *GetAllRequest, opts ...grpc_go.CallOption) (*GetAllProductionCrosswayResponse, common.ErrorWithAttachment) {
-	out := new(GetAllProductionCrosswayResponse)
-	interfaceKey := ctx.Value(constant.InterfaceKey).(string)
-	return out, c.cc.Invoke(ctx, "/"+interfaceKey+"/GetAll", in, out)
-}
-
-func (c *productionCrosswayClient) GetDetail(ctx context.Context, in *GetDetailRequest, opts ...grpc_go.CallOption) (*GetProductionCrosswayDetailResponse, common.ErrorWithAttachment) {
-	out := new(GetProductionCrosswayDetailResponse)
-	interfaceKey := ctx.Value(constant.InterfaceKey).(string)
-	return out, c.cc.Invoke(ctx, "/"+interfaceKey+"/GetDetail", in, out)
-}
-
 // ProductionCrosswayServer is the server API for ProductionCrossway service.
 // All implementations must embed UnimplementedProductionCrosswayServer
 // for forward compatibility
 type ProductionCrosswayServer interface {
-	Add(context.Context, *ProductionCrosswayInfo) (*CommonResponse, error)
-	Update(context.Context, *ProductionCrosswayInfo) (*CommonResponse, error)
-	Delete(context.Context, *DelRequest) (*CommonResponse, error)
 	Query(context.Context, *QueryProductionCrosswayRequest) (*QueryProductionCrosswayResponse, error)
-	GetAll(context.Context, *GetAllRequest) (*GetAllProductionCrosswayResponse, error)
-	GetDetail(context.Context, *GetDetailRequest) (*GetProductionCrosswayDetailResponse, error)
 	mustEmbedUnimplementedProductionCrosswayServer()
 }
 
@@ -115,23 +70,8 @@ type UnimplementedProductionCrosswayServer struct {
 	proxyImpl protocol.Invoker
 }
 
-func (UnimplementedProductionCrosswayServer) Add(context.Context, *ProductionCrosswayInfo) (*CommonResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method Add not implemented")
-}
-func (UnimplementedProductionCrosswayServer) Update(context.Context, *ProductionCrosswayInfo) (*CommonResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method Update not implemented")
-}
-func (UnimplementedProductionCrosswayServer) Delete(context.Context, *DelRequest) (*CommonResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method Delete not implemented")
-}
 func (UnimplementedProductionCrosswayServer) Query(context.Context, *QueryProductionCrosswayRequest) (*QueryProductionCrosswayResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Query not implemented")
-}
-func (UnimplementedProductionCrosswayServer) GetAll(context.Context, *GetAllRequest) (*GetAllProductionCrosswayResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GetAll not implemented")
-}
-func (UnimplementedProductionCrosswayServer) GetDetail(context.Context, *GetDetailRequest) (*GetProductionCrosswayDetailResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GetDetail not implemented")
 }
 func (s *UnimplementedProductionCrosswayServer) XXX_SetProxyImpl(impl protocol.Invoker) {
 	s.proxyImpl = impl
@@ -159,93 +99,6 @@ type UnsafeProductionCrosswayServer interface {
 
 func RegisterProductionCrosswayServer(s grpc_go.ServiceRegistrar, srv ProductionCrosswayServer) {
 	s.RegisterService(&ProductionCrossway_ServiceDesc, srv)
-}
-
-func _ProductionCrossway_Add_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc_go.UnaryServerInterceptor) (interface{}, error) {
-	in := new(ProductionCrosswayInfo)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	base := srv.(dubbo3.Dubbo3GrpcService)
-	args := []interface{}{}
-	args = append(args, in)
-	md, _ := metadata.FromIncomingContext(ctx)
-	invAttachment := make(map[string]interface{}, len(md))
-	for k, v := range md {
-		invAttachment[k] = v
-	}
-	invo := invocation.NewRPCInvocation("Add", args, invAttachment)
-	if interceptor == nil {
-		result := base.XXX_GetProxyImpl().Invoke(ctx, invo)
-		return result, result.Error()
-	}
-	info := &grpc_go.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: ctx.Value("XXX_TRIPLE_GO_INTERFACE_NAME").(string),
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		result := base.XXX_GetProxyImpl().Invoke(ctx, invo)
-		return result, result.Error()
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _ProductionCrossway_Update_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc_go.UnaryServerInterceptor) (interface{}, error) {
-	in := new(ProductionCrosswayInfo)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	base := srv.(dubbo3.Dubbo3GrpcService)
-	args := []interface{}{}
-	args = append(args, in)
-	md, _ := metadata.FromIncomingContext(ctx)
-	invAttachment := make(map[string]interface{}, len(md))
-	for k, v := range md {
-		invAttachment[k] = v
-	}
-	invo := invocation.NewRPCInvocation("Update", args, invAttachment)
-	if interceptor == nil {
-		result := base.XXX_GetProxyImpl().Invoke(ctx, invo)
-		return result, result.Error()
-	}
-	info := &grpc_go.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: ctx.Value("XXX_TRIPLE_GO_INTERFACE_NAME").(string),
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		result := base.XXX_GetProxyImpl().Invoke(ctx, invo)
-		return result, result.Error()
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _ProductionCrossway_Delete_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc_go.UnaryServerInterceptor) (interface{}, error) {
-	in := new(DelRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	base := srv.(dubbo3.Dubbo3GrpcService)
-	args := []interface{}{}
-	args = append(args, in)
-	md, _ := metadata.FromIncomingContext(ctx)
-	invAttachment := make(map[string]interface{}, len(md))
-	for k, v := range md {
-		invAttachment[k] = v
-	}
-	invo := invocation.NewRPCInvocation("Delete", args, invAttachment)
-	if interceptor == nil {
-		result := base.XXX_GetProxyImpl().Invoke(ctx, invo)
-		return result, result.Error()
-	}
-	info := &grpc_go.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: ctx.Value("XXX_TRIPLE_GO_INTERFACE_NAME").(string),
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		result := base.XXX_GetProxyImpl().Invoke(ctx, invo)
-		return result, result.Error()
-	}
-	return interceptor(ctx, in, info, handler)
 }
 
 func _ProductionCrossway_Query_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc_go.UnaryServerInterceptor) (interface{}, error) {
@@ -277,64 +130,6 @@ func _ProductionCrossway_Query_Handler(srv interface{}, ctx context.Context, dec
 	return interceptor(ctx, in, info, handler)
 }
 
-func _ProductionCrossway_GetAll_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc_go.UnaryServerInterceptor) (interface{}, error) {
-	in := new(GetAllRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	base := srv.(dubbo3.Dubbo3GrpcService)
-	args := []interface{}{}
-	args = append(args, in)
-	md, _ := metadata.FromIncomingContext(ctx)
-	invAttachment := make(map[string]interface{}, len(md))
-	for k, v := range md {
-		invAttachment[k] = v
-	}
-	invo := invocation.NewRPCInvocation("GetAll", args, invAttachment)
-	if interceptor == nil {
-		result := base.XXX_GetProxyImpl().Invoke(ctx, invo)
-		return result, result.Error()
-	}
-	info := &grpc_go.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: ctx.Value("XXX_TRIPLE_GO_INTERFACE_NAME").(string),
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		result := base.XXX_GetProxyImpl().Invoke(ctx, invo)
-		return result, result.Error()
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _ProductionCrossway_GetDetail_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc_go.UnaryServerInterceptor) (interface{}, error) {
-	in := new(GetDetailRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	base := srv.(dubbo3.Dubbo3GrpcService)
-	args := []interface{}{}
-	args = append(args, in)
-	md, _ := metadata.FromIncomingContext(ctx)
-	invAttachment := make(map[string]interface{}, len(md))
-	for k, v := range md {
-		invAttachment[k] = v
-	}
-	invo := invocation.NewRPCInvocation("GetDetail", args, invAttachment)
-	if interceptor == nil {
-		result := base.XXX_GetProxyImpl().Invoke(ctx, invo)
-		return result, result.Error()
-	}
-	info := &grpc_go.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: ctx.Value("XXX_TRIPLE_GO_INTERFACE_NAME").(string),
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		result := base.XXX_GetProxyImpl().Invoke(ctx, invo)
-		return result, result.Error()
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
 // ProductionCrossway_ServiceDesc is the grpc_go.ServiceDesc for ProductionCrossway service.
 // It's only intended for direct use with grpc_go.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -343,28 +138,8 @@ var ProductionCrossway_ServiceDesc = grpc_go.ServiceDesc{
 	HandlerType: (*ProductionCrosswayServer)(nil),
 	Methods: []grpc_go.MethodDesc{
 		{
-			MethodName: "Add",
-			Handler:    _ProductionCrossway_Add_Handler,
-		},
-		{
-			MethodName: "Update",
-			Handler:    _ProductionCrossway_Update_Handler,
-		},
-		{
-			MethodName: "Delete",
-			Handler:    _ProductionCrossway_Delete_Handler,
-		},
-		{
 			MethodName: "Query",
 			Handler:    _ProductionCrossway_Query_Handler,
-		},
-		{
-			MethodName: "GetAll",
-			Handler:    _ProductionCrossway_GetAll_Handler,
-		},
-		{
-			MethodName: "GetDetail",
-			Handler:    _ProductionCrossway_GetDetail_Handler,
 		},
 	},
 	Streams:  []grpc_go.StreamDesc{},

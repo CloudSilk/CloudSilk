@@ -56,6 +56,12 @@ func GetPersonnelQualificationByID(id string) (*model.PersonnelQualification, er
 	return m, err
 }
 
+func GetPersonnelQualification(req *proto.GetPersonnelQualificationRequest) (*model.PersonnelQualification, error) {
+	m := &model.PersonnelQualification{}
+	err := model.DB.DB().Preload(clause.Associations).Where("`certified_user_id` = ?", req.CertifiedUserID).First(m).Error
+	return m, err
+}
+
 func GetPersonnelQualificationByIDs(ids []string) ([]*model.PersonnelQualification, error) {
 	var m []*model.PersonnelQualification
 	err := model.DB.DB().Preload(clause.Associations).Where("`id` in (?)", ids).Find(&m).Error

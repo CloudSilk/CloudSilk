@@ -2,6 +2,7 @@ package logic
 
 import (
 	"errors"
+	"fmt"
 
 	"github.com/CloudSilk/CloudSilk/pkg/model"
 	"github.com/CloudSilk/CloudSilk/pkg/proto"
@@ -74,6 +75,14 @@ func GetProductPackageByIDs(ids []string) ([]*model.ProductPackage, error) {
 }
 
 func DeleteProductPackage(id string) (err error) {
+	var count int64
+	if err = model.DB.DB().Where(&model.ProductPackageMatchRule{ProductPackageID: &id}).Count(&count).Error; err != nil {
+		return
+	}
+	if count > 0 {
+		return fmt.Errorf("数据冲突，有打包规则正在使用此包装。")
+	}
+
 	return model.DB.DB().Delete(&model.ProductPackage{}, "id=?", id).Error
 }
 

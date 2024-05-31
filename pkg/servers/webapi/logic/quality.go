@@ -3,11 +3,11 @@ package logic
 import (
 	"context"
 	"fmt"
-	"strconv"
 	"strings"
 
 	"github.com/CloudSilk/CloudSilk/pkg/clients"
 	"github.com/CloudSilk/CloudSilk/pkg/proto"
+	"github.com/CloudSilk/CloudSilk/pkg/tool"
 	"gorm.io/gorm"
 )
 
@@ -104,9 +104,15 @@ func GetTestProjectWithParameter(req *proto.GetTestProjectWithParameterRequest) 
 			initialValue := true
 			// match := initialValue
 			for _, _attributeExpression := range _processStepMatchRule.AttributeExpressions {
-				if _attributeExpression.ProductAttributeID == productAttributeID && evaluateMathOperator(_attributeExpression.MathOperator, _attributeExpression.AttributeValue, value) && initialValue {
+				if _attributeExpression.ProductAttributeID == productAttributeID && initialValue {
+					b, err := tool.MathOperator(value, _attributeExpression.MathOperator, _attributeExpression.AttributeValue)
+					if err != nil {
+						return nil, err
+					}
+					if b {
+						break
+					}
 					// productionProcessStepIDs = append(productionProcessStepIDs, _processStepMatchRule.ProductionProcessStepID)
-					break
 				}
 
 				// attributeIDPropertyType := attributeIDProperty.Type.String()
@@ -165,27 +171,4 @@ func GetTestProjectWithParameter(req *proto.GetTestProjectWithParameterRequest) 
 	}
 
 	return response, nil
-}
-
-func evaluateMathOperator(operator string, a interface{}, b interface{}) bool {
-	switch operator {
-	case "=":
-		return fmt.Sprintf("%v", a) == fmt.Sprintf("%v", b)
-	case ">":
-		aFloat, err1 := strconv.ParseFloat(fmt.Sprintf("%v", a), 64)
-		bFloat, err2 := strconv.ParseFloat(fmt.Sprintf("%v", b), 64)
-		if err1 != nil || err2 != nil {
-			return false
-		}
-		return aFloat > bFloat
-	case "<":
-		aFloat, err1 := strconv.ParseFloat(fmt.Sprintf("%v", a), 64)
-		bFloat, err2 := strconv.ParseFloat(fmt.Sprintf("%v", b), 64)
-		if err1 != nil || err2 != nil {
-			return false
-		}
-		return aFloat < bFloat
-	default:
-		return false
-	}
 }

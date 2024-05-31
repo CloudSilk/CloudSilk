@@ -2,6 +2,7 @@ package logic
 
 import (
 	"errors"
+	"fmt"
 
 	"github.com/CloudSilk/CloudSilk/pkg/model"
 	"github.com/CloudSilk/CloudSilk/pkg/proto"
@@ -80,5 +81,13 @@ func GetSystemEventByIDs(ids []string) ([]*model.SystemEvent, error) {
 }
 
 func DeleteSystemEvent(id string) (err error) {
+	var count int64
+	if err = model.DB.DB().Where(&model.SystemEventTrigger{SystemEventID: id}).Count(&count).Error; err != nil {
+		return
+	}
+	if count > 0 {
+		return fmt.Errorf("数据冲突，此事件已被多次触发，如需删除，请先清空触发记录")
+	}
+
 	return model.DB.DB().Delete(&model.SystemEvent{}, "`id` = ?", id).Error
 }

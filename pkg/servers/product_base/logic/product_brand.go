@@ -2,6 +2,7 @@ package logic
 
 import (
 	"errors"
+	"fmt"
 
 	"github.com/CloudSilk/CloudSilk/pkg/model"
 	"github.com/CloudSilk/CloudSilk/pkg/proto"
@@ -71,5 +72,13 @@ func GetProductBrandByIDs(ids []string) ([]*model.ProductBrand, error) {
 }
 
 func DeleteProductBrand(id string) (err error) {
+	var count int64
+	if err = model.DB.DB().Where(&model.ProductCategory{ProductBrandID: id}).Count(&count).Error; err != nil {
+		return
+	}
+	if count > 0 {
+		return fmt.Errorf("数据冲突，请先清空此类别下属的产品类别")
+	}
+
 	return model.DB.DB().Delete(&model.ProductBrand{}, "`id` = ?", id).Error
 }

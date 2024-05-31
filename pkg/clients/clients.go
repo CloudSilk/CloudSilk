@@ -23,6 +23,8 @@ func Init(serviceMode string) {
 		UserClient.GetDetail = userProvider.GetDetail
 		UserClient.Query = userProvider.Query
 		UserClient.Update = userProvider.Update
+		UserClient.LoginByStaffNo = userProvider.LoginByStaffNo
+		UserClient.LogoutByUserName = userProvider.LogoutByUserName
 
 		productProvider := new(ppp.ProductInfoProvider)
 		ProductInfoClient.Get = productProvider.Get
@@ -30,44 +32,22 @@ func Init(serviceMode string) {
 
 		productionStationProvider := new(ptbpp.ProductionStationProvider)
 		ProductionStationClient.Get = productionStationProvider.Get
-		ProductionStationClient.Add = productionStationProvider.Add
 		ProductionStationClient.Update = productionStationProvider.Update
-		ProductionStationClient.Query = productionStationProvider.Query
-		ProductionStationClient.Delete = productionStationProvider.Delete
-		ProductionStationClient.GetAll = productionStationProvider.GetAll
-		ProductionStationClient.GetDetail = productionStationProvider.GetDetail
 
 		productionStationSignupProvider := new(ptpp.ProductionStationSignupProvider)
 		ProductionStationSignupClient.Add = productionStationSignupProvider.Add
 		ProductionStationSignupClient.Update = productionStationSignupProvider.Update
-		ProductionStationSignupClient.Query = productionStationSignupProvider.Query
-		ProductionStationSignupClient.Delete = productionStationSignupProvider.Delete
-		ProductionStationSignupClient.GetAll = productionStationSignupProvider.GetAll
-		ProductionStationSignupClient.GetDetail = productionStationSignupProvider.GetDetail
+		ProductionStationSignupClient.Get = productionStationSignupProvider.Get
 
 		productionLineSignupProvider := new(ptbpp.ProductionLineProvider)
-		ProductionLineClient.Add = productionLineSignupProvider.Add
-		ProductionLineClient.Update = productionLineSignupProvider.Update
-		ProductionLineClient.Query = productionLineSignupProvider.Query
-		ProductionLineClient.Delete = productionLineSignupProvider.Delete
 		ProductionLineClient.GetAll = productionLineSignupProvider.GetAll
 		ProductionLineClient.GetDetail = productionLineSignupProvider.GetDetail
 
 		productAttributeProvider := new(pbpp.ProductAttributeProvider)
-		ProductAttributeClient.Add = productAttributeProvider.Add
-		ProductAttributeClient.Update = productAttributeProvider.Update
 		ProductAttributeClient.Query = productAttributeProvider.Query
-		ProductAttributeClient.Delete = productAttributeProvider.Delete
-		ProductAttributeClient.GetAll = productAttributeProvider.GetAll
-		ProductAttributeClient.GetDetail = productAttributeProvider.GetDetail
 
 		productionCrosswayProvider := new(ptbpp.ProductionCrosswayProvider)
-		ProductionCrosswayClient.Add = productionCrosswayProvider.Add
-		ProductionCrosswayClient.Update = productionCrosswayProvider.Update
 		ProductionCrosswayClient.Query = productionCrosswayProvider.Query
-		ProductionCrosswayClient.Delete = productionCrosswayProvider.Delete
-		ProductionCrosswayClient.GetAll = productionCrosswayProvider.GetAll
-		ProductionCrosswayClient.GetDetail = productionCrosswayProvider.GetDetail
 
 		materialTrayProvider := new(mpp.MaterialTrayProvider)
 		MaterialTrayClient.Get = materialTrayProvider.Get
@@ -88,7 +68,7 @@ func Init(serviceMode string) {
 
 		productProcessRouteProvider := new(ppp.ProductProcessRouteProvider)
 		ProductProcessRouteClient.Add = productProcessRouteProvider.Add
-		// ProductProcessRouteClient.Get = productProcessRouteProvider.Get
+		ProductProcessRouteClient.Get = productProcessRouteProvider.Get
 		ProductProcessRouteClient.Query = productProcessRouteProvider.Query
 
 		productionProcessSopProvider := new(ptpp.ProductionProcessSopProvider)
@@ -98,8 +78,8 @@ func Init(serviceMode string) {
 		ProductModelClient.GetDetail = productModelProvider.GetDetail
 
 		personnelQualificationProvider := new(upp.PersonnelQualificationProvider)
-		PersonnelQualificationClient.Get = personnelQualificationProvider.Get
 		PersonnelQualificationClient.Query = personnelQualificationProvider.Query
+		PersonnelQualificationClient.Get = personnelQualificationProvider.Get
 
 		systemEventProvider := new(spp.SystemEventProvider)
 		SystemEventClient.Get = systemEventProvider.Get

@@ -217,19 +217,19 @@ definitions:
     type: object
   proto.CreateProductTestRecordRequest:
     properties:
-      IsQualified:
+      isQualified:
         type: boolean
-      ProductSerialNo:
+      productSerialNo:
         type: string
-      ProductionStation:
+      productionStation:
         type: string
-      TestData:
+      testData:
         type: string
-      TestEndTime:
+      testEndTime:
         type: string
-      TestProject:
+      testProject:
         type: string
-      TestStartTime:
+      testStartTime:
         type: string
     type: object
   proto.Data:
@@ -2052,20 +2052,20 @@ definitions:
     type: object
   proto.LoginRequest:
     properties:
-      CardNo:
+      cardNo:
         type: string
-      Name:
+      name:
         type: string
-      Password:
+      password:
         type: string
-      ProductionStation:
+      productionStation:
         type: string
     type: object
   proto.LogoutRequest:
     properties:
-      Name:
+      name:
         type: string
-      ProductionStation:
+      productionStation:
         type: string
     type: object
   proto.MaterialCategoryInfo:
@@ -6143,14 +6143,14 @@ definitions:
     type: object
   proto.RetrieveProductAttributeRequest:
     properties:
-      Code:
+      code:
         type: string
-      Description:
+      description:
         type: string
     type: object
   proto.RetrieveProductionCrosswayRequest:
     properties:
-      ProductionLine:
+      productionLine:
         type: string
     type: object
   proto.RetrieveProductionStationRequest:

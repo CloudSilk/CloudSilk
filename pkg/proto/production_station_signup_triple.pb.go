@@ -30,11 +30,7 @@ const _ = grpc_go.SupportPackageIsVersion7
 type ProductionStationSignupClient interface {
 	Add(ctx context.Context, in *ProductionStationSignupInfo, opts ...grpc_go.CallOption) (*CommonResponse, common.ErrorWithAttachment)
 	Update(ctx context.Context, in *ProductionStationSignupInfo, opts ...grpc_go.CallOption) (*CommonResponse, common.ErrorWithAttachment)
-	Delete(ctx context.Context, in *DelRequest, opts ...grpc_go.CallOption) (*CommonResponse, common.ErrorWithAttachment)
-	Query(ctx context.Context, in *QueryProductionStationSignupRequest, opts ...grpc_go.CallOption) (*QueryProductionStationSignupResponse, common.ErrorWithAttachment)
-	GetAll(ctx context.Context, in *GetAllRequest, opts ...grpc_go.CallOption) (*GetAllProductionStationSignupResponse, common.ErrorWithAttachment)
-	GetDetail(ctx context.Context, in *GetDetailRequest, opts ...grpc_go.CallOption) (*GetProductionStationSignupDetailResponse, common.ErrorWithAttachment)
-	GetByID(ctx context.Context, in *GetProductionStationSignupRequest, opts ...grpc_go.CallOption) (*GetProductionStationSignupDetailResponse, common.ErrorWithAttachment)
+	Get(ctx context.Context, in *GetProductionStationSignupRequest, opts ...grpc_go.CallOption) (*GetProductionStationSignupDetailResponse, common.ErrorWithAttachment)
 }
 
 type productionStationSignupClient struct {
@@ -42,13 +38,9 @@ type productionStationSignupClient struct {
 }
 
 type ProductionStationSignupClientImpl struct {
-	Add       func(ctx context.Context, in *ProductionStationSignupInfo) (*CommonResponse, error)
-	Update    func(ctx context.Context, in *ProductionStationSignupInfo) (*CommonResponse, error)
-	Delete    func(ctx context.Context, in *DelRequest) (*CommonResponse, error)
-	Query     func(ctx context.Context, in *QueryProductionStationSignupRequest) (*QueryProductionStationSignupResponse, error)
-	GetAll    func(ctx context.Context, in *GetAllRequest) (*GetAllProductionStationSignupResponse, error)
-	GetDetail func(ctx context.Context, in *GetDetailRequest) (*GetProductionStationSignupDetailResponse, error)
-	GetByID   func(ctx context.Context, in *GetProductionStationSignupRequest) (*GetProductionStationSignupDetailResponse, error)
+	Add    func(ctx context.Context, in *ProductionStationSignupInfo) (*CommonResponse, error)
+	Update func(ctx context.Context, in *ProductionStationSignupInfo) (*CommonResponse, error)
+	Get    func(ctx context.Context, in *GetProductionStationSignupRequest) (*GetProductionStationSignupDetailResponse, error)
 }
 
 func (c *ProductionStationSignupClientImpl) GetDubboStub(cc *triple.TripleConn) ProductionStationSignupClient {
@@ -75,34 +67,10 @@ func (c *productionStationSignupClient) Update(ctx context.Context, in *Producti
 	return out, c.cc.Invoke(ctx, "/"+interfaceKey+"/Update", in, out)
 }
 
-func (c *productionStationSignupClient) Delete(ctx context.Context, in *DelRequest, opts ...grpc_go.CallOption) (*CommonResponse, common.ErrorWithAttachment) {
-	out := new(CommonResponse)
-	interfaceKey := ctx.Value(constant.InterfaceKey).(string)
-	return out, c.cc.Invoke(ctx, "/"+interfaceKey+"/Delete", in, out)
-}
-
-func (c *productionStationSignupClient) Query(ctx context.Context, in *QueryProductionStationSignupRequest, opts ...grpc_go.CallOption) (*QueryProductionStationSignupResponse, common.ErrorWithAttachment) {
-	out := new(QueryProductionStationSignupResponse)
-	interfaceKey := ctx.Value(constant.InterfaceKey).(string)
-	return out, c.cc.Invoke(ctx, "/"+interfaceKey+"/Query", in, out)
-}
-
-func (c *productionStationSignupClient) GetAll(ctx context.Context, in *GetAllRequest, opts ...grpc_go.CallOption) (*GetAllProductionStationSignupResponse, common.ErrorWithAttachment) {
-	out := new(GetAllProductionStationSignupResponse)
-	interfaceKey := ctx.Value(constant.InterfaceKey).(string)
-	return out, c.cc.Invoke(ctx, "/"+interfaceKey+"/GetAll", in, out)
-}
-
-func (c *productionStationSignupClient) GetDetail(ctx context.Context, in *GetDetailRequest, opts ...grpc_go.CallOption) (*GetProductionStationSignupDetailResponse, common.ErrorWithAttachment) {
+func (c *productionStationSignupClient) Get(ctx context.Context, in *GetProductionStationSignupRequest, opts ...grpc_go.CallOption) (*GetProductionStationSignupDetailResponse, common.ErrorWithAttachment) {
 	out := new(GetProductionStationSignupDetailResponse)
 	interfaceKey := ctx.Value(constant.InterfaceKey).(string)
-	return out, c.cc.Invoke(ctx, "/"+interfaceKey+"/GetDetail", in, out)
-}
-
-func (c *productionStationSignupClient) GetByID(ctx context.Context, in *GetProductionStationSignupRequest, opts ...grpc_go.CallOption) (*GetProductionStationSignupDetailResponse, common.ErrorWithAttachment) {
-	out := new(GetProductionStationSignupDetailResponse)
-	interfaceKey := ctx.Value(constant.InterfaceKey).(string)
-	return out, c.cc.Invoke(ctx, "/"+interfaceKey+"/GetByID", in, out)
+	return out, c.cc.Invoke(ctx, "/"+interfaceKey+"/Get", in, out)
 }
 
 // ProductionStationSignupServer is the server API for ProductionStationSignup service.
@@ -111,11 +79,7 @@ func (c *productionStationSignupClient) GetByID(ctx context.Context, in *GetProd
 type ProductionStationSignupServer interface {
 	Add(context.Context, *ProductionStationSignupInfo) (*CommonResponse, error)
 	Update(context.Context, *ProductionStationSignupInfo) (*CommonResponse, error)
-	Delete(context.Context, *DelRequest) (*CommonResponse, error)
-	Query(context.Context, *QueryProductionStationSignupRequest) (*QueryProductionStationSignupResponse, error)
-	GetAll(context.Context, *GetAllRequest) (*GetAllProductionStationSignupResponse, error)
-	GetDetail(context.Context, *GetDetailRequest) (*GetProductionStationSignupDetailResponse, error)
-	GetByID(context.Context, *GetProductionStationSignupRequest) (*GetProductionStationSignupDetailResponse, error)
+	Get(context.Context, *GetProductionStationSignupRequest) (*GetProductionStationSignupDetailResponse, error)
 	mustEmbedUnimplementedProductionStationSignupServer()
 }
 
@@ -130,20 +94,8 @@ func (UnimplementedProductionStationSignupServer) Add(context.Context, *Producti
 func (UnimplementedProductionStationSignupServer) Update(context.Context, *ProductionStationSignupInfo) (*CommonResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Update not implemented")
 }
-func (UnimplementedProductionStationSignupServer) Delete(context.Context, *DelRequest) (*CommonResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method Delete not implemented")
-}
-func (UnimplementedProductionStationSignupServer) Query(context.Context, *QueryProductionStationSignupRequest) (*QueryProductionStationSignupResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method Query not implemented")
-}
-func (UnimplementedProductionStationSignupServer) GetAll(context.Context, *GetAllRequest) (*GetAllProductionStationSignupResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GetAll not implemented")
-}
-func (UnimplementedProductionStationSignupServer) GetDetail(context.Context, *GetDetailRequest) (*GetProductionStationSignupDetailResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GetDetail not implemented")
-}
-func (UnimplementedProductionStationSignupServer) GetByID(context.Context, *GetProductionStationSignupRequest) (*GetProductionStationSignupDetailResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GetByID not implemented")
+func (UnimplementedProductionStationSignupServer) Get(context.Context, *GetProductionStationSignupRequest) (*GetProductionStationSignupDetailResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Get not implemented")
 }
 func (s *UnimplementedProductionStationSignupServer) XXX_SetProxyImpl(impl protocol.Invoker) {
 	s.proxyImpl = impl
@@ -232,123 +184,7 @@ func _ProductionStationSignup_Update_Handler(srv interface{}, ctx context.Contex
 	return interceptor(ctx, in, info, handler)
 }
 
-func _ProductionStationSignup_Delete_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc_go.UnaryServerInterceptor) (interface{}, error) {
-	in := new(DelRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	base := srv.(dubbo3.Dubbo3GrpcService)
-	args := []interface{}{}
-	args = append(args, in)
-	md, _ := metadata.FromIncomingContext(ctx)
-	invAttachment := make(map[string]interface{}, len(md))
-	for k, v := range md {
-		invAttachment[k] = v
-	}
-	invo := invocation.NewRPCInvocation("Delete", args, invAttachment)
-	if interceptor == nil {
-		result := base.XXX_GetProxyImpl().Invoke(ctx, invo)
-		return result, result.Error()
-	}
-	info := &grpc_go.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: ctx.Value("XXX_TRIPLE_GO_INTERFACE_NAME").(string),
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		result := base.XXX_GetProxyImpl().Invoke(ctx, invo)
-		return result, result.Error()
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _ProductionStationSignup_Query_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc_go.UnaryServerInterceptor) (interface{}, error) {
-	in := new(QueryProductionStationSignupRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	base := srv.(dubbo3.Dubbo3GrpcService)
-	args := []interface{}{}
-	args = append(args, in)
-	md, _ := metadata.FromIncomingContext(ctx)
-	invAttachment := make(map[string]interface{}, len(md))
-	for k, v := range md {
-		invAttachment[k] = v
-	}
-	invo := invocation.NewRPCInvocation("Query", args, invAttachment)
-	if interceptor == nil {
-		result := base.XXX_GetProxyImpl().Invoke(ctx, invo)
-		return result, result.Error()
-	}
-	info := &grpc_go.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: ctx.Value("XXX_TRIPLE_GO_INTERFACE_NAME").(string),
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		result := base.XXX_GetProxyImpl().Invoke(ctx, invo)
-		return result, result.Error()
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _ProductionStationSignup_GetAll_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc_go.UnaryServerInterceptor) (interface{}, error) {
-	in := new(GetAllRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	base := srv.(dubbo3.Dubbo3GrpcService)
-	args := []interface{}{}
-	args = append(args, in)
-	md, _ := metadata.FromIncomingContext(ctx)
-	invAttachment := make(map[string]interface{}, len(md))
-	for k, v := range md {
-		invAttachment[k] = v
-	}
-	invo := invocation.NewRPCInvocation("GetAll", args, invAttachment)
-	if interceptor == nil {
-		result := base.XXX_GetProxyImpl().Invoke(ctx, invo)
-		return result, result.Error()
-	}
-	info := &grpc_go.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: ctx.Value("XXX_TRIPLE_GO_INTERFACE_NAME").(string),
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		result := base.XXX_GetProxyImpl().Invoke(ctx, invo)
-		return result, result.Error()
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _ProductionStationSignup_GetDetail_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc_go.UnaryServerInterceptor) (interface{}, error) {
-	in := new(GetDetailRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	base := srv.(dubbo3.Dubbo3GrpcService)
-	args := []interface{}{}
-	args = append(args, in)
-	md, _ := metadata.FromIncomingContext(ctx)
-	invAttachment := make(map[string]interface{}, len(md))
-	for k, v := range md {
-		invAttachment[k] = v
-	}
-	invo := invocation.NewRPCInvocation("GetDetail", args, invAttachment)
-	if interceptor == nil {
-		result := base.XXX_GetProxyImpl().Invoke(ctx, invo)
-		return result, result.Error()
-	}
-	info := &grpc_go.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: ctx.Value("XXX_TRIPLE_GO_INTERFACE_NAME").(string),
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		result := base.XXX_GetProxyImpl().Invoke(ctx, invo)
-		return result, result.Error()
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _ProductionStationSignup_GetByID_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc_go.UnaryServerInterceptor) (interface{}, error) {
+func _ProductionStationSignup_Get_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc_go.UnaryServerInterceptor) (interface{}, error) {
 	in := new(GetProductionStationSignupRequest)
 	if err := dec(in); err != nil {
 		return nil, err
@@ -361,7 +197,7 @@ func _ProductionStationSignup_GetByID_Handler(srv interface{}, ctx context.Conte
 	for k, v := range md {
 		invAttachment[k] = v
 	}
-	invo := invocation.NewRPCInvocation("GetByID", args, invAttachment)
+	invo := invocation.NewRPCInvocation("Get", args, invAttachment)
 	if interceptor == nil {
 		result := base.XXX_GetProxyImpl().Invoke(ctx, invo)
 		return result, result.Error()
@@ -393,24 +229,8 @@ var ProductionStationSignup_ServiceDesc = grpc_go.ServiceDesc{
 			Handler:    _ProductionStationSignup_Update_Handler,
 		},
 		{
-			MethodName: "Delete",
-			Handler:    _ProductionStationSignup_Delete_Handler,
-		},
-		{
-			MethodName: "Query",
-			Handler:    _ProductionStationSignup_Query_Handler,
-		},
-		{
-			MethodName: "GetAll",
-			Handler:    _ProductionStationSignup_GetAll_Handler,
-		},
-		{
-			MethodName: "GetDetail",
-			Handler:    _ProductionStationSignup_GetDetail_Handler,
-		},
-		{
-			MethodName: "GetByID",
-			Handler:    _ProductionStationSignup_GetByID_Handler,
+			MethodName: "Get",
+			Handler:    _ProductionStationSignup_Get_Handler,
 		},
 	},
 	Streams:  []grpc_go.StreamDesc{},

@@ -136,7 +136,7 @@ func GetProductModelByID(id string) (*model.ProductModel, error) {
 		Preload("ProductModelAttributeValues.ProductAttribute.ProductCategoryAttributes").
 		Preload("ProductModelBoms").
 		Preload(clause.Associations).Where("id = ?", id).First(m).Error
-		
+
 	for _, productModelAttributeValue := range m.ProductModelAttributeValues {
 		for _, productCategoryAttribute := range productModelAttributeValue.ProductAttribute.ProductCategoryAttributes {
 			if productCategoryAttribute.ProductCategoryID == m.ProductCategoryID {

@@ -9,10 +9,6 @@ import "attribute_expression.proto";
 import "process_step_type.proto";
 
 service ProductionLine{
-    rpc Add(ProductionLineInfo)returns(CommonResponse){}
-    rpc Update(ProductionLineInfo)returns(CommonResponse){}
-    rpc Delete(DelRequest)returns(CommonResponse){}
-    rpc Query(QueryProductionLineRequest)returns(QueryProductionLineResponse){}
     rpc GetAll(GetAllRequest)returns(GetAllProductionLineResponse){}
     rpc GetDetail(GetDetailRequest)returns(GetProductionLineDetailResponse){}
 }
@@ -94,12 +90,7 @@ message GetProductionLineDetailResponse{
 
 
 service ProductionStation{
-    rpc Add(ProductionStationInfo)returns(CommonResponse){}
     rpc Update(ProductionStationInfo)returns(CommonResponse){}
-    rpc Delete(DelRequest)returns(CommonResponse){}
-    rpc Query(QueryProductionStationRequest)returns(QueryProductionStationResponse){}
-    rpc GetAll(GetAllRequest)returns(GetAllProductionStationResponse){}
-    rpc GetDetail(GetDetailRequest)returns(GetProductionStationDetailResponse){}
     rpc Get(GetProductionStationRequest)returns(GetProductionStationDetailResponse){}
 }
 

@@ -57,13 +57,13 @@ message ExitProductionStationRequest{
 }
 
 message CreateProductTestRecordRequest{
-    string ProductSerialNo=1;
-    string ProductionStation=2;
-    string TestProject=3;
-    string TestStartTime=4;
-    string TestEndTime=5;
-    string TestData=6;
-    bool IsQualified=7;
+    string productSerialNo=1;
+    string productionStation=2;
+    string testProject=3;
+    string testStartTime=4;
+    string testEndTime=5;
+    string testData=6;
+    bool isQualified=7;
 }
 
 message CheckProductProcessRouteFailureRequest{

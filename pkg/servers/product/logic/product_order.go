@@ -11,6 +11,7 @@ import (
 	"github.com/CloudSilk/CloudSilk/pkg/model"
 	"github.com/CloudSilk/CloudSilk/pkg/proto"
 	system "github.com/CloudSilk/CloudSilk/pkg/servers/system/logic"
+	"github.com/CloudSilk/CloudSilk/pkg/tool"
 	"github.com/CloudSilk/CloudSilk/pkg/types"
 	"github.com/CloudSilk/pkg/utils"
 	"gorm.io/gorm"
@@ -93,15 +94,15 @@ func CreateProductOrder(m *model.ProductOrder) (string, error) {
 	// }
 	m.OrderTime = sql.NullTime{Time: time.Now(), Valid: true}
 
-	err = model.DB.DB().Transaction(func(tx *gorm.DB) (err error) {
+	err = model.DB.DB().Transaction(func(tx *gorm.DB) error {
 		//上传
-		if err = tx.Create(m).Error; err != nil {
-			return
+		if err := tx.Create(m).Error; err != nil {
+			return err
 		}
 
 		//工单接单
-		if err = ReceiveProductOrder(tx, m.ID); err != nil {
-			if err = model.DB.DB().Create(&model.ExceptionTrace{
+		if err := ReceiveProductOrder(tx, m.ID); err != nil {
+			if err := model.DB.DB().Create(&model.ExceptionTrace{
 				Host:         "/api/mom/product/productorder/add",
 				Level:        types.EventTypeError,
 				ReportUserID: m.CreateUserID,
@@ -109,14 +110,14 @@ func CreateProductOrder(m *model.ProductOrder) (string, error) {
 				Message:      err.Error(),
 				StackTrace:   string(debug.Stack()),
 			}).Error; err != nil {
-				return
+				return err
 			}
-			return
+			return err
 		}
 
 		//工单核验
-		if err = VerifyProductOrder(tx, m.ID); err != nil {
-			if err = model.DB.DB().Create(&model.ExceptionTrace{
+		if err := VerifyProductOrder(tx, m.ID); err != nil {
+			if err := model.DB.DB().Create(&model.ExceptionTrace{
 				Host:         "/api/mom/product/productorder/add",
 				Level:        types.EventTypeError,
 				ReportUserID: m.CreateUserID,
@@ -124,14 +125,14 @@ func CreateProductOrder(m *model.ProductOrder) (string, error) {
 				Message:      err.Error(),
 				StackTrace:   string(debug.Stack()),
 			}).Error; err != nil {
-				return
+				return err
 			}
-			return
+			return err
 		}
 
 		//工单发放
-		if err = ReleaseProductOrder(tx, m.ID); err != nil {
-			if err = model.DB.DB().Create(&model.ExceptionTrace{
+		if err := ReleaseProductOrder(tx, m.ID); err != nil {
+			if err := model.DB.DB().Create(&model.ExceptionTrace{
 				Host:         "/api/mom/product/productorder/add",
 				Level:        types.EventTypeError,
 				ReportUserID: m.CreateUserID,
@@ -139,12 +140,12 @@ func CreateProductOrder(m *model.ProductOrder) (string, error) {
 				Message:      err.Error(),
 				StackTrace:   string(debug.Stack()),
 			}).Error; err != nil {
-				return
+				return err
 			}
-			return
+			return err
 		}
 
-		return
+		return nil
 	})
 
 	return m.ID, err
@@ -296,15 +297,18 @@ func ReceiveProductOrder(tx *gorm.DB, id string) (err error) {
 			return
 		}
 		for _, attributeExpression := range attributeExpressions {
-			attributeMatch := false
+			match = false
 			for _, productOrderAttribute := range productOrder.ProductOrderAttributes {
-				if productOrderAttribute.ProductAttributeID == attributeExpression.ProductAttributeID && productOrderAttribute.Value == attributeExpression.AttributeValue {
-					attributeMatch = true
-					break
+				if productOrderAttribute.ProductAttributeID == attributeExpression.ProductAttributeID {
+					if b, err := tool.MathOperator(productOrderAttribute.Value, attributeExpression.MathOperator, attributeExpression.AttributeValue); b {
+						match = true
+						break
+					} else if err != nil {
+						return err
+					}
 				}
 			}
-			if attributeMatch {
-				match = attributeMatch
+			if match {
 				break
 			}
 		}
@@ -374,16 +378,18 @@ func ReleaseProductOrder(tx *gorm.DB, id string) (err error) {
 			return
 		}
 		for _, attributeExpression := range attributeExpressions {
-			attributeMatch := false
+			match = false
 			for _, productOrderAttribute := range productOrder.ProductOrderAttributes {
-				fmt.Println(productOrderAttribute.ProductAttributeID, attributeExpression.ProductAttributeID, productOrderAttribute.Value, attributeExpression.AttributeValue)
-				if productOrderAttribute.ProductAttributeID == attributeExpression.ProductAttributeID && productOrderAttribute.Value == attributeExpression.AttributeValue {
-					attributeMatch = true
-					break
+				if productOrderAttribute.ProductAttributeID == attributeExpression.ProductAttributeID {
+					if b, err := tool.MathOperator(productOrderAttribute.Value, attributeExpression.MathOperator, attributeExpression.AttributeValue); b {
+						match = true
+						break
+					} else if err != nil {
+						return err
+					}
 				}
 			}
-			if attributeMatch {
-				match = attributeMatch
+			if match {
 				break
 			}
 		}
@@ -401,26 +407,29 @@ func ReleaseProductOrder(tx *gorm.DB, id string) (err error) {
 	}
 	var productionProcesses []*model.ProductionProcess
 	for _, _productionProcess := range _productionProcesses {
-		if _productionProcess.InitialValue {
-			productionProcesses = append(productionProcesses, _productionProcess)
-			continue
-		}
+		match := _productionProcess.InitialValue
 		var attributeExpressions []*model.AttributeExpression
 		if err = tx.Find(&attributeExpressions, "`rule_id` = ? AND `rule_type` = ?", _productionProcess.ID, "ProductionProcess").Error; err != nil {
 			return
 		}
 		for _, attributeExpression := range attributeExpressions {
-			attributeMatch := false
+			match = false
 			for _, productOrderAttribute := range productOrder.ProductOrderAttributes {
-				if productOrderAttribute.ProductAttributeID == attributeExpression.ProductAttributeID && productOrderAttribute.Value == attributeExpression.AttributeValue {
-					attributeMatch = true
-					productionProcesses = append(productionProcesses, _productionProcess)
-					break
+				if productOrderAttribute.ProductAttributeID == attributeExpression.ProductAttributeID {
+					if b, err := tool.MathOperator(productOrderAttribute.Value, attributeExpression.MathOperator, attributeExpression.AttributeValue); b {
+						match = true
+						break
+					} else if err != nil {
+						return err
+					}
 				}
 			}
-			if attributeMatch {
+			if match {
 				break
 			}
+		}
+		if match {
+			productionProcesses = append(productionProcesses, _productionProcess)
 		}
 	}
 	var ProductOrderProcesses []*model.ProductOrderProcess
