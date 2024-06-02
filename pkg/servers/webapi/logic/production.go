@@ -14,6 +14,111 @@ import (
 	"gorm.io/gorm"
 )
 
+// / 【产线代号】ProductionLine，字符型，必选
+// / 【产品序列号】ProductSerialNo，字符型，必选
+// / 【托盘号】TrayNo，字符型，可选，如传托盘号，则自动创建托盘与产品的绑定关系
+func OnlineProductInfo(req *proto.OnlineProductInfoRequest) *proto.CommonResponse {
+	if req.ProductionLine == "" {
+		return &proto.CommonResponse{Code: 40000, Message: "ProductionLine不能为空"}
+	}
+	if req.ProductSerialNo == "" {
+		return &proto.CommonResponse{Code: 40000, Message: "ProductSerialNo不能为空"}
+	}
+
+	_productionLine, _ := clients.ProductionLineClient.Get(context.Background(), &proto.GetProductionLineRequest{Code: req.ProductionLine})
+	if _productionLine.Message == gorm.ErrRecordNotFound.Error() {
+		return &proto.CommonResponse{Code: 10001, Message: "无效的产线代号"}
+	}
+	if _productionLine.Code != modelcode.Success {
+		return &proto.CommonResponse{Code: 50000, Message: _productionLine.Message}
+	}
+
+	_productInfo, _ := clients.ProductInfoClient.Get(context.Background(), &proto.GetProductInfoRequest{ProductSerialNo: req.ProductSerialNo})
+	if _productInfo.Message == gorm.ErrRecordNotFound.Error() {
+		return &proto.CommonResponse{Code: 10002, Message: "读取产品信息失败，请联系管理员处理"}
+	}
+	if _productInfo.Code != modelcode.Success {
+		return &proto.CommonResponse{Code: 50000, Message: _productInfo.Message}
+	}
+	productInfo := _productInfo.Data
+
+	_productOrder, _ := clients.ProductOrderClient.GetDetail(context.Background(), &proto.GetDetailRequest{Id: productInfo.ProductOrderID})
+	if _productOrder.Message == gorm.ErrRecordNotFound.Error() {
+		return &proto.CommonResponse{Code: 10003, Message: "此生产工单发放产线与上线产线不匹配"}
+	}
+	if _productOrder.Code != modelcode.Success {
+		return &proto.CommonResponse{Code: 50000, Message: _productOrder.Message}
+	}
+	productOrder := _productOrder.Data
+
+	if productOrder.ProductOrderNo != req.ProductOrderNo {
+		return &proto.CommonResponse{Code: 10003, Message: "此产品的隶属工单与当前工单不匹配"}
+	}
+
+	//TODO: 兼容，部分产线是直接创建产品工艺路线，部分是根据工单工艺动态创建
+	_productProcessRoutes, _ := clients.ProductProcessRouteClient.Query(context.Background(), &proto.QueryProductProcessRouteRequest{
+		PageSize:      1,
+		SortConfig:    "route_index",
+		ProductInfoID: productInfo.Id,
+		CurrentState:  types.ProductProcessRouteStateWaitProcess,
+	})
+	if _productProcessRoutes.Code != modelcode.Success {
+		return &proto.CommonResponse{Code: 50000, Message: _productOrder.Message}
+	}
+	productProcessRoutes := _productProcessRoutes.Data
+
+	var productProcessRoute *proto.ProductProcessRouteInfo
+	if len(productProcessRoutes) == 0 {
+		_productOrderProcesses, _ := clients.ProductOrderProcessClient.Query(context.Background(), &proto.QueryProductOrderProcessRequest{
+			PageSize:       1,
+			SortConfig:     "route_index",
+			ProductOrderID: productInfo.ProductOrderID,
+			Enable:         true,
+		})
+		if len(_productOrderProcesses.Data) == 0 {
+			return &proto.CommonResponse{Code: 10004, Message: "上线失败，此工单缺少工艺路线"}
+		}
+		productOrderProcess := _productOrderProcesses.Data[0]
+
+		productProcessRoute = &proto.ProductProcessRouteInfo{
+			CurrentProcessID: productOrderProcess.ProductionProcessID,
+			CurrentProcess:   productOrderProcess.ProductionProcess,
+			CurrentState:     types.ProductProcessRouteStateWaitProcess,
+			RouteIndex:       productOrderProcess.SortIndex,
+			ProductInfoID:    productInfo.Id,
+		}
+
+		if _productProcessRoute, _ := clients.ProductProcessRouteClient.Add(context.Background(), productProcessRoute); _productProcessRoute.Code != modelcode.Success {
+			return &proto.CommonResponse{Code: 50000, Message: _productProcessRoute.Message}
+		}
+	} else {
+		productProcessRoute = productProcessRoutes[0]
+	}
+
+	productProcessRoute.WorkIndex = 1
+
+	//TODO: 更新产品信息
+	_productOrderProcesses, _ := clients.ProductOrderProcessClient.Query(context.Background(), &proto.QueryProductOrderProcessRequest{
+		ProductOrderID: productInfo.ProductOrderID,
+		Enable:         true,
+		SortIndex:      productProcessRoute.WorkIndex,
+	})
+	now := time.Now()
+	remainingRoutes := int32(len(_productOrderProcesses.Data))
+	estimateTime := now.Add(time.Duration(remainingRoutes*productInfo.ProductOrder.StandardWorkTime) * time.Second).Format("2006-01-02 15:04:05")
+	productInfo.ProductionProcessID = productProcessRoute.CurrentProcessID
+	productInfo.RemainingRoutes = remainingRoutes
+	productInfo.EstimateTime = estimateTime
+	if productProcessRoute.CurrentProcess.ProductState == "" {
+		productInfo.CurrentState = types.ProductStateAssembling
+	}
+	productInfo.StartedTime = now.Format("2006-01-02 15:04:05")
+
+	//TODO: 更新工单信息
+
+	return nil
+}
+
 // Code = 0, 工艺路线正确
 // Code = 1, 校验失败
 // Code = 2, 返工产品

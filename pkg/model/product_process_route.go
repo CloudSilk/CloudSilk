@@ -16,7 +16,7 @@ type ProductProcessRoute struct {
 	CurrentState        string             `json:"currentState" gorm:"size:-1;comment:当前状态"`
 	LastUpdateTime      time.Time          `json:"lastUpdateTime" gorm:"autoUpdateTime:nano;comment:更新时间"`
 	Remark              string             `json:"remark" gorm:"size:1000;comment:备注"`
-	LastProcessID       string             `json:"lastProcessID" gorm:"size:36;comment:上步工序ID"`
+	LastProcessID       *string            `json:"lastProcessID" gorm:"size:36;comment:上步工序ID"`
 	LastProcess         *ProductionProcess `json:"lastProcess" gorm:"foreignkey:last_process_id"` //上步工序
 	CurrentProcessID    string             `json:"currentProcessID" gorm:"size:36;comment:当前工序ID"`
 	CurrentProcess      *ProductionProcess `json:"currentProcess" gorm:"foreignkey:current_process_id"` //生产工序
@@ -39,6 +39,12 @@ func PBToProductProcessRoute(in *proto.ProductProcessRouteInfo) *ProductProcessR
 	if in == nil {
 		return nil
 	}
+
+	var lastProcessID *string
+	if in.LastProcessID != "" {
+		lastProcessID = &in.LastProcessID
+	}
+
 	return &ProductProcessRoute{
 		ModelID:    ModelID{ID: in.Id},
 		WorkIndex:  in.WorkIndex,
@@ -47,7 +53,7 @@ func PBToProductProcessRoute(in *proto.ProductProcessRouteInfo) *ProductProcessR
 		CurrentState: in.CurrentState,
 		// LastUpdateTime:      utils.ParseTime(in.LastUpdateTime),
 		Remark:              in.Remark,
-		LastProcessID:       in.LastProcessID,
+		LastProcessID:       lastProcessID,
 		CurrentProcessID:    in.CurrentProcessID,
 		ProductionStationID: in.ProductionStationID,
 		ProcessUserID:       in.ProcessUserID,
@@ -68,6 +74,11 @@ func ProductProcessRouteToPB(in *ProductProcessRoute) *proto.ProductProcessRoute
 		return nil
 	}
 
+	var lastProcessID string
+	if in.LastProcessID != nil {
+		lastProcessID = *in.LastProcessID
+	}
+
 	m := &proto.ProductProcessRouteInfo{
 		Id:                  in.ID,
 		WorkIndex:           in.WorkIndex,
@@ -76,7 +87,7 @@ func ProductProcessRouteToPB(in *ProductProcessRoute) *proto.ProductProcessRoute
 		CurrentState:        in.CurrentState,
 		LastUpdateTime:      utils.FormatTime(in.LastUpdateTime),
 		Remark:              in.Remark,
-		LastProcessID:       in.LastProcessID,
+		LastProcessID:       lastProcessID,
 		LastProcess:         ProductionProcessToPB(in.LastProcess),
 		CurrentProcessID:    in.CurrentProcessID,
 		CurrentProcess:      ProductionProcessToPB(in.CurrentProcess),

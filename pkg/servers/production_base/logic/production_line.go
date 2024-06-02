@@ -87,6 +87,12 @@ func GetProductionLineByID(id string) (*model.ProductionLine, error) {
 	return m, err
 }
 
+func GetProductionLine(req *proto.GetProductionLineRequest) (*model.ProductionLine, error) {
+	m := &model.ProductionLine{}
+	err := model.DB.DB().Preload(clause.Associations).Where("`code` = ?", req.Code).First(m).Error
+	return m, err
+}
+
 func GetProductionLineByIDs(ids []string) ([]*model.ProductionLine, error) {
 	var m []*model.ProductionLine
 	err := model.DB.DB().

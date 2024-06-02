@@ -20,6 +20,53 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
+type GetProductionLineRequest struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Code string `protobuf:"bytes,1,opt,name=code,proto3" json:"code"`
+}
+
+func (x *GetProductionLineRequest) Reset() {
+	*x = GetProductionLineRequest{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_production_line_proto_msgTypes[0]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *GetProductionLineRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetProductionLineRequest) ProtoMessage() {}
+
+func (x *GetProductionLineRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_production_line_proto_msgTypes[0]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetProductionLineRequest.ProtoReflect.Descriptor instead.
+func (*GetProductionLineRequest) Descriptor() ([]byte, []int) {
+	return file_production_line_proto_rawDescGZIP(), []int{0}
+}
+
+func (x *GetProductionLineRequest) GetCode() string {
+	if x != nil {
+		return x.Code
+	}
+	return ""
+}
+
 type ProductionLineInfo struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
@@ -58,7 +105,7 @@ type ProductionLineInfo struct {
 func (x *ProductionLineInfo) Reset() {
 	*x = ProductionLineInfo{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_production_line_proto_msgTypes[0]
+		mi := &file_production_line_proto_msgTypes[1]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -71,7 +118,7 @@ func (x *ProductionLineInfo) String() string {
 func (*ProductionLineInfo) ProtoMessage() {}
 
 func (x *ProductionLineInfo) ProtoReflect() protoreflect.Message {
-	mi := &file_production_line_proto_msgTypes[0]
+	mi := &file_production_line_proto_msgTypes[1]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -84,7 +131,7 @@ func (x *ProductionLineInfo) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ProductionLineInfo.ProtoReflect.Descriptor instead.
 func (*ProductionLineInfo) Descriptor() ([]byte, []int) {
-	return file_production_line_proto_rawDescGZIP(), []int{0}
+	return file_production_line_proto_rawDescGZIP(), []int{1}
 }
 
 func (x *ProductionLineInfo) GetId() string {
@@ -207,7 +254,7 @@ type ProductionLineSupportableCategoryInfo struct {
 func (x *ProductionLineSupportableCategoryInfo) Reset() {
 	*x = ProductionLineSupportableCategoryInfo{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_production_line_proto_msgTypes[1]
+		mi := &file_production_line_proto_msgTypes[2]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -220,7 +267,7 @@ func (x *ProductionLineSupportableCategoryInfo) String() string {
 func (*ProductionLineSupportableCategoryInfo) ProtoMessage() {}
 
 func (x *ProductionLineSupportableCategoryInfo) ProtoReflect() protoreflect.Message {
-	mi := &file_production_line_proto_msgTypes[1]
+	mi := &file_production_line_proto_msgTypes[2]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -233,7 +280,7 @@ func (x *ProductionLineSupportableCategoryInfo) ProtoReflect() protoreflect.Mess
 
 // Deprecated: Use ProductionLineSupportableCategoryInfo.ProtoReflect.Descriptor instead.
 func (*ProductionLineSupportableCategoryInfo) Descriptor() ([]byte, []int) {
-	return file_production_line_proto_rawDescGZIP(), []int{1}
+	return file_production_line_proto_rawDescGZIP(), []int{2}
 }
 
 func (x *ProductionLineSupportableCategoryInfo) GetId() string {
@@ -279,7 +326,7 @@ type QueryProductionLineRequest struct {
 func (x *QueryProductionLineRequest) Reset() {
 	*x = QueryProductionLineRequest{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_production_line_proto_msgTypes[2]
+		mi := &file_production_line_proto_msgTypes[3]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -292,7 +339,7 @@ func (x *QueryProductionLineRequest) String() string {
 func (*QueryProductionLineRequest) ProtoMessage() {}
 
 func (x *QueryProductionLineRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_production_line_proto_msgTypes[2]
+	mi := &file_production_line_proto_msgTypes[3]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -305,7 +352,7 @@ func (x *QueryProductionLineRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use QueryProductionLineRequest.ProtoReflect.Descriptor instead.
 func (*QueryProductionLineRequest) Descriptor() ([]byte, []int) {
-	return file_production_line_proto_rawDescGZIP(), []int{2}
+	return file_production_line_proto_rawDescGZIP(), []int{3}
 }
 
 func (x *QueryProductionLineRequest) GetPageIndex() int64 {
@@ -359,7 +406,7 @@ type QueryProductionLineResponse struct {
 func (x *QueryProductionLineResponse) Reset() {
 	*x = QueryProductionLineResponse{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_production_line_proto_msgTypes[3]
+		mi := &file_production_line_proto_msgTypes[4]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -372,7 +419,7 @@ func (x *QueryProductionLineResponse) String() string {
 func (*QueryProductionLineResponse) ProtoMessage() {}
 
 func (x *QueryProductionLineResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_production_line_proto_msgTypes[3]
+	mi := &file_production_line_proto_msgTypes[4]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -385,7 +432,7 @@ func (x *QueryProductionLineResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use QueryProductionLineResponse.ProtoReflect.Descriptor instead.
 func (*QueryProductionLineResponse) Descriptor() ([]byte, []int) {
-	return file_production_line_proto_rawDescGZIP(), []int{3}
+	return file_production_line_proto_rawDescGZIP(), []int{4}
 }
 
 func (x *QueryProductionLineResponse) GetCode() Code {
@@ -443,7 +490,7 @@ type GetAllProductionLineResponse struct {
 func (x *GetAllProductionLineResponse) Reset() {
 	*x = GetAllProductionLineResponse{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_production_line_proto_msgTypes[4]
+		mi := &file_production_line_proto_msgTypes[5]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -456,7 +503,7 @@ func (x *GetAllProductionLineResponse) String() string {
 func (*GetAllProductionLineResponse) ProtoMessage() {}
 
 func (x *GetAllProductionLineResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_production_line_proto_msgTypes[4]
+	mi := &file_production_line_proto_msgTypes[5]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -469,7 +516,7 @@ func (x *GetAllProductionLineResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetAllProductionLineResponse.ProtoReflect.Descriptor instead.
 func (*GetAllProductionLineResponse) Descriptor() ([]byte, []int) {
-	return file_production_line_proto_rawDescGZIP(), []int{4}
+	return file_production_line_proto_rawDescGZIP(), []int{5}
 }
 
 func (x *GetAllProductionLineResponse) GetCode() Code {
@@ -506,7 +553,7 @@ type GetProductionLineDetailResponse struct {
 func (x *GetProductionLineDetailResponse) Reset() {
 	*x = GetProductionLineDetailResponse{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_production_line_proto_msgTypes[5]
+		mi := &file_production_line_proto_msgTypes[6]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -519,7 +566,7 @@ func (x *GetProductionLineDetailResponse) String() string {
 func (*GetProductionLineDetailResponse) ProtoMessage() {}
 
 func (x *GetProductionLineDetailResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_production_line_proto_msgTypes[5]
+	mi := &file_production_line_proto_msgTypes[6]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -532,7 +579,7 @@ func (x *GetProductionLineDetailResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetProductionLineDetailResponse.ProtoReflect.Descriptor instead.
 func (*GetProductionLineDetailResponse) Descriptor() ([]byte, []int) {
-	return file_production_line_proto_rawDescGZIP(), []int{5}
+	return file_production_line_proto_rawDescGZIP(), []int{6}
 }
 
 func (x *GetProductionLineDetailResponse) GetCode() Code {
@@ -567,7 +614,7 @@ type GetProductionStationRequest struct {
 func (x *GetProductionStationRequest) Reset() {
 	*x = GetProductionStationRequest{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_production_line_proto_msgTypes[6]
+		mi := &file_production_line_proto_msgTypes[7]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -580,7 +627,7 @@ func (x *GetProductionStationRequest) String() string {
 func (*GetProductionStationRequest) ProtoMessage() {}
 
 func (x *GetProductionStationRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_production_line_proto_msgTypes[6]
+	mi := &file_production_line_proto_msgTypes[7]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -593,7 +640,7 @@ func (x *GetProductionStationRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetProductionStationRequest.ProtoReflect.Descriptor instead.
 func (*GetProductionStationRequest) Descriptor() ([]byte, []int) {
-	return file_production_line_proto_rawDescGZIP(), []int{6}
+	return file_production_line_proto_rawDescGZIP(), []int{7}
 }
 
 func (x *GetProductionStationRequest) GetCode() string {
@@ -642,7 +689,7 @@ type ProductionStationInfo struct {
 func (x *ProductionStationInfo) Reset() {
 	*x = ProductionStationInfo{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_production_line_proto_msgTypes[7]
+		mi := &file_production_line_proto_msgTypes[8]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -655,7 +702,7 @@ func (x *ProductionStationInfo) String() string {
 func (*ProductionStationInfo) ProtoMessage() {}
 
 func (x *ProductionStationInfo) ProtoReflect() protoreflect.Message {
-	mi := &file_production_line_proto_msgTypes[7]
+	mi := &file_production_line_proto_msgTypes[8]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -668,7 +715,7 @@ func (x *ProductionStationInfo) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ProductionStationInfo.ProtoReflect.Descriptor instead.
 func (*ProductionStationInfo) Descriptor() ([]byte, []int) {
-	return file_production_line_proto_rawDescGZIP(), []int{7}
+	return file_production_line_proto_rawDescGZIP(), []int{8}
 }
 
 func (x *ProductionStationInfo) GetId() string {
@@ -808,7 +855,7 @@ type QueryProductionStationRequest struct {
 func (x *QueryProductionStationRequest) Reset() {
 	*x = QueryProductionStationRequest{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_production_line_proto_msgTypes[8]
+		mi := &file_production_line_proto_msgTypes[9]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -821,7 +868,7 @@ func (x *QueryProductionStationRequest) String() string {
 func (*QueryProductionStationRequest) ProtoMessage() {}
 
 func (x *QueryProductionStationRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_production_line_proto_msgTypes[8]
+	mi := &file_production_line_proto_msgTypes[9]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -834,7 +881,7 @@ func (x *QueryProductionStationRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use QueryProductionStationRequest.ProtoReflect.Descriptor instead.
 func (*QueryProductionStationRequest) Descriptor() ([]byte, []int) {
-	return file_production_line_proto_rawDescGZIP(), []int{8}
+	return file_production_line_proto_rawDescGZIP(), []int{9}
 }
 
 func (x *QueryProductionStationRequest) GetPageIndex() int64 {
@@ -895,7 +942,7 @@ type QueryProductionStationResponse struct {
 func (x *QueryProductionStationResponse) Reset() {
 	*x = QueryProductionStationResponse{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_production_line_proto_msgTypes[9]
+		mi := &file_production_line_proto_msgTypes[10]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -908,7 +955,7 @@ func (x *QueryProductionStationResponse) String() string {
 func (*QueryProductionStationResponse) ProtoMessage() {}
 
 func (x *QueryProductionStationResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_production_line_proto_msgTypes[9]
+	mi := &file_production_line_proto_msgTypes[10]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -921,7 +968,7 @@ func (x *QueryProductionStationResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use QueryProductionStationResponse.ProtoReflect.Descriptor instead.
 func (*QueryProductionStationResponse) Descriptor() ([]byte, []int) {
-	return file_production_line_proto_rawDescGZIP(), []int{9}
+	return file_production_line_proto_rawDescGZIP(), []int{10}
 }
 
 func (x *QueryProductionStationResponse) GetCode() Code {
@@ -979,7 +1026,7 @@ type GetAllProductionStationResponse struct {
 func (x *GetAllProductionStationResponse) Reset() {
 	*x = GetAllProductionStationResponse{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_production_line_proto_msgTypes[10]
+		mi := &file_production_line_proto_msgTypes[11]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -992,7 +1039,7 @@ func (x *GetAllProductionStationResponse) String() string {
 func (*GetAllProductionStationResponse) ProtoMessage() {}
 
 func (x *GetAllProductionStationResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_production_line_proto_msgTypes[10]
+	mi := &file_production_line_proto_msgTypes[11]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1005,7 +1052,7 @@ func (x *GetAllProductionStationResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetAllProductionStationResponse.ProtoReflect.Descriptor instead.
 func (*GetAllProductionStationResponse) Descriptor() ([]byte, []int) {
-	return file_production_line_proto_rawDescGZIP(), []int{10}
+	return file_production_line_proto_rawDescGZIP(), []int{11}
 }
 
 func (x *GetAllProductionStationResponse) GetCode() Code {
@@ -1042,7 +1089,7 @@ type GetProductionStationDetailResponse struct {
 func (x *GetProductionStationDetailResponse) Reset() {
 	*x = GetProductionStationDetailResponse{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_production_line_proto_msgTypes[11]
+		mi := &file_production_line_proto_msgTypes[12]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -1055,7 +1102,7 @@ func (x *GetProductionStationDetailResponse) String() string {
 func (*GetProductionStationDetailResponse) ProtoMessage() {}
 
 func (x *GetProductionStationDetailResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_production_line_proto_msgTypes[11]
+	mi := &file_production_line_proto_msgTypes[12]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1068,7 +1115,7 @@ func (x *GetProductionStationDetailResponse) ProtoReflect() protoreflect.Message
 
 // Deprecated: Use GetProductionStationDetailResponse.ProtoReflect.Descriptor instead.
 func (*GetProductionStationDetailResponse) Descriptor() ([]byte, []int) {
-	return file_production_line_proto_rawDescGZIP(), []int{11}
+	return file_production_line_proto_rawDescGZIP(), []int{12}
 }
 
 func (x *GetProductionStationDetailResponse) GetCode() Code {
@@ -1137,7 +1184,7 @@ type ProductionProcessInfo struct {
 func (x *ProductionProcessInfo) Reset() {
 	*x = ProductionProcessInfo{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_production_line_proto_msgTypes[12]
+		mi := &file_production_line_proto_msgTypes[13]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -1150,7 +1197,7 @@ func (x *ProductionProcessInfo) String() string {
 func (*ProductionProcessInfo) ProtoMessage() {}
 
 func (x *ProductionProcessInfo) ProtoReflect() protoreflect.Message {
-	mi := &file_production_line_proto_msgTypes[12]
+	mi := &file_production_line_proto_msgTypes[13]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1163,7 +1210,7 @@ func (x *ProductionProcessInfo) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ProductionProcessInfo.ProtoReflect.Descriptor instead.
 func (*ProductionProcessInfo) Descriptor() ([]byte, []int) {
-	return file_production_line_proto_rawDescGZIP(), []int{12}
+	return file_production_line_proto_rawDescGZIP(), []int{13}
 }
 
 func (x *ProductionProcessInfo) GetId() string {
@@ -1313,7 +1360,7 @@ type ProductionProcessAvailableStationInfo struct {
 func (x *ProductionProcessAvailableStationInfo) Reset() {
 	*x = ProductionProcessAvailableStationInfo{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_production_line_proto_msgTypes[13]
+		mi := &file_production_line_proto_msgTypes[14]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -1326,7 +1373,7 @@ func (x *ProductionProcessAvailableStationInfo) String() string {
 func (*ProductionProcessAvailableStationInfo) ProtoMessage() {}
 
 func (x *ProductionProcessAvailableStationInfo) ProtoReflect() protoreflect.Message {
-	mi := &file_production_line_proto_msgTypes[13]
+	mi := &file_production_line_proto_msgTypes[14]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1339,7 +1386,7 @@ func (x *ProductionProcessAvailableStationInfo) ProtoReflect() protoreflect.Mess
 
 // Deprecated: Use ProductionProcessAvailableStationInfo.ProtoReflect.Descriptor instead.
 func (*ProductionProcessAvailableStationInfo) Descriptor() ([]byte, []int) {
-	return file_production_line_proto_rawDescGZIP(), []int{13}
+	return file_production_line_proto_rawDescGZIP(), []int{14}
 }
 
 func (x *ProductionProcessAvailableStationInfo) GetId() string {
@@ -1393,7 +1440,7 @@ type QueryProductionProcessRequest struct {
 func (x *QueryProductionProcessRequest) Reset() {
 	*x = QueryProductionProcessRequest{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_production_line_proto_msgTypes[14]
+		mi := &file_production_line_proto_msgTypes[15]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -1406,7 +1453,7 @@ func (x *QueryProductionProcessRequest) String() string {
 func (*QueryProductionProcessRequest) ProtoMessage() {}
 
 func (x *QueryProductionProcessRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_production_line_proto_msgTypes[14]
+	mi := &file_production_line_proto_msgTypes[15]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1419,7 +1466,7 @@ func (x *QueryProductionProcessRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use QueryProductionProcessRequest.ProtoReflect.Descriptor instead.
 func (*QueryProductionProcessRequest) Descriptor() ([]byte, []int) {
-	return file_production_line_proto_rawDescGZIP(), []int{14}
+	return file_production_line_proto_rawDescGZIP(), []int{15}
 }
 
 func (x *QueryProductionProcessRequest) GetPageIndex() int64 {
@@ -1480,7 +1527,7 @@ type QueryProductionProcessResponse struct {
 func (x *QueryProductionProcessResponse) Reset() {
 	*x = QueryProductionProcessResponse{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_production_line_proto_msgTypes[15]
+		mi := &file_production_line_proto_msgTypes[16]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -1493,7 +1540,7 @@ func (x *QueryProductionProcessResponse) String() string {
 func (*QueryProductionProcessResponse) ProtoMessage() {}
 
 func (x *QueryProductionProcessResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_production_line_proto_msgTypes[15]
+	mi := &file_production_line_proto_msgTypes[16]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1506,7 +1553,7 @@ func (x *QueryProductionProcessResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use QueryProductionProcessResponse.ProtoReflect.Descriptor instead.
 func (*QueryProductionProcessResponse) Descriptor() ([]byte, []int) {
-	return file_production_line_proto_rawDescGZIP(), []int{15}
+	return file_production_line_proto_rawDescGZIP(), []int{16}
 }
 
 func (x *QueryProductionProcessResponse) GetCode() Code {
@@ -1564,7 +1611,7 @@ type GetAllProductionProcessResponse struct {
 func (x *GetAllProductionProcessResponse) Reset() {
 	*x = GetAllProductionProcessResponse{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_production_line_proto_msgTypes[16]
+		mi := &file_production_line_proto_msgTypes[17]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -1577,7 +1624,7 @@ func (x *GetAllProductionProcessResponse) String() string {
 func (*GetAllProductionProcessResponse) ProtoMessage() {}
 
 func (x *GetAllProductionProcessResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_production_line_proto_msgTypes[16]
+	mi := &file_production_line_proto_msgTypes[17]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1590,7 +1637,7 @@ func (x *GetAllProductionProcessResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetAllProductionProcessResponse.ProtoReflect.Descriptor instead.
 func (*GetAllProductionProcessResponse) Descriptor() ([]byte, []int) {
-	return file_production_line_proto_rawDescGZIP(), []int{16}
+	return file_production_line_proto_rawDescGZIP(), []int{17}
 }
 
 func (x *GetAllProductionProcessResponse) GetCode() Code {
@@ -1627,7 +1674,7 @@ type GetProductionProcessDetailResponse struct {
 func (x *GetProductionProcessDetailResponse) Reset() {
 	*x = GetProductionProcessDetailResponse{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_production_line_proto_msgTypes[17]
+		mi := &file_production_line_proto_msgTypes[18]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -1640,7 +1687,7 @@ func (x *GetProductionProcessDetailResponse) String() string {
 func (*GetProductionProcessDetailResponse) ProtoMessage() {}
 
 func (x *GetProductionProcessDetailResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_production_line_proto_msgTypes[17]
+	mi := &file_production_line_proto_msgTypes[18]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1653,7 +1700,7 @@ func (x *GetProductionProcessDetailResponse) ProtoReflect() protoreflect.Message
 
 // Deprecated: Use GetProductionProcessDetailResponse.ProtoReflect.Descriptor instead.
 func (*GetProductionProcessDetailResponse) Descriptor() ([]byte, []int) {
-	return file_production_line_proto_rawDescGZIP(), []int{17}
+	return file_production_line_proto_rawDescGZIP(), []int{18}
 }
 
 func (x *GetProductionProcessDetailResponse) GetCode() Code {
@@ -1707,7 +1754,7 @@ type ProcessStepParameterInfo struct {
 func (x *ProcessStepParameterInfo) Reset() {
 	*x = ProcessStepParameterInfo{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_production_line_proto_msgTypes[18]
+		mi := &file_production_line_proto_msgTypes[19]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -1720,7 +1767,7 @@ func (x *ProcessStepParameterInfo) String() string {
 func (*ProcessStepParameterInfo) ProtoMessage() {}
 
 func (x *ProcessStepParameterInfo) ProtoReflect() protoreflect.Message {
-	mi := &file_production_line_proto_msgTypes[18]
+	mi := &file_production_line_proto_msgTypes[19]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1733,7 +1780,7 @@ func (x *ProcessStepParameterInfo) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ProcessStepParameterInfo.ProtoReflect.Descriptor instead.
 func (*ProcessStepParameterInfo) Descriptor() ([]byte, []int) {
-	return file_production_line_proto_rawDescGZIP(), []int{18}
+	return file_production_line_proto_rawDescGZIP(), []int{19}
 }
 
 func (x *ProcessStepParameterInfo) GetId() string {
@@ -1834,7 +1881,7 @@ type ProcessStepParameterValueInfo struct {
 func (x *ProcessStepParameterValueInfo) Reset() {
 	*x = ProcessStepParameterValueInfo{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_production_line_proto_msgTypes[19]
+		mi := &file_production_line_proto_msgTypes[20]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -1847,7 +1894,7 @@ func (x *ProcessStepParameterValueInfo) String() string {
 func (*ProcessStepParameterValueInfo) ProtoMessage() {}
 
 func (x *ProcessStepParameterValueInfo) ProtoReflect() protoreflect.Message {
-	mi := &file_production_line_proto_msgTypes[19]
+	mi := &file_production_line_proto_msgTypes[20]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1860,7 +1907,7 @@ func (x *ProcessStepParameterValueInfo) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ProcessStepParameterValueInfo.ProtoReflect.Descriptor instead.
 func (*ProcessStepParameterValueInfo) Descriptor() ([]byte, []int) {
-	return file_production_line_proto_rawDescGZIP(), []int{19}
+	return file_production_line_proto_rawDescGZIP(), []int{20}
 }
 
 func (x *ProcessStepParameterValueInfo) GetId() string {
@@ -1952,7 +1999,7 @@ type QueryProcessStepParameterRequest struct {
 func (x *QueryProcessStepParameterRequest) Reset() {
 	*x = QueryProcessStepParameterRequest{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_production_line_proto_msgTypes[20]
+		mi := &file_production_line_proto_msgTypes[21]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -1965,7 +2012,7 @@ func (x *QueryProcessStepParameterRequest) String() string {
 func (*QueryProcessStepParameterRequest) ProtoMessage() {}
 
 func (x *QueryProcessStepParameterRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_production_line_proto_msgTypes[20]
+	mi := &file_production_line_proto_msgTypes[21]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1978,7 +2025,7 @@ func (x *QueryProcessStepParameterRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use QueryProcessStepParameterRequest.ProtoReflect.Descriptor instead.
 func (*QueryProcessStepParameterRequest) Descriptor() ([]byte, []int) {
-	return file_production_line_proto_rawDescGZIP(), []int{20}
+	return file_production_line_proto_rawDescGZIP(), []int{21}
 }
 
 func (x *QueryProcessStepParameterRequest) GetPageIndex() int64 {
@@ -2046,7 +2093,7 @@ type QueryProcessStepParameterResponse struct {
 func (x *QueryProcessStepParameterResponse) Reset() {
 	*x = QueryProcessStepParameterResponse{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_production_line_proto_msgTypes[21]
+		mi := &file_production_line_proto_msgTypes[22]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -2059,7 +2106,7 @@ func (x *QueryProcessStepParameterResponse) String() string {
 func (*QueryProcessStepParameterResponse) ProtoMessage() {}
 
 func (x *QueryProcessStepParameterResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_production_line_proto_msgTypes[21]
+	mi := &file_production_line_proto_msgTypes[22]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2072,7 +2119,7 @@ func (x *QueryProcessStepParameterResponse) ProtoReflect() protoreflect.Message 
 
 // Deprecated: Use QueryProcessStepParameterResponse.ProtoReflect.Descriptor instead.
 func (*QueryProcessStepParameterResponse) Descriptor() ([]byte, []int) {
-	return file_production_line_proto_rawDescGZIP(), []int{21}
+	return file_production_line_proto_rawDescGZIP(), []int{22}
 }
 
 func (x *QueryProcessStepParameterResponse) GetCode() Code {
@@ -2130,7 +2177,7 @@ type GetAllProcessStepParameterResponse struct {
 func (x *GetAllProcessStepParameterResponse) Reset() {
 	*x = GetAllProcessStepParameterResponse{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_production_line_proto_msgTypes[22]
+		mi := &file_production_line_proto_msgTypes[23]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -2143,7 +2190,7 @@ func (x *GetAllProcessStepParameterResponse) String() string {
 func (*GetAllProcessStepParameterResponse) ProtoMessage() {}
 
 func (x *GetAllProcessStepParameterResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_production_line_proto_msgTypes[22]
+	mi := &file_production_line_proto_msgTypes[23]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2156,7 +2203,7 @@ func (x *GetAllProcessStepParameterResponse) ProtoReflect() protoreflect.Message
 
 // Deprecated: Use GetAllProcessStepParameterResponse.ProtoReflect.Descriptor instead.
 func (*GetAllProcessStepParameterResponse) Descriptor() ([]byte, []int) {
-	return file_production_line_proto_rawDescGZIP(), []int{22}
+	return file_production_line_proto_rawDescGZIP(), []int{23}
 }
 
 func (x *GetAllProcessStepParameterResponse) GetCode() Code {
@@ -2193,7 +2240,7 @@ type GetProcessStepParameterDetailResponse struct {
 func (x *GetProcessStepParameterDetailResponse) Reset() {
 	*x = GetProcessStepParameterDetailResponse{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_production_line_proto_msgTypes[23]
+		mi := &file_production_line_proto_msgTypes[24]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -2206,7 +2253,7 @@ func (x *GetProcessStepParameterDetailResponse) String() string {
 func (*GetProcessStepParameterDetailResponse) ProtoMessage() {}
 
 func (x *GetProcessStepParameterDetailResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_production_line_proto_msgTypes[23]
+	mi := &file_production_line_proto_msgTypes[24]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2219,7 +2266,7 @@ func (x *GetProcessStepParameterDetailResponse) ProtoReflect() protoreflect.Mess
 
 // Deprecated: Use GetProcessStepParameterDetailResponse.ProtoReflect.Descriptor instead.
 func (*GetProcessStepParameterDetailResponse) Descriptor() ([]byte, []int) {
-	return file_production_line_proto_rawDescGZIP(), []int{23}
+	return file_production_line_proto_rawDescGZIP(), []int{24}
 }
 
 func (x *GetProcessStepParameterDetailResponse) GetCode() Code {
@@ -2256,7 +2303,7 @@ type GetProductionProcessStepRequest struct {
 func (x *GetProductionProcessStepRequest) Reset() {
 	*x = GetProductionProcessStepRequest{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_production_line_proto_msgTypes[24]
+		mi := &file_production_line_proto_msgTypes[25]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -2269,7 +2316,7 @@ func (x *GetProductionProcessStepRequest) String() string {
 func (*GetProductionProcessStepRequest) ProtoMessage() {}
 
 func (x *GetProductionProcessStepRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_production_line_proto_msgTypes[24]
+	mi := &file_production_line_proto_msgTypes[25]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2282,7 +2329,7 @@ func (x *GetProductionProcessStepRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetProductionProcessStepRequest.ProtoReflect.Descriptor instead.
 func (*GetProductionProcessStepRequest) Descriptor() ([]byte, []int) {
-	return file_production_line_proto_rawDescGZIP(), []int{24}
+	return file_production_line_proto_rawDescGZIP(), []int{25}
 }
 
 func (x *GetProductionProcessStepRequest) GetProductionProcessID() string {
@@ -2342,7 +2389,7 @@ type ProductionProcessStepInfo struct {
 func (x *ProductionProcessStepInfo) Reset() {
 	*x = ProductionProcessStepInfo{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_production_line_proto_msgTypes[25]
+		mi := &file_production_line_proto_msgTypes[26]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -2355,7 +2402,7 @@ func (x *ProductionProcessStepInfo) String() string {
 func (*ProductionProcessStepInfo) ProtoMessage() {}
 
 func (x *ProductionProcessStepInfo) ProtoReflect() protoreflect.Message {
-	mi := &file_production_line_proto_msgTypes[25]
+	mi := &file_production_line_proto_msgTypes[26]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2368,7 +2415,7 @@ func (x *ProductionProcessStepInfo) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ProductionProcessStepInfo.ProtoReflect.Descriptor instead.
 func (*ProductionProcessStepInfo) Descriptor() ([]byte, []int) {
-	return file_production_line_proto_rawDescGZIP(), []int{25}
+	return file_production_line_proto_rawDescGZIP(), []int{26}
 }
 
 func (x *ProductionProcessStepInfo) GetId() string {
@@ -2484,7 +2531,7 @@ type AvailableProcessInfo struct {
 func (x *AvailableProcessInfo) Reset() {
 	*x = AvailableProcessInfo{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_production_line_proto_msgTypes[26]
+		mi := &file_production_line_proto_msgTypes[27]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -2497,7 +2544,7 @@ func (x *AvailableProcessInfo) String() string {
 func (*AvailableProcessInfo) ProtoMessage() {}
 
 func (x *AvailableProcessInfo) ProtoReflect() protoreflect.Message {
-	mi := &file_production_line_proto_msgTypes[26]
+	mi := &file_production_line_proto_msgTypes[27]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2510,7 +2557,7 @@ func (x *AvailableProcessInfo) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use AvailableProcessInfo.ProtoReflect.Descriptor instead.
 func (*AvailableProcessInfo) Descriptor() ([]byte, []int) {
-	return file_production_line_proto_rawDescGZIP(), []int{26}
+	return file_production_line_proto_rawDescGZIP(), []int{27}
 }
 
 func (x *AvailableProcessInfo) GetId() string {
@@ -2569,7 +2616,7 @@ type QueryProductionProcessStepRequest struct {
 func (x *QueryProductionProcessStepRequest) Reset() {
 	*x = QueryProductionProcessStepRequest{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_production_line_proto_msgTypes[27]
+		mi := &file_production_line_proto_msgTypes[28]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -2582,7 +2629,7 @@ func (x *QueryProductionProcessStepRequest) String() string {
 func (*QueryProductionProcessStepRequest) ProtoMessage() {}
 
 func (x *QueryProductionProcessStepRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_production_line_proto_msgTypes[27]
+	mi := &file_production_line_proto_msgTypes[28]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2595,7 +2642,7 @@ func (x *QueryProductionProcessStepRequest) ProtoReflect() protoreflect.Message 
 
 // Deprecated: Use QueryProductionProcessStepRequest.ProtoReflect.Descriptor instead.
 func (*QueryProductionProcessStepRequest) Descriptor() ([]byte, []int) {
-	return file_production_line_proto_rawDescGZIP(), []int{27}
+	return file_production_line_proto_rawDescGZIP(), []int{28}
 }
 
 func (x *QueryProductionProcessStepRequest) GetPageIndex() int64 {
@@ -2649,7 +2696,7 @@ type QueryProductionProcessStepResponse struct {
 func (x *QueryProductionProcessStepResponse) Reset() {
 	*x = QueryProductionProcessStepResponse{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_production_line_proto_msgTypes[28]
+		mi := &file_production_line_proto_msgTypes[29]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -2662,7 +2709,7 @@ func (x *QueryProductionProcessStepResponse) String() string {
 func (*QueryProductionProcessStepResponse) ProtoMessage() {}
 
 func (x *QueryProductionProcessStepResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_production_line_proto_msgTypes[28]
+	mi := &file_production_line_proto_msgTypes[29]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2675,7 +2722,7 @@ func (x *QueryProductionProcessStepResponse) ProtoReflect() protoreflect.Message
 
 // Deprecated: Use QueryProductionProcessStepResponse.ProtoReflect.Descriptor instead.
 func (*QueryProductionProcessStepResponse) Descriptor() ([]byte, []int) {
-	return file_production_line_proto_rawDescGZIP(), []int{28}
+	return file_production_line_proto_rawDescGZIP(), []int{29}
 }
 
 func (x *QueryProductionProcessStepResponse) GetCode() Code {
@@ -2733,7 +2780,7 @@ type GetAllProductionProcessStepResponse struct {
 func (x *GetAllProductionProcessStepResponse) Reset() {
 	*x = GetAllProductionProcessStepResponse{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_production_line_proto_msgTypes[29]
+		mi := &file_production_line_proto_msgTypes[30]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -2746,7 +2793,7 @@ func (x *GetAllProductionProcessStepResponse) String() string {
 func (*GetAllProductionProcessStepResponse) ProtoMessage() {}
 
 func (x *GetAllProductionProcessStepResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_production_line_proto_msgTypes[29]
+	mi := &file_production_line_proto_msgTypes[30]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2759,7 +2806,7 @@ func (x *GetAllProductionProcessStepResponse) ProtoReflect() protoreflect.Messag
 
 // Deprecated: Use GetAllProductionProcessStepResponse.ProtoReflect.Descriptor instead.
 func (*GetAllProductionProcessStepResponse) Descriptor() ([]byte, []int) {
-	return file_production_line_proto_rawDescGZIP(), []int{29}
+	return file_production_line_proto_rawDescGZIP(), []int{30}
 }
 
 func (x *GetAllProductionProcessStepResponse) GetCode() Code {
@@ -2796,7 +2843,7 @@ type GetProductionProcessStepDetailResponse struct {
 func (x *GetProductionProcessStepDetailResponse) Reset() {
 	*x = GetProductionProcessStepDetailResponse{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_production_line_proto_msgTypes[30]
+		mi := &file_production_line_proto_msgTypes[31]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -2809,7 +2856,7 @@ func (x *GetProductionProcessStepDetailResponse) String() string {
 func (*GetProductionProcessStepDetailResponse) ProtoMessage() {}
 
 func (x *GetProductionProcessStepDetailResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_production_line_proto_msgTypes[30]
+	mi := &file_production_line_proto_msgTypes[31]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2822,7 +2869,7 @@ func (x *GetProductionProcessStepDetailResponse) ProtoReflect() protoreflect.Mes
 
 // Deprecated: Use GetProductionProcessStepDetailResponse.ProtoReflect.Descriptor instead.
 func (*GetProductionProcessStepDetailResponse) Descriptor() ([]byte, []int) {
-	return file_production_line_proto_rawDescGZIP(), []int{30}
+	return file_production_line_proto_rawDescGZIP(), []int{31}
 }
 
 func (x *GetProductionProcessStepDetailResponse) GetCode() Code {
@@ -2857,6 +2904,9 @@ var file_production_line_proto_rawDesc = []byte{
 	0x72, 0x69, 0x62, 0x75, 0x74, 0x65, 0x5f, 0x65, 0x78, 0x70, 0x72, 0x65, 0x73, 0x73, 0x69, 0x6f,
 	0x6e, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x1a, 0x17, 0x70, 0x72, 0x6f, 0x63, 0x65, 0x73, 0x73,
 	0x5f, 0x73, 0x74, 0x65, 0x70, 0x5f, 0x74, 0x79, 0x70, 0x65, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f,
+	0x22, 0x2e, 0x0a, 0x18, 0x47, 0x65, 0x74, 0x50, 0x72, 0x6f, 0x64, 0x75, 0x63, 0x74, 0x69, 0x6f,
+	0x6e, 0x4c, 0x69, 0x6e, 0x65, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x12, 0x0a, 0x04,
+	0x63, 0x6f, 0x64, 0x65, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x04, 0x63, 0x6f, 0x64, 0x65,
 	0x22, 0xb4, 0x06, 0x0a, 0x12, 0x50, 0x72, 0x6f, 0x64, 0x75, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x4c,
 	0x69, 0x6e, 0x65, 0x49, 0x6e, 0x66, 0x6f, 0x12, 0x0e, 0x0a, 0x02, 0x69, 0x64, 0x18, 0x02, 0x20,
 	0x01, 0x28, 0x09, 0x52, 0x02, 0x69, 0x64, 0x12, 0x12, 0x0a, 0x04, 0x63, 0x6f, 0x64, 0x65, 0x18,
@@ -3384,7 +3434,7 @@ var file_production_line_proto_rawDesc = []byte{
 	0x67, 0x65, 0x12, 0x34, 0x0a, 0x04, 0x64, 0x61, 0x74, 0x61, 0x18, 0x03, 0x20, 0x01, 0x28, 0x0b,
 	0x32, 0x20, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x2e, 0x50, 0x72, 0x6f, 0x64, 0x75, 0x63, 0x74,
 	0x69, 0x6f, 0x6e, 0x50, 0x72, 0x6f, 0x63, 0x65, 0x73, 0x73, 0x53, 0x74, 0x65, 0x70, 0x49, 0x6e,
-	0x66, 0x6f, 0x52, 0x04, 0x64, 0x61, 0x74, 0x61, 0x32, 0xa7, 0x01, 0x0a, 0x0e, 0x50, 0x72, 0x6f,
+	0x66, 0x6f, 0x52, 0x04, 0x64, 0x61, 0x74, 0x61, 0x32, 0xf9, 0x01, 0x0a, 0x0e, 0x50, 0x72, 0x6f,
 	0x64, 0x75, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x4c, 0x69, 0x6e, 0x65, 0x12, 0x45, 0x0a, 0x06, 0x47,
 	0x65, 0x74, 0x41, 0x6c, 0x6c, 0x12, 0x14, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x2e, 0x47, 0x65,
 	0x74, 0x41, 0x6c, 0x6c, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x23, 0x2e, 0x70, 0x72,
@@ -3395,52 +3445,57 @@ var file_production_line_proto_rawDesc = []byte{
 	0x6c, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x26, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f,
 	0x2e, 0x47, 0x65, 0x74, 0x50, 0x72, 0x6f, 0x64, 0x75, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x4c, 0x69,
 	0x6e, 0x65, 0x44, 0x65, 0x74, 0x61, 0x69, 0x6c, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65,
-	0x22, 0x00, 0x32, 0xac, 0x01, 0x0a, 0x11, 0x50, 0x72, 0x6f, 0x64, 0x75, 0x63, 0x74, 0x69, 0x6f,
-	0x6e, 0x53, 0x74, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x12, 0x3f, 0x0a, 0x06, 0x55, 0x70, 0x64, 0x61,
-	0x74, 0x65, 0x12, 0x1c, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x2e, 0x50, 0x72, 0x6f, 0x64, 0x75,
-	0x63, 0x74, 0x69, 0x6f, 0x6e, 0x53, 0x74, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x49, 0x6e, 0x66, 0x6f,
-	0x1a, 0x15, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x2e, 0x43, 0x6f, 0x6d, 0x6d, 0x6f, 0x6e, 0x52,
-	0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x00, 0x12, 0x56, 0x0a, 0x03, 0x47, 0x65, 0x74,
-	0x12, 0x22, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x2e, 0x47, 0x65, 0x74, 0x50, 0x72, 0x6f, 0x64,
-	0x75, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x53, 0x74, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x52, 0x65, 0x71,
-	0x75, 0x65, 0x73, 0x74, 0x1a, 0x29, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x2e, 0x47, 0x65, 0x74,
-	0x50, 0x72, 0x6f, 0x64, 0x75, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x53, 0x74, 0x61, 0x74, 0x69, 0x6f,
-	0x6e, 0x44, 0x65, 0x74, 0x61, 0x69, 0x6c, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22,
-	0x00, 0x32, 0xbe, 0x01, 0x0a, 0x11, 0x50, 0x72, 0x6f, 0x64, 0x75, 0x63, 0x74, 0x69, 0x6f, 0x6e,
-	0x50, 0x72, 0x6f, 0x63, 0x65, 0x73, 0x73, 0x12, 0x56, 0x0a, 0x05, 0x51, 0x75, 0x65, 0x72, 0x79,
-	0x12, 0x24, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x2e, 0x51, 0x75, 0x65, 0x72, 0x79, 0x50, 0x72,
-	0x6f, 0x64, 0x75, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x50, 0x72, 0x6f, 0x63, 0x65, 0x73, 0x73, 0x52,
-	0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x25, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x2e, 0x51,
-	0x75, 0x65, 0x72, 0x79, 0x50, 0x72, 0x6f, 0x64, 0x75, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x50, 0x72,
-	0x6f, 0x63, 0x65, 0x73, 0x73, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x00, 0x12,
-	0x51, 0x0a, 0x09, 0x47, 0x65, 0x74, 0x44, 0x65, 0x74, 0x61, 0x69, 0x6c, 0x12, 0x17, 0x2e, 0x70,
-	0x72, 0x6f, 0x74, 0x6f, 0x2e, 0x47, 0x65, 0x74, 0x44, 0x65, 0x74, 0x61, 0x69, 0x6c, 0x52, 0x65,
-	0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x29, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x2e, 0x47, 0x65,
-	0x74, 0x50, 0x72, 0x6f, 0x64, 0x75, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x50, 0x72, 0x6f, 0x63, 0x65,
-	0x73, 0x73, 0x44, 0x65, 0x74, 0x61, 0x69, 0x6c, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65,
-	0x22, 0x00, 0x32, 0x72, 0x0a, 0x14, 0x50, 0x72, 0x6f, 0x63, 0x65, 0x73, 0x73, 0x53, 0x74, 0x65,
-	0x70, 0x50, 0x61, 0x72, 0x61, 0x6d, 0x65, 0x74, 0x65, 0x72, 0x12, 0x5a, 0x0a, 0x05, 0x51, 0x75,
-	0x65, 0x72, 0x79, 0x12, 0x27, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x2e, 0x51, 0x75, 0x65, 0x72,
-	0x79, 0x50, 0x72, 0x6f, 0x63, 0x65, 0x73, 0x73, 0x53, 0x74, 0x65, 0x70, 0x50, 0x61, 0x72, 0x61,
-	0x6d, 0x65, 0x74, 0x65, 0x72, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x28, 0x2e, 0x70,
-	0x72, 0x6f, 0x74, 0x6f, 0x2e, 0x51, 0x75, 0x65, 0x72, 0x79, 0x50, 0x72, 0x6f, 0x63, 0x65, 0x73,
-	0x73, 0x53, 0x74, 0x65, 0x70, 0x50, 0x61, 0x72, 0x61, 0x6d, 0x65, 0x74, 0x65, 0x72, 0x52, 0x65,
-	0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x32, 0xd7, 0x01, 0x0a, 0x15, 0x50, 0x72, 0x6f, 0x64, 0x75,
-	0x63, 0x74, 0x69, 0x6f, 0x6e, 0x50, 0x72, 0x6f, 0x63, 0x65, 0x73, 0x73, 0x53, 0x74, 0x65, 0x70,
-	0x12, 0x5e, 0x0a, 0x03, 0x47, 0x65, 0x74, 0x12, 0x26, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x2e,
+	0x22, 0x00, 0x12, 0x50, 0x0a, 0x03, 0x47, 0x65, 0x74, 0x12, 0x1f, 0x2e, 0x70, 0x72, 0x6f, 0x74,
+	0x6f, 0x2e, 0x47, 0x65, 0x74, 0x50, 0x72, 0x6f, 0x64, 0x75, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x4c,
+	0x69, 0x6e, 0x65, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x26, 0x2e, 0x70, 0x72, 0x6f,
+	0x74, 0x6f, 0x2e, 0x47, 0x65, 0x74, 0x50, 0x72, 0x6f, 0x64, 0x75, 0x63, 0x74, 0x69, 0x6f, 0x6e,
+	0x4c, 0x69, 0x6e, 0x65, 0x44, 0x65, 0x74, 0x61, 0x69, 0x6c, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e,
+	0x73, 0x65, 0x22, 0x00, 0x32, 0xac, 0x01, 0x0a, 0x11, 0x50, 0x72, 0x6f, 0x64, 0x75, 0x63, 0x74,
+	0x69, 0x6f, 0x6e, 0x53, 0x74, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x12, 0x3f, 0x0a, 0x06, 0x55, 0x70,
+	0x64, 0x61, 0x74, 0x65, 0x12, 0x1c, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x2e, 0x50, 0x72, 0x6f,
+	0x64, 0x75, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x53, 0x74, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x49, 0x6e,
+	0x66, 0x6f, 0x1a, 0x15, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x2e, 0x43, 0x6f, 0x6d, 0x6d, 0x6f,
+	0x6e, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x00, 0x12, 0x56, 0x0a, 0x03, 0x47,
+	0x65, 0x74, 0x12, 0x22, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x2e, 0x47, 0x65, 0x74, 0x50, 0x72,
+	0x6f, 0x64, 0x75, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x53, 0x74, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x52,
+	0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x29, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x2e, 0x47,
+	0x65, 0x74, 0x50, 0x72, 0x6f, 0x64, 0x75, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x53, 0x74, 0x61, 0x74,
+	0x69, 0x6f, 0x6e, 0x44, 0x65, 0x74, 0x61, 0x69, 0x6c, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73,
+	0x65, 0x22, 0x00, 0x32, 0xbe, 0x01, 0x0a, 0x11, 0x50, 0x72, 0x6f, 0x64, 0x75, 0x63, 0x74, 0x69,
+	0x6f, 0x6e, 0x50, 0x72, 0x6f, 0x63, 0x65, 0x73, 0x73, 0x12, 0x56, 0x0a, 0x05, 0x51, 0x75, 0x65,
+	0x72, 0x79, 0x12, 0x24, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x2e, 0x51, 0x75, 0x65, 0x72, 0x79,
+	0x50, 0x72, 0x6f, 0x64, 0x75, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x50, 0x72, 0x6f, 0x63, 0x65, 0x73,
+	0x73, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x25, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f,
+	0x2e, 0x51, 0x75, 0x65, 0x72, 0x79, 0x50, 0x72, 0x6f, 0x64, 0x75, 0x63, 0x74, 0x69, 0x6f, 0x6e,
+	0x50, 0x72, 0x6f, 0x63, 0x65, 0x73, 0x73, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22,
+	0x00, 0x12, 0x51, 0x0a, 0x09, 0x47, 0x65, 0x74, 0x44, 0x65, 0x74, 0x61, 0x69, 0x6c, 0x12, 0x17,
+	0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x2e, 0x47, 0x65, 0x74, 0x44, 0x65, 0x74, 0x61, 0x69, 0x6c,
+	0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x29, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x2e,
 	0x47, 0x65, 0x74, 0x50, 0x72, 0x6f, 0x64, 0x75, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x50, 0x72, 0x6f,
-	0x63, 0x65, 0x73, 0x73, 0x53, 0x74, 0x65, 0x70, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a,
-	0x2d, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x2e, 0x47, 0x65, 0x74, 0x50, 0x72, 0x6f, 0x64, 0x75,
-	0x63, 0x74, 0x69, 0x6f, 0x6e, 0x50, 0x72, 0x6f, 0x63, 0x65, 0x73, 0x73, 0x53, 0x74, 0x65, 0x70,
-	0x44, 0x65, 0x74, 0x61, 0x69, 0x6c, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x00,
-	0x12, 0x5e, 0x0a, 0x05, 0x51, 0x75, 0x65, 0x72, 0x79, 0x12, 0x28, 0x2e, 0x70, 0x72, 0x6f, 0x74,
-	0x6f, 0x2e, 0x51, 0x75, 0x65, 0x72, 0x79, 0x50, 0x72, 0x6f, 0x64, 0x75, 0x63, 0x74, 0x69, 0x6f,
-	0x6e, 0x50, 0x72, 0x6f, 0x63, 0x65, 0x73, 0x73, 0x53, 0x74, 0x65, 0x70, 0x52, 0x65, 0x71, 0x75,
-	0x65, 0x73, 0x74, 0x1a, 0x29, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x2e, 0x51, 0x75, 0x65, 0x72,
-	0x79, 0x50, 0x72, 0x6f, 0x64, 0x75, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x50, 0x72, 0x6f, 0x63, 0x65,
-	0x73, 0x73, 0x53, 0x74, 0x65, 0x70, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x00,
-	0x42, 0x0a, 0x5a, 0x08, 0x2e, 0x2f, 0x3b, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x06, 0x70, 0x72,
-	0x6f, 0x74, 0x6f, 0x33,
+	0x63, 0x65, 0x73, 0x73, 0x44, 0x65, 0x74, 0x61, 0x69, 0x6c, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e,
+	0x73, 0x65, 0x22, 0x00, 0x32, 0x72, 0x0a, 0x14, 0x50, 0x72, 0x6f, 0x63, 0x65, 0x73, 0x73, 0x53,
+	0x74, 0x65, 0x70, 0x50, 0x61, 0x72, 0x61, 0x6d, 0x65, 0x74, 0x65, 0x72, 0x12, 0x5a, 0x0a, 0x05,
+	0x51, 0x75, 0x65, 0x72, 0x79, 0x12, 0x27, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x2e, 0x51, 0x75,
+	0x65, 0x72, 0x79, 0x50, 0x72, 0x6f, 0x63, 0x65, 0x73, 0x73, 0x53, 0x74, 0x65, 0x70, 0x50, 0x61,
+	0x72, 0x61, 0x6d, 0x65, 0x74, 0x65, 0x72, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x28,
+	0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x2e, 0x51, 0x75, 0x65, 0x72, 0x79, 0x50, 0x72, 0x6f, 0x63,
+	0x65, 0x73, 0x73, 0x53, 0x74, 0x65, 0x70, 0x50, 0x61, 0x72, 0x61, 0x6d, 0x65, 0x74, 0x65, 0x72,
+	0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x32, 0xd7, 0x01, 0x0a, 0x15, 0x50, 0x72, 0x6f,
+	0x64, 0x75, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x50, 0x72, 0x6f, 0x63, 0x65, 0x73, 0x73, 0x53, 0x74,
+	0x65, 0x70, 0x12, 0x5e, 0x0a, 0x03, 0x47, 0x65, 0x74, 0x12, 0x26, 0x2e, 0x70, 0x72, 0x6f, 0x74,
+	0x6f, 0x2e, 0x47, 0x65, 0x74, 0x50, 0x72, 0x6f, 0x64, 0x75, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x50,
+	0x72, 0x6f, 0x63, 0x65, 0x73, 0x73, 0x53, 0x74, 0x65, 0x70, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73,
+	0x74, 0x1a, 0x2d, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x2e, 0x47, 0x65, 0x74, 0x50, 0x72, 0x6f,
+	0x64, 0x75, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x50, 0x72, 0x6f, 0x63, 0x65, 0x73, 0x73, 0x53, 0x74,
+	0x65, 0x70, 0x44, 0x65, 0x74, 0x61, 0x69, 0x6c, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65,
+	0x22, 0x00, 0x12, 0x5e, 0x0a, 0x05, 0x51, 0x75, 0x65, 0x72, 0x79, 0x12, 0x28, 0x2e, 0x70, 0x72,
+	0x6f, 0x74, 0x6f, 0x2e, 0x51, 0x75, 0x65, 0x72, 0x79, 0x50, 0x72, 0x6f, 0x64, 0x75, 0x63, 0x74,
+	0x69, 0x6f, 0x6e, 0x50, 0x72, 0x6f, 0x63, 0x65, 0x73, 0x73, 0x53, 0x74, 0x65, 0x70, 0x52, 0x65,
+	0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x29, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x2e, 0x51, 0x75,
+	0x65, 0x72, 0x79, 0x50, 0x72, 0x6f, 0x64, 0x75, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x50, 0x72, 0x6f,
+	0x63, 0x65, 0x73, 0x73, 0x53, 0x74, 0x65, 0x70, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65,
+	0x22, 0x00, 0x42, 0x0a, 0x5a, 0x08, 0x2e, 0x2f, 0x3b, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x06,
+	0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
 }
 
 var (
@@ -3455,118 +3510,121 @@ func file_production_line_proto_rawDescGZIP() []byte {
 	return file_production_line_proto_rawDescData
 }
 
-var file_production_line_proto_msgTypes = make([]protoimpl.MessageInfo, 31)
+var file_production_line_proto_msgTypes = make([]protoimpl.MessageInfo, 32)
 var file_production_line_proto_goTypes = []interface{}{
-	(*ProductionLineInfo)(nil),                     // 0: proto.ProductionLineInfo
-	(*ProductionLineSupportableCategoryInfo)(nil),  // 1: proto.ProductionLineSupportableCategoryInfo
-	(*QueryProductionLineRequest)(nil),             // 2: proto.QueryProductionLineRequest
-	(*QueryProductionLineResponse)(nil),            // 3: proto.QueryProductionLineResponse
-	(*GetAllProductionLineResponse)(nil),           // 4: proto.GetAllProductionLineResponse
-	(*GetProductionLineDetailResponse)(nil),        // 5: proto.GetProductionLineDetailResponse
-	(*GetProductionStationRequest)(nil),            // 6: proto.GetProductionStationRequest
-	(*ProductionStationInfo)(nil),                  // 7: proto.ProductionStationInfo
-	(*QueryProductionStationRequest)(nil),          // 8: proto.QueryProductionStationRequest
-	(*QueryProductionStationResponse)(nil),         // 9: proto.QueryProductionStationResponse
-	(*GetAllProductionStationResponse)(nil),        // 10: proto.GetAllProductionStationResponse
-	(*GetProductionStationDetailResponse)(nil),     // 11: proto.GetProductionStationDetailResponse
-	(*ProductionProcessInfo)(nil),                  // 12: proto.ProductionProcessInfo
-	(*ProductionProcessAvailableStationInfo)(nil),  // 13: proto.ProductionProcessAvailableStationInfo
-	(*QueryProductionProcessRequest)(nil),          // 14: proto.QueryProductionProcessRequest
-	(*QueryProductionProcessResponse)(nil),         // 15: proto.QueryProductionProcessResponse
-	(*GetAllProductionProcessResponse)(nil),        // 16: proto.GetAllProductionProcessResponse
-	(*GetProductionProcessDetailResponse)(nil),     // 17: proto.GetProductionProcessDetailResponse
-	(*ProcessStepParameterInfo)(nil),               // 18: proto.ProcessStepParameterInfo
-	(*ProcessStepParameterValueInfo)(nil),          // 19: proto.ProcessStepParameterValueInfo
-	(*QueryProcessStepParameterRequest)(nil),       // 20: proto.QueryProcessStepParameterRequest
-	(*QueryProcessStepParameterResponse)(nil),      // 21: proto.QueryProcessStepParameterResponse
-	(*GetAllProcessStepParameterResponse)(nil),     // 22: proto.GetAllProcessStepParameterResponse
-	(*GetProcessStepParameterDetailResponse)(nil),  // 23: proto.GetProcessStepParameterDetailResponse
-	(*GetProductionProcessStepRequest)(nil),        // 24: proto.GetProductionProcessStepRequest
-	(*ProductionProcessStepInfo)(nil),              // 25: proto.ProductionProcessStepInfo
-	(*AvailableProcessInfo)(nil),                   // 26: proto.AvailableProcessInfo
-	(*QueryProductionProcessStepRequest)(nil),      // 27: proto.QueryProductionProcessStepRequest
-	(*QueryProductionProcessStepResponse)(nil),     // 28: proto.QueryProductionProcessStepResponse
-	(*GetAllProductionProcessStepResponse)(nil),    // 29: proto.GetAllProductionProcessStepResponse
-	(*GetProductionProcessStepDetailResponse)(nil), // 30: proto.GetProductionProcessStepDetailResponse
-	(*ProductionCrosswayInfo)(nil),                 // 31: proto.ProductionCrosswayInfo
-	(Code)(0),                                      // 32: proto.Code
-	(*AttributeExpressionInfo)(nil),                // 33: proto.AttributeExpressionInfo
-	(*ProcessStepTypeInfo)(nil),                    // 34: proto.ProcessStepTypeInfo
-	(*GetAllRequest)(nil),                          // 35: proto.GetAllRequest
-	(*GetDetailRequest)(nil),                       // 36: proto.GetDetailRequest
-	(*CommonResponse)(nil),                         // 37: proto.CommonResponse
+	(*GetProductionLineRequest)(nil),               // 0: proto.GetProductionLineRequest
+	(*ProductionLineInfo)(nil),                     // 1: proto.ProductionLineInfo
+	(*ProductionLineSupportableCategoryInfo)(nil),  // 2: proto.ProductionLineSupportableCategoryInfo
+	(*QueryProductionLineRequest)(nil),             // 3: proto.QueryProductionLineRequest
+	(*QueryProductionLineResponse)(nil),            // 4: proto.QueryProductionLineResponse
+	(*GetAllProductionLineResponse)(nil),           // 5: proto.GetAllProductionLineResponse
+	(*GetProductionLineDetailResponse)(nil),        // 6: proto.GetProductionLineDetailResponse
+	(*GetProductionStationRequest)(nil),            // 7: proto.GetProductionStationRequest
+	(*ProductionStationInfo)(nil),                  // 8: proto.ProductionStationInfo
+	(*QueryProductionStationRequest)(nil),          // 9: proto.QueryProductionStationRequest
+	(*QueryProductionStationResponse)(nil),         // 10: proto.QueryProductionStationResponse
+	(*GetAllProductionStationResponse)(nil),        // 11: proto.GetAllProductionStationResponse
+	(*GetProductionStationDetailResponse)(nil),     // 12: proto.GetProductionStationDetailResponse
+	(*ProductionProcessInfo)(nil),                  // 13: proto.ProductionProcessInfo
+	(*ProductionProcessAvailableStationInfo)(nil),  // 14: proto.ProductionProcessAvailableStationInfo
+	(*QueryProductionProcessRequest)(nil),          // 15: proto.QueryProductionProcessRequest
+	(*QueryProductionProcessResponse)(nil),         // 16: proto.QueryProductionProcessResponse
+	(*GetAllProductionProcessResponse)(nil),        // 17: proto.GetAllProductionProcessResponse
+	(*GetProductionProcessDetailResponse)(nil),     // 18: proto.GetProductionProcessDetailResponse
+	(*ProcessStepParameterInfo)(nil),               // 19: proto.ProcessStepParameterInfo
+	(*ProcessStepParameterValueInfo)(nil),          // 20: proto.ProcessStepParameterValueInfo
+	(*QueryProcessStepParameterRequest)(nil),       // 21: proto.QueryProcessStepParameterRequest
+	(*QueryProcessStepParameterResponse)(nil),      // 22: proto.QueryProcessStepParameterResponse
+	(*GetAllProcessStepParameterResponse)(nil),     // 23: proto.GetAllProcessStepParameterResponse
+	(*GetProcessStepParameterDetailResponse)(nil),  // 24: proto.GetProcessStepParameterDetailResponse
+	(*GetProductionProcessStepRequest)(nil),        // 25: proto.GetProductionProcessStepRequest
+	(*ProductionProcessStepInfo)(nil),              // 26: proto.ProductionProcessStepInfo
+	(*AvailableProcessInfo)(nil),                   // 27: proto.AvailableProcessInfo
+	(*QueryProductionProcessStepRequest)(nil),      // 28: proto.QueryProductionProcessStepRequest
+	(*QueryProductionProcessStepResponse)(nil),     // 29: proto.QueryProductionProcessStepResponse
+	(*GetAllProductionProcessStepResponse)(nil),    // 30: proto.GetAllProductionProcessStepResponse
+	(*GetProductionProcessStepDetailResponse)(nil), // 31: proto.GetProductionProcessStepDetailResponse
+	(*ProductionCrosswayInfo)(nil),                 // 32: proto.ProductionCrosswayInfo
+	(Code)(0),                                      // 33: proto.Code
+	(*AttributeExpressionInfo)(nil),                // 34: proto.AttributeExpressionInfo
+	(*ProcessStepTypeInfo)(nil),                    // 35: proto.ProcessStepTypeInfo
+	(*GetAllRequest)(nil),                          // 36: proto.GetAllRequest
+	(*GetDetailRequest)(nil),                       // 37: proto.GetDetailRequest
+	(*CommonResponse)(nil),                         // 38: proto.CommonResponse
 }
 var file_production_line_proto_depIdxs = []int32{
-	7,  // 0: proto.ProductionLineInfo.productionStations:type_name -> proto.ProductionStationInfo
-	31, // 1: proto.ProductionLineInfo.productionCrossways:type_name -> proto.ProductionCrosswayInfo
-	1,  // 2: proto.ProductionLineInfo.productionLineSupportableCategorys:type_name -> proto.ProductionLineSupportableCategoryInfo
-	12, // 3: proto.ProductionLineInfo.productionProcesses:type_name -> proto.ProductionProcessInfo
-	18, // 4: proto.ProductionLineInfo.processStepParameters:type_name -> proto.ProcessStepParameterInfo
-	32, // 5: proto.QueryProductionLineResponse.code:type_name -> proto.Code
-	0,  // 6: proto.QueryProductionLineResponse.data:type_name -> proto.ProductionLineInfo
-	32, // 7: proto.GetAllProductionLineResponse.code:type_name -> proto.Code
-	0,  // 8: proto.GetAllProductionLineResponse.data:type_name -> proto.ProductionLineInfo
-	32, // 9: proto.GetProductionLineDetailResponse.code:type_name -> proto.Code
-	0,  // 10: proto.GetProductionLineDetailResponse.data:type_name -> proto.ProductionLineInfo
-	0,  // 11: proto.ProductionStationInfo.productionLine:type_name -> proto.ProductionLineInfo
-	32, // 12: proto.QueryProductionStationResponse.code:type_name -> proto.Code
-	7,  // 13: proto.QueryProductionStationResponse.data:type_name -> proto.ProductionStationInfo
-	32, // 14: proto.GetAllProductionStationResponse.code:type_name -> proto.Code
-	7,  // 15: proto.GetAllProductionStationResponse.data:type_name -> proto.ProductionStationInfo
-	32, // 16: proto.GetProductionStationDetailResponse.code:type_name -> proto.Code
-	7,  // 17: proto.GetProductionStationDetailResponse.data:type_name -> proto.ProductionStationInfo
-	0,  // 18: proto.ProductionProcessInfo.productionLine:type_name -> proto.ProductionLineInfo
-	13, // 19: proto.ProductionProcessInfo.productionProcessAvailableStations:type_name -> proto.ProductionProcessAvailableStationInfo
-	33, // 20: proto.ProductionProcessInfo.attributeExpressions:type_name -> proto.AttributeExpressionInfo
-	26, // 21: proto.ProductionProcessInfo.productionProcessSteps:type_name -> proto.AvailableProcessInfo
-	7,  // 22: proto.ProductionProcessAvailableStationInfo.productionStation:type_name -> proto.ProductionStationInfo
-	32, // 23: proto.QueryProductionProcessResponse.code:type_name -> proto.Code
-	12, // 24: proto.QueryProductionProcessResponse.data:type_name -> proto.ProductionProcessInfo
-	32, // 25: proto.GetAllProductionProcessResponse.code:type_name -> proto.Code
-	12, // 26: proto.GetAllProductionProcessResponse.data:type_name -> proto.ProductionProcessInfo
-	32, // 27: proto.GetProductionProcessDetailResponse.code:type_name -> proto.Code
-	12, // 28: proto.GetProductionProcessDetailResponse.data:type_name -> proto.ProductionProcessInfo
-	0,  // 29: proto.ProcessStepParameterInfo.productionLine:type_name -> proto.ProductionLineInfo
-	19, // 30: proto.ProcessStepParameterInfo.processStepParameterValues:type_name -> proto.ProcessStepParameterValueInfo
-	33, // 31: proto.ProcessStepParameterInfo.attributeExpressions:type_name -> proto.AttributeExpressionInfo
-	25, // 32: proto.ProcessStepParameterValueInfo.productionProcessStep:type_name -> proto.ProductionProcessStepInfo
-	32, // 33: proto.QueryProcessStepParameterResponse.code:type_name -> proto.Code
-	18, // 34: proto.QueryProcessStepParameterResponse.data:type_name -> proto.ProcessStepParameterInfo
-	32, // 35: proto.GetAllProcessStepParameterResponse.code:type_name -> proto.Code
-	18, // 36: proto.GetAllProcessStepParameterResponse.data:type_name -> proto.ProcessStepParameterInfo
-	32, // 37: proto.GetProcessStepParameterDetailResponse.code:type_name -> proto.Code
-	18, // 38: proto.GetProcessStepParameterDetailResponse.data:type_name -> proto.ProcessStepParameterInfo
-	34, // 39: proto.ProductionProcessStepInfo.processStepType:type_name -> proto.ProcessStepTypeInfo
-	33, // 40: proto.ProductionProcessStepInfo.attributeExpressions:type_name -> proto.AttributeExpressionInfo
-	26, // 41: proto.ProductionProcessStepInfo.availableProcesses:type_name -> proto.AvailableProcessInfo
-	25, // 42: proto.AvailableProcessInfo.productionProcessStep:type_name -> proto.ProductionProcessStepInfo
-	12, // 43: proto.AvailableProcessInfo.productionProcess:type_name -> proto.ProductionProcessInfo
-	32, // 44: proto.QueryProductionProcessStepResponse.code:type_name -> proto.Code
-	25, // 45: proto.QueryProductionProcessStepResponse.data:type_name -> proto.ProductionProcessStepInfo
-	32, // 46: proto.GetAllProductionProcessStepResponse.code:type_name -> proto.Code
-	25, // 47: proto.GetAllProductionProcessStepResponse.data:type_name -> proto.ProductionProcessStepInfo
-	32, // 48: proto.GetProductionProcessStepDetailResponse.code:type_name -> proto.Code
-	25, // 49: proto.GetProductionProcessStepDetailResponse.data:type_name -> proto.ProductionProcessStepInfo
-	35, // 50: proto.ProductionLine.GetAll:input_type -> proto.GetAllRequest
-	36, // 51: proto.ProductionLine.GetDetail:input_type -> proto.GetDetailRequest
-	7,  // 52: proto.ProductionStation.Update:input_type -> proto.ProductionStationInfo
-	6,  // 53: proto.ProductionStation.Get:input_type -> proto.GetProductionStationRequest
-	14, // 54: proto.ProductionProcess.Query:input_type -> proto.QueryProductionProcessRequest
-	36, // 55: proto.ProductionProcess.GetDetail:input_type -> proto.GetDetailRequest
-	20, // 56: proto.ProcessStepParameter.Query:input_type -> proto.QueryProcessStepParameterRequest
-	24, // 57: proto.ProductionProcessStep.Get:input_type -> proto.GetProductionProcessStepRequest
-	27, // 58: proto.ProductionProcessStep.Query:input_type -> proto.QueryProductionProcessStepRequest
-	4,  // 59: proto.ProductionLine.GetAll:output_type -> proto.GetAllProductionLineResponse
-	5,  // 60: proto.ProductionLine.GetDetail:output_type -> proto.GetProductionLineDetailResponse
-	37, // 61: proto.ProductionStation.Update:output_type -> proto.CommonResponse
-	11, // 62: proto.ProductionStation.Get:output_type -> proto.GetProductionStationDetailResponse
-	15, // 63: proto.ProductionProcess.Query:output_type -> proto.QueryProductionProcessResponse
-	17, // 64: proto.ProductionProcess.GetDetail:output_type -> proto.GetProductionProcessDetailResponse
-	21, // 65: proto.ProcessStepParameter.Query:output_type -> proto.QueryProcessStepParameterResponse
-	30, // 66: proto.ProductionProcessStep.Get:output_type -> proto.GetProductionProcessStepDetailResponse
-	28, // 67: proto.ProductionProcessStep.Query:output_type -> proto.QueryProductionProcessStepResponse
-	59, // [59:68] is the sub-list for method output_type
-	50, // [50:59] is the sub-list for method input_type
+	8,  // 0: proto.ProductionLineInfo.productionStations:type_name -> proto.ProductionStationInfo
+	32, // 1: proto.ProductionLineInfo.productionCrossways:type_name -> proto.ProductionCrosswayInfo
+	2,  // 2: proto.ProductionLineInfo.productionLineSupportableCategorys:type_name -> proto.ProductionLineSupportableCategoryInfo
+	13, // 3: proto.ProductionLineInfo.productionProcesses:type_name -> proto.ProductionProcessInfo
+	19, // 4: proto.ProductionLineInfo.processStepParameters:type_name -> proto.ProcessStepParameterInfo
+	33, // 5: proto.QueryProductionLineResponse.code:type_name -> proto.Code
+	1,  // 6: proto.QueryProductionLineResponse.data:type_name -> proto.ProductionLineInfo
+	33, // 7: proto.GetAllProductionLineResponse.code:type_name -> proto.Code
+	1,  // 8: proto.GetAllProductionLineResponse.data:type_name -> proto.ProductionLineInfo
+	33, // 9: proto.GetProductionLineDetailResponse.code:type_name -> proto.Code
+	1,  // 10: proto.GetProductionLineDetailResponse.data:type_name -> proto.ProductionLineInfo
+	1,  // 11: proto.ProductionStationInfo.productionLine:type_name -> proto.ProductionLineInfo
+	33, // 12: proto.QueryProductionStationResponse.code:type_name -> proto.Code
+	8,  // 13: proto.QueryProductionStationResponse.data:type_name -> proto.ProductionStationInfo
+	33, // 14: proto.GetAllProductionStationResponse.code:type_name -> proto.Code
+	8,  // 15: proto.GetAllProductionStationResponse.data:type_name -> proto.ProductionStationInfo
+	33, // 16: proto.GetProductionStationDetailResponse.code:type_name -> proto.Code
+	8,  // 17: proto.GetProductionStationDetailResponse.data:type_name -> proto.ProductionStationInfo
+	1,  // 18: proto.ProductionProcessInfo.productionLine:type_name -> proto.ProductionLineInfo
+	14, // 19: proto.ProductionProcessInfo.productionProcessAvailableStations:type_name -> proto.ProductionProcessAvailableStationInfo
+	34, // 20: proto.ProductionProcessInfo.attributeExpressions:type_name -> proto.AttributeExpressionInfo
+	27, // 21: proto.ProductionProcessInfo.productionProcessSteps:type_name -> proto.AvailableProcessInfo
+	8,  // 22: proto.ProductionProcessAvailableStationInfo.productionStation:type_name -> proto.ProductionStationInfo
+	33, // 23: proto.QueryProductionProcessResponse.code:type_name -> proto.Code
+	13, // 24: proto.QueryProductionProcessResponse.data:type_name -> proto.ProductionProcessInfo
+	33, // 25: proto.GetAllProductionProcessResponse.code:type_name -> proto.Code
+	13, // 26: proto.GetAllProductionProcessResponse.data:type_name -> proto.ProductionProcessInfo
+	33, // 27: proto.GetProductionProcessDetailResponse.code:type_name -> proto.Code
+	13, // 28: proto.GetProductionProcessDetailResponse.data:type_name -> proto.ProductionProcessInfo
+	1,  // 29: proto.ProcessStepParameterInfo.productionLine:type_name -> proto.ProductionLineInfo
+	20, // 30: proto.ProcessStepParameterInfo.processStepParameterValues:type_name -> proto.ProcessStepParameterValueInfo
+	34, // 31: proto.ProcessStepParameterInfo.attributeExpressions:type_name -> proto.AttributeExpressionInfo
+	26, // 32: proto.ProcessStepParameterValueInfo.productionProcessStep:type_name -> proto.ProductionProcessStepInfo
+	33, // 33: proto.QueryProcessStepParameterResponse.code:type_name -> proto.Code
+	19, // 34: proto.QueryProcessStepParameterResponse.data:type_name -> proto.ProcessStepParameterInfo
+	33, // 35: proto.GetAllProcessStepParameterResponse.code:type_name -> proto.Code
+	19, // 36: proto.GetAllProcessStepParameterResponse.data:type_name -> proto.ProcessStepParameterInfo
+	33, // 37: proto.GetProcessStepParameterDetailResponse.code:type_name -> proto.Code
+	19, // 38: proto.GetProcessStepParameterDetailResponse.data:type_name -> proto.ProcessStepParameterInfo
+	35, // 39: proto.ProductionProcessStepInfo.processStepType:type_name -> proto.ProcessStepTypeInfo
+	34, // 40: proto.ProductionProcessStepInfo.attributeExpressions:type_name -> proto.AttributeExpressionInfo
+	27, // 41: proto.ProductionProcessStepInfo.availableProcesses:type_name -> proto.AvailableProcessInfo
+	26, // 42: proto.AvailableProcessInfo.productionProcessStep:type_name -> proto.ProductionProcessStepInfo
+	13, // 43: proto.AvailableProcessInfo.productionProcess:type_name -> proto.ProductionProcessInfo
+	33, // 44: proto.QueryProductionProcessStepResponse.code:type_name -> proto.Code
+	26, // 45: proto.QueryProductionProcessStepResponse.data:type_name -> proto.ProductionProcessStepInfo
+	33, // 46: proto.GetAllProductionProcessStepResponse.code:type_name -> proto.Code
+	26, // 47: proto.GetAllProductionProcessStepResponse.data:type_name -> proto.ProductionProcessStepInfo
+	33, // 48: proto.GetProductionProcessStepDetailResponse.code:type_name -> proto.Code
+	26, // 49: proto.GetProductionProcessStepDetailResponse.data:type_name -> proto.ProductionProcessStepInfo
+	36, // 50: proto.ProductionLine.GetAll:input_type -> proto.GetAllRequest
+	37, // 51: proto.ProductionLine.GetDetail:input_type -> proto.GetDetailRequest
+	0,  // 52: proto.ProductionLine.Get:input_type -> proto.GetProductionLineRequest
+	8,  // 53: proto.ProductionStation.Update:input_type -> proto.ProductionStationInfo
+	7,  // 54: proto.ProductionStation.Get:input_type -> proto.GetProductionStationRequest
+	15, // 55: proto.ProductionProcess.Query:input_type -> proto.QueryProductionProcessRequest
+	37, // 56: proto.ProductionProcess.GetDetail:input_type -> proto.GetDetailRequest
+	21, // 57: proto.ProcessStepParameter.Query:input_type -> proto.QueryProcessStepParameterRequest
+	25, // 58: proto.ProductionProcessStep.Get:input_type -> proto.GetProductionProcessStepRequest
+	28, // 59: proto.ProductionProcessStep.Query:input_type -> proto.QueryProductionProcessStepRequest
+	5,  // 60: proto.ProductionLine.GetAll:output_type -> proto.GetAllProductionLineResponse
+	6,  // 61: proto.ProductionLine.GetDetail:output_type -> proto.GetProductionLineDetailResponse
+	6,  // 62: proto.ProductionLine.Get:output_type -> proto.GetProductionLineDetailResponse
+	38, // 63: proto.ProductionStation.Update:output_type -> proto.CommonResponse
+	12, // 64: proto.ProductionStation.Get:output_type -> proto.GetProductionStationDetailResponse
+	16, // 65: proto.ProductionProcess.Query:output_type -> proto.QueryProductionProcessResponse
+	18, // 66: proto.ProductionProcess.GetDetail:output_type -> proto.GetProductionProcessDetailResponse
+	22, // 67: proto.ProcessStepParameter.Query:output_type -> proto.QueryProcessStepParameterResponse
+	31, // 68: proto.ProductionProcessStep.Get:output_type -> proto.GetProductionProcessStepDetailResponse
+	29, // 69: proto.ProductionProcessStep.Query:output_type -> proto.QueryProductionProcessStepResponse
+	60, // [60:70] is the sub-list for method output_type
+	50, // [50:60] is the sub-list for method input_type
 	50, // [50:50] is the sub-list for extension type_name
 	50, // [50:50] is the sub-list for extension extendee
 	0,  // [0:50] is the sub-list for field type_name
@@ -3583,7 +3641,7 @@ func file_production_line_proto_init() {
 	file_process_step_type_proto_init()
 	if !protoimpl.UnsafeEnabled {
 		file_production_line_proto_msgTypes[0].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*ProductionLineInfo); i {
+			switch v := v.(*GetProductionLineRequest); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -3595,7 +3653,7 @@ func file_production_line_proto_init() {
 			}
 		}
 		file_production_line_proto_msgTypes[1].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*ProductionLineSupportableCategoryInfo); i {
+			switch v := v.(*ProductionLineInfo); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -3607,7 +3665,7 @@ func file_production_line_proto_init() {
 			}
 		}
 		file_production_line_proto_msgTypes[2].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*QueryProductionLineRequest); i {
+			switch v := v.(*ProductionLineSupportableCategoryInfo); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -3619,7 +3677,7 @@ func file_production_line_proto_init() {
 			}
 		}
 		file_production_line_proto_msgTypes[3].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*QueryProductionLineResponse); i {
+			switch v := v.(*QueryProductionLineRequest); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -3631,7 +3689,7 @@ func file_production_line_proto_init() {
 			}
 		}
 		file_production_line_proto_msgTypes[4].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*GetAllProductionLineResponse); i {
+			switch v := v.(*QueryProductionLineResponse); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -3643,7 +3701,7 @@ func file_production_line_proto_init() {
 			}
 		}
 		file_production_line_proto_msgTypes[5].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*GetProductionLineDetailResponse); i {
+			switch v := v.(*GetAllProductionLineResponse); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -3655,7 +3713,7 @@ func file_production_line_proto_init() {
 			}
 		}
 		file_production_line_proto_msgTypes[6].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*GetProductionStationRequest); i {
+			switch v := v.(*GetProductionLineDetailResponse); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -3667,7 +3725,7 @@ func file_production_line_proto_init() {
 			}
 		}
 		file_production_line_proto_msgTypes[7].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*ProductionStationInfo); i {
+			switch v := v.(*GetProductionStationRequest); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -3679,7 +3737,7 @@ func file_production_line_proto_init() {
 			}
 		}
 		file_production_line_proto_msgTypes[8].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*QueryProductionStationRequest); i {
+			switch v := v.(*ProductionStationInfo); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -3691,7 +3749,7 @@ func file_production_line_proto_init() {
 			}
 		}
 		file_production_line_proto_msgTypes[9].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*QueryProductionStationResponse); i {
+			switch v := v.(*QueryProductionStationRequest); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -3703,7 +3761,7 @@ func file_production_line_proto_init() {
 			}
 		}
 		file_production_line_proto_msgTypes[10].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*GetAllProductionStationResponse); i {
+			switch v := v.(*QueryProductionStationResponse); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -3715,7 +3773,7 @@ func file_production_line_proto_init() {
 			}
 		}
 		file_production_line_proto_msgTypes[11].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*GetProductionStationDetailResponse); i {
+			switch v := v.(*GetAllProductionStationResponse); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -3727,7 +3785,7 @@ func file_production_line_proto_init() {
 			}
 		}
 		file_production_line_proto_msgTypes[12].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*ProductionProcessInfo); i {
+			switch v := v.(*GetProductionStationDetailResponse); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -3739,7 +3797,7 @@ func file_production_line_proto_init() {
 			}
 		}
 		file_production_line_proto_msgTypes[13].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*ProductionProcessAvailableStationInfo); i {
+			switch v := v.(*ProductionProcessInfo); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -3751,7 +3809,7 @@ func file_production_line_proto_init() {
 			}
 		}
 		file_production_line_proto_msgTypes[14].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*QueryProductionProcessRequest); i {
+			switch v := v.(*ProductionProcessAvailableStationInfo); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -3763,7 +3821,7 @@ func file_production_line_proto_init() {
 			}
 		}
 		file_production_line_proto_msgTypes[15].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*QueryProductionProcessResponse); i {
+			switch v := v.(*QueryProductionProcessRequest); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -3775,7 +3833,7 @@ func file_production_line_proto_init() {
 			}
 		}
 		file_production_line_proto_msgTypes[16].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*GetAllProductionProcessResponse); i {
+			switch v := v.(*QueryProductionProcessResponse); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -3787,7 +3845,7 @@ func file_production_line_proto_init() {
 			}
 		}
 		file_production_line_proto_msgTypes[17].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*GetProductionProcessDetailResponse); i {
+			switch v := v.(*GetAllProductionProcessResponse); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -3799,7 +3857,7 @@ func file_production_line_proto_init() {
 			}
 		}
 		file_production_line_proto_msgTypes[18].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*ProcessStepParameterInfo); i {
+			switch v := v.(*GetProductionProcessDetailResponse); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -3811,7 +3869,7 @@ func file_production_line_proto_init() {
 			}
 		}
 		file_production_line_proto_msgTypes[19].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*ProcessStepParameterValueInfo); i {
+			switch v := v.(*ProcessStepParameterInfo); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -3823,7 +3881,7 @@ func file_production_line_proto_init() {
 			}
 		}
 		file_production_line_proto_msgTypes[20].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*QueryProcessStepParameterRequest); i {
+			switch v := v.(*ProcessStepParameterValueInfo); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -3835,7 +3893,7 @@ func file_production_line_proto_init() {
 			}
 		}
 		file_production_line_proto_msgTypes[21].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*QueryProcessStepParameterResponse); i {
+			switch v := v.(*QueryProcessStepParameterRequest); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -3847,7 +3905,7 @@ func file_production_line_proto_init() {
 			}
 		}
 		file_production_line_proto_msgTypes[22].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*GetAllProcessStepParameterResponse); i {
+			switch v := v.(*QueryProcessStepParameterResponse); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -3859,7 +3917,7 @@ func file_production_line_proto_init() {
 			}
 		}
 		file_production_line_proto_msgTypes[23].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*GetProcessStepParameterDetailResponse); i {
+			switch v := v.(*GetAllProcessStepParameterResponse); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -3871,7 +3929,7 @@ func file_production_line_proto_init() {
 			}
 		}
 		file_production_line_proto_msgTypes[24].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*GetProductionProcessStepRequest); i {
+			switch v := v.(*GetProcessStepParameterDetailResponse); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -3883,7 +3941,7 @@ func file_production_line_proto_init() {
 			}
 		}
 		file_production_line_proto_msgTypes[25].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*ProductionProcessStepInfo); i {
+			switch v := v.(*GetProductionProcessStepRequest); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -3895,7 +3953,7 @@ func file_production_line_proto_init() {
 			}
 		}
 		file_production_line_proto_msgTypes[26].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*AvailableProcessInfo); i {
+			switch v := v.(*ProductionProcessStepInfo); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -3907,7 +3965,7 @@ func file_production_line_proto_init() {
 			}
 		}
 		file_production_line_proto_msgTypes[27].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*QueryProductionProcessStepRequest); i {
+			switch v := v.(*AvailableProcessInfo); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -3919,7 +3977,7 @@ func file_production_line_proto_init() {
 			}
 		}
 		file_production_line_proto_msgTypes[28].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*QueryProductionProcessStepResponse); i {
+			switch v := v.(*QueryProductionProcessStepRequest); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -3931,7 +3989,7 @@ func file_production_line_proto_init() {
 			}
 		}
 		file_production_line_proto_msgTypes[29].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*GetAllProductionProcessStepResponse); i {
+			switch v := v.(*QueryProductionProcessStepResponse); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -3943,6 +4001,18 @@ func file_production_line_proto_init() {
 			}
 		}
 		file_production_line_proto_msgTypes[30].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*GetAllProductionProcessStepResponse); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_production_line_proto_msgTypes[31].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*GetProductionProcessStepDetailResponse); i {
 			case 0:
 				return &v.state
@@ -3961,7 +4031,7 @@ func file_production_line_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: file_production_line_proto_rawDesc,
 			NumEnums:      0,
-			NumMessages:   31,
+			NumMessages:   32,
 			NumExtensions: 0,
 			NumServices:   5,
 		},

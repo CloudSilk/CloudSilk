@@ -30,6 +30,7 @@ const _ = grpc_go.SupportPackageIsVersion7
 type ProductionLineClient interface {
 	GetAll(ctx context.Context, in *GetAllRequest, opts ...grpc_go.CallOption) (*GetAllProductionLineResponse, common.ErrorWithAttachment)
 	GetDetail(ctx context.Context, in *GetDetailRequest, opts ...grpc_go.CallOption) (*GetProductionLineDetailResponse, common.ErrorWithAttachment)
+	Get(ctx context.Context, in *GetProductionLineRequest, opts ...grpc_go.CallOption) (*GetProductionLineDetailResponse, common.ErrorWithAttachment)
 }
 
 type productionLineClient struct {
@@ -39,6 +40,7 @@ type productionLineClient struct {
 type ProductionLineClientImpl struct {
 	GetAll    func(ctx context.Context, in *GetAllRequest) (*GetAllProductionLineResponse, error)
 	GetDetail func(ctx context.Context, in *GetDetailRequest) (*GetProductionLineDetailResponse, error)
+	Get       func(ctx context.Context, in *GetProductionLineRequest) (*GetProductionLineDetailResponse, error)
 }
 
 func (c *ProductionLineClientImpl) GetDubboStub(cc *triple.TripleConn) ProductionLineClient {
@@ -65,12 +67,19 @@ func (c *productionLineClient) GetDetail(ctx context.Context, in *GetDetailReque
 	return out, c.cc.Invoke(ctx, "/"+interfaceKey+"/GetDetail", in, out)
 }
 
+func (c *productionLineClient) Get(ctx context.Context, in *GetProductionLineRequest, opts ...grpc_go.CallOption) (*GetProductionLineDetailResponse, common.ErrorWithAttachment) {
+	out := new(GetProductionLineDetailResponse)
+	interfaceKey := ctx.Value(constant.InterfaceKey).(string)
+	return out, c.cc.Invoke(ctx, "/"+interfaceKey+"/Get", in, out)
+}
+
 // ProductionLineServer is the server API for ProductionLine service.
 // All implementations must embed UnimplementedProductionLineServer
 // for forward compatibility
 type ProductionLineServer interface {
 	GetAll(context.Context, *GetAllRequest) (*GetAllProductionLineResponse, error)
 	GetDetail(context.Context, *GetDetailRequest) (*GetProductionLineDetailResponse, error)
+	Get(context.Context, *GetProductionLineRequest) (*GetProductionLineDetailResponse, error)
 	mustEmbedUnimplementedProductionLineServer()
 }
 
@@ -84,6 +93,9 @@ func (UnimplementedProductionLineServer) GetAll(context.Context, *GetAllRequest)
 }
 func (UnimplementedProductionLineServer) GetDetail(context.Context, *GetDetailRequest) (*GetProductionLineDetailResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetDetail not implemented")
+}
+func (UnimplementedProductionLineServer) Get(context.Context, *GetProductionLineRequest) (*GetProductionLineDetailResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Get not implemented")
 }
 func (s *UnimplementedProductionLineServer) XXX_SetProxyImpl(impl protocol.Invoker) {
 	s.proxyImpl = impl
@@ -171,6 +183,35 @@ func _ProductionLine_GetDetail_Handler(srv interface{}, ctx context.Context, dec
 	return interceptor(ctx, in, info, handler)
 }
 
+func _ProductionLine_Get_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc_go.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetProductionLineRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	base := srv.(dubbo3.Dubbo3GrpcService)
+	args := []interface{}{}
+	args = append(args, in)
+	md, _ := metadata.FromIncomingContext(ctx)
+	invAttachment := make(map[string]interface{}, len(md))
+	for k, v := range md {
+		invAttachment[k] = v
+	}
+	invo := invocation.NewRPCInvocation("Get", args, invAttachment)
+	if interceptor == nil {
+		result := base.XXX_GetProxyImpl().Invoke(ctx, invo)
+		return result, result.Error()
+	}
+	info := &grpc_go.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: ctx.Value("XXX_TRIPLE_GO_INTERFACE_NAME").(string),
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		result := base.XXX_GetProxyImpl().Invoke(ctx, invo)
+		return result, result.Error()
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // ProductionLine_ServiceDesc is the grpc_go.ServiceDesc for ProductionLine service.
 // It's only intended for direct use with grpc_go.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -185,6 +226,10 @@ var ProductionLine_ServiceDesc = grpc_go.ServiceDesc{
 		{
 			MethodName: "GetDetail",
 			Handler:    _ProductionLine_GetDetail_Handler,
+		},
+		{
+			MethodName: "Get",
+			Handler:    _ProductionLine_Get_Handler,
 		},
 	},
 	Streams:  []grpc_go.StreamDesc{},

@@ -11,7 +11,7 @@ import (
 )
 
 func CreateProductCategoryAttribute(m *model.ProductCategoryAttribute) (string, error) {
-	duplication, err := model.DB.CreateWithCheckDuplication(m, " `default_value`  = ? ", m.DefaultValue)
+	duplication, err := model.DB.CreateWithCheckDuplication(m, "`product_category_id` = ? AND `product_attribute_id` = ? AND `default_value` = ?", m.ProductCategoryID, m.ProductAttributeID, m.DefaultValue)
 	if err != nil {
 		return "", err
 	}
@@ -24,7 +24,7 @@ func CreateProductCategoryAttribute(m *model.ProductCategoryAttribute) (string, 
 func UpdateProductCategoryAttribute(m *model.ProductCategoryAttribute) error {
 	return model.DB.DB().Transaction(func(tx *gorm.DB) error {
 		tx.Delete(&model.ProductCategoryAttributeValue{}, "`product_category_attribute_id` = ?", m.ID)
-		duplication, err := model.DB.UpdateWithCheckDuplicationAndOmit(tx, m, true, []string{"created_at"}, "id <> ?  and  `default_value` = ? ", m.ID, m.DefaultValue)
+		duplication, err := model.DB.UpdateWithCheckDuplicationAndOmit(tx, m, true, []string{"created_at"}, "id <> ? AND `product_category_id` = ? AND `product_attribute_id` = ? AND `default_value` = ?", m.ID, m.ProductCategoryID, m.ProductAttributeID, m.DefaultValue)
 		if err != nil {
 			return err
 		}

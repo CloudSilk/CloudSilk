@@ -42,6 +42,7 @@ func Init(serviceMode string) {
 		productionLineSignupProvider := new(ptbpp.ProductionLineProvider)
 		ProductionLineClient.GetAll = productionLineSignupProvider.GetAll
 		ProductionLineClient.GetDetail = productionLineSignupProvider.GetDetail
+		ProductionLineClient.Get = productionLineSignupProvider.Get
 
 		productAttributeProvider := new(pbpp.ProductAttributeProvider)
 		ProductAttributeClient.Query = productAttributeProvider.Query

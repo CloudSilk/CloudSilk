@@ -11,6 +11,11 @@ import "process_step_type.proto";
 service ProductionLine{
     rpc GetAll(GetAllRequest)returns(GetAllProductionLineResponse){}
     rpc GetDetail(GetDetailRequest)returns(GetProductionLineDetailResponse){}
+    rpc Get(GetProductionLineRequest)returns(GetProductionLineDetailResponse){}
+}
+
+message GetProductionLineRequest{
+    string code=1;
 }
 
 message ProductionLineInfo {

@@ -40,3 +40,17 @@ func (u *ProductionLineProvider) GetAll(ctx context.Context, in *proto.GetAllReq
 
 	return resp, nil
 }
+
+func (u *ProductionLineProvider) Get(ctx context.Context, in *proto.GetProductionLineRequest) (*proto.GetProductionLineDetailResponse, error) {
+	resp := &proto.GetProductionLineDetailResponse{
+		Code: proto.Code_Success,
+	}
+	f, err := logic.GetProductionLine(in)
+	if err != nil {
+		resp.Code = proto.Code_InternalServerError
+		resp.Message = err.Error()
+	} else {
+		resp.Data = model.ProductionLineToPB(f)
+	}
+	return resp, nil
+}

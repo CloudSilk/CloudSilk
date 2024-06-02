@@ -3,6 +3,21 @@ syntax="proto3";
 package proto;
 option go_package = "./;proto";
 
+message OnlineProductInfoRequest{
+    //产线代号
+    string productionLine=1;
+    string productOrderNo=2;
+    string materialNo=3;
+    //产品序列号
+    string productSerialNo=4;
+    //托盘号
+    string trayNo=5;
+    string currentState=6;
+    string assembleTrayNo=7;
+    string materialTrayNo=8;
+    string productionProcess=9;
+}
+
 message EnterProductionStationRequest{
     //工位代号
     string productionStation=1;
