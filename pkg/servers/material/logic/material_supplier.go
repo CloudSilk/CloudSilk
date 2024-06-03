@@ -13,13 +13,13 @@ func CreateMaterialSupplier(m *model.MaterialSupplier) (string, error) {
 }
 
 func UpdateMaterialSupplier(m *model.MaterialSupplier) error {
-	return model.DB.DB().Save(m).Error
+	return model.DB.DB().Omit("created_at").Save(m).Error
 }
 
 func QueryMaterialSupplier(req *proto.QueryMaterialSupplierRequest, resp *proto.QueryMaterialSupplierResponse, preload bool) {
 	db := model.DB.DB().Model(&model.MaterialSupplier{})
 
-	orderStr, err := utils.GenerateOrderString(req.SortConfig, "id")
+	orderStr, err := utils.GenerateOrderString(req.SortConfig, "created_at desc")
 	if err != nil {
 		resp.Code = proto.Code_BadRequest
 		resp.Message = err.Error()
@@ -44,7 +44,7 @@ func GetAllMaterialSuppliers() (list []*model.MaterialSupplier, err error) {
 
 func GetMaterialSupplierByID(id string) (*model.MaterialSupplier, error) {
 	m := &model.MaterialSupplier{}
-	err := model.DB.DB().Preload(clause.Associations).Where("id = ?", id).First(m).Error
+	err := model.DB.DB().Preload(clause.Associations).Where("`id` = ?", id).First(m).Error
 	return m, err
 }
 
@@ -55,5 +55,5 @@ func GetMaterialSupplierByIDs(ids []string) ([]*model.MaterialSupplier, error) {
 }
 
 func DeleteMaterialSupplier(id string) (err error) {
-	return model.DB.DB().Delete(&model.MaterialSupplier{}, "id=?", id).Error
+	return model.DB.DB().Delete(&model.MaterialSupplier{}, "`id` = ?", id).Error
 }

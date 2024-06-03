@@ -12,7 +12,7 @@ type ProductionCrossway struct {
 	DefaultTurn                         int32                                 `json:"defaultTurn" gorm:"comment:默认走向"`
 	Remark                              string                                `json:"remark" gorm:"size:1000;comment:备注"`
 	ProductionLineID                    string                                `json:"productionLineID" gorm:"index;size:36;comment:生产产线ID"`
-	ProductionLine                      *ProductionLine                       `json:"productionLine"`
+	ProductionLine                      *ProductionLine                       `json:"productionLine" gorm:"constraint:OnDelete:CASCADE"`
 	ProductionCrosswayLeftTurnStations  []*ProductionCrosswayLeftTurnStation  `json:"productionCrosswayLeftTurnStations" gorm:"constraint:OnDelete:CASCADE;"`  //产线路口左转工站
 	ProductionCrosswayRightTurnStations []*ProductionCrosswayRightTurnStation `json:"productionCrosswayRightTurnStations" gorm:"constraint:OnDelete:CASCADE;"` //产线路口右转工站
 	ProductionCrosswayStraightStations  []*ProductionCrosswayStraightStation  `json:"productionCrosswayStraightStations" gorm:"constraint:OnDelete:CASCADE;"`  //产线路口交叉工站

@@ -48,6 +48,8 @@ message ProductModelAttributeValueInfo {
 	ProductAttributeInfo productAttribute=4;
 	//设定值 
 	string assignedValue=5;
+	//允许空缺
+	bool allowNullOrBlank=6;
 } 
 
 
@@ -64,6 +66,9 @@ message QueryProductModelRequest{
 	//产品类别ID
 	// @inject_tag: uri:"productCategoryID" form:"productCategoryID"
 	string productCategoryID=6;
+	//是否预制
+	// @inject_tag: uri:"isPrefabricated" form:"isPrefabricated"
+	bool isPrefabricated=7;
 }
 
 message QueryProductModelResponse{

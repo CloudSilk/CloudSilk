@@ -4,15 +4,9 @@ package proto;
 option go_package = "./;proto";
 
 import "mom_common.proto";
-// import "product_category.proto";
 
 service ProductAttribute{
-    rpc Add(ProductAttributeInfo)returns(CommonResponse){}
-    rpc Update(ProductAttributeInfo)returns(CommonResponse){}
-    rpc Delete(DelRequest)returns(CommonResponse){}
     rpc Query(QueryProductAttributeRequest)returns(QueryProductAttributeResponse){}
-    rpc GetAll(GetAllRequest)returns(GetAllProductAttributeResponse){}
-    rpc GetDetail(GetDetailRequest)returns(GetProductAttributeDetailResponse){}
 }
 
 message ProductAttributeInfo {

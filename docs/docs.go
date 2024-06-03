@@ -15,6 +15,756 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
+        "/api/mom/codinggeneration/add": {
+            "post": {
+                "description": "新增",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "编码序列记录"
+                ],
+                "summary": "新增",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "jwt token",
+                        "name": "authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "description": "Add CodingGeneration",
+                        "name": "account",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/proto.CodingGenerationInfo"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/proto.CommonResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/mom/codinggeneration/all": {
+            "get": {
+                "description": "查询所有",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "编码序列记录"
+                ],
+                "summary": "查询所有",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "jwt token",
+                        "name": "authorization",
+                        "in": "header",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/proto.GetAllCodingGenerationResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/mom/codinggeneration/delete": {
+            "delete": {
+                "description": "删除",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "编码序列记录"
+                ],
+                "summary": "删除",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "jwt token",
+                        "name": "authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "description": "Delete CodingGeneration",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/proto.DelRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/proto.CommonResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/mom/codinggeneration/detail": {
+            "get": {
+                "description": "查询明细",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "编码序列记录"
+                ],
+                "summary": "查询明细",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "ID",
+                        "name": "id",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "jwt token",
+                        "name": "authorization",
+                        "in": "header",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/proto.GetCodingGenerationDetailResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/mom/codinggeneration/query": {
+            "get": {
+                "description": "分页查询",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/octet-stream"
+                ],
+                "tags": [
+                    "编码序列记录"
+                ],
+                "summary": "分页查询",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "jwt token",
+                        "name": "authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "从1开始",
+                        "name": "pageIndex",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "默认每页10条",
+                        "name": "pageSize",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "排序字段",
+                        "name": "orderField",
+                        "in": "query"
+                    },
+                    {
+                        "type": "boolean",
+                        "description": "是否倒序排序",
+                        "name": "desc",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/proto.QueryCodingGenerationResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/mom/codinggeneration/update": {
+            "put": {
+                "description": "更新",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "编码序列记录"
+                ],
+                "summary": "更新",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "jwt token",
+                        "name": "authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "description": "Update CodingGeneration",
+                        "name": "account",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/proto.CodingGenerationInfo"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/proto.CommonResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/mom/codingserial/add": {
+            "post": {
+                "description": "新增",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "编码序列管理"
+                ],
+                "summary": "新增",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "jwt token",
+                        "name": "authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "description": "Add CodingSerial",
+                        "name": "account",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/proto.CodingSerialInfo"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/proto.CommonResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/mom/codingserial/all": {
+            "get": {
+                "description": "查询所有",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "编码序列管理"
+                ],
+                "summary": "查询所有",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "jwt token",
+                        "name": "authorization",
+                        "in": "header",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/proto.GetAllCodingSerialResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/mom/codingserial/delete": {
+            "delete": {
+                "description": "删除",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "编码序列管理"
+                ],
+                "summary": "删除",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "jwt token",
+                        "name": "authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "description": "Delete CodingSerial",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/proto.DelRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/proto.CommonResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/mom/codingserial/detail": {
+            "get": {
+                "description": "查询明细",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "编码序列管理"
+                ],
+                "summary": "查询明细",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "ID",
+                        "name": "id",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "jwt token",
+                        "name": "authorization",
+                        "in": "header",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/proto.GetCodingSerialDetailResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/mom/codingserial/query": {
+            "get": {
+                "description": "分页查询",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/octet-stream"
+                ],
+                "tags": [
+                    "编码序列管理"
+                ],
+                "summary": "分页查询",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "jwt token",
+                        "name": "authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "从1开始",
+                        "name": "pageIndex",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "默认每页10条",
+                        "name": "pageSize",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "排序字段",
+                        "name": "orderField",
+                        "in": "query"
+                    },
+                    {
+                        "type": "boolean",
+                        "description": "是否倒序排序",
+                        "name": "desc",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/proto.QueryCodingSerialResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/mom/codingserial/update": {
+            "put": {
+                "description": "更新",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "编码序列管理"
+                ],
+                "summary": "更新",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "jwt token",
+                        "name": "authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "description": "Update CodingSerial",
+                        "name": "account",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/proto.CodingSerialInfo"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/proto.CommonResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/mom/codingtemplate/add": {
+            "post": {
+                "description": "新增",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "编码模版管理"
+                ],
+                "summary": "新增",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "jwt token",
+                        "name": "authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "description": "Add CodingTemplate",
+                        "name": "account",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/proto.CodingTemplateInfo"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/proto.CommonResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/mom/codingtemplate/all": {
+            "get": {
+                "description": "查询所有",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "编码模版管理"
+                ],
+                "summary": "查询所有",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "jwt token",
+                        "name": "authorization",
+                        "in": "header",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/proto.GetAllCodingTemplateResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/mom/codingtemplate/delete": {
+            "delete": {
+                "description": "删除",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "编码模版管理"
+                ],
+                "summary": "删除",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "jwt token",
+                        "name": "authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "description": "Delete CodingTemplate",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/proto.DelRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/proto.CommonResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/mom/codingtemplate/detail": {
+            "get": {
+                "description": "查询明细",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "编码模版管理"
+                ],
+                "summary": "查询明细",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "ID",
+                        "name": "id",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "jwt token",
+                        "name": "authorization",
+                        "in": "header",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/proto.GetCodingTemplateDetailResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/mom/codingtemplate/query": {
+            "get": {
+                "description": "分页查询",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/octet-stream"
+                ],
+                "tags": [
+                    "编码模版管理"
+                ],
+                "summary": "分页查询",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "jwt token",
+                        "name": "authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "从1开始",
+                        "name": "pageIndex",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "默认每页10条",
+                        "name": "pageSize",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "排序字段",
+                        "name": "orderField",
+                        "in": "query"
+                    },
+                    {
+                        "type": "boolean",
+                        "description": "是否倒序排序",
+                        "name": "desc",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/proto.QueryCodingTemplateResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/mom/codingtemplate/update": {
+            "put": {
+                "description": "更新",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "编码模版管理"
+                ],
+                "summary": "更新",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "jwt token",
+                        "name": "authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "description": "Update CodingTemplate",
+                        "name": "account",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/proto.CodingTemplateInfo"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/proto.CommonResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/api/mom/label/labeltemplate/add": {
             "post": {
                 "description": "新增",
@@ -543,7 +1293,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "物料托盘管理"
+                    "物料类别管理"
                 ],
                 "summary": "新增",
                 "parameters": [
@@ -584,7 +1334,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "物料托盘管理"
+                    "物料类别管理"
                 ],
                 "summary": "查询所有",
                 "parameters": [
@@ -616,7 +1366,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "物料托盘管理"
+                    "物料类别管理"
                 ],
                 "summary": "删除",
                 "parameters": [
@@ -657,7 +1407,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "物料托盘管理"
+                    "物料类别管理"
                 ],
                 "summary": "查询明细",
                 "parameters": [
@@ -696,7 +1446,7 @@ const docTemplate = `{
                     "application/octet-stream"
                 ],
                 "tags": [
-                    "物料托盘管理"
+                    "物料类别管理"
                 ],
                 "summary": "分页查询",
                 "parameters": [
@@ -758,7 +1508,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "物料托盘管理"
+                    "物料类别管理"
                 ],
                 "summary": "更新",
                 "parameters": [
@@ -799,7 +1549,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "物料托盘管理"
+                    "物料信息管理"
                 ],
                 "summary": "新增",
                 "parameters": [
@@ -840,7 +1590,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "物料托盘管理"
+                    "物料信息管理"
                 ],
                 "summary": "查询所有",
                 "parameters": [
@@ -872,7 +1622,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "物料托盘管理"
+                    "物料信息管理"
                 ],
                 "summary": "删除",
                 "parameters": [
@@ -913,7 +1663,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "物料托盘管理"
+                    "物料信息管理"
                 ],
                 "summary": "查询明细",
                 "parameters": [
@@ -952,7 +1702,7 @@ const docTemplate = `{
                     "application/octet-stream"
                 ],
                 "tags": [
-                    "物料托盘管理"
+                    "物料信息管理"
                 ],
                 "summary": "分页查询",
                 "parameters": [
@@ -1014,7 +1764,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "物料托盘管理"
+                    "物料信息管理"
                 ],
                 "summary": "更新",
                 "parameters": [
@@ -1055,7 +1805,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "物料托盘管理"
+                    "物料供应商管理"
                 ],
                 "summary": "新增",
                 "parameters": [
@@ -1096,7 +1846,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "物料托盘管理"
+                    "物料供应商管理"
                 ],
                 "summary": "查询所有",
                 "parameters": [
@@ -1128,7 +1878,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "物料托盘管理"
+                    "物料供应商管理"
                 ],
                 "summary": "删除",
                 "parameters": [
@@ -1169,7 +1919,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "物料托盘管理"
+                    "物料供应商管理"
                 ],
                 "summary": "查询明细",
                 "parameters": [
@@ -1208,7 +1958,7 @@ const docTemplate = `{
                     "application/octet-stream"
                 ],
                 "tags": [
-                    "物料托盘管理"
+                    "物料供应商管理"
                 ],
                 "summary": "分页查询",
                 "parameters": [
@@ -1270,7 +2020,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "物料托盘管理"
+                    "物料供应商管理"
                 ],
                 "summary": "更新",
                 "parameters": [
@@ -2708,6 +3458,47 @@ const docTemplate = `{
                 }
             }
         },
+        "/api/mom/product/productorder/cancel": {
+            "put": {
+                "description": "取消",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "生产工单管理"
+                ],
+                "summary": "取消",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "jwt token",
+                        "name": "authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "description": "Cancel ProductOrder",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/proto.GetByIDsRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/proto.CommonResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/api/mom/product/productorder/delete": {
             "delete": {
                 "description": "删除",
@@ -2875,6 +3666,88 @@ const docTemplate = `{
                         "description": "OK",
                         "schema": {
                             "$ref": "#/definitions/proto.QueryProductOrderResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/mom/product/productorder/resume": {
+            "put": {
+                "description": "恢复",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "生产工单管理"
+                ],
+                "summary": "恢复",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "jwt token",
+                        "name": "authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "description": "Resume ProductOrder",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/proto.GetByIDsRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/proto.CommonResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/mom/product/productorder/suspend": {
+            "put": {
+                "description": "暂缓",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "生产工单管理"
+                ],
+                "summary": "暂缓",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "jwt token",
+                        "name": "authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "description": "Suspend ProductOrder",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/proto.GetByIDsRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/proto.CommonResponse"
                         }
                     }
                 }
@@ -5264,7 +6137,7 @@ const docTemplate = `{
                         "in": "query"
                     },
                     {
-                        "type": "integer",
+                        "type": "string",
                         "description": "工单工序ID",
                         "name": "productOrderProcessID",
                         "in": "query"
@@ -6294,7 +7167,7 @@ const docTemplate = `{
                         "in": "query"
                     },
                     {
-                        "type": "integer",
+                        "type": "string",
                         "description": "生产产线ID",
                         "name": "productionLineID",
                         "in": "query"
@@ -7384,7 +8257,7 @@ const docTemplate = `{
                         "in": "query"
                     },
                     {
-                        "type": "integer",
+                        "type": "string",
                         "description": "当前工序",
                         "name": "currentProcessID",
                         "in": "query"
@@ -8462,7 +9335,7 @@ const docTemplate = `{
                         "in": "query"
                     },
                     {
-                        "type": "integer",
+                        "type": "string",
                         "description": "生产产线ID",
                         "name": "productionLineID",
                         "in": "query"
@@ -9558,7 +10431,7 @@ const docTemplate = `{
                         "in": "query"
                     },
                     {
-                        "type": "integer",
+                        "type": "string",
                         "description": "作业产线",
                         "name": "productionLineID",
                         "in": "query"
@@ -9838,7 +10711,7 @@ const docTemplate = `{
                         "in": "query"
                     },
                     {
-                        "type": "integer",
+                        "type": "string",
                         "description": "作业产线",
                         "name": "productionLineID",
                         "in": "query"
@@ -10612,7 +11485,7 @@ const docTemplate = `{
                         "in": "query"
                     },
                     {
-                        "type": "integer",
+                        "type": "string",
                         "description": "产品品牌ID",
                         "name": "productBrandID",
                         "in": "query"
@@ -10868,7 +11741,7 @@ const docTemplate = `{
                         "in": "query"
                     },
                     {
-                        "type": "integer",
+                        "type": "string",
                         "description": "产品类别ID",
                         "name": "productCategoryID",
                         "in": "query"
@@ -11183,9 +12056,15 @@ const docTemplate = `{
                         "in": "query"
                     },
                     {
-                        "type": "integer",
+                        "type": "string",
                         "description": "产品类别ID",
                         "name": "productCategoryID",
+                        "in": "query"
+                    },
+                    {
+                        "type": "boolean",
+                        "description": "是否预制",
+                        "name": "IsPrefabricated",
                         "in": "query"
                     }
                 ],
@@ -11439,9 +12318,15 @@ const docTemplate = `{
                         "in": "query"
                     },
                     {
-                        "type": "integer",
+                        "type": "string",
                         "description": "产品类别ID",
                         "name": "productCategoryID",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "产品型号ID",
+                        "name": "productModelID",
                         "in": "query"
                     }
                 ],
@@ -11496,7 +12381,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/api/mom/production/processstepmatchrule/add": {
+        "/api/mom/production/processstepparameter/add": {
             "post": {
                 "description": "新增",
                 "consumes": [
@@ -11506,7 +12391,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "工步匹配规则管理"
+                    "工步参数管理"
                 ],
                 "summary": "新增",
                 "parameters": [
@@ -11518,12 +12403,12 @@ const docTemplate = `{
                         "required": true
                     },
                     {
-                        "description": "Add ProcessStepMatchRule",
+                        "description": "Add ProcessStepParameter",
                         "name": "account",
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/proto.ProcessStepMatchRuleInfo"
+                            "$ref": "#/definitions/proto.ProcessStepParameterInfo"
                         }
                     }
                 ],
@@ -11537,7 +12422,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/api/mom/production/processstepmatchrule/all": {
+        "/api/mom/production/processstepparameter/all": {
             "get": {
                 "description": "查询所有",
                 "consumes": [
@@ -11547,7 +12432,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "工步匹配规则管理"
+                    "工步参数管理"
                 ],
                 "summary": "查询所有",
                 "parameters": [
@@ -11563,13 +12448,52 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/proto.GetAllProcessStepMatchRuleResponse"
+                            "$ref": "#/definitions/proto.GetAllProcessStepParameterResponse"
                         }
                     }
                 }
             }
         },
-        "/api/mom/production/processstepmatchrule/delete": {
+        "/api/mom/production/processstepparameter/all/productionlineid": {
+            "get": {
+                "description": "查询产线下所有工步参数",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "工步参数管理"
+                ],
+                "summary": "查询产线下所有工步参数",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "生产产线ID",
+                        "name": "productionLineID",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "jwt token",
+                        "name": "authorization",
+                        "in": "header",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/proto.GetProductionLineDetailResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/mom/production/processstepparameter/delete": {
             "delete": {
                 "description": "删除",
                 "consumes": [
@@ -11579,7 +12503,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "工步匹配规则管理"
+                    "工步参数管理"
                 ],
                 "summary": "删除",
                 "parameters": [
@@ -11591,7 +12515,7 @@ const docTemplate = `{
                         "required": true
                     },
                     {
-                        "description": "Delete ProcessStepMatchRule",
+                        "description": "Delete ProcessStepParameter",
                         "name": "data",
                         "in": "body",
                         "required": true,
@@ -11610,7 +12534,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/api/mom/production/processstepmatchrule/detail": {
+        "/api/mom/production/processstepparameter/detail": {
             "get": {
                 "description": "查询明细",
                 "consumes": [
@@ -11620,7 +12544,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "工步匹配规则管理"
+                    "工步参数管理"
                 ],
                 "summary": "查询明细",
                 "parameters": [
@@ -11643,13 +12567,13 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/proto.GetProcessStepMatchRuleDetailResponse"
+                            "$ref": "#/definitions/proto.GetProcessStepParameterDetailResponse"
                         }
                     }
                 }
             }
         },
-        "/api/mom/production/processstepmatchrule/query": {
+        "/api/mom/production/processstepparameter/query": {
             "get": {
                 "description": "分页查询",
                 "consumes": [
@@ -11659,7 +12583,7 @@ const docTemplate = `{
                     "application/octet-stream"
                 ],
                 "tags": [
-                    "工步匹配规则管理"
+                    "工步参数管理"
                 ],
                 "summary": "分页查询",
                 "parameters": [
@@ -11693,19 +12617,31 @@ const docTemplate = `{
                         "description": "是否倒序排序",
                         "name": "desc",
                         "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "代号或描述",
+                        "name": "code",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "产线ID",
+                        "name": "productionLineID",
+                        "in": "query"
                     }
                 ],
                 "responses": {
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/proto.QueryProcessStepMatchRuleResponse"
+                            "$ref": "#/definitions/proto.QueryProcessStepParameterResponse"
                         }
                     }
                 }
             }
         },
-        "/api/mom/production/processstepmatchrule/update": {
+        "/api/mom/production/processstepparameter/update": {
             "put": {
                 "description": "更新",
                 "consumes": [
@@ -11715,7 +12651,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "工步匹配规则管理"
+                    "工步参数管理"
                 ],
                 "summary": "更新",
                 "parameters": [
@@ -11727,12 +12663,12 @@ const docTemplate = `{
                         "required": true
                     },
                     {
-                        "description": "Update ProcessStepMatchRule",
+                        "description": "Update ProcessStepParameter",
                         "name": "account",
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/proto.ProcessStepMatchRuleInfo"
+                            "$ref": "#/definitions/proto.ProcessStepParameterInfo"
                         }
                     }
                 ],
@@ -12201,7 +13137,7 @@ const docTemplate = `{
                         "in": "query"
                     },
                     {
-                        "type": "integer",
+                        "type": "string",
                         "description": "生产产线ID",
                         "name": "productionLineID",
                         "in": "query"
@@ -12457,7 +13393,7 @@ const docTemplate = `{
                         "in": "query"
                     },
                     {
-                        "type": "integer",
+                        "type": "string",
                         "description": "生产产线ID",
                         "name": "productionLineID",
                         "in": "query"
@@ -12713,7 +13649,7 @@ const docTemplate = `{
                         "in": "query"
                     },
                     {
-                        "type": "integer",
+                        "type": "string",
                         "description": "生产工序ID",
                         "name": "productionProcessID",
                         "in": "query"
@@ -12969,7 +13905,7 @@ const docTemplate = `{
                         "in": "query"
                     },
                     {
-                        "type": "integer",
+                        "type": "string",
                         "description": "生产产线ID",
                         "name": "productionLineID",
                         "in": "query"
@@ -13237,7 +14173,7 @@ const docTemplate = `{
                         "in": "query"
                     },
                     {
-                        "type": "integer",
+                        "type": "string",
                         "description": "生产产线ID",
                         "name": "productionLineID",
                         "in": "query"
@@ -13523,7 +14459,7 @@ const docTemplate = `{
                         "in": "query"
                     },
                     {
-                        "type": "integer",
+                        "type": "string",
                         "description": "生产产线ID",
                         "name": "productionLineID",
                         "in": "query"
@@ -14601,7 +15537,7 @@ const docTemplate = `{
                         "in": "query"
                     },
                     {
-                        "type": "integer",
+                        "type": "string",
                         "description": "生产产线ID",
                         "name": "productionLineID",
                         "in": "query"
@@ -15119,7 +16055,7 @@ const docTemplate = `{
                         "in": "query"
                     },
                     {
-                        "type": "integer",
+                        "type": "string",
                         "description": "生产工厂ID ",
                         "name": "productionFactoryID",
                         "in": "query"
@@ -15387,7 +16323,7 @@ const docTemplate = `{
                         "in": "query"
                     },
                     {
-                        "type": "integer",
+                        "type": "string",
                         "description": "生产产线ID",
                         "name": "productionLineID",
                         "in": "query"
@@ -18233,7 +19169,7 @@ const docTemplate = `{
                         "in": "query"
                     },
                     {
-                        "type": "integer",
+                        "type": "string",
                         "description": "任务队列ID",
                         "name": "taskQueueID",
                         "in": "query"
@@ -19323,7 +20259,7 @@ const docTemplate = `{
                         "in": "query"
                     },
                     {
-                        "type": "integer",
+                        "type": "string",
                         "description": "生产产线ID",
                         "name": "productionLineID",
                         "in": "query"
@@ -19585,7 +20521,7 @@ const docTemplate = `{
                         "in": "query"
                     },
                     {
-                        "type": "integer",
+                        "type": "string",
                         "description": "生产产线ID",
                         "name": "productionLineID",
                         "in": "query"
@@ -20034,47 +20970,6 @@ const docTemplate = `{
                     }
                 }
             }
-        },
-        "/api/mom/webapi/quality/getTestProjectWithParameter": {
-            "post": {
-                "description": "获取测试项接口数据接口",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "WebAPI"
-                ],
-                "summary": "获取测试项接口数据接口",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "jwt token",
-                        "name": "authorization",
-                        "in": "header",
-                        "required": true
-                    },
-                    {
-                        "description": "GetTestProjectWithParameterRequest",
-                        "name": "account",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/proto.GetTestProjectWithParameterRequest"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/proto.GetTestProjectWithParameterResponse"
-                        }
-                    }
-                }
-            }
         }
     },
     "definitions": {
@@ -20151,6 +21046,9 @@ const docTemplate = `{
                 "productionProcessID": {
                     "type": "string"
                 },
+                "productionProcessStep": {
+                    "$ref": "#/definitions/proto.ProductionProcessStepInfo"
+                },
                 "productionProcessStepID": {
                     "type": "string"
                 }
@@ -20202,6 +21100,169 @@ const docTemplate = `{
                 "Code_UserDisabled"
             ]
         },
+        "proto.CodingElementInfo": {
+            "type": "object",
+            "properties": {
+                "CodingTemplateID": {
+                    "description": "编码模板ID",
+                    "type": "string"
+                },
+                "DataBits": {
+                    "description": "数据位数",
+                    "type": "integer"
+                },
+                "DefaultValue": {
+                    "description": "预设值",
+                    "type": "string"
+                },
+                "ElementType": {
+                    "description": "元素类型",
+                    "type": "integer"
+                },
+                "Name": {
+                    "description": "名称",
+                    "type": "string"
+                },
+                "PlaceHolder": {
+                    "description": "占位符",
+                    "type": "string"
+                },
+                "Remark": {
+                    "description": "备注",
+                    "type": "string"
+                },
+                "SortIndex": {
+                    "description": "顺序",
+                    "type": "integer"
+                },
+                "codingElementValues": {
+                    "description": "编码元素值",
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/proto.CodingElementValueInfo"
+                    }
+                },
+                "id": {
+                    "description": "ID",
+                    "type": "string"
+                }
+            }
+        },
+        "proto.CodingElementValueInfo": {
+            "type": "object",
+            "properties": {
+                "CodingElementID": {
+                    "description": "编码元素ID",
+                    "type": "string"
+                },
+                "Description": {
+                    "description": "描述",
+                    "type": "string"
+                },
+                "Value": {
+                    "description": "值",
+                    "type": "string"
+                },
+                "id": {
+                    "description": "ID",
+                    "type": "string"
+                }
+            }
+        },
+        "proto.CodingGenerationInfo": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "description": "编码",
+                    "type": "string"
+                },
+                "codingTemplate": {
+                    "description": "编码模板",
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/proto.CodingTemplateInfo"
+                        }
+                    ]
+                },
+                "codingTemplateID": {
+                    "description": "编码模板ID",
+                    "type": "string"
+                },
+                "createTime": {
+                    "description": "创建时间",
+                    "type": "string"
+                },
+                "createUserID": {
+                    "description": "创建人员ID",
+                    "type": "string"
+                },
+                "id": {
+                    "description": "ID",
+                    "type": "string"
+                }
+            }
+        },
+        "proto.CodingSerialInfo": {
+            "type": "object",
+            "properties": {
+                "createTime": {
+                    "description": "创建时间",
+                    "type": "string"
+                },
+                "id": {
+                    "description": "ID",
+                    "type": "string"
+                },
+                "lastIncreaseTime": {
+                    "description": "最后增长时间",
+                    "type": "string"
+                },
+                "prefix": {
+                    "description": "前缀",
+                    "type": "string"
+                },
+                "seed": {
+                    "description": "种子",
+                    "type": "integer"
+                }
+            }
+        },
+        "proto.CodingTemplateInfo": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "description": "代号",
+                    "type": "string"
+                },
+                "codingElements": {
+                    "description": "编码元素",
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/proto.CodingElementInfo"
+                    }
+                },
+                "description": {
+                    "description": "描述",
+                    "type": "string"
+                },
+                "id": {
+                    "description": "ID",
+                    "type": "string"
+                },
+                "indexBits": {
+                    "description": "索引位数",
+                    "type": "integer"
+                },
+                "indexType": {
+                    "description": "索引类型",
+                    "type": "integer"
+                },
+                "remark": {
+                    "description": "备注",
+                    "type": "string"
+                }
+            }
+        },
         "proto.CommonResponse": {
             "type": "object",
             "properties": {
@@ -20216,25 +21277,25 @@ const docTemplate = `{
         "proto.CreateProductTestRecordRequest": {
             "type": "object",
             "properties": {
-                "IsQualified": {
+                "isQualified": {
                     "type": "boolean"
                 },
-                "ProductSerialNo": {
+                "productSerialNo": {
                     "type": "string"
                 },
-                "ProductionStation": {
+                "productionStation": {
                     "type": "string"
                 },
-                "TestData": {
+                "testData": {
                     "type": "string"
                 },
-                "TestEndTime": {
+                "testEndTime": {
                     "type": "string"
                 },
-                "TestProject": {
+                "testProject": {
                     "type": "string"
                 },
-                "TestStartTime": {
+                "testStartTime": {
                     "type": "string"
                 }
             }
@@ -20470,6 +21531,57 @@ const docTemplate = `{
                 },
                 "waitTime": {
                     "type": "integer"
+                }
+            }
+        },
+        "proto.GetAllCodingGenerationResponse": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "$ref": "#/definitions/proto.Code"
+                },
+                "data": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/proto.CodingGenerationInfo"
+                    }
+                },
+                "message": {
+                    "type": "string"
+                }
+            }
+        },
+        "proto.GetAllCodingSerialResponse": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "$ref": "#/definitions/proto.Code"
+                },
+                "data": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/proto.CodingSerialInfo"
+                    }
+                },
+                "message": {
+                    "type": "string"
+                }
+            }
+        },
+        "proto.GetAllCodingTemplateResponse": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "$ref": "#/definitions/proto.Code"
+                },
+                "data": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/proto.CodingTemplateInfo"
+                    }
+                },
+                "message": {
+                    "type": "string"
                 }
             }
         },
@@ -20711,7 +21823,7 @@ const docTemplate = `{
                 }
             }
         },
-        "proto.GetAllProcessStepMatchRuleResponse": {
+        "proto.GetAllProcessStepParameterResponse": {
             "type": "object",
             "properties": {
                 "code": {
@@ -20720,7 +21832,7 @@ const docTemplate = `{
                 "data": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/proto.ProcessStepMatchRuleInfo"
+                        "$ref": "#/definitions/proto.ProcessStepParameterInfo"
                     }
                 },
                 "message": {
@@ -21731,6 +22843,59 @@ const docTemplate = `{
                 }
             }
         },
+        "proto.GetByIDsRequest": {
+            "type": "object",
+            "properties": {
+                "ids": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                }
+            }
+        },
+        "proto.GetCodingGenerationDetailResponse": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "$ref": "#/definitions/proto.Code"
+                },
+                "data": {
+                    "$ref": "#/definitions/proto.CodingGenerationInfo"
+                },
+                "message": {
+                    "type": "string"
+                }
+            }
+        },
+        "proto.GetCodingSerialDetailResponse": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "$ref": "#/definitions/proto.Code"
+                },
+                "data": {
+                    "$ref": "#/definitions/proto.CodingSerialInfo"
+                },
+                "message": {
+                    "type": "string"
+                }
+            }
+        },
+        "proto.GetCodingTemplateDetailResponse": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "$ref": "#/definitions/proto.Code"
+                },
+                "data": {
+                    "$ref": "#/definitions/proto.CodingTemplateInfo"
+                },
+                "message": {
+                    "type": "string"
+                }
+            }
+        },
         "proto.GetDataMappingDetailResponse": {
             "type": "object",
             "properties": {
@@ -21927,14 +23092,14 @@ const docTemplate = `{
                 }
             }
         },
-        "proto.GetProcessStepMatchRuleDetailResponse": {
+        "proto.GetProcessStepParameterDetailResponse": {
             "type": "object",
             "properties": {
                 "code": {
                     "$ref": "#/definitions/proto.Code"
                 },
                 "data": {
-                    "$ref": "#/definitions/proto.ProcessStepMatchRuleInfo"
+                    "$ref": "#/definitions/proto.ProcessStepParameterInfo"
                 },
                 "message": {
                     "type": "string"
@@ -22767,37 +23932,6 @@ const docTemplate = `{
                 }
             }
         },
-        "proto.GetTestProjectWithParameterRequest": {
-            "type": "object",
-            "properties": {
-                "productSerialNo": {
-                    "description": "产品序列号",
-                    "type": "string"
-                },
-                "productionStation": {
-                    "description": "工位代号",
-                    "type": "string"
-                },
-                "trayNo": {
-                    "description": "托盘号",
-                    "type": "string"
-                }
-            }
-        },
-        "proto.GetTestProjectWithParameterResponse": {
-            "type": "object",
-            "properties": {
-                "code": {
-                    "type": "integer"
-                },
-                "data": {
-                    "$ref": "#/definitions/proto.TestProjectWithParameterInfo"
-                },
-                "message": {
-                    "type": "string"
-                }
-            }
-        },
         "proto.InvocationAuthenticationInfo": {
             "type": "object",
             "properties": {
@@ -22956,16 +24090,16 @@ const docTemplate = `{
         "proto.LoginRequest": {
             "type": "object",
             "properties": {
-                "CardNo": {
+                "cardNo": {
                     "type": "string"
                 },
-                "Name": {
+                "name": {
                     "type": "string"
                 },
-                "Password": {
+                "password": {
                     "type": "string"
                 },
-                "ProductionStation": {
+                "productionStation": {
                     "type": "string"
                 }
             }
@@ -22973,10 +24107,10 @@ const docTemplate = `{
         "proto.LogoutRequest": {
             "type": "object",
             "properties": {
-                "Name": {
+                "name": {
                     "type": "string"
                 },
-                "ProductionStation": {
+                "productionStation": {
                     "type": "string"
                 }
             }
@@ -23188,35 +24322,6 @@ const docTemplate = `{
                 }
             }
         },
-        "proto.ParameterInfo": {
-            "type": "object",
-            "properties": {
-                "code": {
-                    "type": "string"
-                },
-                "description": {
-                    "type": "string"
-                },
-                "groupCode": {
-                    "type": "string"
-                },
-                "maximumValue": {
-                    "type": "string"
-                },
-                "minimumValue": {
-                    "type": "string"
-                },
-                "projectCode": {
-                    "type": "string"
-                },
-                "standardValue": {
-                    "type": "string"
-                },
-                "unit": {
-                    "type": "string"
-                }
-            }
-        },
         "proto.PersonnelQualificationInfo": {
             "type": "object",
             "properties": {
@@ -23360,14 +24465,19 @@ const docTemplate = `{
                 }
             }
         },
-        "proto.ProcessStepMatchRuleInfo": {
+        "proto.ProcessStepParameterInfo": {
             "type": "object",
             "properties": {
-                "AttributeExpressions": {
+                "attributeExpressions": {
+                    "description": "特性表达式",
                     "type": "array",
                     "items": {
                         "$ref": "#/definitions/proto.AttributeExpressionInfo"
                     }
+                },
+                "code": {
+                    "description": "代号",
+                    "type": "string"
                 },
                 "description": {
                     "description": "描述",
@@ -23377,34 +24487,80 @@ const docTemplate = `{
                     "description": "是否启用",
                     "type": "boolean"
                 },
-                "groupCode": {
-                    "description": "采集组",
-                    "type": "string"
-                },
                 "id": {
                     "description": "ID",
                     "type": "string"
-                },
-                "initialValue": {
-                    "description": "默认匹配",
-                    "type": "boolean"
                 },
                 "priority": {
                     "description": "优先级",
                     "type": "integer"
                 },
+                "processStepParameterValues": {
+                    "description": "生产工步参数值",
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/proto.ProcessStepParameterValueInfo"
+                    }
+                },
+                "productionLine": {
+                    "description": "生产产线",
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/proto.ProductionLineInfo"
+                        }
+                    ]
+                },
                 "productionLineID": {
-                    "description": "生产产线ID",
-                    "type": "string"
-                },
-                "productionProcessStep": {
-                    "$ref": "#/definitions/proto.ProductionProcessStepInfo"
-                },
-                "productionProcessStepID": {
+                    "description": "产线ID",
                     "type": "string"
                 },
                 "remark": {
                     "description": "备注",
+                    "type": "string"
+                }
+            }
+        },
+        "proto.ProcessStepParameterValueInfo": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "description": "ID",
+                    "type": "string"
+                },
+                "maximumValue": {
+                    "description": "最大值",
+                    "type": "string"
+                },
+                "minimumValue": {
+                    "description": "最小值",
+                    "type": "string"
+                },
+                "processStepParameterID": {
+                    "description": "生产工步参数ID",
+                    "type": "string"
+                },
+                "processStepTypeParameterID": {
+                    "description": "生产工步类型参数ID",
+                    "type": "string"
+                },
+                "productionProcessID": {
+                    "description": "生产工序ID",
+                    "type": "string"
+                },
+                "productionProcessStep": {
+                    "description": "生产工步",
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/proto.ProductionProcessStepInfo"
+                        }
+                    ]
+                },
+                "productionProcessStepID": {
+                    "description": "生产工步ID",
+                    "type": "string"
+                },
+                "standardValue": {
+                    "description": "标准值",
                     "type": "string"
                 }
             }
@@ -23460,17 +24616,16 @@ const docTemplate = `{
                     "description": "描述",
                     "type": "string"
                 },
-                "groupCode": {
-                    "type": "string"
-                },
                 "id": {
                     "description": "ID",
                     "type": "string"
                 },
                 "maximumValue": {
+                    "description": "最大值",
                     "type": "string"
                 },
                 "minimumValue": {
+                    "description": "最小值",
                     "type": "string"
                 },
                 "parameterType": {
@@ -23489,7 +24644,12 @@ const docTemplate = `{
                     "description": "是否必填",
                     "type": "boolean"
                 },
+                "standardValue": {
+                    "description": "标准值",
+                    "type": "string"
+                },
                 "unit": {
+                    "description": "单位",
                     "type": "string"
                 }
             }
@@ -23909,6 +25069,10 @@ const docTemplate = `{
         "proto.ProductModelAttributeValueInfo": {
             "type": "object",
             "properties": {
+                "allowNullOrBlank": {
+                    "description": "允许空缺",
+                    "type": "boolean"
+                },
                 "assignedValue": {
                     "description": "设定值",
                     "type": "string"
@@ -25910,6 +27074,12 @@ const docTemplate = `{
                     "description": "物料管控",
                     "type": "boolean"
                 },
+                "processStepParameters": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/proto.ProcessStepParameterInfo"
+                    }
+                },
                 "productModelID": {
                     "description": "当前型号ID",
                     "type": "string"
@@ -25930,6 +27100,12 @@ const docTemplate = `{
                     "type": "array",
                     "items": {
                         "$ref": "#/definitions/proto.ProductionLineSupportableCategoryInfo"
+                    }
+                },
+                "productionProcesses": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/proto.ProductionProcessInfo"
                     }
                 },
                 "productionStations": {
@@ -25982,10 +27158,17 @@ const docTemplate = `{
             "type": "object",
             "properties": {
                 "attributeExpressions": {
-                    "description": "支援工序\nrepeated ProductionProcessInfo productionProcesses=20;",
+                    "description": "特性表达式",
                     "type": "array",
                     "items": {
                         "$ref": "#/definitions/proto.AttributeExpressionInfo"
+                    }
+                },
+                "availableStationIDs": {
+                    "description": "支持工站",
+                    "type": "array",
+                    "items": {
+                        "type": "string"
                     }
                 },
                 "code": {
@@ -26036,19 +27219,20 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "productionProcessAvailableStations": {
-                    "description": "支持工站",
                     "type": "array",
                     "items": {
                         "$ref": "#/definitions/proto.ProductionProcessAvailableStationInfo"
                     }
                 },
+                "productionProcessSteps": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/proto.AvailableProcessInfo"
+                    }
+                },
                 "remark": {
                     "description": "备注",
                     "type": "string"
-                },
-                "simulateExecution": {
-                    "description": "模拟执行",
-                    "type": "boolean"
                 },
                 "sortIndex": {
                     "description": "顺序",
@@ -26136,10 +27320,6 @@ const docTemplate = `{
                     "description": "图示",
                     "type": "string"
                 },
-                "groupCode": {
-                    "description": "采集组",
-                    "type": "string"
-                },
                 "id": {
                     "description": "ID",
                     "type": "string"
@@ -26157,10 +27337,6 @@ const docTemplate = `{
                 },
                 "processStepTypeID": {
                     "description": "工步类型ID",
-                    "type": "string"
-                },
-                "productionLineID": {
-                    "description": "生产产线ID",
                     "type": "string"
                 },
                 "remark": {
@@ -26564,6 +27740,84 @@ const docTemplate = `{
                 }
             }
         },
+        "proto.QueryCodingGenerationResponse": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "$ref": "#/definitions/proto.Code"
+                },
+                "data": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/proto.CodingGenerationInfo"
+                    }
+                },
+                "message": {
+                    "type": "string"
+                },
+                "pages": {
+                    "type": "integer"
+                },
+                "records": {
+                    "type": "integer"
+                },
+                "total": {
+                    "type": "integer"
+                }
+            }
+        },
+        "proto.QueryCodingSerialResponse": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "$ref": "#/definitions/proto.Code"
+                },
+                "data": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/proto.CodingSerialInfo"
+                    }
+                },
+                "message": {
+                    "type": "string"
+                },
+                "pages": {
+                    "type": "integer"
+                },
+                "records": {
+                    "type": "integer"
+                },
+                "total": {
+                    "type": "integer"
+                }
+            }
+        },
+        "proto.QueryCodingTemplateResponse": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "$ref": "#/definitions/proto.Code"
+                },
+                "data": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/proto.CodingTemplateInfo"
+                    }
+                },
+                "message": {
+                    "type": "string"
+                },
+                "pages": {
+                    "type": "integer"
+                },
+                "records": {
+                    "type": "integer"
+                },
+                "total": {
+                    "type": "integer"
+                }
+            }
+        },
         "proto.QueryDataMappingResponse": {
             "type": "object",
             "properties": {
@@ -26928,7 +28182,7 @@ const docTemplate = `{
                 }
             }
         },
-        "proto.QueryProcessStepMatchRuleResponse": {
+        "proto.QueryProcessStepParameterResponse": {
             "type": "object",
             "properties": {
                 "code": {
@@ -26937,7 +28191,7 @@ const docTemplate = `{
                 "data": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/proto.ProcessStepMatchRuleInfo"
+                        "$ref": "#/definitions/proto.ProcessStepParameterInfo"
                     }
                 },
                 "message": {
@@ -28719,10 +29973,10 @@ const docTemplate = `{
         "proto.RetrieveProductAttributeRequest": {
             "type": "object",
             "properties": {
-                "Code": {
+                "code": {
                     "type": "string"
                 },
-                "Description": {
+                "description": {
                     "type": "string"
                 }
             }
@@ -28730,7 +29984,7 @@ const docTemplate = `{
         "proto.RetrieveProductionCrosswayRequest": {
             "type": "object",
             "properties": {
-                "ProductionLine": {
+                "productionLine": {
                     "type": "string"
                 }
             }
@@ -29073,43 +30327,6 @@ const docTemplate = `{
                 "value": {
                     "description": "值",
                     "type": "string"
-                }
-            }
-        },
-        "proto.TestProjectInfo": {
-            "type": "object",
-            "properties": {
-                "code": {
-                    "type": "string"
-                },
-                "description": {
-                    "type": "string"
-                },
-                "id": {
-                    "type": "string"
-                }
-            }
-        },
-        "proto.TestProjectWithParameterInfo": {
-            "type": "object",
-            "properties": {
-                "InputParameters": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/proto.ParameterInfo"
-                    }
-                },
-                "OutputParameters": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/proto.ParameterInfo"
-                    }
-                },
-                "TestProjects": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/proto.TestProjectInfo"
-                    }
                 }
             }
         }

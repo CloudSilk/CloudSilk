@@ -11,7 +11,7 @@ import (
 )
 
 func CreateProductModelBom(m *model.ProductModelBom) (string, error) {
-	duplication, err := model.DB.CreateWithCheckDuplication(m, " material_no =? ", m.MaterialNo)
+	duplication, err := model.DB.CreateWithCheckDuplication(m, " `material_no`  = ? ", m.MaterialNo)
 	if err != nil {
 		return "", err
 	}
@@ -24,14 +24,14 @@ func CreateProductModelBom(m *model.ProductModelBom) (string, error) {
 func UpdateProductModelBom(m *model.ProductModelBom) error {
 	return model.DB.DB().Transaction(func(tx *gorm.DB) error {
 		oldProductModelBom := &model.ProductModelBom{}
-		if err := tx.Preload(clause.Associations).Where("id = ?", m.ID).First(oldProductModelBom).Error; err != nil {
+		if err := tx.Preload(clause.Associations).Where("`id` = ?", m.ID).First(oldProductModelBom).Error; err != nil {
 			return err
 		}
 		// omits := []string{}
 		// if m.ProductModelID == "" {
 		// 	omits = append(omits, "ProductModelID")
 		// }
-		duplication, err := model.DB.UpdateWithCheckDuplicationAndOmit(tx, m, true, []string{}, "id <> ?  and  material_no =? ", m.ID, m.MaterialNo)
+		duplication, err := model.DB.UpdateWithCheckDuplicationAndOmit(tx, m, true, []string{"created_at"}, "`id` <> ?  and  `material_no`  = ? ", m.ID, m.MaterialNo)
 		if err != nil {
 			return err
 		}
@@ -49,8 +49,11 @@ func QueryProductModelBom(req *proto.QueryProductModelBomRequest, resp *proto.Qu
 		db = db.Joins("JOIN product_models ON product_model_boms.product_model_id=product_models.id").
 			Where("product_models.product_category_id = ?", req.ProductCategoryID)
 	}
+	if req.ProductModelID != "" {
+		db = db.Where("`product_model_id`=?", req.ProductModelID)
+	}
 
-	orderStr, err := utils.GenerateOrderString(req.SortConfig, "id")
+	orderStr, err := utils.GenerateOrderString(req.SortConfig, "created_at desc")
 	if err != nil {
 		resp.Code = proto.Code_BadRequest
 		resp.Message = err.Error()
@@ -75,16 +78,16 @@ func GetAllProductModelBoms() (list []*model.ProductModelBom, err error) {
 
 func GetProductModelBomByID(id string) (*model.ProductModelBom, error) {
 	m := &model.ProductModelBom{}
-	err := model.DB.DB().Preload("ProductModel").Preload(clause.Associations).Where("id = ?", id).First(m).Error
+	err := model.DB.DB().Preload("ProductModel").Preload(clause.Associations).Where("`id` = ?", id).First(m).Error
 	return m, err
 }
 
 func GetProductModelBomByIDs(ids []string) ([]*model.ProductModelBom, error) {
 	var m []*model.ProductModelBom
-	err := model.DB.DB().Preload(clause.Associations).Where("id in (?)", ids).Find(&m).Error
+	err := model.DB.DB().Preload(clause.Associations).Where("`id` in (?)", ids).Find(&m).Error
 	return m, err
 }
 
 func DeleteProductModelBom(id string) (err error) {
-	return model.DB.DB().Delete(&model.ProductModelBom{}, "id=?", id).Error
+	return model.DB.DB().Delete(&model.ProductModelBom{}, "`id` = ?", id).Error
 }

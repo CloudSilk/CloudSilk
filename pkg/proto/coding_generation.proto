@@ -1,0 +1,55 @@
+syntax="proto3";
+
+package proto;
+option go_package = "./;proto";
+
+import "mom_common.proto";
+import "coding_template.proto";
+
+message CodingGenerationInfo {
+	//ID 
+ 	string id=1;
+    //编码
+    string code=2;
+    //创建时间
+    string createTime=3;
+    //创建人员ID
+    string createUserID=4;
+    //编码模板ID
+    string codingTemplateID=5;
+    //编码模板
+    CodingTemplateInfo codingTemplate=6;
+}
+
+message QueryCodingGenerationRequest{
+    // @inject_tag: uri:"pageIndex" form:"pageIndex"
+    int64 pageIndex=1;
+    // @inject_tag: uri:"pageSize" form:"pageSize"
+    int64 pageSize=2;
+    // @inject_tag: uri:"sortConfig" form:"sortConfig"
+    string sortConfig=3;
+    //编码模板ID
+    // @inject_tag: uri:"codingTemplateID" form:"codingTemplateID"
+    string codingTemplateID=4;
+}
+
+message QueryCodingGenerationResponse{
+    Code code=1;
+    string message=2;
+    repeated CodingGenerationInfo data=3;
+    int64 pages=4;
+    int64 records=5;
+    int64 total=6;
+}
+
+message GetAllCodingGenerationResponse{
+    Code code=1;
+    string message=2;
+    repeated CodingGenerationInfo data=3;
+}
+
+message GetCodingGenerationDetailResponse{
+    Code code=1;
+    string message=2;
+    CodingGenerationInfo data=3;
+}

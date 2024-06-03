@@ -12,6 +12,7 @@ type ProductAttribute struct {
 	DefaultValue                string                        `json:"defaultValue" gorm:"size:100;comment:预设值"`
 	Remark                      string                        `json:"remark" gorm:"size:500;comment:备注"`
 	ProductAttributeIdentifiers []*ProductAttributeIdentifier `json:"productAttributeIdentifiers" gorm:"constraint:OnDelete:CASCADE;"` //产品特征标识符
+	ProductCategoryAttributes   []*ProductCategoryAttribute   `gorm:"constraint:OnDelete:CASCADE"`
 }
 
 // 产品特征标识符

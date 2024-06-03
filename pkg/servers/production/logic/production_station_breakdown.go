@@ -13,7 +13,7 @@ func CreateProductionStationBreakdown(m *model.ProductionStationBreakdown) (stri
 }
 
 func UpdateProductionStationBreakdown(m *model.ProductionStationBreakdown) error {
-	return model.DB.DB().Omit("create_time").Save(m).Error
+	return model.DB.DB().Omit("created_at", "create_time").Save(m).Error
 }
 
 func QueryProductionStationBreakdown(req *proto.QueryProductionStationBreakdownRequest, resp *proto.QueryProductionStationBreakdownResponse, preload bool) {
@@ -26,7 +26,7 @@ func QueryProductionStationBreakdown(req *proto.QueryProductionStationBreakdownR
 		db = db.Where("production_station_breakdowns.create_time BETWEEN ? AND ?", req.CreateTime0, req.CreateTime1)
 	}
 
-	orderStr, err := utils.GenerateOrderString(req.SortConfig, "id")
+	orderStr, err := utils.GenerateOrderString(req.SortConfig, "created_at desc")
 	if err != nil {
 		resp.Code = proto.Code_BadRequest
 		resp.Message = err.Error()
@@ -51,16 +51,16 @@ func GetAllProductionStationBreakdowns() (list []*model.ProductionStationBreakdo
 
 func GetProductionStationBreakdownByID(id string) (*model.ProductionStationBreakdown, error) {
 	m := &model.ProductionStationBreakdown{}
-	err := model.DB.DB().Preload(clause.Associations).Where("id = ?", id).First(m).Error
+	err := model.DB.DB().Preload(clause.Associations).Where("`id` = ?", id).First(m).Error
 	return m, err
 }
 
 func GetProductionStationBreakdownByIDs(ids []string) ([]*model.ProductionStationBreakdown, error) {
 	var m []*model.ProductionStationBreakdown
-	err := model.DB.DB().Preload(clause.Associations).Where("id in (?)", ids).Find(&m).Error
+	err := model.DB.DB().Preload(clause.Associations).Where("`id` in (?)", ids).Find(&m).Error
 	return m, err
 }
 
 func DeleteProductionStationBreakdown(id string) (err error) {
-	return model.DB.DB().Delete(&model.ProductionStationBreakdown{}, "id=?", id).Error
+	return model.DB.DB().Delete(&model.ProductionStationBreakdown{}, "`id` = ?", id).Error
 }

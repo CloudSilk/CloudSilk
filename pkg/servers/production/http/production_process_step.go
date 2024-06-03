@@ -4,9 +4,9 @@ import (
 	"context"
 	"net/http"
 
-	"github.com/CloudSilk/CloudSilk/pkg/servers/production/logic"
 	"github.com/CloudSilk/CloudSilk/pkg/model"
 	"github.com/CloudSilk/CloudSilk/pkg/proto"
+	"github.com/CloudSilk/CloudSilk/pkg/servers/production/logic"
 	"github.com/CloudSilk/pkg/utils/log"
 	"github.com/CloudSilk/pkg/utils/middleware"
 	"github.com/gin-gonic/gin"
@@ -45,11 +45,13 @@ func AddProductionProcessStep(c *gin.Context) {
 	}
 
 	if len(req.AvailableProcessIDs) > 0 {
+		var availableProcesses []*proto.AvailableProcessInfo
 		for _, productionProcessID := range req.AvailableProcessIDs {
-			req.AvailableProcesses = append(req.AvailableProcesses, &proto.AvailableProcessInfo{
+			availableProcesses = append(availableProcesses, &proto.AvailableProcessInfo{
 				ProductionProcessID: productionProcessID,
 			})
 		}
+		req.AvailableProcesses = availableProcesses
 	}
 
 	id, err := logic.CreateProductionProcessStep(model.PBToProductionProcessStep(req))
@@ -95,11 +97,13 @@ func UpdateProductionProcessStep(c *gin.Context) {
 	}
 
 	if len(req.AvailableProcessIDs) > 0 {
+		var availableProcesses []*proto.AvailableProcessInfo
 		for _, productionProcessID := range req.AvailableProcessIDs {
-			req.AvailableProcesses = append(req.AvailableProcesses, &proto.AvailableProcessInfo{
+			availableProcesses = append(availableProcesses, &proto.AvailableProcessInfo{
 				ProductionProcessID: productionProcessID,
 			})
 		}
+		req.AvailableProcesses = availableProcesses
 	}
 
 	err = logic.UpdateProductionProcessStep(model.PBToProductionProcessStep(req))
@@ -121,7 +125,7 @@ func UpdateProductionProcessStep(c *gin.Context) {
 // @Param pageSize query int false "默认每页10条"
 // @Param orderField query string false "排序字段"
 // @Param desc query bool false "是否倒序排序"
-// @Param productionProcessID query int false "生产工序ID"
+// @Param productionProcessID query string false "生产工序ID"
 // @Success 200 {object} proto.QueryProductionProcessStepResponse
 // @Router /api/mom/production/productionprocessstep/query [get]
 func QueryProductionProcessStep(c *gin.Context) {

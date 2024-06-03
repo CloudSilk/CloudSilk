@@ -12,10 +12,10 @@ import (
 type ProductReworkRecord struct {
 	ModelID
 	ProductionStationID     string             `json:"productionStationID" gorm:"size:36;comment:生产工站ID"`
-	ProductionStation       *ProductionStation `json:"productionStation"` //生产工站
+	ProductionStation       *ProductionStation `json:"productionStation" gorm:"constraint:OnDelete:CASCADE"` //生产工站
 	ProductionProcessID     string             `json:"productionProcessID" gorm:"size:36;comment:生产工序ID"`
 	ProductInfoID           string             `json:"productInfoID" gorm:"size:36;comment:产品信息ID"`
-	ProductInfo             *ProductInfo       `json:"productInfo"` //产品信息
+	ProductInfo             *ProductInfo       `json:"productInfo" gorm:"constraint:OnDelete:CASCADE"` //产品信息
 	CreateUserID            string             `json:"createUserID" gorm:"size:36;comment:返工人员ID"`
 	CreateTime              time.Time          `json:"createTime" gorm:"autoCreateTime:nano;comment:创建时间"`
 	ReworkReason            string             `json:"reworkReason" gorm:"size:1000;comment:返工原因"`

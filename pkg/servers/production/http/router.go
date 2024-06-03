@@ -5,7 +5,7 @@ import (
 )
 
 func RegisterRouter(r *gin.Engine) {
-	RegisterProcessStepMatchRuleRouter(r)
+	RegisterProcessStepParameterRouter(r)
 	RegisterProcessStepTypeRouter(r)
 	RegisterProductionProcessSopRouter(r)
 	RegisterProductionProcessStepRouter(r)

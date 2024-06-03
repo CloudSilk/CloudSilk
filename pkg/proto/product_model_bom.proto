@@ -41,6 +41,9 @@ message QueryProductModelBomRequest{
     //产品类别ID
     // @inject_tag: uri:"productCategoryID" form:"productCategoryID"
     string productCategoryID=7;
+    //产品型号ID
+    // @inject_tag: uri:"productModelID" form:"productModelID"
+    string productModelID=8;
 }
 
 message QueryProductModelBomResponse{

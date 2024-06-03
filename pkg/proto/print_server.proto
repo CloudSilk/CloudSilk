@@ -1,27 +1,9 @@
-
-
 syntax="proto3";
-
-option java_multiple_files = true;
-option java_package = "cn.atali.mom.PrintServer";
-option java_outer_classname = "PrintServerProto";
-option objc_class_prefix = "PrintServerSRV";
 
 package proto;
 option go_package = "./;proto";
 
 import "mom_common.proto";
-
-
-
-service PrintServer{
-    rpc Add(PrintServerInfo)returns(CommonResponse){}
-    rpc Update(PrintServerInfo)returns(CommonResponse){}
-    rpc Delete(DelRequest)returns(CommonResponse){}
-    rpc Query(QueryPrintServerRequest)returns(QueryPrintServerResponse){}
-    rpc GetAll(GetAllRequest)returns(GetAllPrintServerResponse){}
-    rpc GetDetail(GetDetailRequest)returns(GetPrintServerDetailResponse){}
-}
 
 message PrintServerInfo {
     //打印机 

@@ -13,7 +13,7 @@ func CreateProductReleaseRecord(m *model.ProductReleaseRecord) (string, error) {
 }
 
 func UpdateProductReleaseRecord(m *model.ProductReleaseRecord) error {
-	return model.DB.DB().Omit("CreateTime").Save(m).Error
+	return model.DB.DB().Omit("created_at", "create_time").Save(m).Error
 }
 
 func QueryProductReleaseRecord(req *proto.QueryProductReleaseRecordRequest, resp *proto.QueryProductReleaseRecordResponse, preload bool) {
@@ -38,7 +38,7 @@ func QueryProductReleaseRecord(req *proto.QueryProductReleaseRecordRequest, resp
 		db = db.Where("product_release_records.create_time BETWEEN ? AND ?", req.CreateTime0, req.CreateTime1)
 	}
 
-	orderStr, err := utils.GenerateOrderString(req.SortConfig, "id")
+	orderStr, err := utils.GenerateOrderString(req.SortConfig, "created_at desc")
 	if err != nil {
 		resp.Code = proto.Code_BadRequest
 		resp.Message = err.Error()
@@ -63,16 +63,16 @@ func GetAllProductReleaseRecords() (list []*model.ProductReleaseRecord, err erro
 
 func GetProductReleaseRecordByID(id string) (*model.ProductReleaseRecord, error) {
 	m := &model.ProductReleaseRecord{}
-	err := model.DB.DB().Preload(clause.Associations).Where("id = ?", id).First(m).Error
+	err := model.DB.DB().Preload(clause.Associations).Where("`id` = ?", id).First(m).Error
 	return m, err
 }
 
 func GetProductReleaseRecordByIDs(ids []string) ([]*model.ProductReleaseRecord, error) {
 	var m []*model.ProductReleaseRecord
-	err := model.DB.DB().Preload(clause.Associations).Where("id in (?)", ids).Find(&m).Error
+	err := model.DB.DB().Preload(clause.Associations).Where("`id` in (?)", ids).Find(&m).Error
 	return m, err
 }
 
 func DeleteProductReleaseRecord(id string) (err error) {
-	return model.DB.DB().Delete(&model.ProductReleaseRecord{}, "id=?", id).Error
+	return model.DB.DB().Delete(&model.ProductReleaseRecord{}, "`id` = ?", id).Error
 }

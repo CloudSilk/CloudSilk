@@ -4,8 +4,8 @@ import (
 	"context"
 	"net/http"
 
-	"github.com/CloudSilk/CloudSilk/pkg/servers/webapi/logic"
 	"github.com/CloudSilk/CloudSilk/pkg/proto"
+	"github.com/CloudSilk/CloudSilk/pkg/servers/webapi/logic"
 	"github.com/CloudSilk/pkg/utils/log"
 	"github.com/CloudSilk/pkg/utils/middleware"
 	"github.com/gin-gonic/gin"
@@ -24,29 +24,28 @@ import (
 func EnterProductionStation(c *gin.Context) {
 	transID := middleware.GetTransID(c)
 	req := &proto.EnterProductionStationRequest{}
-	resp := &proto.EnterProductionStationResponse{Code: 200}
+	resp := &proto.EnterProductionStationResponse{Code: 0}
 
-	if err := c.BindJSON(req); err != nil {
-		resp.Code = 400
+	var err error
+	if err = c.BindJSON(req); err != nil {
+		resp.Code = 1
 		resp.Message = err.Error()
 		c.JSON(http.StatusOK, resp)
 		log.Warnf(context.Background(), "TransID:%s,请求进站接口参数无效:%v", transID, err)
 		return
 	}
 
-	if err := middleware.Validate.Struct(req); err != nil {
-		resp.Code = 400
+	if err = middleware.Validate.Struct(req); err != nil {
+		resp.Code = 1
 		resp.Message = err.Error()
 		c.JSON(http.StatusOK, resp)
 		return
 	}
 
-	resp, err := logic.EnterProductionStation(req)
+	resp, err = logic.EnterProductionStation(req)
 	if err != nil {
-		resp.Code = 400
+		resp.Code = 1
 		resp.Message = err.Error()
-		c.JSON(http.StatusOK, resp)
-		return
 	}
 
 	c.JSON(http.StatusOK, resp)

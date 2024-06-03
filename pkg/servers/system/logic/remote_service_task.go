@@ -11,7 +11,7 @@ import (
 )
 
 func CreateRemoteServiceTask(m *model.RemoteServiceTask) (string, error) {
-	duplication, err := model.DB.CreateWithCheckDuplication(m, " code=? ", m.Code)
+	duplication, err := model.DB.CreateWithCheckDuplication(m, " `code` = ? ", m.Code)
 	if err != nil {
 		return "", err
 	}
@@ -23,11 +23,11 @@ func CreateRemoteServiceTask(m *model.RemoteServiceTask) (string, error) {
 
 func UpdateRemoteServiceTask(m *model.RemoteServiceTask) error {
 	return model.DB.DB().Transaction(func(tx *gorm.DB) error {
-		if err := tx.Delete(&model.RemoteServiceTaskParameter{}, "remote_service_task_id = ?", m.ID).Error; err != nil {
+		if err := tx.Delete(&model.RemoteServiceTaskParameter{}, "`remote_service_task_id` = ?", m.ID).Error; err != nil {
 			return err
 		}
 
-		duplication, err := model.DB.UpdateWithCheckDuplicationAndOmit(tx, m, true, []string{}, "id <> ? and code=? ", m.ID, m.Code)
+		duplication, err := model.DB.UpdateWithCheckDuplicationAndOmit(tx, m, true, []string{"created_at"}, "`id` <> ? and `code` = ? ", m.ID, m.Code)
 		if err != nil {
 			return err
 		}
@@ -42,7 +42,7 @@ func UpdateRemoteServiceTask(m *model.RemoteServiceTask) error {
 func QueryRemoteServiceTask(req *proto.QueryRemoteServiceTaskRequest, resp *proto.QueryRemoteServiceTaskResponse, preload bool) {
 	db := model.DB.DB().Model(&model.RemoteServiceTask{}).Preload("RemoteService").Preload(clause.Associations)
 
-	orderStr, err := utils.GenerateOrderString(req.SortConfig, "id")
+	orderStr, err := utils.GenerateOrderString(req.SortConfig, "created_at desc")
 	if err != nil {
 		resp.Code = proto.Code_BadRequest
 		resp.Message = err.Error()
@@ -67,16 +67,16 @@ func GetAllRemoteServiceTasks() (list []*model.RemoteServiceTask, err error) {
 
 func GetRemoteServiceTaskByID(id string) (*model.RemoteServiceTask, error) {
 	m := &model.RemoteServiceTask{}
-	err := model.DB.DB().Preload("RemoteServiceTaskParameters").Preload(clause.Associations).Where("id = ?", id).First(m).Error
+	err := model.DB.DB().Preload("RemoteServiceTaskParameters").Preload(clause.Associations).Where("`id` = ?", id).First(m).Error
 	return m, err
 }
 
 func GetRemoteServiceTaskByIDs(ids []string) ([]*model.RemoteServiceTask, error) {
 	var m []*model.RemoteServiceTask
-	err := model.DB.DB().Preload("RemoteServiceTaskParameters").Preload(clause.Associations).Where("id in (?)", ids).Find(&m).Error
+	err := model.DB.DB().Preload("RemoteServiceTaskParameters").Preload(clause.Associations).Where("`id` in (?)", ids).Find(&m).Error
 	return m, err
 }
 
 func DeleteRemoteServiceTask(id string) (err error) {
-	return model.DB.DB().Delete(&model.RemoteServiceTask{}, "id=?", id).Error
+	return model.DB.DB().Delete(&model.RemoteServiceTask{}, "`id` = ?", id).Error
 }

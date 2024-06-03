@@ -13,7 +13,7 @@ type ProductionRhythm struct {
 	InitialValue         bool                   `json:"initialValue" gorm:"comment:默认匹配"`
 	Remark               string                 `json:"remark" gorm:"size:500;comment:备注"`
 	ProductionLineID     string                 `json:"productionLineID" gorm:"index;size:36;comment:生产产线ID"`
-	ProductionLine       *ProductionLine        `json:"productionLine"`
+	ProductionLine       *ProductionLine        `json:"productionLine" gorm:"constraint:OnDelete:CASCADE"`
 	AttributeExpressions []*AttributeExpression `json:"attributeExpressions" gorm:"polymorphic:Rule;polymorphicValue:ProductionRhythm"` //特性表达式
 }
 

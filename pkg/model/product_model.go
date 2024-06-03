@@ -14,8 +14,8 @@ type ProductModel struct {
 	IsPrefabricated             bool                          `json:"isPrefabricated" gorm:"comment:是否预制"`
 	IsAuthorized                bool                          `json:"isAuthorized" gorm:"comment:是否授权"`
 	Remark                      string                        `json:"remark" gorm:"size:1000;comment:备注"`
-	ProductCategoryID           string                        `json:"productCategoryID" gorm:"index;size:36;comment:产品类别ID"`
-	ProductCategory             *ProductCategory              `json:"productCategory"`                                                 //产品类别
+	ProductCategoryID           string                        `json:"productCategoryID" gorm:"size:36;comment:产品类别ID"`
+	ProductCategory             *ProductCategory              `json:"productCategory" gorm:"constraint:OnDelete:CASCADE"`              //产品类别
 	ProductModelAttributeValues []*ProductModelAttributeValue `json:"productModelAttributeValues" gorm:"constraint:OnDelete:CASCADE;"` //产品型号特征值
 	ProductModelBoms            []*ProductModelBom            `json:"productModelBoms" gorm:"constraint:OnDelete:CASCADE;"`            //产品型号Bom
 }
@@ -27,6 +27,7 @@ type ProductModelAttributeValue struct {
 	ProductAttributeID string            `json:"productAttributeID" gorm:"size:36;comment:产品特性ID"`
 	ProductAttribute   *ProductAttribute `gorm:"constraint:OnDelete:CASCADE"`
 	AssignedValue      string            `json:"assignedValue" gorm:"size:100;comment:设定值"`
+	AllowNullOrBlank   bool              `json:"allowNullOrBlank" gorm:"-"` //允许空缺
 }
 
 func PBToProductModels(in []*proto.ProductModelInfo) []*ProductModel {
@@ -123,6 +124,7 @@ func ProductModelAttributeValueToPB(in *ProductModelAttributeValue) *proto.Produ
 		ProductAttributeID: in.ProductAttributeID,
 		ProductAttribute:   ProductAttributeToPB(in.ProductAttribute),
 		AssignedValue:      in.AssignedValue,
+		AllowNullOrBlank:   in.AllowNullOrBlank,
 	}
 	return m
 }

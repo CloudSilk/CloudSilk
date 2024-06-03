@@ -28,12 +28,9 @@ const _ = grpc_go.SupportPackageIsVersion7
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type ProductionLineClient interface {
-	Add(ctx context.Context, in *ProductionLineInfo, opts ...grpc_go.CallOption) (*CommonResponse, common.ErrorWithAttachment)
-	Update(ctx context.Context, in *ProductionLineInfo, opts ...grpc_go.CallOption) (*CommonResponse, common.ErrorWithAttachment)
-	Delete(ctx context.Context, in *DelRequest, opts ...grpc_go.CallOption) (*CommonResponse, common.ErrorWithAttachment)
-	Query(ctx context.Context, in *QueryProductionLineRequest, opts ...grpc_go.CallOption) (*QueryProductionLineResponse, common.ErrorWithAttachment)
 	GetAll(ctx context.Context, in *GetAllRequest, opts ...grpc_go.CallOption) (*GetAllProductionLineResponse, common.ErrorWithAttachment)
 	GetDetail(ctx context.Context, in *GetDetailRequest, opts ...grpc_go.CallOption) (*GetProductionLineDetailResponse, common.ErrorWithAttachment)
+	Get(ctx context.Context, in *GetProductionLineRequest, opts ...grpc_go.CallOption) (*GetProductionLineDetailResponse, common.ErrorWithAttachment)
 }
 
 type productionLineClient struct {
@@ -41,12 +38,9 @@ type productionLineClient struct {
 }
 
 type ProductionLineClientImpl struct {
-	Add       func(ctx context.Context, in *ProductionLineInfo) (*CommonResponse, error)
-	Update    func(ctx context.Context, in *ProductionLineInfo) (*CommonResponse, error)
-	Delete    func(ctx context.Context, in *DelRequest) (*CommonResponse, error)
-	Query     func(ctx context.Context, in *QueryProductionLineRequest) (*QueryProductionLineResponse, error)
 	GetAll    func(ctx context.Context, in *GetAllRequest) (*GetAllProductionLineResponse, error)
 	GetDetail func(ctx context.Context, in *GetDetailRequest) (*GetProductionLineDetailResponse, error)
+	Get       func(ctx context.Context, in *GetProductionLineRequest) (*GetProductionLineDetailResponse, error)
 }
 
 func (c *ProductionLineClientImpl) GetDubboStub(cc *triple.TripleConn) ProductionLineClient {
@@ -61,30 +55,6 @@ func NewProductionLineClient(cc *triple.TripleConn) ProductionLineClient {
 	return &productionLineClient{cc}
 }
 
-func (c *productionLineClient) Add(ctx context.Context, in *ProductionLineInfo, opts ...grpc_go.CallOption) (*CommonResponse, common.ErrorWithAttachment) {
-	out := new(CommonResponse)
-	interfaceKey := ctx.Value(constant.InterfaceKey).(string)
-	return out, c.cc.Invoke(ctx, "/"+interfaceKey+"/Add", in, out)
-}
-
-func (c *productionLineClient) Update(ctx context.Context, in *ProductionLineInfo, opts ...grpc_go.CallOption) (*CommonResponse, common.ErrorWithAttachment) {
-	out := new(CommonResponse)
-	interfaceKey := ctx.Value(constant.InterfaceKey).(string)
-	return out, c.cc.Invoke(ctx, "/"+interfaceKey+"/Update", in, out)
-}
-
-func (c *productionLineClient) Delete(ctx context.Context, in *DelRequest, opts ...grpc_go.CallOption) (*CommonResponse, common.ErrorWithAttachment) {
-	out := new(CommonResponse)
-	interfaceKey := ctx.Value(constant.InterfaceKey).(string)
-	return out, c.cc.Invoke(ctx, "/"+interfaceKey+"/Delete", in, out)
-}
-
-func (c *productionLineClient) Query(ctx context.Context, in *QueryProductionLineRequest, opts ...grpc_go.CallOption) (*QueryProductionLineResponse, common.ErrorWithAttachment) {
-	out := new(QueryProductionLineResponse)
-	interfaceKey := ctx.Value(constant.InterfaceKey).(string)
-	return out, c.cc.Invoke(ctx, "/"+interfaceKey+"/Query", in, out)
-}
-
 func (c *productionLineClient) GetAll(ctx context.Context, in *GetAllRequest, opts ...grpc_go.CallOption) (*GetAllProductionLineResponse, common.ErrorWithAttachment) {
 	out := new(GetAllProductionLineResponse)
 	interfaceKey := ctx.Value(constant.InterfaceKey).(string)
@@ -97,16 +67,19 @@ func (c *productionLineClient) GetDetail(ctx context.Context, in *GetDetailReque
 	return out, c.cc.Invoke(ctx, "/"+interfaceKey+"/GetDetail", in, out)
 }
 
+func (c *productionLineClient) Get(ctx context.Context, in *GetProductionLineRequest, opts ...grpc_go.CallOption) (*GetProductionLineDetailResponse, common.ErrorWithAttachment) {
+	out := new(GetProductionLineDetailResponse)
+	interfaceKey := ctx.Value(constant.InterfaceKey).(string)
+	return out, c.cc.Invoke(ctx, "/"+interfaceKey+"/Get", in, out)
+}
+
 // ProductionLineServer is the server API for ProductionLine service.
 // All implementations must embed UnimplementedProductionLineServer
 // for forward compatibility
 type ProductionLineServer interface {
-	Add(context.Context, *ProductionLineInfo) (*CommonResponse, error)
-	Update(context.Context, *ProductionLineInfo) (*CommonResponse, error)
-	Delete(context.Context, *DelRequest) (*CommonResponse, error)
-	Query(context.Context, *QueryProductionLineRequest) (*QueryProductionLineResponse, error)
 	GetAll(context.Context, *GetAllRequest) (*GetAllProductionLineResponse, error)
 	GetDetail(context.Context, *GetDetailRequest) (*GetProductionLineDetailResponse, error)
+	Get(context.Context, *GetProductionLineRequest) (*GetProductionLineDetailResponse, error)
 	mustEmbedUnimplementedProductionLineServer()
 }
 
@@ -115,23 +88,14 @@ type UnimplementedProductionLineServer struct {
 	proxyImpl protocol.Invoker
 }
 
-func (UnimplementedProductionLineServer) Add(context.Context, *ProductionLineInfo) (*CommonResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method Add not implemented")
-}
-func (UnimplementedProductionLineServer) Update(context.Context, *ProductionLineInfo) (*CommonResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method Update not implemented")
-}
-func (UnimplementedProductionLineServer) Delete(context.Context, *DelRequest) (*CommonResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method Delete not implemented")
-}
-func (UnimplementedProductionLineServer) Query(context.Context, *QueryProductionLineRequest) (*QueryProductionLineResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method Query not implemented")
-}
 func (UnimplementedProductionLineServer) GetAll(context.Context, *GetAllRequest) (*GetAllProductionLineResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetAll not implemented")
 }
 func (UnimplementedProductionLineServer) GetDetail(context.Context, *GetDetailRequest) (*GetProductionLineDetailResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetDetail not implemented")
+}
+func (UnimplementedProductionLineServer) Get(context.Context, *GetProductionLineRequest) (*GetProductionLineDetailResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Get not implemented")
 }
 func (s *UnimplementedProductionLineServer) XXX_SetProxyImpl(impl protocol.Invoker) {
 	s.proxyImpl = impl
@@ -159,122 +123,6 @@ type UnsafeProductionLineServer interface {
 
 func RegisterProductionLineServer(s grpc_go.ServiceRegistrar, srv ProductionLineServer) {
 	s.RegisterService(&ProductionLine_ServiceDesc, srv)
-}
-
-func _ProductionLine_Add_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc_go.UnaryServerInterceptor) (interface{}, error) {
-	in := new(ProductionLineInfo)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	base := srv.(dubbo3.Dubbo3GrpcService)
-	args := []interface{}{}
-	args = append(args, in)
-	md, _ := metadata.FromIncomingContext(ctx)
-	invAttachment := make(map[string]interface{}, len(md))
-	for k, v := range md {
-		invAttachment[k] = v
-	}
-	invo := invocation.NewRPCInvocation("Add", args, invAttachment)
-	if interceptor == nil {
-		result := base.XXX_GetProxyImpl().Invoke(ctx, invo)
-		return result, result.Error()
-	}
-	info := &grpc_go.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: ctx.Value("XXX_TRIPLE_GO_INTERFACE_NAME").(string),
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		result := base.XXX_GetProxyImpl().Invoke(ctx, invo)
-		return result, result.Error()
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _ProductionLine_Update_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc_go.UnaryServerInterceptor) (interface{}, error) {
-	in := new(ProductionLineInfo)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	base := srv.(dubbo3.Dubbo3GrpcService)
-	args := []interface{}{}
-	args = append(args, in)
-	md, _ := metadata.FromIncomingContext(ctx)
-	invAttachment := make(map[string]interface{}, len(md))
-	for k, v := range md {
-		invAttachment[k] = v
-	}
-	invo := invocation.NewRPCInvocation("Update", args, invAttachment)
-	if interceptor == nil {
-		result := base.XXX_GetProxyImpl().Invoke(ctx, invo)
-		return result, result.Error()
-	}
-	info := &grpc_go.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: ctx.Value("XXX_TRIPLE_GO_INTERFACE_NAME").(string),
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		result := base.XXX_GetProxyImpl().Invoke(ctx, invo)
-		return result, result.Error()
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _ProductionLine_Delete_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc_go.UnaryServerInterceptor) (interface{}, error) {
-	in := new(DelRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	base := srv.(dubbo3.Dubbo3GrpcService)
-	args := []interface{}{}
-	args = append(args, in)
-	md, _ := metadata.FromIncomingContext(ctx)
-	invAttachment := make(map[string]interface{}, len(md))
-	for k, v := range md {
-		invAttachment[k] = v
-	}
-	invo := invocation.NewRPCInvocation("Delete", args, invAttachment)
-	if interceptor == nil {
-		result := base.XXX_GetProxyImpl().Invoke(ctx, invo)
-		return result, result.Error()
-	}
-	info := &grpc_go.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: ctx.Value("XXX_TRIPLE_GO_INTERFACE_NAME").(string),
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		result := base.XXX_GetProxyImpl().Invoke(ctx, invo)
-		return result, result.Error()
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _ProductionLine_Query_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc_go.UnaryServerInterceptor) (interface{}, error) {
-	in := new(QueryProductionLineRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	base := srv.(dubbo3.Dubbo3GrpcService)
-	args := []interface{}{}
-	args = append(args, in)
-	md, _ := metadata.FromIncomingContext(ctx)
-	invAttachment := make(map[string]interface{}, len(md))
-	for k, v := range md {
-		invAttachment[k] = v
-	}
-	invo := invocation.NewRPCInvocation("Query", args, invAttachment)
-	if interceptor == nil {
-		result := base.XXX_GetProxyImpl().Invoke(ctx, invo)
-		return result, result.Error()
-	}
-	info := &grpc_go.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: ctx.Value("XXX_TRIPLE_GO_INTERFACE_NAME").(string),
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		result := base.XXX_GetProxyImpl().Invoke(ctx, invo)
-		return result, result.Error()
-	}
-	return interceptor(ctx, in, info, handler)
 }
 
 func _ProductionLine_GetAll_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc_go.UnaryServerInterceptor) (interface{}, error) {
@@ -335,6 +183,35 @@ func _ProductionLine_GetDetail_Handler(srv interface{}, ctx context.Context, dec
 	return interceptor(ctx, in, info, handler)
 }
 
+func _ProductionLine_Get_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc_go.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetProductionLineRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	base := srv.(dubbo3.Dubbo3GrpcService)
+	args := []interface{}{}
+	args = append(args, in)
+	md, _ := metadata.FromIncomingContext(ctx)
+	invAttachment := make(map[string]interface{}, len(md))
+	for k, v := range md {
+		invAttachment[k] = v
+	}
+	invo := invocation.NewRPCInvocation("Get", args, invAttachment)
+	if interceptor == nil {
+		result := base.XXX_GetProxyImpl().Invoke(ctx, invo)
+		return result, result.Error()
+	}
+	info := &grpc_go.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: ctx.Value("XXX_TRIPLE_GO_INTERFACE_NAME").(string),
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		result := base.XXX_GetProxyImpl().Invoke(ctx, invo)
+		return result, result.Error()
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // ProductionLine_ServiceDesc is the grpc_go.ServiceDesc for ProductionLine service.
 // It's only intended for direct use with grpc_go.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -343,28 +220,16 @@ var ProductionLine_ServiceDesc = grpc_go.ServiceDesc{
 	HandlerType: (*ProductionLineServer)(nil),
 	Methods: []grpc_go.MethodDesc{
 		{
-			MethodName: "Add",
-			Handler:    _ProductionLine_Add_Handler,
-		},
-		{
-			MethodName: "Update",
-			Handler:    _ProductionLine_Update_Handler,
-		},
-		{
-			MethodName: "Delete",
-			Handler:    _ProductionLine_Delete_Handler,
-		},
-		{
-			MethodName: "Query",
-			Handler:    _ProductionLine_Query_Handler,
-		},
-		{
 			MethodName: "GetAll",
 			Handler:    _ProductionLine_GetAll_Handler,
 		},
 		{
 			MethodName: "GetDetail",
 			Handler:    _ProductionLine_GetDetail_Handler,
+		},
+		{
+			MethodName: "Get",
+			Handler:    _ProductionLine_Get_Handler,
 		},
 	},
 	Streams:  []grpc_go.StreamDesc{},
@@ -375,12 +240,7 @@ var ProductionLine_ServiceDesc = grpc_go.ServiceDesc{
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type ProductionStationClient interface {
-	Add(ctx context.Context, in *ProductionStationInfo, opts ...grpc_go.CallOption) (*CommonResponse, common.ErrorWithAttachment)
 	Update(ctx context.Context, in *ProductionStationInfo, opts ...grpc_go.CallOption) (*CommonResponse, common.ErrorWithAttachment)
-	Delete(ctx context.Context, in *DelRequest, opts ...grpc_go.CallOption) (*CommonResponse, common.ErrorWithAttachment)
-	Query(ctx context.Context, in *QueryProductionStationRequest, opts ...grpc_go.CallOption) (*QueryProductionStationResponse, common.ErrorWithAttachment)
-	GetAll(ctx context.Context, in *GetAllRequest, opts ...grpc_go.CallOption) (*GetAllProductionStationResponse, common.ErrorWithAttachment)
-	GetDetail(ctx context.Context, in *GetDetailRequest, opts ...grpc_go.CallOption) (*GetProductionStationDetailResponse, common.ErrorWithAttachment)
 	Get(ctx context.Context, in *GetProductionStationRequest, opts ...grpc_go.CallOption) (*GetProductionStationDetailResponse, common.ErrorWithAttachment)
 }
 
@@ -389,13 +249,8 @@ type productionStationClient struct {
 }
 
 type ProductionStationClientImpl struct {
-	Add       func(ctx context.Context, in *ProductionStationInfo) (*CommonResponse, error)
-	Update    func(ctx context.Context, in *ProductionStationInfo) (*CommonResponse, error)
-	Delete    func(ctx context.Context, in *DelRequest) (*CommonResponse, error)
-	Query     func(ctx context.Context, in *QueryProductionStationRequest) (*QueryProductionStationResponse, error)
-	GetAll    func(ctx context.Context, in *GetAllRequest) (*GetAllProductionStationResponse, error)
-	GetDetail func(ctx context.Context, in *GetDetailRequest) (*GetProductionStationDetailResponse, error)
-	Get       func(ctx context.Context, in *GetProductionStationRequest) (*GetProductionStationDetailResponse, error)
+	Update func(ctx context.Context, in *ProductionStationInfo) (*CommonResponse, error)
+	Get    func(ctx context.Context, in *GetProductionStationRequest) (*GetProductionStationDetailResponse, error)
 }
 
 func (c *ProductionStationClientImpl) GetDubboStub(cc *triple.TripleConn) ProductionStationClient {
@@ -410,40 +265,10 @@ func NewProductionStationClient(cc *triple.TripleConn) ProductionStationClient {
 	return &productionStationClient{cc}
 }
 
-func (c *productionStationClient) Add(ctx context.Context, in *ProductionStationInfo, opts ...grpc_go.CallOption) (*CommonResponse, common.ErrorWithAttachment) {
-	out := new(CommonResponse)
-	interfaceKey := ctx.Value(constant.InterfaceKey).(string)
-	return out, c.cc.Invoke(ctx, "/"+interfaceKey+"/Add", in, out)
-}
-
 func (c *productionStationClient) Update(ctx context.Context, in *ProductionStationInfo, opts ...grpc_go.CallOption) (*CommonResponse, common.ErrorWithAttachment) {
 	out := new(CommonResponse)
 	interfaceKey := ctx.Value(constant.InterfaceKey).(string)
 	return out, c.cc.Invoke(ctx, "/"+interfaceKey+"/Update", in, out)
-}
-
-func (c *productionStationClient) Delete(ctx context.Context, in *DelRequest, opts ...grpc_go.CallOption) (*CommonResponse, common.ErrorWithAttachment) {
-	out := new(CommonResponse)
-	interfaceKey := ctx.Value(constant.InterfaceKey).(string)
-	return out, c.cc.Invoke(ctx, "/"+interfaceKey+"/Delete", in, out)
-}
-
-func (c *productionStationClient) Query(ctx context.Context, in *QueryProductionStationRequest, opts ...grpc_go.CallOption) (*QueryProductionStationResponse, common.ErrorWithAttachment) {
-	out := new(QueryProductionStationResponse)
-	interfaceKey := ctx.Value(constant.InterfaceKey).(string)
-	return out, c.cc.Invoke(ctx, "/"+interfaceKey+"/Query", in, out)
-}
-
-func (c *productionStationClient) GetAll(ctx context.Context, in *GetAllRequest, opts ...grpc_go.CallOption) (*GetAllProductionStationResponse, common.ErrorWithAttachment) {
-	out := new(GetAllProductionStationResponse)
-	interfaceKey := ctx.Value(constant.InterfaceKey).(string)
-	return out, c.cc.Invoke(ctx, "/"+interfaceKey+"/GetAll", in, out)
-}
-
-func (c *productionStationClient) GetDetail(ctx context.Context, in *GetDetailRequest, opts ...grpc_go.CallOption) (*GetProductionStationDetailResponse, common.ErrorWithAttachment) {
-	out := new(GetProductionStationDetailResponse)
-	interfaceKey := ctx.Value(constant.InterfaceKey).(string)
-	return out, c.cc.Invoke(ctx, "/"+interfaceKey+"/GetDetail", in, out)
 }
 
 func (c *productionStationClient) Get(ctx context.Context, in *GetProductionStationRequest, opts ...grpc_go.CallOption) (*GetProductionStationDetailResponse, common.ErrorWithAttachment) {
@@ -456,12 +281,7 @@ func (c *productionStationClient) Get(ctx context.Context, in *GetProductionStat
 // All implementations must embed UnimplementedProductionStationServer
 // for forward compatibility
 type ProductionStationServer interface {
-	Add(context.Context, *ProductionStationInfo) (*CommonResponse, error)
 	Update(context.Context, *ProductionStationInfo) (*CommonResponse, error)
-	Delete(context.Context, *DelRequest) (*CommonResponse, error)
-	Query(context.Context, *QueryProductionStationRequest) (*QueryProductionStationResponse, error)
-	GetAll(context.Context, *GetAllRequest) (*GetAllProductionStationResponse, error)
-	GetDetail(context.Context, *GetDetailRequest) (*GetProductionStationDetailResponse, error)
 	Get(context.Context, *GetProductionStationRequest) (*GetProductionStationDetailResponse, error)
 	mustEmbedUnimplementedProductionStationServer()
 }
@@ -471,23 +291,8 @@ type UnimplementedProductionStationServer struct {
 	proxyImpl protocol.Invoker
 }
 
-func (UnimplementedProductionStationServer) Add(context.Context, *ProductionStationInfo) (*CommonResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method Add not implemented")
-}
 func (UnimplementedProductionStationServer) Update(context.Context, *ProductionStationInfo) (*CommonResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Update not implemented")
-}
-func (UnimplementedProductionStationServer) Delete(context.Context, *DelRequest) (*CommonResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method Delete not implemented")
-}
-func (UnimplementedProductionStationServer) Query(context.Context, *QueryProductionStationRequest) (*QueryProductionStationResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method Query not implemented")
-}
-func (UnimplementedProductionStationServer) GetAll(context.Context, *GetAllRequest) (*GetAllProductionStationResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GetAll not implemented")
-}
-func (UnimplementedProductionStationServer) GetDetail(context.Context, *GetDetailRequest) (*GetProductionStationDetailResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GetDetail not implemented")
 }
 func (UnimplementedProductionStationServer) Get(context.Context, *GetProductionStationRequest) (*GetProductionStationDetailResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Get not implemented")
@@ -520,35 +325,6 @@ func RegisterProductionStationServer(s grpc_go.ServiceRegistrar, srv ProductionS
 	s.RegisterService(&ProductionStation_ServiceDesc, srv)
 }
 
-func _ProductionStation_Add_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc_go.UnaryServerInterceptor) (interface{}, error) {
-	in := new(ProductionStationInfo)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	base := srv.(dubbo3.Dubbo3GrpcService)
-	args := []interface{}{}
-	args = append(args, in)
-	md, _ := metadata.FromIncomingContext(ctx)
-	invAttachment := make(map[string]interface{}, len(md))
-	for k, v := range md {
-		invAttachment[k] = v
-	}
-	invo := invocation.NewRPCInvocation("Add", args, invAttachment)
-	if interceptor == nil {
-		result := base.XXX_GetProxyImpl().Invoke(ctx, invo)
-		return result, result.Error()
-	}
-	info := &grpc_go.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: ctx.Value("XXX_TRIPLE_GO_INTERFACE_NAME").(string),
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		result := base.XXX_GetProxyImpl().Invoke(ctx, invo)
-		return result, result.Error()
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
 func _ProductionStation_Update_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc_go.UnaryServerInterceptor) (interface{}, error) {
 	in := new(ProductionStationInfo)
 	if err := dec(in); err != nil {
@@ -563,122 +339,6 @@ func _ProductionStation_Update_Handler(srv interface{}, ctx context.Context, dec
 		invAttachment[k] = v
 	}
 	invo := invocation.NewRPCInvocation("Update", args, invAttachment)
-	if interceptor == nil {
-		result := base.XXX_GetProxyImpl().Invoke(ctx, invo)
-		return result, result.Error()
-	}
-	info := &grpc_go.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: ctx.Value("XXX_TRIPLE_GO_INTERFACE_NAME").(string),
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		result := base.XXX_GetProxyImpl().Invoke(ctx, invo)
-		return result, result.Error()
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _ProductionStation_Delete_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc_go.UnaryServerInterceptor) (interface{}, error) {
-	in := new(DelRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	base := srv.(dubbo3.Dubbo3GrpcService)
-	args := []interface{}{}
-	args = append(args, in)
-	md, _ := metadata.FromIncomingContext(ctx)
-	invAttachment := make(map[string]interface{}, len(md))
-	for k, v := range md {
-		invAttachment[k] = v
-	}
-	invo := invocation.NewRPCInvocation("Delete", args, invAttachment)
-	if interceptor == nil {
-		result := base.XXX_GetProxyImpl().Invoke(ctx, invo)
-		return result, result.Error()
-	}
-	info := &grpc_go.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: ctx.Value("XXX_TRIPLE_GO_INTERFACE_NAME").(string),
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		result := base.XXX_GetProxyImpl().Invoke(ctx, invo)
-		return result, result.Error()
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _ProductionStation_Query_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc_go.UnaryServerInterceptor) (interface{}, error) {
-	in := new(QueryProductionStationRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	base := srv.(dubbo3.Dubbo3GrpcService)
-	args := []interface{}{}
-	args = append(args, in)
-	md, _ := metadata.FromIncomingContext(ctx)
-	invAttachment := make(map[string]interface{}, len(md))
-	for k, v := range md {
-		invAttachment[k] = v
-	}
-	invo := invocation.NewRPCInvocation("Query", args, invAttachment)
-	if interceptor == nil {
-		result := base.XXX_GetProxyImpl().Invoke(ctx, invo)
-		return result, result.Error()
-	}
-	info := &grpc_go.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: ctx.Value("XXX_TRIPLE_GO_INTERFACE_NAME").(string),
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		result := base.XXX_GetProxyImpl().Invoke(ctx, invo)
-		return result, result.Error()
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _ProductionStation_GetAll_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc_go.UnaryServerInterceptor) (interface{}, error) {
-	in := new(GetAllRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	base := srv.(dubbo3.Dubbo3GrpcService)
-	args := []interface{}{}
-	args = append(args, in)
-	md, _ := metadata.FromIncomingContext(ctx)
-	invAttachment := make(map[string]interface{}, len(md))
-	for k, v := range md {
-		invAttachment[k] = v
-	}
-	invo := invocation.NewRPCInvocation("GetAll", args, invAttachment)
-	if interceptor == nil {
-		result := base.XXX_GetProxyImpl().Invoke(ctx, invo)
-		return result, result.Error()
-	}
-	info := &grpc_go.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: ctx.Value("XXX_TRIPLE_GO_INTERFACE_NAME").(string),
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		result := base.XXX_GetProxyImpl().Invoke(ctx, invo)
-		return result, result.Error()
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _ProductionStation_GetDetail_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc_go.UnaryServerInterceptor) (interface{}, error) {
-	in := new(GetDetailRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	base := srv.(dubbo3.Dubbo3GrpcService)
-	args := []interface{}{}
-	args = append(args, in)
-	md, _ := metadata.FromIncomingContext(ctx)
-	invAttachment := make(map[string]interface{}, len(md))
-	for k, v := range md {
-		invAttachment[k] = v
-	}
-	invo := invocation.NewRPCInvocation("GetDetail", args, invAttachment)
 	if interceptor == nil {
 		result := base.XXX_GetProxyImpl().Invoke(ctx, invo)
 		return result, result.Error()
@@ -731,32 +391,468 @@ var ProductionStation_ServiceDesc = grpc_go.ServiceDesc{
 	HandlerType: (*ProductionStationServer)(nil),
 	Methods: []grpc_go.MethodDesc{
 		{
-			MethodName: "Add",
-			Handler:    _ProductionStation_Add_Handler,
-		},
-		{
 			MethodName: "Update",
 			Handler:    _ProductionStation_Update_Handler,
 		},
 		{
-			MethodName: "Delete",
-			Handler:    _ProductionStation_Delete_Handler,
+			MethodName: "Get",
+			Handler:    _ProductionStation_Get_Handler,
 		},
+	},
+	Streams:  []grpc_go.StreamDesc{},
+	Metadata: "production_line.proto",
+}
+
+// ProductionProcessClient is the client API for ProductionProcess service.
+//
+// For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
+type ProductionProcessClient interface {
+	Query(ctx context.Context, in *QueryProductionProcessRequest, opts ...grpc_go.CallOption) (*QueryProductionProcessResponse, common.ErrorWithAttachment)
+	GetDetail(ctx context.Context, in *GetDetailRequest, opts ...grpc_go.CallOption) (*GetProductionProcessDetailResponse, common.ErrorWithAttachment)
+}
+
+type productionProcessClient struct {
+	cc *triple.TripleConn
+}
+
+type ProductionProcessClientImpl struct {
+	Query     func(ctx context.Context, in *QueryProductionProcessRequest) (*QueryProductionProcessResponse, error)
+	GetDetail func(ctx context.Context, in *GetDetailRequest) (*GetProductionProcessDetailResponse, error)
+}
+
+func (c *ProductionProcessClientImpl) GetDubboStub(cc *triple.TripleConn) ProductionProcessClient {
+	return NewProductionProcessClient(cc)
+}
+
+func (c *ProductionProcessClientImpl) XXX_InterfaceName() string {
+	return "proto.ProductionProcess"
+}
+
+func NewProductionProcessClient(cc *triple.TripleConn) ProductionProcessClient {
+	return &productionProcessClient{cc}
+}
+
+func (c *productionProcessClient) Query(ctx context.Context, in *QueryProductionProcessRequest, opts ...grpc_go.CallOption) (*QueryProductionProcessResponse, common.ErrorWithAttachment) {
+	out := new(QueryProductionProcessResponse)
+	interfaceKey := ctx.Value(constant.InterfaceKey).(string)
+	return out, c.cc.Invoke(ctx, "/"+interfaceKey+"/Query", in, out)
+}
+
+func (c *productionProcessClient) GetDetail(ctx context.Context, in *GetDetailRequest, opts ...grpc_go.CallOption) (*GetProductionProcessDetailResponse, common.ErrorWithAttachment) {
+	out := new(GetProductionProcessDetailResponse)
+	interfaceKey := ctx.Value(constant.InterfaceKey).(string)
+	return out, c.cc.Invoke(ctx, "/"+interfaceKey+"/GetDetail", in, out)
+}
+
+// ProductionProcessServer is the server API for ProductionProcess service.
+// All implementations must embed UnimplementedProductionProcessServer
+// for forward compatibility
+type ProductionProcessServer interface {
+	Query(context.Context, *QueryProductionProcessRequest) (*QueryProductionProcessResponse, error)
+	GetDetail(context.Context, *GetDetailRequest) (*GetProductionProcessDetailResponse, error)
+	mustEmbedUnimplementedProductionProcessServer()
+}
+
+// UnimplementedProductionProcessServer must be embedded to have forward compatible implementations.
+type UnimplementedProductionProcessServer struct {
+	proxyImpl protocol.Invoker
+}
+
+func (UnimplementedProductionProcessServer) Query(context.Context, *QueryProductionProcessRequest) (*QueryProductionProcessResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Query not implemented")
+}
+func (UnimplementedProductionProcessServer) GetDetail(context.Context, *GetDetailRequest) (*GetProductionProcessDetailResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetDetail not implemented")
+}
+func (s *UnimplementedProductionProcessServer) XXX_SetProxyImpl(impl protocol.Invoker) {
+	s.proxyImpl = impl
+}
+
+func (s *UnimplementedProductionProcessServer) XXX_GetProxyImpl() protocol.Invoker {
+	return s.proxyImpl
+}
+
+func (s *UnimplementedProductionProcessServer) XXX_ServiceDesc() *grpc_go.ServiceDesc {
+	return &ProductionProcess_ServiceDesc
+}
+func (s *UnimplementedProductionProcessServer) XXX_InterfaceName() string {
+	return "proto.ProductionProcess"
+}
+
+func (UnimplementedProductionProcessServer) mustEmbedUnimplementedProductionProcessServer() {}
+
+// UnsafeProductionProcessServer may be embedded to opt out of forward compatibility for this service.
+// Use of this interface is not recommended, as added methods to ProductionProcessServer will
+// result in compilation errors.
+type UnsafeProductionProcessServer interface {
+	mustEmbedUnimplementedProductionProcessServer()
+}
+
+func RegisterProductionProcessServer(s grpc_go.ServiceRegistrar, srv ProductionProcessServer) {
+	s.RegisterService(&ProductionProcess_ServiceDesc, srv)
+}
+
+func _ProductionProcess_Query_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc_go.UnaryServerInterceptor) (interface{}, error) {
+	in := new(QueryProductionProcessRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	base := srv.(dubbo3.Dubbo3GrpcService)
+	args := []interface{}{}
+	args = append(args, in)
+	md, _ := metadata.FromIncomingContext(ctx)
+	invAttachment := make(map[string]interface{}, len(md))
+	for k, v := range md {
+		invAttachment[k] = v
+	}
+	invo := invocation.NewRPCInvocation("Query", args, invAttachment)
+	if interceptor == nil {
+		result := base.XXX_GetProxyImpl().Invoke(ctx, invo)
+		return result, result.Error()
+	}
+	info := &grpc_go.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: ctx.Value("XXX_TRIPLE_GO_INTERFACE_NAME").(string),
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		result := base.XXX_GetProxyImpl().Invoke(ctx, invo)
+		return result, result.Error()
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _ProductionProcess_GetDetail_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc_go.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetDetailRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	base := srv.(dubbo3.Dubbo3GrpcService)
+	args := []interface{}{}
+	args = append(args, in)
+	md, _ := metadata.FromIncomingContext(ctx)
+	invAttachment := make(map[string]interface{}, len(md))
+	for k, v := range md {
+		invAttachment[k] = v
+	}
+	invo := invocation.NewRPCInvocation("GetDetail", args, invAttachment)
+	if interceptor == nil {
+		result := base.XXX_GetProxyImpl().Invoke(ctx, invo)
+		return result, result.Error()
+	}
+	info := &grpc_go.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: ctx.Value("XXX_TRIPLE_GO_INTERFACE_NAME").(string),
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		result := base.XXX_GetProxyImpl().Invoke(ctx, invo)
+		return result, result.Error()
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+// ProductionProcess_ServiceDesc is the grpc_go.ServiceDesc for ProductionProcess service.
+// It's only intended for direct use with grpc_go.RegisterService,
+// and not to be introspected or modified (even as a copy)
+var ProductionProcess_ServiceDesc = grpc_go.ServiceDesc{
+	ServiceName: "proto.ProductionProcess",
+	HandlerType: (*ProductionProcessServer)(nil),
+	Methods: []grpc_go.MethodDesc{
 		{
 			MethodName: "Query",
-			Handler:    _ProductionStation_Query_Handler,
-		},
-		{
-			MethodName: "GetAll",
-			Handler:    _ProductionStation_GetAll_Handler,
+			Handler:    _ProductionProcess_Query_Handler,
 		},
 		{
 			MethodName: "GetDetail",
-			Handler:    _ProductionStation_GetDetail_Handler,
+			Handler:    _ProductionProcess_GetDetail_Handler,
 		},
+	},
+	Streams:  []grpc_go.StreamDesc{},
+	Metadata: "production_line.proto",
+}
+
+// ProcessStepParameterClient is the client API for ProcessStepParameter service.
+//
+// For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
+type ProcessStepParameterClient interface {
+	Query(ctx context.Context, in *QueryProcessStepParameterRequest, opts ...grpc_go.CallOption) (*QueryProcessStepParameterResponse, common.ErrorWithAttachment)
+}
+
+type processStepParameterClient struct {
+	cc *triple.TripleConn
+}
+
+type ProcessStepParameterClientImpl struct {
+	Query func(ctx context.Context, in *QueryProcessStepParameterRequest) (*QueryProcessStepParameterResponse, error)
+}
+
+func (c *ProcessStepParameterClientImpl) GetDubboStub(cc *triple.TripleConn) ProcessStepParameterClient {
+	return NewProcessStepParameterClient(cc)
+}
+
+func (c *ProcessStepParameterClientImpl) XXX_InterfaceName() string {
+	return "proto.ProcessStepParameter"
+}
+
+func NewProcessStepParameterClient(cc *triple.TripleConn) ProcessStepParameterClient {
+	return &processStepParameterClient{cc}
+}
+
+func (c *processStepParameterClient) Query(ctx context.Context, in *QueryProcessStepParameterRequest, opts ...grpc_go.CallOption) (*QueryProcessStepParameterResponse, common.ErrorWithAttachment) {
+	out := new(QueryProcessStepParameterResponse)
+	interfaceKey := ctx.Value(constant.InterfaceKey).(string)
+	return out, c.cc.Invoke(ctx, "/"+interfaceKey+"/Query", in, out)
+}
+
+// ProcessStepParameterServer is the server API for ProcessStepParameter service.
+// All implementations must embed UnimplementedProcessStepParameterServer
+// for forward compatibility
+type ProcessStepParameterServer interface {
+	Query(context.Context, *QueryProcessStepParameterRequest) (*QueryProcessStepParameterResponse, error)
+	mustEmbedUnimplementedProcessStepParameterServer()
+}
+
+// UnimplementedProcessStepParameterServer must be embedded to have forward compatible implementations.
+type UnimplementedProcessStepParameterServer struct {
+	proxyImpl protocol.Invoker
+}
+
+func (UnimplementedProcessStepParameterServer) Query(context.Context, *QueryProcessStepParameterRequest) (*QueryProcessStepParameterResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Query not implemented")
+}
+func (s *UnimplementedProcessStepParameterServer) XXX_SetProxyImpl(impl protocol.Invoker) {
+	s.proxyImpl = impl
+}
+
+func (s *UnimplementedProcessStepParameterServer) XXX_GetProxyImpl() protocol.Invoker {
+	return s.proxyImpl
+}
+
+func (s *UnimplementedProcessStepParameterServer) XXX_ServiceDesc() *grpc_go.ServiceDesc {
+	return &ProcessStepParameter_ServiceDesc
+}
+func (s *UnimplementedProcessStepParameterServer) XXX_InterfaceName() string {
+	return "proto.ProcessStepParameter"
+}
+
+func (UnimplementedProcessStepParameterServer) mustEmbedUnimplementedProcessStepParameterServer() {}
+
+// UnsafeProcessStepParameterServer may be embedded to opt out of forward compatibility for this service.
+// Use of this interface is not recommended, as added methods to ProcessStepParameterServer will
+// result in compilation errors.
+type UnsafeProcessStepParameterServer interface {
+	mustEmbedUnimplementedProcessStepParameterServer()
+}
+
+func RegisterProcessStepParameterServer(s grpc_go.ServiceRegistrar, srv ProcessStepParameterServer) {
+	s.RegisterService(&ProcessStepParameter_ServiceDesc, srv)
+}
+
+func _ProcessStepParameter_Query_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc_go.UnaryServerInterceptor) (interface{}, error) {
+	in := new(QueryProcessStepParameterRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	base := srv.(dubbo3.Dubbo3GrpcService)
+	args := []interface{}{}
+	args = append(args, in)
+	md, _ := metadata.FromIncomingContext(ctx)
+	invAttachment := make(map[string]interface{}, len(md))
+	for k, v := range md {
+		invAttachment[k] = v
+	}
+	invo := invocation.NewRPCInvocation("Query", args, invAttachment)
+	if interceptor == nil {
+		result := base.XXX_GetProxyImpl().Invoke(ctx, invo)
+		return result, result.Error()
+	}
+	info := &grpc_go.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: ctx.Value("XXX_TRIPLE_GO_INTERFACE_NAME").(string),
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		result := base.XXX_GetProxyImpl().Invoke(ctx, invo)
+		return result, result.Error()
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+// ProcessStepParameter_ServiceDesc is the grpc_go.ServiceDesc for ProcessStepParameter service.
+// It's only intended for direct use with grpc_go.RegisterService,
+// and not to be introspected or modified (even as a copy)
+var ProcessStepParameter_ServiceDesc = grpc_go.ServiceDesc{
+	ServiceName: "proto.ProcessStepParameter",
+	HandlerType: (*ProcessStepParameterServer)(nil),
+	Methods: []grpc_go.MethodDesc{
+		{
+			MethodName: "Query",
+			Handler:    _ProcessStepParameter_Query_Handler,
+		},
+	},
+	Streams:  []grpc_go.StreamDesc{},
+	Metadata: "production_line.proto",
+}
+
+// ProductionProcessStepClient is the client API for ProductionProcessStep service.
+//
+// For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
+type ProductionProcessStepClient interface {
+	Get(ctx context.Context, in *GetProductionProcessStepRequest, opts ...grpc_go.CallOption) (*GetProductionProcessStepDetailResponse, common.ErrorWithAttachment)
+	Query(ctx context.Context, in *QueryProductionProcessStepRequest, opts ...grpc_go.CallOption) (*QueryProductionProcessStepResponse, common.ErrorWithAttachment)
+}
+
+type productionProcessStepClient struct {
+	cc *triple.TripleConn
+}
+
+type ProductionProcessStepClientImpl struct {
+	Get   func(ctx context.Context, in *GetProductionProcessStepRequest) (*GetProductionProcessStepDetailResponse, error)
+	Query func(ctx context.Context, in *QueryProductionProcessStepRequest) (*QueryProductionProcessStepResponse, error)
+}
+
+func (c *ProductionProcessStepClientImpl) GetDubboStub(cc *triple.TripleConn) ProductionProcessStepClient {
+	return NewProductionProcessStepClient(cc)
+}
+
+func (c *ProductionProcessStepClientImpl) XXX_InterfaceName() string {
+	return "proto.ProductionProcessStep"
+}
+
+func NewProductionProcessStepClient(cc *triple.TripleConn) ProductionProcessStepClient {
+	return &productionProcessStepClient{cc}
+}
+
+func (c *productionProcessStepClient) Get(ctx context.Context, in *GetProductionProcessStepRequest, opts ...grpc_go.CallOption) (*GetProductionProcessStepDetailResponse, common.ErrorWithAttachment) {
+	out := new(GetProductionProcessStepDetailResponse)
+	interfaceKey := ctx.Value(constant.InterfaceKey).(string)
+	return out, c.cc.Invoke(ctx, "/"+interfaceKey+"/Get", in, out)
+}
+
+func (c *productionProcessStepClient) Query(ctx context.Context, in *QueryProductionProcessStepRequest, opts ...grpc_go.CallOption) (*QueryProductionProcessStepResponse, common.ErrorWithAttachment) {
+	out := new(QueryProductionProcessStepResponse)
+	interfaceKey := ctx.Value(constant.InterfaceKey).(string)
+	return out, c.cc.Invoke(ctx, "/"+interfaceKey+"/Query", in, out)
+}
+
+// ProductionProcessStepServer is the server API for ProductionProcessStep service.
+// All implementations must embed UnimplementedProductionProcessStepServer
+// for forward compatibility
+type ProductionProcessStepServer interface {
+	Get(context.Context, *GetProductionProcessStepRequest) (*GetProductionProcessStepDetailResponse, error)
+	Query(context.Context, *QueryProductionProcessStepRequest) (*QueryProductionProcessStepResponse, error)
+	mustEmbedUnimplementedProductionProcessStepServer()
+}
+
+// UnimplementedProductionProcessStepServer must be embedded to have forward compatible implementations.
+type UnimplementedProductionProcessStepServer struct {
+	proxyImpl protocol.Invoker
+}
+
+func (UnimplementedProductionProcessStepServer) Get(context.Context, *GetProductionProcessStepRequest) (*GetProductionProcessStepDetailResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Get not implemented")
+}
+func (UnimplementedProductionProcessStepServer) Query(context.Context, *QueryProductionProcessStepRequest) (*QueryProductionProcessStepResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Query not implemented")
+}
+func (s *UnimplementedProductionProcessStepServer) XXX_SetProxyImpl(impl protocol.Invoker) {
+	s.proxyImpl = impl
+}
+
+func (s *UnimplementedProductionProcessStepServer) XXX_GetProxyImpl() protocol.Invoker {
+	return s.proxyImpl
+}
+
+func (s *UnimplementedProductionProcessStepServer) XXX_ServiceDesc() *grpc_go.ServiceDesc {
+	return &ProductionProcessStep_ServiceDesc
+}
+func (s *UnimplementedProductionProcessStepServer) XXX_InterfaceName() string {
+	return "proto.ProductionProcessStep"
+}
+
+func (UnimplementedProductionProcessStepServer) mustEmbedUnimplementedProductionProcessStepServer() {}
+
+// UnsafeProductionProcessStepServer may be embedded to opt out of forward compatibility for this service.
+// Use of this interface is not recommended, as added methods to ProductionProcessStepServer will
+// result in compilation errors.
+type UnsafeProductionProcessStepServer interface {
+	mustEmbedUnimplementedProductionProcessStepServer()
+}
+
+func RegisterProductionProcessStepServer(s grpc_go.ServiceRegistrar, srv ProductionProcessStepServer) {
+	s.RegisterService(&ProductionProcessStep_ServiceDesc, srv)
+}
+
+func _ProductionProcessStep_Get_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc_go.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetProductionProcessStepRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	base := srv.(dubbo3.Dubbo3GrpcService)
+	args := []interface{}{}
+	args = append(args, in)
+	md, _ := metadata.FromIncomingContext(ctx)
+	invAttachment := make(map[string]interface{}, len(md))
+	for k, v := range md {
+		invAttachment[k] = v
+	}
+	invo := invocation.NewRPCInvocation("Get", args, invAttachment)
+	if interceptor == nil {
+		result := base.XXX_GetProxyImpl().Invoke(ctx, invo)
+		return result, result.Error()
+	}
+	info := &grpc_go.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: ctx.Value("XXX_TRIPLE_GO_INTERFACE_NAME").(string),
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		result := base.XXX_GetProxyImpl().Invoke(ctx, invo)
+		return result, result.Error()
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _ProductionProcessStep_Query_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc_go.UnaryServerInterceptor) (interface{}, error) {
+	in := new(QueryProductionProcessStepRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	base := srv.(dubbo3.Dubbo3GrpcService)
+	args := []interface{}{}
+	args = append(args, in)
+	md, _ := metadata.FromIncomingContext(ctx)
+	invAttachment := make(map[string]interface{}, len(md))
+	for k, v := range md {
+		invAttachment[k] = v
+	}
+	invo := invocation.NewRPCInvocation("Query", args, invAttachment)
+	if interceptor == nil {
+		result := base.XXX_GetProxyImpl().Invoke(ctx, invo)
+		return result, result.Error()
+	}
+	info := &grpc_go.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: ctx.Value("XXX_TRIPLE_GO_INTERFACE_NAME").(string),
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		result := base.XXX_GetProxyImpl().Invoke(ctx, invo)
+		return result, result.Error()
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+// ProductionProcessStep_ServiceDesc is the grpc_go.ServiceDesc for ProductionProcessStep service.
+// It's only intended for direct use with grpc_go.RegisterService,
+// and not to be introspected or modified (even as a copy)
+var ProductionProcessStep_ServiceDesc = grpc_go.ServiceDesc{
+	ServiceName: "proto.ProductionProcessStep",
+	HandlerType: (*ProductionProcessStepServer)(nil),
+	Methods: []grpc_go.MethodDesc{
 		{
 			MethodName: "Get",
-			Handler:    _ProductionStation_Get_Handler,
+			Handler:    _ProductionProcessStep_Get_Handler,
+		},
+		{
+			MethodName: "Query",
+			Handler:    _ProductionProcessStep_Query_Handler,
 		},
 	},
 	Streams:  []grpc_go.StreamDesc{},

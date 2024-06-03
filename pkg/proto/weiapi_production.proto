@@ -3,6 +3,21 @@ syntax="proto3";
 package proto;
 option go_package = "./;proto";
 
+message OnlineProductInfoRequest{
+    //产线代号
+    string productionLine=1;
+    string productOrderNo=2;
+    string materialNo=3;
+    //产品序列号
+    string productSerialNo=4;
+    //托盘号
+    string trayNo=5;
+    string currentState=6;
+    string assembleTrayNo=7;
+    string materialTrayNo=8;
+    string productionProcess=9;
+}
+
 message EnterProductionStationRequest{
     //工位代号
     string productionStation=1;
@@ -57,13 +72,13 @@ message ExitProductionStationRequest{
 }
 
 message CreateProductTestRecordRequest{
-    string ProductSerialNo=1;
-    string ProductionStation=2;
-    string TestProject=3;
-    string TestStartTime=4;
-    string TestEndTime=5;
-    string TestData=6;
-    bool IsQualified=7;
+    string productSerialNo=1;
+    string productionStation=2;
+    string testProject=3;
+    string testStartTime=4;
+    string testEndTime=5;
+    string testData=6;
+    bool isQualified=7;
 }
 
 message CheckProductProcessRouteFailureRequest{

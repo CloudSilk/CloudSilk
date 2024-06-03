@@ -1,25 +1,43 @@
 package logic
 
 import (
+	"fmt"
+
 	"github.com/CloudSilk/CloudSilk/pkg/model"
 	"github.com/CloudSilk/CloudSilk/pkg/proto"
+	"github.com/CloudSilk/CloudSilk/pkg/types"
 	"github.com/CloudSilk/pkg/utils"
 	"gorm.io/gorm/clause"
 )
 
 func CreateMaterialTray(m *model.MaterialTray) (string, error) {
+	m.CurrentState = types.MaterialTrayStateWaitFill
+	if !m.Enable {
+		m.CurrentState = types.MaterialTrayStateDisabled
+	}
 	err := model.DB.DB().Create(m).Error
 	return m.ID, err
 }
 
 func UpdateMaterialTray(m *model.MaterialTray) error {
-	return model.DB.DB().Save(m).Error
+	var materialTray model.MaterialTray
+	if err := model.DB.DB().Preload("ProductInfo").First(&materialTray, "`id` = ?", m.ID).Error; err != nil {
+		return err
+	}
+	if !m.Enable && materialTray.ProductInfoID != nil {
+		return fmt.Errorf("停用失败，当前托盘已绑定序列号为%s的产品。", materialTray.ProductInfo.ProductSerialNo)
+	}
+	if m.ProductionLineID != materialTray.ProductionLineID && materialTray.ProductInfoID != nil {
+		return fmt.Errorf("变更产线失败，当前托盘已绑定序列号为%s的产品。", materialTray.ProductInfo.ProductSerialNo)
+	}
+
+	return model.DB.DB().Omit("created_at").Save(m).Error
 }
 
 func QueryMaterialTray(req *proto.QueryMaterialTrayRequest, resp *proto.QueryMaterialTrayResponse, preload bool) {
 	db := model.DB.DB().Model(&model.MaterialTray{})
 
-	orderStr, err := utils.GenerateOrderString(req.SortConfig, "id")
+	orderStr, err := utils.GenerateOrderString(req.SortConfig, "created_at desc")
 	if err != nil {
 		resp.Code = proto.Code_BadRequest
 		resp.Message = err.Error()
@@ -44,7 +62,7 @@ func GetAllMaterialTrays() (list []*model.MaterialTray, err error) {
 
 func GetMaterialTrayByID(id string) (*model.MaterialTray, error) {
 	m := &model.MaterialTray{}
-	err := model.DB.DB().Preload(clause.Associations).Where("id = ?", id).First(m).Error
+	err := model.DB.DB().Preload(clause.Associations).Where("`id` = ?", id).First(m).Error
 	return m, err
 }
 
@@ -64,10 +82,18 @@ func GetMaterialTray(req *proto.GetMaterialTrayRequest) (*model.MaterialTray, er
 
 func GetMaterialTrayByIDs(ids []string) ([]*model.MaterialTray, error) {
 	var m []*model.MaterialTray
-	err := model.DB.DB().Preload(clause.Associations).Where("id in (?)", ids).Find(&m).Error
+	err := model.DB.DB().Preload(clause.Associations).Where("`id` in (?)", ids).Find(&m).Error
 	return m, err
 }
 
 func DeleteMaterialTray(id string) (err error) {
-	return model.DB.DB().Delete(&model.MaterialTray{}, "id=?", id).Error
+	var productInfoID string
+	if err := model.DB.DB().Model(&model.MaterialTray{}).Where("`id` = ?", id).Select("product_info_id").Scan(&productInfoID).Error; err != nil {
+		return err
+	}
+	if productInfoID != "" {
+		return fmt.Errorf("托盘正在使用中，无法删除")
+	}
+
+	return model.DB.DB().Delete(&model.MaterialTray{}, "`id` = ?", id).Error
 }

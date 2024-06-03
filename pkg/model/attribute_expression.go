@@ -9,7 +9,7 @@ type AttributeExpression struct {
 	ModelID
 	SortIndex          int32             `json:"sortIndex" gorm:"comment:优先级"`
 	ProductAttributeID string            `json:"productAttributeID" gorm:"index;size:36;comment:产品特性ID;"`
-	ProductAttribute   *ProductAttribute `json:"productAttribute"`
+	ProductAttribute   *ProductAttribute `json:"productAttribute" gorm:"constraint:OnDelete:CASCADE"`
 	MathOperator       string            `json:"mathOperator" gorm:"size:-1;comment:运算符"`
 	AttributeValue     string            `json:"attributeValue" gorm:"size:-1;comment:特性值"`
 	Remark             string            `json:"remark" gorm:"size:500;comment:备注"`

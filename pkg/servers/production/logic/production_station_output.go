@@ -13,7 +13,7 @@ func CreateProductionStationOutput(m *model.ProductionStationOutput) (string, er
 }
 
 func UpdateProductionStationOutput(m *model.ProductionStationOutput) error {
-	return model.DB.DB().Omit("output_time").Save(m).Error
+	return model.DB.DB().Omit("created_at", "output_time").Save(m).Error
 }
 
 func QueryProductionStationOutput(req *proto.QueryProductionStationOutputRequest, resp *proto.QueryProductionStationOutputResponse, preload bool) {
@@ -36,7 +36,7 @@ func QueryProductionStationOutput(req *proto.QueryProductionStationOutputRequest
 		}
 	}
 
-	orderStr, err := utils.GenerateOrderString(req.SortConfig, "id")
+	orderStr, err := utils.GenerateOrderString(req.SortConfig, "created_at desc")
 	if err != nil {
 		resp.Code = proto.Code_BadRequest
 		resp.Message = err.Error()
@@ -61,7 +61,7 @@ func GetAllProductionStationOutputs() (list []*model.ProductionStationOutput, er
 
 func GetProductionStationOutputByID(id string) (*model.ProductionStationOutput, error) {
 	m := &model.ProductionStationOutput{}
-	err := model.DB.DB().Preload(clause.Associations).Where("id = ?", id).First(m).Error
+	err := model.DB.DB().Preload(clause.Associations).Where("`id` = ?", id).First(m).Error
 	return m, err
 }
 
@@ -76,10 +76,10 @@ func GetProductionStationOutput(req *proto.GetProductionStationOutputRequest) (*
 
 func GetProductionStationOutputByIDs(ids []string) ([]*model.ProductionStationOutput, error) {
 	var m []*model.ProductionStationOutput
-	err := model.DB.DB().Preload(clause.Associations).Where("id in (?)", ids).Find(&m).Error
+	err := model.DB.DB().Preload(clause.Associations).Where("`id` in (?)", ids).Find(&m).Error
 	return m, err
 }
 
 func DeleteProductionStationOutput(id string) (err error) {
-	return model.DB.DB().Delete(&model.ProductionStationOutput{}, "id=?", id).Error
+	return model.DB.DB().Delete(&model.ProductionStationOutput{}, "`id` = ?", id).Error
 }

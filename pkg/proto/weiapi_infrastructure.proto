@@ -9,10 +9,10 @@ message RetrieveProductionStationRequest{
 }
 
 message RetrieveProductAttributeRequest{
-    string Code=1;
-	string Description=2;
+    string code=1;
+	string description=2;
 }
 
 message RetrieveProductionCrosswayRequest{
-    string ProductionLine=1;
+    string productionLine=1;
 }

@@ -5,9 +5,9 @@ import (
 	"net/http"
 
 	"github.com/CloudSilk/CloudSilk/pkg/clients"
-	"github.com/CloudSilk/CloudSilk/pkg/servers/product/logic"
 	"github.com/CloudSilk/CloudSilk/pkg/model"
 	"github.com/CloudSilk/CloudSilk/pkg/proto"
+	"github.com/CloudSilk/CloudSilk/pkg/servers/product/logic"
 	"github.com/CloudSilk/pkg/utils/log"
 	"github.com/CloudSilk/pkg/utils/middleware"
 	usercenter "github.com/CloudSilk/usercenter/proto"
@@ -203,6 +203,14 @@ func GetProductOrderDetail(c *gin.Context) {
 		resp.Message = err.Error()
 	} else {
 		resp.Data = model.ProductOrderToPB(data)
+		user, err := clients.UserClient.GetDetail(context.Background(), &usercenter.GetDetailRequest{Id: resp.Data.CreateUserID})
+		if err != nil {
+			resp.Code = proto.Code_InternalServerError
+			resp.Message = err.Error()
+			c.JSON(http.StatusOK, resp)
+			return
+		}
+		resp.Data.CreateUserName = user.Data.Nickname
 	}
 	c.JSON(http.StatusOK, resp)
 }
@@ -246,6 +254,123 @@ func DeleteProductOrder(c *gin.Context) {
 	c.JSON(http.StatusOK, resp)
 }
 
+// CancelProductOrder godoc
+// @Summary 取消
+// @Description 取消
+// @Tags 生产工单管理
+// @Accept  json
+// @Produce  json
+// @Param authorization header string true "jwt token"
+// @Param data body proto.GetByIDsRequest true "Cancel ProductOrder"
+// @Success 200 {object} proto.CommonResponse
+// @Router /api/mom/product/productorder/cancel [put]
+func CancelProductOrder(c *gin.Context) {
+	transID := middleware.GetTransID(c)
+	req := &proto.GetByIDsRequest{}
+	resp := &proto.CommonResponse{
+		Code: proto.Code_Success,
+	}
+	err := c.BindJSON(req)
+	if err != nil {
+		resp.Code = proto.Code_BadRequest
+		resp.Message = err.Error()
+		c.JSON(http.StatusOK, resp)
+		log.Warnf(context.Background(), "TransID:%s,取消生产工单请求参数无效:%v", transID, err)
+		return
+	}
+	err = middleware.Validate.Struct(req)
+	if err != nil {
+		resp.Code = proto.Code_BadRequest
+		resp.Message = err.Error()
+		c.JSON(http.StatusOK, resp)
+		return
+	}
+	err = logic.CancelProductOrder(req.Ids)
+	if err != nil {
+		resp.Code = proto.Code_InternalServerError
+		resp.Message = err.Error()
+	}
+	c.JSON(http.StatusOK, resp)
+}
+
+// SuspendProductOrder godoc
+// @Summary 暂缓
+// @Description 暂缓
+// @Tags 生产工单管理
+// @Accept  json
+// @Produce  json
+// @Param authorization header string true "jwt token"
+// @Param data body proto.GetByIDsRequest true "Suspend ProductOrder"
+// @Success 200 {object} proto.CommonResponse
+// @Router /api/mom/product/productorder/suspend [put]
+func SuspendProductOrder(c *gin.Context) {
+	transID := middleware.GetTransID(c)
+	req := &proto.GetByIDsRequest{}
+	resp := &proto.CommonResponse{
+		Code: proto.Code_Success,
+	}
+	err := c.BindJSON(req)
+	if err != nil {
+		resp.Code = proto.Code_BadRequest
+		resp.Message = err.Error()
+		c.JSON(http.StatusOK, resp)
+		log.Warnf(context.Background(), "TransID:%s,暂缓生产工单请求参数无效:%v", transID, err)
+		return
+	}
+	err = middleware.Validate.Struct(req)
+	if err != nil {
+		resp.Code = proto.Code_BadRequest
+		resp.Message = err.Error()
+		c.JSON(http.StatusOK, resp)
+		return
+	}
+	err = logic.SuspendProductOrder(req.Ids)
+	if err != nil {
+		resp.Code = proto.Code_InternalServerError
+		resp.Message = err.Error()
+	}
+	c.JSON(http.StatusOK, resp)
+}
+
+// ResumeProductOrder godoc
+// @Summary 恢复
+// @Description 恢复
+// @Tags 生产工单管理
+// @Accept  json
+// @Produce  json
+// @Param authorization header string true "jwt token"
+// @Param data body proto.GetByIDsRequest true "Resume ProductOrder"
+// @Success 200 {object} proto.CommonResponse
+// @Router /api/mom/product/productorder/resume [put]
+func ResumeProductOrder(c *gin.Context) {
+	transID := middleware.GetTransID(c)
+	req := &proto.GetByIDsRequest{}
+	resp := &proto.CommonResponse{
+		Code: proto.Code_Success,
+	}
+	err := c.BindJSON(req)
+	if err != nil {
+		resp.Code = proto.Code_BadRequest
+		resp.Message = err.Error()
+		c.JSON(http.StatusOK, resp)
+		log.Warnf(context.Background(), "TransID:%s,恢复生产工单请求参数无效:%v", transID, err)
+		return
+	}
+	err = middleware.Validate.Struct(req)
+	if err != nil {
+		resp.Code = proto.Code_BadRequest
+		resp.Message = err.Error()
+		c.JSON(http.StatusOK, resp)
+		return
+	}
+	err = logic.ResumeProductOrder(req.Ids)
+	if err != nil {
+		resp.Code = proto.Code_InternalServerError
+		resp.Message = err.Error()
+	}
+	c.JSON(http.StatusOK, resp)
+}
+
 func RegisterProductOrderRouter(r *gin.Engine) {
 	g := r.Group("/api/mom/product/productorder")
 
@@ -255,4 +380,7 @@ func RegisterProductOrderRouter(r *gin.Engine) {
 	g.DELETE("delete", DeleteProductOrder)
 	g.GET("all", GetAllProductOrder)
 	g.GET("detail", GetProductOrderDetail)
+	g.PUT("cancel", CancelProductOrder)
+	g.PUT("suspend", SuspendProductOrder)
+	g.PUT("resume", ResumeProductOrder)
 }

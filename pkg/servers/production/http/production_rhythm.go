@@ -4,9 +4,9 @@ import (
 	"context"
 	"net/http"
 
-	"github.com/CloudSilk/CloudSilk/pkg/servers/production/logic"
 	"github.com/CloudSilk/CloudSilk/pkg/model"
 	"github.com/CloudSilk/CloudSilk/pkg/proto"
+	"github.com/CloudSilk/CloudSilk/pkg/servers/production/logic"
 	"github.com/CloudSilk/pkg/utils/log"
 	"github.com/CloudSilk/pkg/utils/middleware"
 	"github.com/gin-gonic/gin"
@@ -104,7 +104,7 @@ func UpdateProductionRhythm(c *gin.Context) {
 // @Param pageSize query int false "默认每页10条"
 // @Param orderField query string false "排序字段"
 // @Param desc query bool false "是否倒序排序"
-// @Param productionLineID query int false "生产产线ID"
+// @Param productionLineID query string false "生产产线ID"
 // @Success 200 {object} proto.QueryProductionRhythmResponse
 // @Router /api/mom/production/productionrhythm/query [get]
 func QueryProductionRhythm(c *gin.Context) {

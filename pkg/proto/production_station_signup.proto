@@ -9,11 +9,7 @@ import "production_line.proto";
 service ProductionStationSignup{
     rpc Add(ProductionStationSignupInfo)returns(CommonResponse){}
     rpc Update(ProductionStationSignupInfo)returns(CommonResponse){}
-    rpc Delete(DelRequest)returns(CommonResponse){}
-    rpc Query(QueryProductionStationSignupRequest)returns(QueryProductionStationSignupResponse){}
-    rpc GetAll(GetAllRequest)returns(GetAllProductionStationSignupResponse){}
-    rpc GetDetail(GetDetailRequest)returns(GetProductionStationSignupDetailResponse){}
-    rpc GetByID(GetProductionStationSignupRequest)returns(GetProductionStationSignupDetailResponse){}
+    rpc Get(GetProductionStationSignupRequest)returns(GetProductionStationSignupDetailResponse){}
 }
 
 message GetProductionStationSignupRequest{

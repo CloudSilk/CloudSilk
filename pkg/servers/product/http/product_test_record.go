@@ -4,9 +4,9 @@ import (
 	"context"
 	"net/http"
 
-	"github.com/CloudSilk/CloudSilk/pkg/servers/product/logic"
 	"github.com/CloudSilk/CloudSilk/pkg/model"
 	"github.com/CloudSilk/CloudSilk/pkg/proto"
+	"github.com/CloudSilk/CloudSilk/pkg/servers/product/logic"
 	"github.com/CloudSilk/pkg/utils/log"
 	"github.com/CloudSilk/pkg/utils/middleware"
 	"github.com/gin-gonic/gin"
@@ -108,7 +108,7 @@ func UpdateProductTestRecord(c *gin.Context) {
 // @Param productSerialNo query string false "产品序列号"
 // @Param testStartTime0 query string false "开始测试时间开始"
 // @Param testStartTime1 query string false "开始测试时间结束"
-// @Param productionLineID query int false "作业产线"
+// @Param productionLineID query string false "作业产线"
 // @Success 200 {object} proto.QueryProductTestRecordResponse
 // @Router /api/mom/product/producttestrecord/query [get]
 func QueryProductTestRecord(c *gin.Context) {

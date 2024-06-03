@@ -19,9 +19,9 @@ type MaterialTray struct {
 	LastUpdateTime   time.Time       `json:"lastUpdateTime" gorm:"autoUpdateTime:nano;comment:状态变更时间"`
 	Remark           string          `json:"remark" gorm:"size:500;comment:备注"`
 	ProductionLineID string          `json:"productionLineID" gorm:"size:36;comment:隶属产线ID;"`
-	ProductionLine   *ProductionLine `json:"productionLine"` //隶属产线
-	ProductInfoID    string          `json:"productInfoID" gorm:"size:36;comment:当前产品ID;"`
-	ProductInfo      *ProductInfo    `json:"productInfo"` //当前产品
+	ProductionLine   *ProductionLine `json:"productionLine" gorm:"constraint:OnDelete:CASCADE"` //隶属产线
+	ProductInfoID    *string         `json:"productInfoID" gorm:"size:36;comment:当前产品ID;"`
+	ProductInfo      *ProductInfo    `json:"productInfo" gorm:"constraint:OnDelete:CASCADE"` //当前产品
 }
 
 func PBToMaterialTrays(in []*proto.MaterialTrayInfo) []*MaterialTray {
@@ -36,6 +36,12 @@ func PBToMaterialTray(in *proto.MaterialTrayInfo) *MaterialTray {
 	if in == nil {
 		return nil
 	}
+
+	var productInfoID *string
+	if in.ProductInfoID != "" {
+		productInfoID = &in.ProductInfoID
+	}
+
 	return &MaterialTray{
 		ModelID:      ModelID{ID: in.Id},
 		Code:         in.Code,
@@ -47,7 +53,7 @@ func PBToMaterialTray(in *proto.MaterialTrayInfo) *MaterialTray {
 		// LastUpdateTime:   utils.ParseTime(in.LastUpdateTime),
 		Remark:           in.Remark,
 		ProductionLineID: in.ProductionLineID,
-		ProductInfoID:    in.ProductInfoID,
+		ProductInfoID:    productInfoID,
 	}
 }
 
@@ -63,6 +69,12 @@ func MaterialTrayToPB(in *MaterialTray) *proto.MaterialTrayInfo {
 	if in == nil {
 		return nil
 	}
+
+	var productInfoID string
+	if in.ProductInfoID != nil {
+		productInfoID = *in.ProductInfoID
+	}
+
 	m := &proto.MaterialTrayInfo{
 		Id:               in.ID,
 		Code:             in.Code,
@@ -75,7 +87,7 @@ func MaterialTrayToPB(in *MaterialTray) *proto.MaterialTrayInfo {
 		Remark:           in.Remark,
 		ProductionLineID: in.ProductionLineID,
 		ProductionLine:   ProductionLineToPB(in.ProductionLine),
-		ProductInfoID:    in.ProductInfoID,
+		ProductInfoID:    productInfoID,
 		ProductInfo:      ProductInfoToPB(in.ProductInfo),
 	}
 	return m

@@ -13,7 +13,7 @@ func CreateInvocationTrace(m *model.InvocationTrace) (string, error) {
 }
 
 func UpdateInvocationTrace(m *model.InvocationTrace) error {
-	return model.DB.DB().Omit("request_time").Save(m).Error
+	return model.DB.DB().Omit("created_at", "request_time").Save(m).Error
 }
 
 func QueryInvocationTrace(req *proto.QueryInvocationTraceRequest, resp *proto.QueryInvocationTraceResponse, preload bool) {
@@ -31,7 +31,7 @@ func QueryInvocationTrace(req *proto.QueryInvocationTraceRequest, resp *proto.Qu
 		db.Where("`request_text` LIKE ? or `response_text` LIKE ?", "%"+req.RequestText+"%", "%"+req.RequestText+"%")
 	}
 
-	orderStr, err := utils.GenerateOrderString(req.SortConfig, "id")
+	orderStr, err := utils.GenerateOrderString(req.SortConfig, "created_at desc")
 	if err != nil {
 		resp.Code = proto.Code_BadRequest
 		resp.Message = err.Error()
@@ -67,5 +67,5 @@ func GetInvocationTraceByIDs(ids []string) ([]*model.InvocationTrace, error) {
 }
 
 func DeleteInvocationTrace(id string) (err error) {
-	return model.DB.DB().Delete(&model.InvocationTrace{}, "id=?", id).Error
+	return model.DB.DB().Delete(&model.InvocationTrace{}, "id = ?", id).Error
 }

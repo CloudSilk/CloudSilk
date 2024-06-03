@@ -15,11 +15,11 @@ func CreateProductAttributeValuateRule(m *model.ProductAttributeValuateRule) (st
 
 func UpdateProductAttributeValuateRule(m *model.ProductAttributeValuateRule) error {
 	return model.DB.DB().Transaction(func(tx *gorm.DB) error {
-		if err := tx.Unscoped().Delete(&model.PropertyExpression{}, "rule_id = ? and rule_type = ?", m.ID, "ProductAttributeValuateRule").Error; err != nil {
+		if err := tx.Unscoped().Delete(&model.PropertyExpression{}, "`rule_id` = ? and `rule_type` = ?", m.ID, "ProductAttributeValuateRule").Error; err != nil {
 			return err
 		}
 
-		if err := tx.Save(m).Error; err != nil {
+		if err := tx.Omit("created_at").Save(m).Error; err != nil {
 			return err
 		}
 
@@ -37,7 +37,7 @@ func QueryProductAttributeValuateRule(req *proto.QueryProductAttributeValuateRul
 		db = db.Where("`product_attribute_id` = ?", req.ProductAttributeID)
 	}
 
-	orderStr, err := utils.GenerateOrderString(req.SortConfig, "id")
+	orderStr, err := utils.GenerateOrderString(req.SortConfig, "created_at desc")
 	if err != nil {
 		resp.Code = proto.Code_BadRequest
 		resp.Message = err.Error()
@@ -62,7 +62,7 @@ func GetAllProductAttributeValuateRules() (list []*model.ProductAttributeValuate
 
 func GetProductAttributeValuateRuleByID(id string) (*model.ProductAttributeValuateRule, error) {
 	m := &model.ProductAttributeValuateRule{}
-	err := model.DB.DB().Preload("PropertyExpressions").Preload(clause.Associations).Where("id = ?", id).First(m).Error
+	err := model.DB.DB().Preload("PropertyExpressions").Preload(clause.Associations).Where("`id` = ?", id).First(m).Error
 	return m, err
 }
 
@@ -73,5 +73,5 @@ func GetProductAttributeValuateRuleByIDs(ids []string) ([]*model.ProductAttribut
 }
 
 func DeleteProductAttributeValuateRule(id string) (err error) {
-	return model.DB.DB().Delete(&model.ProductAttributeValuateRule{}, "id=?", id).Error
+	return model.DB.DB().Delete(&model.ProductAttributeValuateRule{}, "`id` = ?", id).Error
 }

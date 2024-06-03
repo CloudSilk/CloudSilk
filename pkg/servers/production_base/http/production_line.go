@@ -4,9 +4,9 @@ import (
 	"context"
 	"net/http"
 
-	"github.com/CloudSilk/CloudSilk/pkg/servers/production_base/logic"
 	"github.com/CloudSilk/CloudSilk/pkg/model"
 	"github.com/CloudSilk/CloudSilk/pkg/proto"
+	"github.com/CloudSilk/CloudSilk/pkg/servers/production_base/logic"
 	"github.com/CloudSilk/pkg/utils/log"
 	"github.com/CloudSilk/pkg/utils/middleware"
 	"github.com/gin-gonic/gin"
@@ -105,7 +105,7 @@ func UpdateProductionLine(c *gin.Context) {
 // @Param orderField query string false "排序字段"
 // @Param desc query bool false "是否倒序排序"
 // @Param code query string false "代号或描述"
-// @Param productionFactoryID query int false "生产工厂ID "
+// @Param productionFactoryID query string false "生产工厂ID "
 // @Success 200 {object} proto.QueryProductionLineResponse
 // @Router /api/mom/productionbase/productionline/query [get]
 func QueryProductionLine(c *gin.Context) {

@@ -8,7 +8,7 @@ import (
 type ProductionLine struct {
 	ModelID
 	ProductionFactoryID                string                               `json:"productionFactoryID" gorm:"index;size:36;comment:生产工厂ID"`
-	ProductionFactory                  *ProductionFactory                   `json:"productionFactory"`
+	ProductionFactory                  *ProductionFactory                   `json:"productionFactory" gorm:"constraint:OnDelete:CASCADE"`
 	Code                               string                               `json:"code" gorm:"index;size:100;comment:代号"`
 	Description                        string                               `json:"description" gorm:"size:200;comment:描述"`
 	Identifier                         string                               `json:"identifier" gorm:"size:100;comment:识别码"`
@@ -20,6 +20,8 @@ type ProductionLine struct {
 	ProductionStations                 []*ProductionStation                 `json:"productionStations" gorm:"constraint:OnDelete:CASCADE;"`                 //工站
 	ProductionCrossways                []*ProductionCrossway                `json:"productionCrossways" gorm:"constraint:OnDelete:CASCADE;"`                //产线路口
 	ProductionLineSupportableCategorys []*ProductionLineSupportableCategory `json:"productionLineSupportableCategorys" gorm:"constraint:OnDelete:CASCADE;"` //产线支持产品类别
+	ProductionProcesses                []*ProductionProcess                 `gorm:"constraint:OnDelete:CASCADE"`
+	ProcessStepParameters              []*ProcessStepParameter              `gorm:"constraint:OnDelete:CASCADE"`
 }
 
 type ProductionLineSupportableCategory struct {
@@ -103,6 +105,8 @@ func ProductionLineToPB(in *ProductionLine) *proto.ProductionLineInfo {
 		ProductionStations:                 ProductionStationsToPB(in.ProductionStations),
 		ProductionCrossways:                ProductionCrosswaysToPB(in.ProductionCrossways),
 		ProductionLineSupportableCategorys: ProductionLineSupportableCategorysToPB(in.ProductionLineSupportableCategorys),
+		ProductionProcesses:                ProductionProcesssToPB(in.ProductionProcesses),
+		// ProcessStepParameters:              ProcessStepParametersToPB(in.ProcessStepParameters),
 	}
 	return m
 }

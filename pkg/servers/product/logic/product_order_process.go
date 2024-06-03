@@ -10,7 +10,7 @@ import (
 )
 
 func CreateProductOrderProcess(m *model.ProductOrderProcess) (string, error) {
-	duplication, err := model.DB.CreateWithCheckDuplication(m, "product_order_id=? and production_process_id =?", m.ProductOrderID, m.ProductionProcessID)
+	duplication, err := model.DB.CreateWithCheckDuplication(m, "`product_order_id` = ? and `production_process_id`  = ?", m.ProductOrderID, m.ProductionProcessID)
 	if err != nil {
 		return "", err
 	}
@@ -21,7 +21,7 @@ func CreateProductOrderProcess(m *model.ProductOrderProcess) (string, error) {
 }
 
 func UpdateProductOrderProcess(m *model.ProductOrderProcess) error {
-	duplication, err := model.DB.UpdateWithCheckDuplicationAndOmit(model.DB.DB(), m, false, []string{"create_time"}, "id <> ? and  product_order_id=? and production_process_id =?", m.ID, m.ProductOrderID, m.ProductionProcessID)
+	duplication, err := model.DB.UpdateWithCheckDuplicationAndOmit(model.DB.DB(), m, false, []string{"created_at", "create_time"}, "`id` <> ? and  `product_order_id` = ? and `production_process_id`  = ?", m.ID, m.ProductOrderID, m.ProductionProcessID)
 	if err != nil {
 		return err
 	}
@@ -42,16 +42,16 @@ func QueryProductOrderProcess(req *proto.QueryProductOrderProcessRequest, resp *
 		db = db.Where("product_order_processes.create_time BETWEEN ? and ?", req.CreateTime0, req.CreateTime1)
 	}
 	if req.ProductOrderID != "" {
-		db = db.Where("product_order_id=?", req.ProductOrderID)
+		db = db.Where("`product_order_id` = ?", req.ProductOrderID)
 	}
 	if req.Enable {
-		db = db.Where("enable=?", req.Enable)
+		db = db.Where("`enable` = ?", req.Enable)
 	}
 	if req.SortIndex > 0 {
-		db = db.Where("sort_index>?", req.SortIndex)
+		db = db.Where("`sort_index`>?", req.SortIndex)
 	}
 
-	orderStr, err := utils.GenerateOrderString(req.SortConfig, "id")
+	orderStr, err := utils.GenerateOrderString(req.SortConfig, "created_at desc")
 	if err != nil {
 		resp.Code = proto.Code_BadRequest
 		resp.Message = err.Error()
@@ -76,16 +76,16 @@ func GetAllProductOrderProcesss() (list []*model.ProductOrderProcess, err error)
 
 func GetProductOrderProcessByID(id string) (*model.ProductOrderProcess, error) {
 	m := &model.ProductOrderProcess{}
-	err := model.DB.DB().Preload(clause.Associations).Where("id = ?", id).First(m).Error
+	err := model.DB.DB().Preload(clause.Associations).Where("`id` = ?", id).First(m).Error
 	return m, err
 }
 
 func GetProductOrderProcessByIDs(ids []string) ([]*model.ProductOrderProcess, error) {
 	var m []*model.ProductOrderProcess
-	err := model.DB.DB().Preload(clause.Associations).Where("id in (?)", ids).Find(&m).Error
+	err := model.DB.DB().Preload(clause.Associations).Where("`id` in (?)", ids).Find(&m).Error
 	return m, err
 }
 
 func DeleteProductOrderProcess(id string) (err error) {
-	return model.DB.DB().Delete(&model.ProductOrderProcess{}, "id=?", id).Error
+	return model.DB.DB().Delete(&model.ProductOrderProcess{}, "`id` = ?", id).Error
 }

@@ -15,11 +15,11 @@ func CreateProductionRhythm(m *model.ProductionRhythm) (string, error) {
 
 func UpdateProductionRhythm(m *model.ProductionRhythm) error {
 	return model.DB.DB().Transaction(func(tx *gorm.DB) error {
-		if err := tx.Delete(&model.AttributeExpression{}, "rule_id=? AND rule_type=?", m.ID, "ProductionRhythm").Error; err != nil {
+		if err := tx.Delete(&model.AttributeExpression{}, "`rule_id` = ? AND `rule_type` = ?", m.ID, "ProductionRhythm").Error; err != nil {
 			return err
 		}
 
-		if err := tx.Save(m).Error; err != nil {
+		if err := tx.Omit("created_at").Save(m).Error; err != nil {
 			return err
 		}
 
@@ -60,7 +60,7 @@ func GetProductionRhythmByID(id string) (*model.ProductionRhythm, error) {
 	m := &model.ProductionRhythm{}
 	err := model.DB.DB().Preload("AttributeExpressions", func(db *gorm.DB) *gorm.DB {
 		return db.Where("rule_type", "ProductionRhythm")
-	}).Preload(clause.Associations).Where("id = ?", id).First(m).Error
+	}).Preload(clause.Associations).Where("`id` = ?", id).First(m).Error
 	return m, err
 }
 
@@ -68,16 +68,16 @@ func GetProductionRhythmByIDs(ids []string) ([]*model.ProductionRhythm, error) {
 	var m []*model.ProductionRhythm
 	err := model.DB.DB().Preload("AttributeExpressions", func(db *gorm.DB) *gorm.DB {
 		return db.Where("rule_type", "ProductionRhythm")
-	}).Preload(clause.Associations).Where("id in (?)", ids).Find(&m).Error
+	}).Preload(clause.Associations).Where("`id` in (?)", ids).Find(&m).Error
 	return m, err
 }
 
 func DeleteProductionRhythm(id string) (err error) {
 	return model.DB.DB().Transaction(func(tx *gorm.DB) error {
-		if err := tx.Delete(&model.ProductionRhythm{}, "id=?", id).Error; err != nil {
+		if err := tx.Delete(&model.ProductionRhythm{}, "`id` = ?", id).Error; err != nil {
 			return err
 		}
-		if err := tx.Delete(&model.AttributeExpression{}, "rule_id=? AND rule_type=?", id, "ProductionRhythm").Error; err != nil {
+		if err := tx.Delete(&model.AttributeExpression{}, "`rule_id` = ? AND `rule_type` = ?", id, "ProductionRhythm").Error; err != nil {
 			return err
 		}
 		return nil

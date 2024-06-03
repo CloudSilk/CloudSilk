@@ -6,13 +6,15 @@ import (
 
 	"github.com/CloudSilk/CloudSilk/pkg/clients"
 	"github.com/CloudSilk/CloudSilk/pkg/proto"
+	modelcode "github.com/CloudSilk/pkg/model"
+	"gorm.io/gorm"
 )
 
 // GetAllProductionLine 获取全部产线信息
 func GetAllProductionLine() ([]*proto.ProductionLineInfo, error) {
-	_productionLine, err := clients.ProductionLineClient.GetAll(context.Background(), &proto.GetAllRequest{})
-	if err != nil {
-		return nil, err
+	_productionLine, _ := clients.ProductionLineClient.GetAll(context.Background(), &proto.GetAllRequest{})
+	if _productionLine.Code != modelcode.Success {
+		return nil, fmt.Errorf(_productionLine.Message)
 	}
 	productionLines := _productionLine.Data
 
@@ -26,8 +28,8 @@ func GetAllProductionLine() ([]*proto.ProductionLineInfo, error) {
 			MaterialControl: pl.MaterialControl,
 		}
 
-		productionStations := make([]*proto.ProductionStationInfo, len(productionLine.ProductionStations))
-		for psi, ps := range productionLine.ProductionStations {
+		productionStations := make([]*proto.ProductionStationInfo, len(pl.ProductionStations))
+		for psi, ps := range pl.ProductionStations {
 			productionStation := &proto.ProductionStationInfo{
 				Id:              ps.Id,
 				Code:            ps.Code,
@@ -37,20 +39,6 @@ func GetAllProductionLine() ([]*proto.ProductionLineInfo, error) {
 				MaterialControl: ps.MaterialControl,
 			}
 
-			// productionProcesses := []map[string]interface{}{}
-			// for _, _productionProcesse := range _productionStation.ProductionProcesses {
-			// 	if _productionProcesse.Enable {
-			// 		productionProcesse := map[string]interface{}{}
-			// 		productionProcesse["id"] = _productionProcesse.Id
-			// 		productionProcesse["code"] = _productionProcesse.Code
-			// 		productionProcesse["description"] = _productionProcesse.Description
-			// 		productionProcesse["processType"] = _productionProcesse.ProcessType
-			// 		productionProcesse["vehicleType"] = _productionProcesse.VehicleType
-			// 		productionProcesse["enableControl"] = _productionProcesse.EnableControl
-			// 		productionProcesses = append(productionProcesses, productionProcesse)
-			// 	}
-			// }
-			// productionStation["productionProcesses"] = productionProcesses
 			productionStations[psi] = productionStation
 		}
 		productionLine.ProductionStations = productionStations
@@ -67,20 +55,23 @@ func RetrieveProductionStation(req *proto.RetrieveProductionStationRequest) ([]*
 		return nil, fmt.Errorf("ProductionLine不能为空")
 	}
 
-	r := &proto.GetDetailRequest{Id: req.ProductionLine}
-	if req.StationType != "" {
-		r.Id = req.StationType
+	_productionLine, _ := clients.ProductionLineClient.GetDetail(context.Background(), &proto.GetDetailRequest{Id: req.ProductionLine})
+	if _productionLine.Message == gorm.ErrRecordNotFound.Error() {
+		return nil, fmt.Errorf("ProductionLine不存在")
 	}
-	_productionLine, err := clients.ProductionLineClient.GetDetail(context.Background(), r)
-	if err != nil {
-		return nil, err
+	if _productionLine.Code != modelcode.Success {
+		return nil, fmt.Errorf(_productionLine.Message)
 	}
-
 	productionLine := _productionLine.Data
 
-	data := make([]*proto.ProductionStationInfo, len(productionLine.ProductionStations))
-	for i, s := range productionLine.ProductionStations {
-		data[i] = &proto.ProductionStationInfo{
+	data := []*proto.ProductionStationInfo{}
+	for _, s := range productionLine.ProductionStations {
+		if req.StationType != "" {
+			if s.StationType != req.StationType {
+				continue
+			}
+		}
+		data = append(data, &proto.ProductionStationInfo{
 			Id:              s.Id,
 			Code:            s.Code,
 			Description:     s.Description,
@@ -88,7 +79,7 @@ func RetrieveProductionStation(req *proto.RetrieveProductionStationRequest) ([]*
 			AccountControl:  s.AccountControl,
 			MaterialControl: s.MaterialControl,
 			CurrentState:    s.CurrentState,
-		}
+		})
 	}
 
 	return data, nil
@@ -100,13 +91,13 @@ func RetrieveProductAttribute(req *proto.RetrieveProductAttributeRequest) ([]*pr
 		return nil, fmt.Errorf("Code不能为空")
 	}
 
-	_productAttributes, err := clients.ProductAttributeClient.Query(context.Background(), &proto.QueryProductAttributeRequest{
+	_productAttributes, _ := clients.ProductAttributeClient.Query(context.Background(), &proto.QueryProductAttributeRequest{
 		PageSize:    1000,
 		Code:        req.Code,
 		Description: req.Description,
 	})
-	if err != nil {
-		return nil, err
+	if _productAttributes.Code != modelcode.Success {
+		return nil, fmt.Errorf(_productAttributes.Message)
 	}
 	productAttributes := _productAttributes.Data
 
@@ -127,9 +118,9 @@ func RetrieveProductionCrossway(req *proto.RetrieveProductionCrosswayRequest) ([
 		return nil, fmt.Errorf("ProductionLine不能为空")
 	}
 
-	_productionCrossways, err := clients.ProductionCrosswayClient.Query(context.Background(), &proto.QueryProductionCrosswayRequest{ProductionLineID: req.GetProductionLine()})
-	if err != nil {
-		return nil, err
+	_productionCrossways, _ := clients.ProductionCrosswayClient.Query(context.Background(), &proto.QueryProductionCrosswayRequest{ProductionLineID: req.ProductionLine})
+	if _productionCrossways.Code != modelcode.Success {
+		return nil, fmt.Errorf(_productionCrossways.Message)
 	}
 	productionCrossways := _productionCrossways.Data
 

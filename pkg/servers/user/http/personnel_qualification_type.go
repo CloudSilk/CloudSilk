@@ -4,9 +4,9 @@ import (
 	"context"
 	"net/http"
 
-	"github.com/CloudSilk/CloudSilk/pkg/servers/user/logic"
 	"github.com/CloudSilk/CloudSilk/pkg/model"
 	"github.com/CloudSilk/CloudSilk/pkg/proto"
+	"github.com/CloudSilk/CloudSilk/pkg/servers/user/logic"
 	"github.com/CloudSilk/pkg/utils/log"
 	"github.com/CloudSilk/pkg/utils/middleware"
 	"github.com/gin-gonic/gin"
@@ -104,7 +104,7 @@ func UpdatePersonnelQualificationType(c *gin.Context) {
 // @Param pageSize query int false "默认每页10条"
 // @Param orderField query string false "排序字段"
 // @Param desc query bool false "是否倒序排序"
-// @Param productionLineID query int false "生产产线ID"
+// @Param productionLineID query string false "生产产线ID"
 // @Param name query string false "认证人员信息"
 // @Success 200 {object} proto.QueryPersonnelQualificationTypeResponse
 // @Router /api/mom/user/personnelqualificationtype/query [get]

@@ -17,9 +17,9 @@ type ProductOrderProcess struct {
 	LastUpdateTime           time.Time                  `json:"lastUpdateTime" gorm:"autoUpdateTime:nano;comment:更新时间"`
 	Remark                   string                     `json:"remark" gorm:"size:1000;comment:备注"`
 	ProductionProcessID      string                     `json:"productionProcessID" gorm:"size:36;comment:生产工序ID"`
-	ProductionProcess        *ProductionProcess         `json:"productionProcess"` //生产工序
+	ProductionProcess        *ProductionProcess         `json:"productionProcess" gorm:"constraint:OnDelete:CASCADE"` //生产工序
 	ProductOrderID           string                     `json:"productOrderID" gorm:"size:36;comment:隶属工单ID"`
-	ProductOrder             *ProductOrder              `json:"productOrder"` //隶属工单
+	ProductOrder             *ProductOrder              `json:"productOrder" gorm:"constraint:OnDelete:CASCADE"` //隶属工单
 	ProductOrderProcessSteps []*ProductOrderProcessStep `json:"productOrderProcessSteps" gorm:"constraint:OnDelete:CASCADE;"`
 }
 

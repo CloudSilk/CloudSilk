@@ -13,7 +13,7 @@ func CreateSystemParamsConfig(m *model.SystemParamsConfig) (string, error) {
 }
 
 func UpdateSystemParamsConfig(m *model.SystemParamsConfig) error {
-	return model.DB.DB().Save(m).Error
+	return model.DB.DB().Omit("created_at").Save(m).Error
 }
 
 func QuerySystemParamsConfig(req *proto.QuerySystemParamsConfigRequest, resp *proto.QuerySystemParamsConfigResponse, preload bool) {
@@ -22,7 +22,7 @@ func QuerySystemParamsConfig(req *proto.QuerySystemParamsConfigRequest, resp *pr
 		db = db.Where("`key` LIKE ?", "%"+req.Key+"%")
 	}
 
-	orderStr, err := utils.GenerateOrderString(req.SortConfig, "id")
+	orderStr, err := utils.GenerateOrderString(req.SortConfig, "created_at desc")
 	if err != nil {
 		resp.Code = proto.Code_BadRequest
 		resp.Message = err.Error()
@@ -47,16 +47,16 @@ func GetAllSystemParamsConfigs() (list []*model.SystemParamsConfig, err error) {
 
 func GetSystemParamsConfigByID(id string) (*model.SystemParamsConfig, error) {
 	m := &model.SystemParamsConfig{}
-	err := model.DB.DB().Preload(clause.Associations).Where("id = ?", id).First(m).Error
+	err := model.DB.DB().Preload(clause.Associations).Where("`id` = ?", id).First(m).Error
 	return m, err
 }
 
 func GetSystemParamsConfigByIDs(ids []string) ([]*model.SystemParamsConfig, error) {
 	var m []*model.SystemParamsConfig
-	err := model.DB.DB().Preload(clause.Associations).Where("id in (?)", ids).Find(&m).Error
+	err := model.DB.DB().Preload(clause.Associations).Where("`id` in (?)", ids).Find(&m).Error
 	return m, err
 }
 
 func DeleteSystemParamsConfig(id string) (err error) {
-	return model.DB.DB().Delete(&model.SystemParamsConfig{}, "id=?", id).Error
+	return model.DB.DB().Delete(&model.SystemParamsConfig{}, "`id` = ?", id).Error
 }

@@ -26,6 +26,10 @@ message GetDetailRequest{
     string tenantID=2;
 }
 
+message GetByIDsRequest{
+    repeated string ids=1;
+}
+
 enum Code{
     None=0;
     //成功

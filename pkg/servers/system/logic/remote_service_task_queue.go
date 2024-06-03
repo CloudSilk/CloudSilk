@@ -13,7 +13,7 @@ func CreateRemoteServiceTaskQueue(m *model.RemoteServiceTaskQueue) (string, erro
 }
 
 func UpdateRemoteServiceTaskQueue(m *model.RemoteServiceTaskQueue) error {
-	return model.DB.DB().Omit("create_time").Save(m).Error
+	return model.DB.DB().Omit("created_at", "create_time").Save(m).Error
 }
 
 func QueryRemoteServiceTaskQueue(req *proto.QueryRemoteServiceTaskQueueRequest, resp *proto.QueryRemoteServiceTaskQueueResponse, preload bool) {
@@ -25,7 +25,7 @@ func QueryRemoteServiceTaskQueue(req *proto.QueryRemoteServiceTaskQueueRequest, 
 		db = db.Where("`create_time` BETWEEN ? AND ?", req.CreateTime0, req.CreateTime1)
 	}
 
-	orderStr, err := utils.GenerateOrderString(req.SortConfig, "id")
+	orderStr, err := utils.GenerateOrderString(req.SortConfig, "created_at desc")
 	if err != nil {
 		resp.Code = proto.Code_BadRequest
 		resp.Message = err.Error()
@@ -50,16 +50,16 @@ func GetAllRemoteServiceTaskQueues() (list []*model.RemoteServiceTaskQueue, err 
 
 func GetRemoteServiceTaskQueueByID(id string) (*model.RemoteServiceTaskQueue, error) {
 	m := &model.RemoteServiceTaskQueue{}
-	err := model.DB.DB().Preload("RemoteServiceTaskQueueParameters").Preload(clause.Associations).Where("id = ?", id).First(m).Error
+	err := model.DB.DB().Preload("RemoteServiceTaskQueueParameters").Preload(clause.Associations).Where("`id` = ?", id).First(m).Error
 	return m, err
 }
 
 func GetRemoteServiceTaskQueueByIDs(ids []string) ([]*model.RemoteServiceTaskQueue, error) {
 	var m []*model.RemoteServiceTaskQueue
-	err := model.DB.DB().Preload("RemoteServiceTaskQueueParameters").Preload(clause.Associations).Where("id in (?)", ids).Find(&m).Error
+	err := model.DB.DB().Preload("RemoteServiceTaskQueueParameters").Preload(clause.Associations).Where("`id` in (?)", ids).Find(&m).Error
 	return m, err
 }
 
 func DeleteRemoteServiceTaskQueue(id string) (err error) {
-	return model.DB.DB().Delete(&model.RemoteServiceTaskQueue{}, "id=?", id).Error
+	return model.DB.DB().Delete(&model.RemoteServiceTaskQueue{}, "`id` = ?", id).Error
 }

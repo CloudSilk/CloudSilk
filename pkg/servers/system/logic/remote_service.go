@@ -13,7 +13,7 @@ func CreateRemoteService(m *model.RemoteService) (string, error) {
 }
 
 func UpdateRemoteService(m *model.RemoteService) error {
-	return model.DB.DB().Save(m).Error
+	return model.DB.DB().Omit("created_at").Save(m).Error
 }
 
 func QueryRemoteService(req *proto.QueryRemoteServiceRequest, resp *proto.QueryRemoteServiceResponse, preload bool) {
@@ -22,7 +22,7 @@ func QueryRemoteService(req *proto.QueryRemoteServiceRequest, resp *proto.QueryR
 		db.Where("`name` LIKE ? OR `address` LIKE ?", "%s"+req.Name+"%", "%s"+req.Name+"%")
 	}
 
-	orderStr, err := utils.GenerateOrderString(req.SortConfig, "id")
+	orderStr, err := utils.GenerateOrderString(req.SortConfig, "created_at desc")
 	if err != nil {
 		resp.Code = proto.Code_BadRequest
 		resp.Message = err.Error()
@@ -47,16 +47,16 @@ func GetAllRemoteServices() (list []*model.RemoteService, err error) {
 
 func GetRemoteServiceByID(id string) (*model.RemoteService, error) {
 	m := &model.RemoteService{}
-	err := model.DB.DB().Preload(clause.Associations).Where("id = ?", id).First(m).Error
+	err := model.DB.DB().Preload(clause.Associations).Where("`id` = ?", id).First(m).Error
 	return m, err
 }
 
 func GetRemoteServiceByIDs(ids []string) ([]*model.RemoteService, error) {
 	var m []*model.RemoteService
-	err := model.DB.DB().Preload(clause.Associations).Where("id in (?)", ids).Find(&m).Error
+	err := model.DB.DB().Preload(clause.Associations).Where("`id` in (?)", ids).Find(&m).Error
 	return m, err
 }
 
 func DeleteRemoteService(id string) (err error) {
-	return model.DB.DB().Delete(&model.RemoteService{}, "id=?", id).Error
+	return model.DB.DB().Delete(&model.RemoteService{}, "`id` = ?", id).Error
 }

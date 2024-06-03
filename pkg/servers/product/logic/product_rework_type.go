@@ -10,7 +10,7 @@ import (
 )
 
 func CreateProductReworkType(m *model.ProductReworkType) (string, error) {
-	duplication, err := model.DB.CreateWithCheckDuplication(m, " code =? ", m.Code)
+	duplication, err := model.DB.CreateWithCheckDuplication(m, " `code`  = ? ", m.Code)
 	if err != nil {
 		return "", err
 	}
@@ -21,7 +21,7 @@ func CreateProductReworkType(m *model.ProductReworkType) (string, error) {
 }
 
 func UpdateProductReworkType(m *model.ProductReworkType) error {
-	duplication, err := model.DB.UpdateWithCheckDuplicationAndOmit(model.DB.DB(), m, false, []string{}, "id != ? and  code =? ", m.ID, m.Code)
+	duplication, err := model.DB.UpdateWithCheckDuplicationAndOmit(model.DB.DB(), m, false, []string{"created_at"}, "`id` != ? and  `code`  = ? ", m.ID, m.Code)
 	if err != nil {
 		return err
 	}
@@ -38,7 +38,7 @@ func QueryProductReworkType(req *proto.QueryProductReworkTypeRequest, resp *prot
 		db = db.Where("`code` LIKE ? OR `description` LIKE ?", "%"+req.Code+"%", "%"+req.Code+"%")
 	}
 
-	orderStr, err := utils.GenerateOrderString(req.SortConfig, "id")
+	orderStr, err := utils.GenerateOrderString(req.SortConfig, "created_at desc")
 	if err != nil {
 		resp.Code = proto.Code_BadRequest
 		resp.Message = err.Error()
@@ -63,16 +63,16 @@ func GetAllProductReworkTypes() (list []*model.ProductReworkType, err error) {
 
 func GetProductReworkTypeByID(id string) (*model.ProductReworkType, error) {
 	m := &model.ProductReworkType{}
-	err := model.DB.DB().Preload(clause.Associations).Where("id = ?", id).First(m).Error
+	err := model.DB.DB().Preload(clause.Associations).Where("`id` = ?", id).First(m).Error
 	return m, err
 }
 
 func GetProductReworkTypeByIDs(ids []string) ([]*model.ProductReworkType, error) {
 	var m []*model.ProductReworkType
-	err := model.DB.DB().Preload(clause.Associations).Where("id in (?)", ids).Find(&m).Error
+	err := model.DB.DB().Preload(clause.Associations).Where("`id` in (?)", ids).Find(&m).Error
 	return m, err
 }
 
 func DeleteProductReworkType(id string) (err error) {
-	return model.DB.DB().Delete(&model.ProductReworkType{}, "id=?", id).Error
+	return model.DB.DB().Delete(&model.ProductReworkType{}, "`id` = ?", id).Error
 }

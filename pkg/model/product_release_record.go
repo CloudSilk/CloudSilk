@@ -15,9 +15,9 @@ type ProductReleaseRecord struct {
 	LastUpdateTime              time.Time    `json:"lastUpdateTime" gorm:"autoUpdateTime:nano;comment:状态变更时间"`
 	Remark                      string       `json:"remark" gorm:"size:-1;comment:备注"`
 	PrefabricatedProductInfoID  string       `json:"prefabricatedProductInfoID" gorm:"size:36;comment:预制产品ID"`
-	ProductInfo                 *ProductInfo `json:"productInfo" gorm:"foreignKey:PrefabricatedProductInfoID"`
+	ProductInfo                 *ProductInfo `json:"productInfo" gorm:"constraint:OnDelete:CASCADE;foreignKey:PrefabricatedProductInfoID"`
 	RemanufacturedProductInfoID string       `json:"remanufacturedProductInfoID" gorm:"size:36;comment:改制产品ID"`
-	RemanufacturedProductInfo   *ProductInfo `json:"remanufacturedProductInfo" gorm:"foreignKey:RemanufacturedProductInfoID"`
+	RemanufacturedProductInfo   *ProductInfo `json:"remanufacturedProductInfo" gorm:"constraint:OnDelete:CASCADE;foreignKey:RemanufacturedProductInfoID"`
 }
 
 func PBToProductReleaseRecords(in []*proto.ProductReleaseRecordInfo) []*ProductReleaseRecord {

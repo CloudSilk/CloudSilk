@@ -6,12 +6,7 @@ option go_package = "./;proto";
 import "mom_common.proto";
 
 service ProductionCrossway{
-    rpc Add(ProductionCrosswayInfo)returns(CommonResponse){}
-    rpc Update(ProductionCrosswayInfo)returns(CommonResponse){}
-    rpc Delete(DelRequest)returns(CommonResponse){}
     rpc Query(QueryProductionCrosswayRequest)returns(QueryProductionCrosswayResponse){}
-    rpc GetAll(GetAllRequest)returns(GetAllProductionCrosswayResponse){}
-    rpc GetDetail(GetDetailRequest)returns(GetProductionCrosswayDetailResponse){}
 }
 
 message ProductionCrosswayInfo {

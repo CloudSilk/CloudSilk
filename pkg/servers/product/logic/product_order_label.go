@@ -13,7 +13,7 @@ func CreateProductOrderLabel(m *model.ProductOrderLabel) (string, error) {
 }
 
 func UpdateProductOrderLabel(m *model.ProductOrderLabel) error {
-	return model.DB.DB().Omit("create_time").Save(m).Error
+	return model.DB.DB().Omit("created_at", "create_time").Save(m).Error
 }
 
 func QueryProductOrderLabel(req *proto.QueryProductOrderLabelRequest, resp *proto.QueryProductOrderLabelResponse, preload bool) {
@@ -29,7 +29,7 @@ func QueryProductOrderLabel(req *proto.QueryProductOrderLabelRequest, resp *prot
 		db = db.Where("product_order_labels.current_state = ?", req.CurrentState)
 	}
 
-	orderStr, err := utils.GenerateOrderString(req.SortConfig, "id")
+	orderStr, err := utils.GenerateOrderString(req.SortConfig, "created_at desc")
 	if err != nil {
 		resp.Code = proto.Code_BadRequest
 		resp.Message = err.Error()
@@ -54,16 +54,16 @@ func GetAllProductOrderLabels() (list []*model.ProductOrderLabel, err error) {
 
 func GetProductOrderLabelByID(id string) (*model.ProductOrderLabel, error) {
 	m := &model.ProductOrderLabel{}
-	err := model.DB.DB().Preload("ProductOrderLabelParameters").Preload(clause.Associations).Where("id = ?", id).First(m).Error
+	err := model.DB.DB().Preload("ProductOrderLabelParameters").Preload(clause.Associations).Where("`id` = ?", id).First(m).Error
 	return m, err
 }
 
 func GetProductOrderLabelByIDs(ids []string) ([]*model.ProductOrderLabel, error) {
 	var m []*model.ProductOrderLabel
-	err := model.DB.DB().Preload("ProductOrderLabelParameters").Preload(clause.Associations).Where("id in (?)", ids).Find(&m).Error
+	err := model.DB.DB().Preload("ProductOrderLabelParameters").Preload(clause.Associations).Where("`id` in (?)", ids).Find(&m).Error
 	return m, err
 }
 
 func DeleteProductOrderLabel(id string) (err error) {
-	return model.DB.DB().Delete(&model.ProductOrderLabel{}, "id=?", id).Error
+	return model.DB.DB().Delete(&model.ProductOrderLabel{}, "`id` = ?", id).Error
 }

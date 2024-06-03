@@ -21,6 +21,7 @@ type ProcessStepTypeParameter struct {
 	Code              string `json:"code" gorm:"size:100;comment:代号"`
 	Description       string `json:"description" gorm:"size:1000;comment:描述"`
 	DefaultValue      string `json:"defaultValue" gorm:"size:100;comment:默认值"`
+	StandardValue     string `json:"standardValue" gorm:"-"` //标准值
 	MaximumValue      string `json:"maximumValue" gorm:"size:100;comment:最大值"`
 	MinimumValue      string `json:"minimumValue" gorm:"size:100;comment:最小值"`
 	Unit              string `json:"unit" gorm:"size:100;comment:单位"`
@@ -88,15 +89,17 @@ func PBToProcessStepTypeParameter(in *proto.ProcessStepTypeParameterInfo) *Proce
 		return nil
 	}
 	return &ProcessStepTypeParameter{
-		ModelID:           ModelID{ID: in.Id},
-		ProcessStepTypeID: in.ProcessStepTypeID,
-		Code:              in.Code,
-		Description:       in.Description,
-		DefaultValue:      in.DefaultValue,
-		Required:          in.Required,
-		BoundsRequired:    in.BoundsRequired,
-		ParameterType:     in.ParameterType,
-		Remark:            in.Remark,
+		ModelID:        ModelID{ID: in.Id},
+		Code:           in.Code,
+		Description:    in.Description,
+		DefaultValue:   in.DefaultValue,
+		MaximumValue:   in.MaximumValue,
+		MinimumValue:   in.MinimumValue,
+		Unit:           in.Unit,
+		Required:       in.Required,
+		BoundsRequired: in.BoundsRequired,
+		ParameterType:  in.ParameterType,
+		Remark:         in.Remark,
 	}
 }
 
@@ -118,6 +121,10 @@ func ProcessStepTypeParameterToPB(in *ProcessStepTypeParameter) *proto.ProcessSt
 		Code:              in.Code,
 		Description:       in.Description,
 		DefaultValue:      in.DefaultValue,
+		StandardValue:     in.StandardValue,
+		MaximumValue:      in.MaximumValue,
+		MinimumValue:      in.MinimumValue,
+		Unit:              in.Unit,
 		Required:          in.Required,
 		BoundsRequired:    in.BoundsRequired,
 		ParameterType:     in.ParameterType,

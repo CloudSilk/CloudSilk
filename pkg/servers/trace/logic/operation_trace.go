@@ -13,7 +13,7 @@ func CreateOperationTrace(m *model.OperationTrace) (string, error) {
 }
 
 func UpdateOperationTrace(m *model.OperationTrace) error {
-	return model.DB.DB().Omit("operate_time").Save(m).Error
+	return model.DB.DB().Omit("created_at", "operate_time").Save(m).Error
 }
 
 func QueryOperationTrace(req *proto.QueryOperationTraceRequest, resp *proto.QueryOperationTraceResponse, preload bool) {
@@ -22,7 +22,7 @@ func QueryOperationTrace(req *proto.QueryOperationTraceRequest, resp *proto.Quer
 		db = db.Where("`operate_time` BETWEEN ? and ?", req.OperateTime0, req.OperateTime1)
 	}
 
-	orderStr, err := utils.GenerateOrderString(req.SortConfig, "id")
+	orderStr, err := utils.GenerateOrderString(req.SortConfig, "created_at desc")
 	if err != nil {
 		resp.Code = proto.Code_BadRequest
 		resp.Message = err.Error()
@@ -47,16 +47,16 @@ func GetAllOperationTraces() (list []*model.OperationTrace, err error) {
 
 func GetOperationTraceByID(id string) (*model.OperationTrace, error) {
 	m := &model.OperationTrace{}
-	err := model.DB.DB().Preload(clause.Associations).Where("id = ?", id).First(m).Error
+	err := model.DB.DB().Preload(clause.Associations).Where("`id` = ?", id).First(m).Error
 	return m, err
 }
 
 func GetOperationTraceByIDs(ids []string) ([]*model.OperationTrace, error) {
 	var m []*model.OperationTrace
-	err := model.DB.DB().Preload(clause.Associations).Where("id in (?)", ids).Find(&m).Error
+	err := model.DB.DB().Preload(clause.Associations).Where("`id` in (?)", ids).Find(&m).Error
 	return m, err
 }
 
 func DeleteOperationTrace(id string) (err error) {
-	return model.DB.DB().Delete(&model.OperationTrace{}, "id=?", id).Error
+	return model.DB.DB().Delete(&model.OperationTrace{}, "`id` = ?", id).Error
 }

@@ -4,8 +4,8 @@ import (
 	"context"
 	"net/http"
 
-	"github.com/CloudSilk/CloudSilk/pkg/servers/webapi/logic"
 	"github.com/CloudSilk/CloudSilk/pkg/proto"
+	"github.com/CloudSilk/CloudSilk/pkg/servers/webapi/logic"
 	"github.com/CloudSilk/pkg/utils/log"
 	"github.com/CloudSilk/pkg/utils/middleware"
 	"github.com/gin-gonic/gin"
@@ -73,13 +73,7 @@ func TryLogout(c *gin.Context) {
 		return
 	}
 
-	if err := logic.TryLogout(req); err != nil {
-		resp.Code = 400
-		resp.Message = err.Error()
-		c.JSON(http.StatusOK, resp)
-		return
-	}
-
+	logic.TryLogout(req, resp)
 	c.JSON(http.StatusOK, resp)
 }
 

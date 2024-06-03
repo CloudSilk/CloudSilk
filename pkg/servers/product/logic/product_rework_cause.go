@@ -11,7 +11,7 @@ import (
 )
 
 func CreateProductReworkCause(m *model.ProductReworkCause) (string, error) {
-	duplication, err := model.DB.CreateWithCheckDuplication(m, " code =? ", m.Code)
+	duplication, err := model.DB.CreateWithCheckDuplication(m, " `code`  = ? ", m.Code)
 	if err != nil {
 		return "", err
 	}
@@ -23,11 +23,11 @@ func CreateProductReworkCause(m *model.ProductReworkCause) (string, error) {
 
 func UpdateProductReworkCause(m *model.ProductReworkCause) error {
 	return model.DB.DB().Transaction(func(tx *gorm.DB) error {
-		if err := tx.Delete(&model.ProductReworkTypePossibleCause{}, "product_rework_cause_id=?", m.ID).Error; err != nil {
+		if err := tx.Delete(&model.ProductReworkTypePossibleCause{}, "`product_rework_cause_id` = ?", m.ID).Error; err != nil {
 			return err
 		}
 
-		duplication, err := model.DB.UpdateWithCheckDuplicationAndOmit(tx, m, true, []string{}, "id <> ?  and  code =? ", m.ID, m.Code)
+		duplication, err := model.DB.UpdateWithCheckDuplicationAndOmit(tx, m, true, []string{"created_at"}, "`id` <> ?  and  `code`  = ? ", m.ID, m.Code)
 		if err != nil {
 			return err
 		}
@@ -45,7 +45,7 @@ func QueryProductReworkCause(req *proto.QueryProductReworkCauseRequest, resp *pr
 		db = db.Where("`code` LIKE ? OR `description` LIKE ?", "%"+req.Code+"%", "%"+req.Code+"%")
 	}
 
-	orderStr, err := utils.GenerateOrderString(req.SortConfig, "id")
+	orderStr, err := utils.GenerateOrderString(req.SortConfig, "created_at desc")
 	if err != nil {
 		resp.Code = proto.Code_BadRequest
 		resp.Message = err.Error()
@@ -70,16 +70,16 @@ func GetAllProductReworkCauses() (list []*model.ProductReworkCause, err error) {
 
 func GetProductReworkCauseByID(id string) (*model.ProductReworkCause, error) {
 	m := &model.ProductReworkCause{}
-	err := model.DB.DB().Preload("ProductReworkTypePossibleCauses").Preload(clause.Associations).Where("id = ?", id).First(m).Error
+	err := model.DB.DB().Preload("ProductReworkTypePossibleCauses").Preload(clause.Associations).Where("`id` = ?", id).First(m).Error
 	return m, err
 }
 
 func GetProductReworkCauseByIDs(ids []string) ([]*model.ProductReworkCause, error) {
 	var m []*model.ProductReworkCause
-	err := model.DB.DB().Where("id in (?)", ids).Find(&m).Error
+	err := model.DB.DB().Where("`id` in (?)", ids).Find(&m).Error
 	return m, err
 }
 
 func DeleteProductReworkCause(id string) (err error) {
-	return model.DB.DB().Delete(&model.ProductReworkCause{}, "id=?", id).Error
+	return model.DB.DB().Delete(&model.ProductReworkCause{}, "`id` = ?", id).Error
 }

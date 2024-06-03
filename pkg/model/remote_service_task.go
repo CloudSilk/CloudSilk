@@ -23,7 +23,7 @@ type RemoteServiceTask struct {
 	FinishTime                  sql.NullTime                  `json:"finishTime" gorm:"comment:结束时间"`
 	LastInvokeTime              sql.NullTime                  `json:"lastInvokeTime" gorm:"comment:最后调用时间"`
 	RemoteServiceID             string                        `json:"remoteServiceID" gorm:"index;comment:远程服务ID"`
-	RemoteService               *RemoteService                `json:"remoteService"`                                                   //远程服务
+	RemoteService               *RemoteService                `json:"remoteService" gorm:"constraint:OnDelete:CASCADE"`                //远程服务
 	RemoteServiceTaskParameters []*RemoteServiceTaskParameter `json:"remoteServiceTaskParameters" gorm:"constraint:OnDelete:CASCADE;"` // 远程服务任务参数
 }
 
