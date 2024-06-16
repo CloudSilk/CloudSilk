@@ -68,3 +68,12 @@ func MathOperator(value, method, attributeExpressionValue string) (bool, error) 
 		return false, fmt.Errorf("未知的比较方法:%s", method)
 	}
 }
+
+func Contains(v string, list []string) bool {
+	for _, item := range list {
+		if item == v {
+			return true
+		}
+	}
+	return false
+}

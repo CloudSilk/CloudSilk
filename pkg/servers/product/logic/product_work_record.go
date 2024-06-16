@@ -33,8 +33,11 @@ func QueryProductWorkRecord(req *proto.QueryProductWorkRecordRequest, resp *prot
 		db = db.Where("product_work_records.work_start_time BETWEEN ? AND ?", req.WorkStartTime0, req.WorkStartTime1)
 	}
 	if req.ProductionLineID != "" {
-		db.Joins("JOIN production_stations ON product_work_records.production_station_id=production_stations.id").
+		db = db.Joins("JOIN production_stations ON product_work_records.production_station_id=production_stations.id").
 			Where("production_stations.production_line_id = ?", req.ProductionLineID)
+	}
+	if req.ProductInfoID != "" {
+		db = db.Where("`product_info_id` = ?", req.ProductInfoID)
 	}
 
 	orderStr, err := utils.GenerateOrderString(req.SortConfig, "created_at desc")

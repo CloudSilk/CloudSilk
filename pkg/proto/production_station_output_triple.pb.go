@@ -29,6 +29,7 @@ const _ = grpc_go.SupportPackageIsVersion7
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type ProductionStationOutputClient interface {
 	Add(ctx context.Context, in *ProductionStationOutputInfo, opts ...grpc_go.CallOption) (*CommonResponse, common.ErrorWithAttachment)
+	Update(ctx context.Context, in *ProductionStationOutputInfo, opts ...grpc_go.CallOption) (*CommonResponse, common.ErrorWithAttachment)
 	Get(ctx context.Context, in *GetProductionStationOutputRequest, opts ...grpc_go.CallOption) (*GetProductionStationOutputDetailResponse, common.ErrorWithAttachment)
 }
 
@@ -37,8 +38,9 @@ type productionStationOutputClient struct {
 }
 
 type ProductionStationOutputClientImpl struct {
-	Add func(ctx context.Context, in *ProductionStationOutputInfo) (*CommonResponse, error)
-	Get func(ctx context.Context, in *GetProductionStationOutputRequest) (*GetProductionStationOutputDetailResponse, error)
+	Add    func(ctx context.Context, in *ProductionStationOutputInfo) (*CommonResponse, error)
+	Update func(ctx context.Context, in *ProductionStationOutputInfo) (*CommonResponse, error)
+	Get    func(ctx context.Context, in *GetProductionStationOutputRequest) (*GetProductionStationOutputDetailResponse, error)
 }
 
 func (c *ProductionStationOutputClientImpl) GetDubboStub(cc *triple.TripleConn) ProductionStationOutputClient {
@@ -59,6 +61,12 @@ func (c *productionStationOutputClient) Add(ctx context.Context, in *ProductionS
 	return out, c.cc.Invoke(ctx, "/"+interfaceKey+"/Add", in, out)
 }
 
+func (c *productionStationOutputClient) Update(ctx context.Context, in *ProductionStationOutputInfo, opts ...grpc_go.CallOption) (*CommonResponse, common.ErrorWithAttachment) {
+	out := new(CommonResponse)
+	interfaceKey := ctx.Value(constant.InterfaceKey).(string)
+	return out, c.cc.Invoke(ctx, "/"+interfaceKey+"/Update", in, out)
+}
+
 func (c *productionStationOutputClient) Get(ctx context.Context, in *GetProductionStationOutputRequest, opts ...grpc_go.CallOption) (*GetProductionStationOutputDetailResponse, common.ErrorWithAttachment) {
 	out := new(GetProductionStationOutputDetailResponse)
 	interfaceKey := ctx.Value(constant.InterfaceKey).(string)
@@ -70,6 +78,7 @@ func (c *productionStationOutputClient) Get(ctx context.Context, in *GetProducti
 // for forward compatibility
 type ProductionStationOutputServer interface {
 	Add(context.Context, *ProductionStationOutputInfo) (*CommonResponse, error)
+	Update(context.Context, *ProductionStationOutputInfo) (*CommonResponse, error)
 	Get(context.Context, *GetProductionStationOutputRequest) (*GetProductionStationOutputDetailResponse, error)
 	mustEmbedUnimplementedProductionStationOutputServer()
 }
@@ -81,6 +90,9 @@ type UnimplementedProductionStationOutputServer struct {
 
 func (UnimplementedProductionStationOutputServer) Add(context.Context, *ProductionStationOutputInfo) (*CommonResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Add not implemented")
+}
+func (UnimplementedProductionStationOutputServer) Update(context.Context, *ProductionStationOutputInfo) (*CommonResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Update not implemented")
 }
 func (UnimplementedProductionStationOutputServer) Get(context.Context, *GetProductionStationOutputRequest) (*GetProductionStationOutputDetailResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Get not implemented")
@@ -143,6 +155,35 @@ func _ProductionStationOutput_Add_Handler(srv interface{}, ctx context.Context, 
 	return interceptor(ctx, in, info, handler)
 }
 
+func _ProductionStationOutput_Update_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc_go.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ProductionStationOutputInfo)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	base := srv.(dubbo3.Dubbo3GrpcService)
+	args := []interface{}{}
+	args = append(args, in)
+	md, _ := metadata.FromIncomingContext(ctx)
+	invAttachment := make(map[string]interface{}, len(md))
+	for k, v := range md {
+		invAttachment[k] = v
+	}
+	invo := invocation.NewRPCInvocation("Update", args, invAttachment)
+	if interceptor == nil {
+		result := base.XXX_GetProxyImpl().Invoke(ctx, invo)
+		return result, result.Error()
+	}
+	info := &grpc_go.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: ctx.Value("XXX_TRIPLE_GO_INTERFACE_NAME").(string),
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		result := base.XXX_GetProxyImpl().Invoke(ctx, invo)
+		return result, result.Error()
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _ProductionStationOutput_Get_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc_go.UnaryServerInterceptor) (interface{}, error) {
 	in := new(GetProductionStationOutputRequest)
 	if err := dec(in); err != nil {
@@ -182,6 +223,10 @@ var ProductionStationOutput_ServiceDesc = grpc_go.ServiceDesc{
 		{
 			MethodName: "Add",
 			Handler:    _ProductionStationOutput_Add_Handler,
+		},
+		{
+			MethodName: "Update",
+			Handler:    _ProductionStationOutput_Update_Handler,
 		},
 		{
 			MethodName: "Get",

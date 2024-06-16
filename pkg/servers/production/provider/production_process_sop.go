@@ -9,7 +9,7 @@ import (
 )
 
 type ProductionProcessSopProvider struct {
-	proto.ProductionProcessSopServer
+	proto.UnimplementedProductionProcessSopServer
 }
 
 func (u *ProductionProcessSopProvider) Get(c context.Context, in *proto.GetProductionProcessSopRequest) (*proto.GetProductionProcessSopDetailResponse, error) {

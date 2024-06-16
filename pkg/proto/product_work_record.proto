@@ -5,6 +5,10 @@ option go_package = "./;proto";
 
 import "mom_common.proto";
 
+service ProductWorkRecord{
+    rpc Query(QueryProductWorkRecordRequest)returns(QueryProductWorkRecordResponse);
+}
+
 message ProductWorkRecordInfo {
 	//ID 
  	string id=2;
@@ -59,7 +63,8 @@ message QueryProductWorkRecordRequest{
     string workStartTime1=7;
     // @inject_tag: uri:"productionLineID" form:"productionLineID"
     string productionLineID=8;
-
+    // @inject_tag: uri:"productInfoID" form:"productInfoID"
+    string productInfoID=9;
 }
 
 message QueryProductWorkRecordResponse{

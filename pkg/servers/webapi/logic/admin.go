@@ -2,9 +2,11 @@ package logic
 
 import (
 	"context"
+	"database/sql"
 	"time"
 
 	"github.com/CloudSilk/CloudSilk/pkg/clients"
+	"github.com/CloudSilk/CloudSilk/pkg/model"
 	"github.com/CloudSilk/CloudSilk/pkg/proto"
 	modelcode "github.com/CloudSilk/pkg/model"
 	usercenter "github.com/CloudSilk/usercenter/proto"
@@ -74,67 +76,55 @@ func TryLogin(req *proto.LoginRequest, resp *proto.ServiceResponse) {
 		resp.Message = "ProductionStation不能为空"
 		return
 	} else {
-		_productionStation, _ := clients.ProductionStationClient.Get(context.Background(), &proto.GetProductionStationRequest{Code: req.ProductionStation})
-		if _productionStation.Message == gorm.ErrRecordNotFound.Error() {
-			resp.Code = modelcode.BadRequest
-			resp.Message = "无效的工位编号"
-			return
-		}
-		if _productionStation.Code != modelcode.Success {
-			resp.Code = _productionStation.Code
-			resp.Message = _productionStation.Message
-			return
-		}
+		if err := model.DB.DB().Transaction(func(tx *gorm.DB) error {
+			productionStation := &model.ProductionStation{}
+			if err := tx.Where(model.ProductionStation{Code: req.ProductionStation}).First(productionStation).Error; err == gorm.ErrRecordNotFound {
+				resp.Message = "无效的工位编号"
+				return err
+			} else if err != nil {
+				return err
+			}
+			productionStation.CurrentUserID = &user.Id
 
-		productionStation := _productionStation.Data
-		productionStation.CurrentUserID = user.Id
-
-		_productionStationSignup, _ := clients.ProductionStationSignupClient.Get(context.Background(), &proto.GetProductionStationSignupRequest{
-			ProductionStationID: productionStation.Id,
-			LoginUserID:         user.Id,
-			HasLogoutTime:       false,
-		})
-		if _productionStationSignup.Code == modelcode.InternalServerError && _productionStationSignup.Message != gorm.ErrRecordNotFound.Error() {
-			resp.Code = modelcode.InternalServerError
-			resp.Message = _productionStationSignup.Message
-			return
-		}
-
-		now := time.Now()
-		productionStationSignup := _productionStationSignup.Data
-		if productionStationSignup == nil {
-			productionStationSignup = &proto.ProductionStationSignupInfo{
+			productionStationSignup := &model.ProductionStationSignup{}
+			if err := tx.Where(model.ProductionStationSignup{
+				ProductionStationID: productionStation.ID,
 				LoginUserID:         user.Id,
-				ProductionStationID: productionStation.Id,
-				LoginTime:           now.Format("2006-01-02 15:04:05"),
+			}).Where("logout_time IS NULL").First(productionStationSignup).Error; err != nil && err != gorm.ErrRecordNotFound {
+				return err
 			}
-			_resp, _ := clients.ProductionStationSignupClient.Add(context.Background(), productionStationSignup)
-			if _resp.Code != modelcode.Success {
-				resp.Code = _resp.Code
-				resp.Message = _resp.Message
-				return
+
+			now := time.Now()
+			if productionStationSignup.ID == "" {
+				productionStationSignup = &model.ProductionStationSignup{
+					LoginUserID:         user.Id,
+					ProductionStationID: productionStation.ID,
+					LoginTime:           now,
+				}
+				if err := tx.Create(productionStationSignup).Error; err != nil {
+					return err
+				}
 			}
-			productionStationSignup.Id = _resp.Message
-		}
 
-		loginTime, err := time.ParseInLocation("2006-01-02 15:04:05", productionStationSignup.LoginTime, time.Local)
-		if err != nil {
-			resp.Code = modelcode.InternalServerError
-			resp.Message = err.Error()
-			return
-		}
-		productionStationSignup.LastHeartbeatTime = now.Format("2006-01-02 15:04:05")
-		productionStationSignup.LoginTime = now.Format("2006-01-02 15:04:05")
-		productionStationSignup.Duration = int32(now.Sub(loginTime).Minutes())
+			productionStationSignup.LastHeartbeatTime = sql.NullTime{Time: now, Valid: true}
+			productionStationSignup.LoginTime = now
+			productionStationSignup.Duration = int32(now.Sub(productionStationSignup.LoginTime).Minutes())
 
-		if _resp, _ := clients.ProductionStationSignupClient.Update(context.Background(), productionStationSignup); _resp.Code != modelcode.Success {
-			resp.Code = _resp.Code
-			resp.Message = _resp.Message
-			return
-		}
-		if _resp, _ := clients.ProductionStationClient.Update(context.Background(), productionStation); _resp.Code != modelcode.Success {
-			resp.Code = _resp.Code
-			resp.Message = _resp.Message
+			if err := tx.Save(productionStationSignup).Error; err != nil {
+				return err
+			}
+
+			if err := tx.Save(productionStation).Error; err != nil {
+				return err
+			}
+
+			return nil
+		}); err != nil {
+			resp.Code = modelcode.BadRequest
+			if err != gorm.ErrRecordNotFound {
+				resp.Code = modelcode.InternalServerError
+				resp.Message = err.Error()
+			}
 			return
 		}
 	}
@@ -162,18 +152,16 @@ func TryLogout(req *proto.LogoutRequest, resp *proto.CommonResponse) {
 		return
 	}
 
-	_productionStation, _ := clients.ProductionStationClient.Get(context.Background(), &proto.GetProductionStationRequest{Code: req.ProductionStation})
-	if _productionStation.Message == gorm.ErrRecordNotFound.Error() {
+	productionStation := &model.ProductionStation{}
+	if err := model.DB.DB().Where(model.ProductionStation{Code: req.ProductionStation}).First(productionStation).Error; err == gorm.ErrRecordNotFound {
 		resp.Code = modelcode.BadRequest
 		resp.Message = "无效的工位编号"
 		return
-	}
-	if _productionStation.Code != modelcode.Success {
-		resp.Code = _productionStation.Code
-		resp.Message = _productionStation.Message
+	} else if err != nil {
+		resp.Code = modelcode.InternalServerError
+		resp.Message = err.Error()
 		return
 	}
-	productionStation := _productionStation.Data
 
 	//根据帐号注销用户
 	_user, _ := clients.UserClient.LogoutByUserName(context.Background(), &usercenter.LogoutByUserNameRequest{UserName: req.Name})
@@ -189,37 +177,41 @@ func TryLogout(req *proto.LogoutRequest, resp *proto.CommonResponse) {
 		resp.Message = "无效的工位或账号"
 		return
 	}
-	if productionStation.CurrentUserID != userID {
+	if productionStation.CurrentUserID != &userID {
 		resp.Code = modelcode.BadRequest
 		resp.Message = "登录信息错误，用于账号与工位登录当前账号不符"
 		return
 	}
 
-	_productionStationSignup, _ := clients.ProductionStationSignupClient.Get(context.Background(), &proto.GetProductionStationSignupRequest{
-		ProductionStationID: productionStation.Id,
-		LoginUserID:         productionStation.CurrentUserID,
-		HasLogoutTime:       false,
-	})
-	if _productionStationSignup.Code == modelcode.InternalServerError && _productionStationSignup.Message != gorm.ErrRecordNotFound.Error() {
-		resp.Code = _productionStationSignup.Code
-		resp.Message = _productionStationSignup.Message
+	productionStationSignup := &model.ProductionStationSignup{}
+	if err := model.DB.DB().Where(model.ProductionStationSignup{
+		ProductionStationID: productionStation.ID,
+		LoginUserID:         *productionStation.CurrentUserID,
+	}).Where("logout_time IS NULL").First(productionStationSignup).Error; err != nil && err != gorm.ErrRecordNotFound {
+		resp.Code = modelcode.InternalServerError
+		resp.Message = err.Error()
 		return
 	}
 
-	productionStationSignup := _productionStationSignup.Data
-	productionStationSignup.LastHeartbeatTime = time.Now().Format("2006-01-02 15:04:05")
-	productionStationSignup.LogoutTime = time.Now().Format("2006-01-02 15:04:05")
+	nowTime := time.Now()
+	productionStationSignup.LastHeartbeatTime = sql.NullTime{Time: nowTime, Valid: true}
+	productionStationSignup.LogoutTime = sql.NullTime{Time: nowTime, Valid: true}
 	productionStationSignup.Duration = 0
 
-	productionStation.CurrentUserID = ""
-	if _resp, _ := clients.ProductionStationClient.Update(context.Background(), productionStation); _resp.Code != modelcode.Success {
-		resp.Code = _resp.Code
-		resp.Message = _resp.Message
-		return
-	}
-	if _resp, _ := clients.ProductionStationSignupClient.Update(context.Background(), productionStationSignup); _resp.Code != modelcode.Success {
-		resp.Code = _resp.Code
-		resp.Message = _resp.Message
+	productionStation.CurrentUserID = nil
+
+	if err := model.DB.DB().Transaction(func(tx *gorm.DB) error {
+		if err := tx.Save(productionStation).Error; err != nil {
+			return err
+		}
+		if err := tx.Save(productionStationSignup).Error; err != nil {
+			return err
+		}
+
+		return nil
+	}); err != nil {
+		resp.Code = modelcode.InternalServerError
+		resp.Message = err.Error()
 		return
 	}
 }

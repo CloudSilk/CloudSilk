@@ -2,7 +2,7 @@
 // versions:
 // - protoc-gen-go-triple v1.0.8
 // - protoc             v3.21.12
-// source: mater_tray.proto
+// source: material_tray.proto
 
 package proto
 
@@ -29,6 +29,7 @@ const _ = grpc_go.SupportPackageIsVersion7
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type MaterialTrayClient interface {
 	Get(ctx context.Context, in *GetMaterialTrayRequest, opts ...grpc_go.CallOption) (*GetMaterialTrayDetailResponse, common.ErrorWithAttachment)
+	Update(ctx context.Context, in *MaterialTrayInfo, opts ...grpc_go.CallOption) (*CommonResponse, common.ErrorWithAttachment)
 }
 
 type materialTrayClient struct {
@@ -36,7 +37,8 @@ type materialTrayClient struct {
 }
 
 type MaterialTrayClientImpl struct {
-	Get func(ctx context.Context, in *GetMaterialTrayRequest) (*GetMaterialTrayDetailResponse, error)
+	Get    func(ctx context.Context, in *GetMaterialTrayRequest) (*GetMaterialTrayDetailResponse, error)
+	Update func(ctx context.Context, in *MaterialTrayInfo) (*CommonResponse, error)
 }
 
 func (c *MaterialTrayClientImpl) GetDubboStub(cc *triple.TripleConn) MaterialTrayClient {
@@ -57,11 +59,18 @@ func (c *materialTrayClient) Get(ctx context.Context, in *GetMaterialTrayRequest
 	return out, c.cc.Invoke(ctx, "/"+interfaceKey+"/Get", in, out)
 }
 
+func (c *materialTrayClient) Update(ctx context.Context, in *MaterialTrayInfo, opts ...grpc_go.CallOption) (*CommonResponse, common.ErrorWithAttachment) {
+	out := new(CommonResponse)
+	interfaceKey := ctx.Value(constant.InterfaceKey).(string)
+	return out, c.cc.Invoke(ctx, "/"+interfaceKey+"/Update", in, out)
+}
+
 // MaterialTrayServer is the server API for MaterialTray service.
 // All implementations must embed UnimplementedMaterialTrayServer
 // for forward compatibility
 type MaterialTrayServer interface {
 	Get(context.Context, *GetMaterialTrayRequest) (*GetMaterialTrayDetailResponse, error)
+	Update(context.Context, *MaterialTrayInfo) (*CommonResponse, error)
 	mustEmbedUnimplementedMaterialTrayServer()
 }
 
@@ -72,6 +81,9 @@ type UnimplementedMaterialTrayServer struct {
 
 func (UnimplementedMaterialTrayServer) Get(context.Context, *GetMaterialTrayRequest) (*GetMaterialTrayDetailResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Get not implemented")
+}
+func (UnimplementedMaterialTrayServer) Update(context.Context, *MaterialTrayInfo) (*CommonResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Update not implemented")
 }
 func (s *UnimplementedMaterialTrayServer) XXX_SetProxyImpl(impl protocol.Invoker) {
 	s.proxyImpl = impl
@@ -130,6 +142,35 @@ func _MaterialTray_Get_Handler(srv interface{}, ctx context.Context, dec func(in
 	return interceptor(ctx, in, info, handler)
 }
 
+func _MaterialTray_Update_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc_go.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MaterialTrayInfo)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	base := srv.(dubbo3.Dubbo3GrpcService)
+	args := []interface{}{}
+	args = append(args, in)
+	md, _ := metadata.FromIncomingContext(ctx)
+	invAttachment := make(map[string]interface{}, len(md))
+	for k, v := range md {
+		invAttachment[k] = v
+	}
+	invo := invocation.NewRPCInvocation("Update", args, invAttachment)
+	if interceptor == nil {
+		result := base.XXX_GetProxyImpl().Invoke(ctx, invo)
+		return result, result.Error()
+	}
+	info := &grpc_go.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: ctx.Value("XXX_TRIPLE_GO_INTERFACE_NAME").(string),
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		result := base.XXX_GetProxyImpl().Invoke(ctx, invo)
+		return result, result.Error()
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // MaterialTray_ServiceDesc is the grpc_go.ServiceDesc for MaterialTray service.
 // It's only intended for direct use with grpc_go.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -141,7 +182,11 @@ var MaterialTray_ServiceDesc = grpc_go.ServiceDesc{
 			MethodName: "Get",
 			Handler:    _MaterialTray_Get_Handler,
 		},
+		{
+			MethodName: "Update",
+			Handler:    _MaterialTray_Update_Handler,
+		},
 	},
 	Streams:  []grpc_go.StreamDesc{},
-	Metadata: "mater_tray.proto",
+	Metadata: "material_tray.proto",
 }

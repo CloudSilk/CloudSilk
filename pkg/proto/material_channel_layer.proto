@@ -1,0 +1,100 @@
+syntax="proto3";
+
+package proto;
+option go_package="./;proto";
+
+import "mom_common.proto";
+import "production_line.proto";
+import "material_info.proto";
+
+service MaterialChannelLayer{
+    rpc GetMaterialChannels(GetMaterialChannelRequest)returns(GetAllMaterialChannelResponse);
+}
+
+message MaterialChannelLayerInfo{
+    string id=1;
+    //顺序
+    int32 sortIndex=2;
+    //代号
+    string code=3;
+    //状态寄存器地址
+    int32 statusRegisterAddress=4;
+    //亮灯寄存器地址
+    int32 lightRegisterAddress=5;
+    //备注
+    string remark=6;
+    //隶属工站ID
+    string productionStationID=7;
+    //隶属工站
+    ProductionStationInfo productionStation=8;
+}
+
+message QueryMaterialChannelLayerRequest{
+    // @inject_tag: uri:"pageIndex" form:"pageIndex"
+    int64 pageIndex=1;
+    // @inject_tag: uri:"pageSize" form:"pageSize"
+    int64 pageSize=2;
+    // @inject_tag: uri:"sortConfig" form:"sortConfig"
+    string sortConfig=3;
+}
+
+message QueryMaterialChannelLayerResponse{
+    Code code=1;
+    string message=2;
+    repeated MaterialChannelLayerInfo data=3;
+    int64 pages=4;
+    int64 records=5;
+    int64 total=6;
+}
+
+message GetAllMaterialChannelLayerResponse{
+    Code code=1;
+    string message=2;
+    repeated MaterialChannelLayerInfo data=3;
+}
+
+message GetMaterialChannelLayerDetailResponse{
+    Code code=1;
+    string message=2;
+    MaterialChannelLayerInfo data=3;
+}
+
+message MaterialChannelInfo{
+    string id=1;
+    //顺序
+    int32 sortIndex=2;
+    //代号
+    string code=3;
+    //描述
+    string description=4;
+    //尺寸
+    string size=5;
+    //规格
+    float spec=6;
+    //启用监控
+    bool enableMonitor=7;
+    //当前状态
+    string currentState=8;
+    //状态变更时间
+    string lastUpdateTime=9;
+    //备注
+    string remark=10;
+    //物料通道层ID
+    string materialChannelLayerID=11;
+    //物料通道层
+    MaterialChannelLayerInfo materialChannelLayer=12;
+    //物料信息ID
+    string materialInfoID=13;
+    //物料通道层
+    MaterialInfoInfo materialInfo=14;
+}
+
+message GetMaterialChannelRequest{
+    string productionStationID=1;
+}
+
+message GetAllMaterialChannelResponse{
+    Code code=1;
+    string message=2;
+    repeated MaterialChannelInfo data=3;
+}

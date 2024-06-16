@@ -28,7 +28,7 @@ func (u *ProductionStationProvider) Get(ctx context.Context, in *proto.GetProduc
 	resp := &proto.GetProductionStationDetailResponse{
 		Code: proto.Code_Success,
 	}
-	f, err := logic.GetProductionStationByCode(in.Code)
+	f, err := logic.GetProductionStation(in)
 	if err != nil {
 		resp.Code = proto.Code_InternalServerError
 		resp.Message = err.Error()

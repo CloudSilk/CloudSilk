@@ -13,9 +13,9 @@ import "product_attribute.proto";
 import "product_package_stack_rule.proto";
 import "label_type.proto";
 
-service ProductInfo{
-	rpc Get(GetProductInfoRequest)returns(GetProductInfoDetailResponse){}
-	rpc Query(QueryProductInfoRequest)returns(QueryProductInfoResponse){}
+service ProductOrder{
+    rpc GetDetail(GetDetailRequest)returns(GetProductOrderDetailResponse){}
+    rpc Update(ProductOrderInfo)returns(CommonResponse){}
 }
 
 message ProductOrderInfo {
@@ -159,8 +159,10 @@ message GetProductOrderDetailResponse{
     ProductOrderInfo data=3;
 }
 
-service ProductOrder{
-    rpc GetDetail(GetDetailRequest)returns(GetProductOrderDetailResponse){}
+service ProductInfo{
+	rpc Get(GetProductInfoRequest)returns(GetProductInfoDetailResponse){}
+	rpc Query(QueryProductInfoRequest)returns(QueryProductInfoResponse){}
+	rpc Update(ProductInfoInfo)returns(CommonResponse){}
 }
 
 message GetProductInfoRequest{

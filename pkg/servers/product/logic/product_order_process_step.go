@@ -32,9 +32,18 @@ func UpdateProductOrderProcessStep(m *model.ProductOrderProcessStep) error {
 }
 
 func QueryProductOrderProcessStep(req *proto.QueryProductOrderProcessStepRequest, resp *proto.QueryProductOrderProcessStepResponse, preload bool) {
-	db := model.DB.DB().Model(&model.ProductOrderProcessStep{}).Preload("ProcessStepType").Preload(clause.Associations)
+	db := model.DB.DB().Model(&model.ProductOrderProcessStep{}).Preload("ProcessStepType").Preload("ProductOrderProcessStepTypeParameters").Preload(clause.Associations)
 	if req.ProductOrderProcessID != "" {
-		db.Where("`product_order_process_id` = ?", req.ProductOrderProcessID)
+		db = db.Where("`product_order_process_id` = ?", req.ProductOrderProcessID)
+	}
+	if req.ProductionProcessID != "" || req.ProductOrderID != "" {
+		db = db.Joins("JOIN product_order_processes ON product_order_process_steps.product_order_process_id=product_order_processes.id")
+		if req.ProductionProcessID != "" {
+			db = db.Where("product_order_processes.production_process_id=?", req.ProductionProcessID)
+		}
+		if req.ProductOrderID != "" {
+			db = db.Where("product_order_processes.product_order_id=?", req.ProductOrderID)
+		}
 	}
 
 	orderStr, err := utils.GenerateOrderString(req.SortConfig, "created_at desc")

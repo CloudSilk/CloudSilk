@@ -4,6 +4,7 @@ package proto;
 option go_package = "./;proto";
 
 import "mom_common.proto";
+import "production_line.proto";
 
 service ProductionProcessSop{
     rpc Get(GetProductionProcessSopRequest)returns(GetProductionProcessSopDetailResponse){}
@@ -19,6 +20,7 @@ message ProductionProcessSopInfo {
  	string id=2;
 	//生产工序ID 
     string productionProcessID=3;
+    ProductionProcessInfo productionProcess=10;
 	//产品型号ID 
     string productModelID=4;
 	//文件链接 

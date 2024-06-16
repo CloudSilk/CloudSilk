@@ -24,12 +24,180 @@ import (
 // is compatible with the grpc package it is being compiled against.
 const _ = grpc_go.SupportPackageIsVersion7
 
+// ProductOrderClient is the client API for ProductOrder service.
+//
+// For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
+type ProductOrderClient interface {
+	GetDetail(ctx context.Context, in *GetDetailRequest, opts ...grpc_go.CallOption) (*GetProductOrderDetailResponse, common.ErrorWithAttachment)
+	Update(ctx context.Context, in *ProductOrderInfo, opts ...grpc_go.CallOption) (*CommonResponse, common.ErrorWithAttachment)
+}
+
+type productOrderClient struct {
+	cc *triple.TripleConn
+}
+
+type ProductOrderClientImpl struct {
+	GetDetail func(ctx context.Context, in *GetDetailRequest) (*GetProductOrderDetailResponse, error)
+	Update    func(ctx context.Context, in *ProductOrderInfo) (*CommonResponse, error)
+}
+
+func (c *ProductOrderClientImpl) GetDubboStub(cc *triple.TripleConn) ProductOrderClient {
+	return NewProductOrderClient(cc)
+}
+
+func (c *ProductOrderClientImpl) XXX_InterfaceName() string {
+	return "proto.ProductOrder"
+}
+
+func NewProductOrderClient(cc *triple.TripleConn) ProductOrderClient {
+	return &productOrderClient{cc}
+}
+
+func (c *productOrderClient) GetDetail(ctx context.Context, in *GetDetailRequest, opts ...grpc_go.CallOption) (*GetProductOrderDetailResponse, common.ErrorWithAttachment) {
+	out := new(GetProductOrderDetailResponse)
+	interfaceKey := ctx.Value(constant.InterfaceKey).(string)
+	return out, c.cc.Invoke(ctx, "/"+interfaceKey+"/GetDetail", in, out)
+}
+
+func (c *productOrderClient) Update(ctx context.Context, in *ProductOrderInfo, opts ...grpc_go.CallOption) (*CommonResponse, common.ErrorWithAttachment) {
+	out := new(CommonResponse)
+	interfaceKey := ctx.Value(constant.InterfaceKey).(string)
+	return out, c.cc.Invoke(ctx, "/"+interfaceKey+"/Update", in, out)
+}
+
+// ProductOrderServer is the server API for ProductOrder service.
+// All implementations must embed UnimplementedProductOrderServer
+// for forward compatibility
+type ProductOrderServer interface {
+	GetDetail(context.Context, *GetDetailRequest) (*GetProductOrderDetailResponse, error)
+	Update(context.Context, *ProductOrderInfo) (*CommonResponse, error)
+	mustEmbedUnimplementedProductOrderServer()
+}
+
+// UnimplementedProductOrderServer must be embedded to have forward compatible implementations.
+type UnimplementedProductOrderServer struct {
+	proxyImpl protocol.Invoker
+}
+
+func (UnimplementedProductOrderServer) GetDetail(context.Context, *GetDetailRequest) (*GetProductOrderDetailResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetDetail not implemented")
+}
+func (UnimplementedProductOrderServer) Update(context.Context, *ProductOrderInfo) (*CommonResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Update not implemented")
+}
+func (s *UnimplementedProductOrderServer) XXX_SetProxyImpl(impl protocol.Invoker) {
+	s.proxyImpl = impl
+}
+
+func (s *UnimplementedProductOrderServer) XXX_GetProxyImpl() protocol.Invoker {
+	return s.proxyImpl
+}
+
+func (s *UnimplementedProductOrderServer) XXX_ServiceDesc() *grpc_go.ServiceDesc {
+	return &ProductOrder_ServiceDesc
+}
+func (s *UnimplementedProductOrderServer) XXX_InterfaceName() string {
+	return "proto.ProductOrder"
+}
+
+func (UnimplementedProductOrderServer) mustEmbedUnimplementedProductOrderServer() {}
+
+// UnsafeProductOrderServer may be embedded to opt out of forward compatibility for this service.
+// Use of this interface is not recommended, as added methods to ProductOrderServer will
+// result in compilation errors.
+type UnsafeProductOrderServer interface {
+	mustEmbedUnimplementedProductOrderServer()
+}
+
+func RegisterProductOrderServer(s grpc_go.ServiceRegistrar, srv ProductOrderServer) {
+	s.RegisterService(&ProductOrder_ServiceDesc, srv)
+}
+
+func _ProductOrder_GetDetail_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc_go.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetDetailRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	base := srv.(dubbo3.Dubbo3GrpcService)
+	args := []interface{}{}
+	args = append(args, in)
+	md, _ := metadata.FromIncomingContext(ctx)
+	invAttachment := make(map[string]interface{}, len(md))
+	for k, v := range md {
+		invAttachment[k] = v
+	}
+	invo := invocation.NewRPCInvocation("GetDetail", args, invAttachment)
+	if interceptor == nil {
+		result := base.XXX_GetProxyImpl().Invoke(ctx, invo)
+		return result, result.Error()
+	}
+	info := &grpc_go.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: ctx.Value("XXX_TRIPLE_GO_INTERFACE_NAME").(string),
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		result := base.XXX_GetProxyImpl().Invoke(ctx, invo)
+		return result, result.Error()
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _ProductOrder_Update_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc_go.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ProductOrderInfo)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	base := srv.(dubbo3.Dubbo3GrpcService)
+	args := []interface{}{}
+	args = append(args, in)
+	md, _ := metadata.FromIncomingContext(ctx)
+	invAttachment := make(map[string]interface{}, len(md))
+	for k, v := range md {
+		invAttachment[k] = v
+	}
+	invo := invocation.NewRPCInvocation("Update", args, invAttachment)
+	if interceptor == nil {
+		result := base.XXX_GetProxyImpl().Invoke(ctx, invo)
+		return result, result.Error()
+	}
+	info := &grpc_go.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: ctx.Value("XXX_TRIPLE_GO_INTERFACE_NAME").(string),
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		result := base.XXX_GetProxyImpl().Invoke(ctx, invo)
+		return result, result.Error()
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+// ProductOrder_ServiceDesc is the grpc_go.ServiceDesc for ProductOrder service.
+// It's only intended for direct use with grpc_go.RegisterService,
+// and not to be introspected or modified (even as a copy)
+var ProductOrder_ServiceDesc = grpc_go.ServiceDesc{
+	ServiceName: "proto.ProductOrder",
+	HandlerType: (*ProductOrderServer)(nil),
+	Methods: []grpc_go.MethodDesc{
+		{
+			MethodName: "GetDetail",
+			Handler:    _ProductOrder_GetDetail_Handler,
+		},
+		{
+			MethodName: "Update",
+			Handler:    _ProductOrder_Update_Handler,
+		},
+	},
+	Streams:  []grpc_go.StreamDesc{},
+	Metadata: "product_order.proto",
+}
+
 // ProductInfoClient is the client API for ProductInfo service.
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type ProductInfoClient interface {
 	Get(ctx context.Context, in *GetProductInfoRequest, opts ...grpc_go.CallOption) (*GetProductInfoDetailResponse, common.ErrorWithAttachment)
 	Query(ctx context.Context, in *QueryProductInfoRequest, opts ...grpc_go.CallOption) (*QueryProductInfoResponse, common.ErrorWithAttachment)
+	Update(ctx context.Context, in *ProductInfoInfo, opts ...grpc_go.CallOption) (*CommonResponse, common.ErrorWithAttachment)
 }
 
 type productInfoClient struct {
@@ -37,8 +205,9 @@ type productInfoClient struct {
 }
 
 type ProductInfoClientImpl struct {
-	Get   func(ctx context.Context, in *GetProductInfoRequest) (*GetProductInfoDetailResponse, error)
-	Query func(ctx context.Context, in *QueryProductInfoRequest) (*QueryProductInfoResponse, error)
+	Get    func(ctx context.Context, in *GetProductInfoRequest) (*GetProductInfoDetailResponse, error)
+	Query  func(ctx context.Context, in *QueryProductInfoRequest) (*QueryProductInfoResponse, error)
+	Update func(ctx context.Context, in *ProductInfoInfo) (*CommonResponse, error)
 }
 
 func (c *ProductInfoClientImpl) GetDubboStub(cc *triple.TripleConn) ProductInfoClient {
@@ -65,12 +234,19 @@ func (c *productInfoClient) Query(ctx context.Context, in *QueryProductInfoReque
 	return out, c.cc.Invoke(ctx, "/"+interfaceKey+"/Query", in, out)
 }
 
+func (c *productInfoClient) Update(ctx context.Context, in *ProductInfoInfo, opts ...grpc_go.CallOption) (*CommonResponse, common.ErrorWithAttachment) {
+	out := new(CommonResponse)
+	interfaceKey := ctx.Value(constant.InterfaceKey).(string)
+	return out, c.cc.Invoke(ctx, "/"+interfaceKey+"/Update", in, out)
+}
+
 // ProductInfoServer is the server API for ProductInfo service.
 // All implementations must embed UnimplementedProductInfoServer
 // for forward compatibility
 type ProductInfoServer interface {
 	Get(context.Context, *GetProductInfoRequest) (*GetProductInfoDetailResponse, error)
 	Query(context.Context, *QueryProductInfoRequest) (*QueryProductInfoResponse, error)
+	Update(context.Context, *ProductInfoInfo) (*CommonResponse, error)
 	mustEmbedUnimplementedProductInfoServer()
 }
 
@@ -84,6 +260,9 @@ func (UnimplementedProductInfoServer) Get(context.Context, *GetProductInfoReques
 }
 func (UnimplementedProductInfoServer) Query(context.Context, *QueryProductInfoRequest) (*QueryProductInfoResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Query not implemented")
+}
+func (UnimplementedProductInfoServer) Update(context.Context, *ProductInfoInfo) (*CommonResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Update not implemented")
 }
 func (s *UnimplementedProductInfoServer) XXX_SetProxyImpl(impl protocol.Invoker) {
 	s.proxyImpl = impl
@@ -171,105 +350,8 @@ func _ProductInfo_Query_Handler(srv interface{}, ctx context.Context, dec func(i
 	return interceptor(ctx, in, info, handler)
 }
 
-// ProductInfo_ServiceDesc is the grpc_go.ServiceDesc for ProductInfo service.
-// It's only intended for direct use with grpc_go.RegisterService,
-// and not to be introspected or modified (even as a copy)
-var ProductInfo_ServiceDesc = grpc_go.ServiceDesc{
-	ServiceName: "proto.ProductInfo",
-	HandlerType: (*ProductInfoServer)(nil),
-	Methods: []grpc_go.MethodDesc{
-		{
-			MethodName: "Get",
-			Handler:    _ProductInfo_Get_Handler,
-		},
-		{
-			MethodName: "Query",
-			Handler:    _ProductInfo_Query_Handler,
-		},
-	},
-	Streams:  []grpc_go.StreamDesc{},
-	Metadata: "product_order.proto",
-}
-
-// ProductOrderClient is the client API for ProductOrder service.
-//
-// For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
-type ProductOrderClient interface {
-	GetDetail(ctx context.Context, in *GetDetailRequest, opts ...grpc_go.CallOption) (*GetProductOrderDetailResponse, common.ErrorWithAttachment)
-}
-
-type productOrderClient struct {
-	cc *triple.TripleConn
-}
-
-type ProductOrderClientImpl struct {
-	GetDetail func(ctx context.Context, in *GetDetailRequest) (*GetProductOrderDetailResponse, error)
-}
-
-func (c *ProductOrderClientImpl) GetDubboStub(cc *triple.TripleConn) ProductOrderClient {
-	return NewProductOrderClient(cc)
-}
-
-func (c *ProductOrderClientImpl) XXX_InterfaceName() string {
-	return "proto.ProductOrder"
-}
-
-func NewProductOrderClient(cc *triple.TripleConn) ProductOrderClient {
-	return &productOrderClient{cc}
-}
-
-func (c *productOrderClient) GetDetail(ctx context.Context, in *GetDetailRequest, opts ...grpc_go.CallOption) (*GetProductOrderDetailResponse, common.ErrorWithAttachment) {
-	out := new(GetProductOrderDetailResponse)
-	interfaceKey := ctx.Value(constant.InterfaceKey).(string)
-	return out, c.cc.Invoke(ctx, "/"+interfaceKey+"/GetDetail", in, out)
-}
-
-// ProductOrderServer is the server API for ProductOrder service.
-// All implementations must embed UnimplementedProductOrderServer
-// for forward compatibility
-type ProductOrderServer interface {
-	GetDetail(context.Context, *GetDetailRequest) (*GetProductOrderDetailResponse, error)
-	mustEmbedUnimplementedProductOrderServer()
-}
-
-// UnimplementedProductOrderServer must be embedded to have forward compatible implementations.
-type UnimplementedProductOrderServer struct {
-	proxyImpl protocol.Invoker
-}
-
-func (UnimplementedProductOrderServer) GetDetail(context.Context, *GetDetailRequest) (*GetProductOrderDetailResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GetDetail not implemented")
-}
-func (s *UnimplementedProductOrderServer) XXX_SetProxyImpl(impl protocol.Invoker) {
-	s.proxyImpl = impl
-}
-
-func (s *UnimplementedProductOrderServer) XXX_GetProxyImpl() protocol.Invoker {
-	return s.proxyImpl
-}
-
-func (s *UnimplementedProductOrderServer) XXX_ServiceDesc() *grpc_go.ServiceDesc {
-	return &ProductOrder_ServiceDesc
-}
-func (s *UnimplementedProductOrderServer) XXX_InterfaceName() string {
-	return "proto.ProductOrder"
-}
-
-func (UnimplementedProductOrderServer) mustEmbedUnimplementedProductOrderServer() {}
-
-// UnsafeProductOrderServer may be embedded to opt out of forward compatibility for this service.
-// Use of this interface is not recommended, as added methods to ProductOrderServer will
-// result in compilation errors.
-type UnsafeProductOrderServer interface {
-	mustEmbedUnimplementedProductOrderServer()
-}
-
-func RegisterProductOrderServer(s grpc_go.ServiceRegistrar, srv ProductOrderServer) {
-	s.RegisterService(&ProductOrder_ServiceDesc, srv)
-}
-
-func _ProductOrder_GetDetail_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc_go.UnaryServerInterceptor) (interface{}, error) {
-	in := new(GetDetailRequest)
+func _ProductInfo_Update_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc_go.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ProductInfoInfo)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -281,7 +363,7 @@ func _ProductOrder_GetDetail_Handler(srv interface{}, ctx context.Context, dec f
 	for k, v := range md {
 		invAttachment[k] = v
 	}
-	invo := invocation.NewRPCInvocation("GetDetail", args, invAttachment)
+	invo := invocation.NewRPCInvocation("Update", args, invAttachment)
 	if interceptor == nil {
 		result := base.XXX_GetProxyImpl().Invoke(ctx, invo)
 		return result, result.Error()
@@ -297,16 +379,24 @@ func _ProductOrder_GetDetail_Handler(srv interface{}, ctx context.Context, dec f
 	return interceptor(ctx, in, info, handler)
 }
 
-// ProductOrder_ServiceDesc is the grpc_go.ServiceDesc for ProductOrder service.
+// ProductInfo_ServiceDesc is the grpc_go.ServiceDesc for ProductInfo service.
 // It's only intended for direct use with grpc_go.RegisterService,
 // and not to be introspected or modified (even as a copy)
-var ProductOrder_ServiceDesc = grpc_go.ServiceDesc{
-	ServiceName: "proto.ProductOrder",
-	HandlerType: (*ProductOrderServer)(nil),
+var ProductInfo_ServiceDesc = grpc_go.ServiceDesc{
+	ServiceName: "proto.ProductInfo",
+	HandlerType: (*ProductInfoServer)(nil),
 	Methods: []grpc_go.MethodDesc{
 		{
-			MethodName: "GetDetail",
-			Handler:    _ProductOrder_GetDetail_Handler,
+			MethodName: "Get",
+			Handler:    _ProductInfo_Get_Handler,
+		},
+		{
+			MethodName: "Query",
+			Handler:    _ProductInfo_Query_Handler,
+		},
+		{
+			MethodName: "Update",
+			Handler:    _ProductInfo_Update_Handler,
 		},
 	},
 	Streams:  []grpc_go.StreamDesc{},

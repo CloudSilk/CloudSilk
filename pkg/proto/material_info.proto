@@ -41,6 +41,9 @@ message QueryMaterialInfoRequest{
     string sortConfig=3;
     // @inject_tag: uri:"identifier" form:"identifier"
     string identifier=4;
+    // 代号或描述
+    // @inject_tag: uri:"code" form:"code"
+    string code=5;
 }
 
 message QueryMaterialInfoResponse{

@@ -11,6 +11,7 @@ service ProductProcessRoute{
     rpc Add(ProductProcessRouteInfo)returns(CommonResponse){}
     rpc Get(GetProductProcessRouteRequest)returns(GetProductProcessRouteDetailResponse){}
     rpc Query(QueryProductProcessRouteRequest)returns(QueryProductProcessRouteResponse){}
+    rpc Update(ProductProcessRouteInfo)returns(CommonResponse){}
 }
 
 message GetProductProcessRouteRequest{

@@ -57,9 +57,9 @@ func GetProductionStationByID(id string) (*model.ProductionStation, error) {
 	return m, err
 }
 
-func GetProductionStationByCode(code string) (*model.ProductionStation, error) {
+func GetProductionStation(req *proto.GetProductionStationRequest) (*model.ProductionStation, error) {
 	m := &model.ProductionStation{}
-	err := model.DB.DB().Preload(clause.Associations).Where("`code` = ?", code).First(m).Error
+	err := model.DB.DB().Preload(clause.Associations).Where("`code` = ?", req.Code).First(m).Error
 	return m, err
 }
 

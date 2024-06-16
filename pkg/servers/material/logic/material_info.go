@@ -17,7 +17,10 @@ func UpdateMaterialInfo(m *model.MaterialInfo) error {
 }
 
 func QueryMaterialInfo(req *proto.QueryMaterialInfoRequest, resp *proto.QueryMaterialInfoResponse, preload bool) {
-	db := model.DB.DB().Model(&model.MaterialInfo{})
+	db := model.DB.DB().Model(&model.MaterialInfo{}).Preload("MaterialCategory")
+	if req.Code != "" {
+		db = db.Where("`material_no` LIKE ? OR `material_description` LIKE ?", "%"+req.Code+"%", "%"+req.Code+"%")
+	}
 
 	orderStr, err := utils.GenerateOrderString(req.SortConfig, "created_at desc")
 	if err != nil {

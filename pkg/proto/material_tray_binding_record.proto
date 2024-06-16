@@ -1,0 +1,79 @@
+syntax="proto3";
+
+package proto;
+option go_package="./;proto";
+
+import "mom_common.proto";
+import "product_order.proto";
+import "material_tray.proto";
+
+service MaterialTrayBindingRecord{
+    rpc Add(MaterialTrayBindingRecordInfo)returns(CommonResponse){}
+    rpc Get(GetMaterialTrayBindingRecordRequest)returns(GetMaterialTrayBindingRecordDetailResponse){}
+}
+
+message GetMaterialTrayBindingRecordRequest{
+    string productInfoID=1;
+    string materialTrayID=2;
+}
+
+message MaterialTrayBindingRecordInfo{
+    string id=1;
+    //发料时间
+    string createTime=2;
+    //发料人员ID
+    string createUserID=3;
+    //当前状态
+    string currentState=4;
+    //状态变更时间
+    string lastUpdateTime=5;
+    //备注
+    string remark=6;
+    //使用托盘ID
+    string materialTrayID=7;
+    //状态变更时间
+    MaterialTrayInfo materialTray=8;
+    //绑定产品ID
+    string productInfoID=9;
+    //隶属产线ID
+    ProductInfoInfo productInfo=10;
+}
+
+message QueryMaterialTrayBindingRecordRequest{
+    // @inject_tag: uri:"pageIndex" form:"pageIndex"
+    int64 pageIndex=1;
+    // @inject_tag: uri:"pageSize" form:"pageSize"
+    int64 pageSize=2;
+    // @inject_tag: uri:"sortConfig" form:"sortConfig"
+    string sortConfig=3;
+    // 产线ID
+    // @inject_tag: uri:"productionLineID" form:"productionLineID"
+    string productionLineID=4;
+    // 发料时间开始
+    // @inject_tag: uri:"createTime0" form:"createTime0"
+    string createTime0=5;
+    // 发料时间结束
+    // @inject_tag: uri:"createTime1" form:"createTime1"
+    string createTime1=6;
+}
+
+message QueryMaterialTrayBindingRecordResponse{
+    Code code=1;
+    string message=2;
+    repeated MaterialTrayBindingRecordInfo data=3;
+    int64 pages=4;
+    int64 records=5;
+    int64 total=6;
+}
+
+message GetAllMaterialTrayBindingRecordResponse{
+    Code code=1;
+    string message=2;
+    repeated MaterialTrayBindingRecordInfo data=3;
+}
+
+message GetMaterialTrayBindingRecordDetailResponse{
+    Code code=1;
+    string message=2;
+    MaterialTrayBindingRecordInfo data=3;
+}

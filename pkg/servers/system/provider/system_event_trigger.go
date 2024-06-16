@@ -9,7 +9,7 @@ import (
 )
 
 type SystemEventTriggerProvider struct {
-	proto.SystemEventTriggerServer
+	proto.UnimplementedSystemEventTriggerServer
 }
 
 func (u *SystemEventTriggerProvider) Add(ctx context.Context, in *proto.SystemEventTriggerInfo) (*proto.CommonResponse, error) {

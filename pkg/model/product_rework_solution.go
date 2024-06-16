@@ -13,6 +13,7 @@ type ProductReworkSolution struct {
 	ProductReworkCauseAvailableSolutions []*ProductReworkCauseAvailableSolution `json:"productReworkCauseAvailableSolutions" gorm:"constraint:OnDelete:CASCADE"` //返工原因
 }
 
+// 支持返工原因
 type ProductReworkCauseAvailableSolution struct {
 	ModelID
 	ProductReworkSolutionID string              `json:"productReworkSolutionID" gorm:"index;size:36;comment:返工解决方案ID"`
