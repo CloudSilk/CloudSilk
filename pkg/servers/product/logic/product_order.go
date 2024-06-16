@@ -124,7 +124,7 @@ func CreateProductOrder(m *model.ProductOrder) (string, error) {
 
 		//工单接单
 		if err := ReceiveProductOrder(tx, m.ID); err != nil {
-			if err := model.DB.DB().Create(&model.ExceptionTrace{
+			if err := tx.Create(&model.ExceptionTrace{
 				Host:         "/api/mom/product/productorder/add",
 				Level:        types.EventTypeError,
 				ReportUserID: m.CreateUserID,
@@ -139,7 +139,7 @@ func CreateProductOrder(m *model.ProductOrder) (string, error) {
 
 		//工单核验
 		if err := VerifyProductOrder(tx, m.ID); err != nil {
-			if err := model.DB.DB().Create(&model.ExceptionTrace{
+			if err := tx.Create(&model.ExceptionTrace{
 				Host:         "/api/mom/product/productorder/add",
 				Level:        types.EventTypeError,
 				ReportUserID: m.CreateUserID,
@@ -154,7 +154,7 @@ func CreateProductOrder(m *model.ProductOrder) (string, error) {
 
 		//工单发放
 		if err := ReleaseProductOrder(tx, m.ID); err != nil {
-			if err := model.DB.DB().Create(&model.ExceptionTrace{
+			if err := tx.Create(&model.ExceptionTrace{
 				Host:         "/api/mom/product/productorder/add",
 				Level:        types.EventTypeError,
 				ReportUserID: m.CreateUserID,

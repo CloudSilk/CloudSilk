@@ -1,4 +1,6 @@
 import { Settings as LayoutSettings } from '@ant-design/pro-layout';
+import { TopNavHeader } from '@ant-design/pro-components';
+import { clearMenuItem } from '@ant-design/pro-layout/lib/utils/utils';
 import { history, Link, useModel } from '@umijs/max';
 import RightContent from '@/components/RightContent';
 import { GetDetailResponse, User, newResponseInterceptor, getToken, replaceTakeRedirect, Menu as AtaliMenu, RecursiveCall } from '@swiftease/atali-pkg';
@@ -8,11 +10,9 @@ import { notification } from 'antd';
 import './app.less'
 const loginPath = '/user/login';
 // process.env.NODE_ENV = 'production';
-import { loader } from '@monaco-editor/react';
-
-loader.config({
-  paths: { vs: (process.env.WEB_BASE !== undefined && process.env.WEB_BASE !== "" ? process.env.WEB_BASE : "") + `/js` }
-});
+import * as monaco from "monaco-editor";
+import { loader } from "@monaco-editor/react";
+loader.config({ monaco });
 
 umiRequest.interceptors.response.use(newResponseInterceptor(() => {
   replaceTakeRedirect(history, '/user/login', '/user/login')
@@ -117,7 +117,6 @@ export const layout = ({
             paddingBlockStart: 12,
           }}
         >
-          <div><Link to={'/station/config'}><span>工站配置</span></Link></div>
           <div>© 2024 上海炘智科技有限公司</div>
         </div>
       );
@@ -216,6 +215,27 @@ export const layout = ({
         return params.currentMenus
       },
     },
-    className: "my-app-layout"
+    className: "my-app-layout",
+    headerRender: (props: any) => {
+      const menuData = []
+      props.menuData?.forEach((value: any) => {
+        menuData.push({ ...value, children: [] })
+      })
+      const clearMenuData = clearMenuItem(menuData || []);
+      return <TopNavHeader
+        mode="horizontal"
+        onCollapse={props.onCollapse}
+        {...props}
+        menuData={clearMenuData}
+        menuProps={{
+          style: {
+            //控制头部菜单居中显示
+            width: "max-content",
+            marginLeft: "auto",
+            marginRight: "auto"
+          }
+        }}
+      />
+    }
   };
 };

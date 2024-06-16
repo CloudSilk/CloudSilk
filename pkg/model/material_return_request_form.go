@@ -39,28 +39,28 @@ type MaterialReturnRequestForm struct {
 // 退料类型
 type MaterialReturnType struct {
 	ModelID
-	Code                 string                 `gorm:"size:50;comment:代号"`          //代号
-	Description          string                 `gorm:"size:500;comment:描述"`         //描述
-	Remark               string                 `gorm:"size:500;comment:备注"`         //备注
-	MaterialReturnCauses []*MaterialReturnCause `gorm:"constraint:OnDelete:CASCADE"` //退料原因
+	Code                 string                 `gorm:"size:50;comment:代号"`  //代号
+	Description          string                 `gorm:"size:500;comment:描述"` //描述
+	Remark               string                 `gorm:"size:500;comment:备注"` //备注
+	MaterialReturnCauses []*MaterialReturnCause `gorm:"-"`                   //退料原因
 }
 
 // 退料原因
 type MaterialReturnCause struct {
 	ModelID
-	Code                    string                    `gorm:"size:50;comment:代号"`          //代号
-	Description             string                    `gorm:"size:500;comment:描述"`         //描述
-	Remark                  string                    `gorm:"size:500;comment:备注"`         //备注
-	MaterialReturnTypes     []*MaterialReturnType     `gorm:"constraint:OnDelete:CASCADE"` //归属类型
-	MaterialReturnSolutions []*MaterialReturnSolution `gorm:"constraint:OnDelete:CASCADE"` //可用方案
-	MaterialCategories      []*MaterialCategory       `gorm:"constraint:OnDelete:CASCADE"` //物料类别
+	Code                    string                    `gorm:"size:50;comment:代号"`  //代号
+	Description             string                    `gorm:"size:500;comment:描述"` //描述
+	Remark                  string                    `gorm:"size:500;comment:备注"` //备注
+	MaterialReturnTypes     []*MaterialReturnType     `gorm:"-"`                   //归属类型
+	MaterialReturnSolutions []*MaterialReturnSolution `gorm:"-"`                   //可用方案
+	MaterialCategories      []*MaterialCategory       `gorm:"-"`                   //物料类别
 }
 
 // 可用方案
 type MaterialReturnSolution struct {
 	ModelID
-	Code                 string                 `gorm:"size:50;comment:代号"`          //代号
-	Description          string                 `gorm:"size:500;comment:描述"`         //描述
-	Remark               string                 `gorm:"size:500;comment:备注"`         //备注
-	MaterialReturnCauses []*MaterialReturnCause `gorm:"constraint:OnDelete:CASCADE"` //退料原因
+	Code                 string                 `gorm:"size:50;comment:代号"`  //代号
+	Description          string                 `gorm:"size:500;comment:描述"` //描述
+	Remark               string                 `gorm:"size:500;comment:备注"` //备注
+	MaterialReturnCauses []*MaterialReturnCause `gorm:"-"`                   //退料原因
 }

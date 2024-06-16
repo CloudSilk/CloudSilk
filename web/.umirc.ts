@@ -23,7 +23,7 @@ export default defineConfig({
   },
   access: {},
   model: {},
-  base: process.env.WEB_BASE !== undefined && process.env.WEB_BASE !== "" ? process.env.WEB_BASE : "/",
+  base: "/",
   manifest: {
     basePath: process.env.WEB_BASE !== undefined && process.env.WEB_BASE !== "" ? process.env.WEB_BASE : "",
   },
