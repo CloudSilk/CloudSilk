@@ -44,13 +44,16 @@ func UpdateProductionProcessStep(m *model.ProductionProcessStep) error {
 }
 
 func QueryProductionProcessStep(req *proto.QueryProductionProcessStepRequest, resp *proto.QueryProductionProcessStepResponse, preload bool) {
-	db := model.DB.DB().Model(&model.ProductionProcessStep{}).Preload("ProcessStepType").Preload(clause.Associations)
+	db := model.DB.DB().Model(&model.ProductionProcessStep{}).Preload("ProcessStepType").Preload("AttributeExpressions").Preload(clause.Associations)
 	if req.ProductionProcessID != "" {
 		db = db.Joins("JOIN available_processes ON production_process_steps.id=available_processes.production_process_step_id").
 			Where("available_processes.production_process_id = ?", req.ProductionProcessID)
 	}
 	if len(req.Ids) > 0 {
 		db = db.Where("`id` in ?", req.Ids)
+	}
+	if req.Enable {
+		db = db.Where("`enable` = ?", req.Enable)
 	}
 
 	orderStr, err := utils.GenerateOrderString(req.SortConfig, "created_at desc")

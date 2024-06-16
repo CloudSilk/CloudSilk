@@ -10,9 +10,10 @@ type ProductReworkCause struct {
 	Code                            string                            `json:"code" gorm:"index;size:100;comment:代号"`
 	Description                     string                            `json:"description" gorm:"size:1000;comment:描述"`
 	Remark                          string                            `json:"remark" gorm:"size:1000;comment:备注"`
-	ProductReworkTypePossibleCauses []*ProductReworkTypePossibleCause `json:"productReworkTypePossibleCauses" gorm:"constraint:OnDelete:CASCADE"` //返工类型
+	ProductReworkTypePossibleCauses []*ProductReworkTypePossibleCause `json:"productReworkTypePossibleCauses" gorm:"constraint:OnDelete:CASCADE"` //支持返工类型
 }
 
+// 支持返工类型
 type ProductReworkTypePossibleCause struct {
 	ModelID
 	ProductReworkCauseID string             `json:"productReworkCauseID" gorm:"index;size:36;comment:返工原因ID"`

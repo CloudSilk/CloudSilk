@@ -73,19 +73,31 @@ func GetAllProductInfos() (list []*model.ProductInfo, err error) {
 
 func GetProductInfoByID(id string) (*model.ProductInfo, error) {
 	m := &model.ProductInfo{}
-	err := model.DB.DB().Preload(clause.Associations).Where("`id` = ?", id).First(m).Error
+	err := model.DB.DB().Preload("ProductOrder").
+		Preload("ProductOrder.ProductModel").
+		Preload("ProductOrder.ProductModel.ProductCategory").
+		Preload(clause.Associations).Where("`id` = ?", id).First(m).Error
 	return m, err
 }
 
 func GetProductInfo(productSerialNo string) (*model.ProductInfo, error) {
 	m := &model.ProductInfo{}
-	err := model.DB.DB().Preload(clause.Associations).Where("`product_serial_no` = ?", productSerialNo).First(m).Error
+	err := model.DB.DB().
+		Preload("ProductOrder").
+		Preload("ProductOrder.ProductModel").
+		Preload("ProductOrder.ProductModel.ProductCategory").
+		Preload(clause.Associations).
+		Where("`product_serial_no` = ?", productSerialNo).First(m).Error
 	return m, err
 }
 
 func GetProductInfoByIDs(ids []string) ([]*model.ProductInfo, error) {
 	var m []*model.ProductInfo
-	err := model.DB.DB().Preload(clause.Associations).Where("`id` in (?)", ids).Find(&m).Error
+	err := model.DB.DB().
+		Preload("ProductOrder").
+		Preload("ProductOrder.ProductModel").
+		Preload("ProductOrder.ProductModel.ProductCategory").
+		Preload(clause.Associations).Where("`id` in (?)", ids).Find(&m).Error
 	return m, err
 }
 

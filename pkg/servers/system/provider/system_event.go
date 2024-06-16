@@ -9,7 +9,7 @@ import (
 )
 
 type SystemEventProvider struct {
-	proto.SystemEventServer
+	proto.UnimplementedSystemEventServer
 }
 
 func (u *SystemEventProvider) Get(ctx context.Context, in *proto.GetSystemEventRequest) (*proto.GetSystemEventDetailResponse, error) {

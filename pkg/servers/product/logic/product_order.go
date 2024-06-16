@@ -32,16 +32,16 @@ func CreateProductOrder(m *model.ProductOrder) (string, error) {
 	if m.OrderType == types.ProductOrderTypeRoutine {
 		systemConfigKey = types.SystemConfigKeyRoutineProductOrderPrefix
 	}
-	var systemConfig model.SystemParamsConfig
-	if err := model.DB.DB().First(&systemConfig, "`key` = ?", systemConfigKey).Error; err == gorm.ErrRecordNotFound {
+	var systemConfigValue string
+	if err := model.DB.DB().Model(model.SystemParamsConfig{}).Where("`key` = ?", systemConfigKey).Select("value").Scan(&systemConfigValue).Error; err == gorm.ErrRecordNotFound {
 		return "", fmt.Errorf("系统参数配置缺少项: %s", systemConfigKey)
 	} else if err != nil {
 		return "", err
 	}
 
 	dateStamp := time.Now().Format("20060102")
-	prefix := fmt.Sprintf("%s%s", systemConfig.Value, dateStamp)
-	productOrderNo, err := system.GenerateSerialNumber(prefix, dateStamp, prefix, 6, 1)
+	prefix := fmt.Sprintf("%s%s", systemConfigValue, dateStamp)
+	productOrderNo, err := system.GenerateSerialNumber(prefix, "生产工单号", prefix, 6, 1)
 	if err != nil {
 		return "", err
 	}
@@ -87,6 +87,28 @@ func CreateProductOrder(m *model.ProductOrder) (string, error) {
 	for _, v := range m.ProductOrderAttachments {
 		v.CreateUserID = m.CreateUserID
 	}
+
+	if err := model.DB.DB().Model(model.SystemParamsConfig{}).Where("`key` = ?", "ProductInfoPrefix").Select("value").Scan(&systemConfigValue).Error; err == gorm.ErrRecordNotFound {
+		return "", fmt.Errorf("系统参数配置缺少项: ProductInfoPrefix")
+	} else if err != nil {
+		return "", err
+	}
+	prefix = fmt.Sprintf("%s%s", systemConfigValue, dateStamp)
+
+	//产品信息
+	productInfos := make([]*model.ProductInfo, m.OrderQTY)
+	for i := 0; i < int(m.OrderQTY); i++ {
+		productSerialNo, err := system.GenerateSerialNumber(prefix, "产品序列号", prefix, 6, 1)
+		if err != nil {
+			return "", err
+		}
+		productInfos[i] = &model.ProductInfo{
+			CreateUserID:    m.CreateUserID,
+			CurrentState:    types.ProductStateReceipted,
+			ProductSerialNo: productSerialNo,
+		}
+	}
+	m.ProductInfos = productInfos
 
 	m.CurrentState = types.ProductOrderStateUploaded
 	// if false {
@@ -230,7 +252,9 @@ func GetProductOrderByID(id string) (*model.ProductOrder, error) {
 		Preload("ProductOrderAttributes").
 		Preload("ProductOrderAttributes.ProductAttribute").
 		Preload("ProductInfos").
-		Preload("ProductOrderProcesses").
+		Preload("ProductOrderProcesses", func(db *gorm.DB) *gorm.DB {
+			return db.Order("sort_index")
+		}).
 		Preload("ProductOrderProcesses.ProductionProcess").
 		Preload("ProductOrderLabels").
 		Preload("ProductOrderLabels.LabelType").

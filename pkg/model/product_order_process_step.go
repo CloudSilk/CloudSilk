@@ -87,10 +87,7 @@ func ProductOrderProcessStepToPB(in *ProductOrderProcessStep) *proto.ProductOrde
 	if in == nil {
 		return nil
 	}
-	processStepType := ""
-	if in.ProcessStepType != nil {
-		processStepType = in.ProcessStepType.Description
-	}
+
 	m := &proto.ProductOrderProcessStepInfo{
 		Id:                                    in.ID,
 		SortIndex:                             in.SortIndex,
@@ -100,10 +97,10 @@ func ProductOrderProcessStepToPB(in *ProductOrderProcessStep) *proto.ProductOrde
 		CreateUserID:                          in.CreateUserID,
 		Remark:                                in.Remark,
 		ProcessStepTypeID:                     in.ProcessStepTypeID,
+		ProcessStepType:                       ProcessStepTypeToPB(in.ProcessStepType),
 		ProductOrderProcessID:                 in.ProductOrderProcessID,
 		ProductOrderProcessStepAttachments:    ProductOrderProcessStepAttachmentsToPB(in.ProductOrderProcessStepAttachments),
 		ProductOrderProcessStepTypeParameters: ProductOrderProcessStepTypeParametersToPB(in.ProductOrderProcessStepTypeParameters),
-		ProcessStepType:                       processStepType,
 	}
 	return m
 }

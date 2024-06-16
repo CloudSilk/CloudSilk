@@ -9,7 +9,7 @@ import (
 )
 
 type SystemEventTriggerParameterProvider struct {
-	proto.SystemEventTriggerParameterServer
+	proto.UnimplementedSystemEventTriggerParameterServer
 }
 
 func (u *SystemEventTriggerParameterProvider) Add(ctx context.Context, in *proto.SystemEventTriggerParameterInfo) (*proto.CommonResponse, error) {

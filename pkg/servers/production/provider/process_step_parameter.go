@@ -8,7 +8,7 @@ import (
 )
 
 type ProcessStepParameterProvider struct {
-	proto.ProcessStepParameterServer
+	proto.UnimplementedProcessStepParameterServer
 }
 
 func (u *ProcessStepParameterProvider) Query(ctx context.Context, in *proto.QueryProcessStepParameterRequest) (*proto.QueryProcessStepParameterResponse, error) {

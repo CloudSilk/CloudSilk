@@ -9,7 +9,7 @@ import (
 )
 
 type ProductionProcessProvider struct {
-	proto.ProductionProcessServer
+	proto.UnimplementedProductionProcessServer
 }
 
 func (u *ProductionProcessProvider) Query(ctx context.Context, in *proto.QueryProductionProcessRequest) (*proto.QueryProductionProcessResponse, error) {

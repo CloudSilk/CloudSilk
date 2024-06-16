@@ -25,3 +25,15 @@ func (u *MaterialTrayProvider) Get(ctx context.Context, in *proto.GetMaterialTra
 	}
 	return resp, nil
 }
+
+func (u *MaterialTrayProvider) Update(ctx context.Context, in *proto.MaterialTrayInfo) (*proto.CommonResponse, error) {
+	resp := &proto.CommonResponse{
+		Code: proto.Code_Success,
+	}
+
+	if err := logic.UpdateMaterialTray(model.PBToMaterialTray(in)); err != nil {
+		resp.Code = proto.Code_InternalServerError
+		resp.Message = err.Error()
+	}
+	return resp, nil
+}

@@ -69,7 +69,7 @@ func GenerateSerialNumber(name, description, prefix string, length, increment in
 	serialNumber := &model.SerialNumber{}
 	if err := model.DB.DB().Where("`name` = ?", name).First(serialNumber).Error; err == gorm.ErrRecordNotFound {
 		serialNumber.Name = name
-		serialNumber.Description = name
+		serialNumber.Description = description
 		serialNumber.Seed = 0
 		serialNumber.Increment = increment
 		serialNumber.Prefix = prefix

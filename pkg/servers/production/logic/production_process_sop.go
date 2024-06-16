@@ -54,7 +54,7 @@ func GetProductionProcessSopByID(id string) (*model.ProductionProcessSop, error)
 
 func GetProductionProcessSop(req *proto.GetProductionProcessSopRequest) (*model.ProductionProcessSop, error) {
 	m := &model.ProductionProcessSop{}
-	err := model.DB.DB().First(m, map[string]interface{}{
+	err := model.DB.DB().Preload("ProductionProcess").First(m, map[string]interface{}{
 		"production_process_id": req.ProductionProcessID,
 		"product_model_id":      req.ProductModelID,
 	}).Error

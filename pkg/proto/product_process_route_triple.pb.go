@@ -31,6 +31,7 @@ type ProductProcessRouteClient interface {
 	Add(ctx context.Context, in *ProductProcessRouteInfo, opts ...grpc_go.CallOption) (*CommonResponse, common.ErrorWithAttachment)
 	Get(ctx context.Context, in *GetProductProcessRouteRequest, opts ...grpc_go.CallOption) (*GetProductProcessRouteDetailResponse, common.ErrorWithAttachment)
 	Query(ctx context.Context, in *QueryProductProcessRouteRequest, opts ...grpc_go.CallOption) (*QueryProductProcessRouteResponse, common.ErrorWithAttachment)
+	Update(ctx context.Context, in *ProductProcessRouteInfo, opts ...grpc_go.CallOption) (*CommonResponse, common.ErrorWithAttachment)
 }
 
 type productProcessRouteClient struct {
@@ -38,9 +39,10 @@ type productProcessRouteClient struct {
 }
 
 type ProductProcessRouteClientImpl struct {
-	Add   func(ctx context.Context, in *ProductProcessRouteInfo) (*CommonResponse, error)
-	Get   func(ctx context.Context, in *GetProductProcessRouteRequest) (*GetProductProcessRouteDetailResponse, error)
-	Query func(ctx context.Context, in *QueryProductProcessRouteRequest) (*QueryProductProcessRouteResponse, error)
+	Add    func(ctx context.Context, in *ProductProcessRouteInfo) (*CommonResponse, error)
+	Get    func(ctx context.Context, in *GetProductProcessRouteRequest) (*GetProductProcessRouteDetailResponse, error)
+	Query  func(ctx context.Context, in *QueryProductProcessRouteRequest) (*QueryProductProcessRouteResponse, error)
+	Update func(ctx context.Context, in *ProductProcessRouteInfo) (*CommonResponse, error)
 }
 
 func (c *ProductProcessRouteClientImpl) GetDubboStub(cc *triple.TripleConn) ProductProcessRouteClient {
@@ -73,6 +75,12 @@ func (c *productProcessRouteClient) Query(ctx context.Context, in *QueryProductP
 	return out, c.cc.Invoke(ctx, "/"+interfaceKey+"/Query", in, out)
 }
 
+func (c *productProcessRouteClient) Update(ctx context.Context, in *ProductProcessRouteInfo, opts ...grpc_go.CallOption) (*CommonResponse, common.ErrorWithAttachment) {
+	out := new(CommonResponse)
+	interfaceKey := ctx.Value(constant.InterfaceKey).(string)
+	return out, c.cc.Invoke(ctx, "/"+interfaceKey+"/Update", in, out)
+}
+
 // ProductProcessRouteServer is the server API for ProductProcessRoute service.
 // All implementations must embed UnimplementedProductProcessRouteServer
 // for forward compatibility
@@ -80,6 +88,7 @@ type ProductProcessRouteServer interface {
 	Add(context.Context, *ProductProcessRouteInfo) (*CommonResponse, error)
 	Get(context.Context, *GetProductProcessRouteRequest) (*GetProductProcessRouteDetailResponse, error)
 	Query(context.Context, *QueryProductProcessRouteRequest) (*QueryProductProcessRouteResponse, error)
+	Update(context.Context, *ProductProcessRouteInfo) (*CommonResponse, error)
 	mustEmbedUnimplementedProductProcessRouteServer()
 }
 
@@ -96,6 +105,9 @@ func (UnimplementedProductProcessRouteServer) Get(context.Context, *GetProductPr
 }
 func (UnimplementedProductProcessRouteServer) Query(context.Context, *QueryProductProcessRouteRequest) (*QueryProductProcessRouteResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Query not implemented")
+}
+func (UnimplementedProductProcessRouteServer) Update(context.Context, *ProductProcessRouteInfo) (*CommonResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Update not implemented")
 }
 func (s *UnimplementedProductProcessRouteServer) XXX_SetProxyImpl(impl protocol.Invoker) {
 	s.proxyImpl = impl
@@ -212,6 +224,35 @@ func _ProductProcessRoute_Query_Handler(srv interface{}, ctx context.Context, de
 	return interceptor(ctx, in, info, handler)
 }
 
+func _ProductProcessRoute_Update_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc_go.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ProductProcessRouteInfo)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	base := srv.(dubbo3.Dubbo3GrpcService)
+	args := []interface{}{}
+	args = append(args, in)
+	md, _ := metadata.FromIncomingContext(ctx)
+	invAttachment := make(map[string]interface{}, len(md))
+	for k, v := range md {
+		invAttachment[k] = v
+	}
+	invo := invocation.NewRPCInvocation("Update", args, invAttachment)
+	if interceptor == nil {
+		result := base.XXX_GetProxyImpl().Invoke(ctx, invo)
+		return result, result.Error()
+	}
+	info := &grpc_go.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: ctx.Value("XXX_TRIPLE_GO_INTERFACE_NAME").(string),
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		result := base.XXX_GetProxyImpl().Invoke(ctx, invo)
+		return result, result.Error()
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // ProductProcessRoute_ServiceDesc is the grpc_go.ServiceDesc for ProductProcessRoute service.
 // It's only intended for direct use with grpc_go.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -230,6 +271,10 @@ var ProductProcessRoute_ServiceDesc = grpc_go.ServiceDesc{
 		{
 			MethodName: "Query",
 			Handler:    _ProductProcessRoute_Query_Handler,
+		},
+		{
+			MethodName: "Update",
+			Handler:    _ProductProcessRoute_Update_Handler,
 		},
 	},
 	Streams:  []grpc_go.StreamDesc{},

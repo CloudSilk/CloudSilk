@@ -1,0 +1,9 @@
+syntax="proto3";
+
+package proto;
+option go_package = "./;proto";
+
+message BindMaterialTrayRequest{
+	string materialTray=1;
+	string productSerialNo=2;
+}

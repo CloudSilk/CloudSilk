@@ -9,11 +9,13 @@ import "product_order.proto";
 
 service MaterialTray{
     rpc Get(GetMaterialTrayRequest)returns(GetMaterialTrayDetailResponse){}
+    rpc Update(MaterialTrayInfo)returns(CommonResponse){}
 }
 
 message GetMaterialTrayRequest{
     string identifier=1;
     string productInfoID=2;
+    string tray_type=3;
 }
 
 message MaterialTrayInfo{
@@ -53,6 +55,9 @@ message QueryMaterialTrayRequest{
     string sortConfig=3;
     // @inject_tag: uri:"identifier" form:"identifier"
     string identifier=4;
+    // 代号或描述
+    // @inject_tag: uri:"code" form:"code"
+    string code=5;
 }
 
 message QueryMaterialTrayResponse{

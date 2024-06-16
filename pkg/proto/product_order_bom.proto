@@ -5,6 +5,10 @@ option go_package = "./;proto";
 
 import "mom_common.proto";
 
+service ProductOrderBom{
+	rpc Query(QueryProductOrderBomRequest)returns(QueryProductOrderBomResponse);
+}
+
 message ProductOrderBomInfo {
 	//ID 
 	string id=2;
@@ -53,6 +57,8 @@ message QueryProductOrderBomRequest{
 	//物料信息 
     // @inject_tag: uri:"materialNo" form:"materialNo"
     string materialNo=5;
+	// @inject_tag: uri:"productOrderID" form:"productOrderID"
+	string productOrderID=6;
 }
 
 message QueryProductOrderBomResponse{

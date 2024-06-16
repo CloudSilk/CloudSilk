@@ -411,6 +411,8 @@ message QueryProductionProcessStepRequest{
     string productionProcessID=5;
     // @inject_tag: uri:"ids" form:"ids"
     repeated string ids=6;
+    // @inject_tag: uri:"enable" form:"enable"
+	bool enable=7;
 }
 
 message QueryProductionProcessStepResponse{

@@ -18,6 +18,9 @@ func UpdateMaterialCategory(m *model.MaterialCategory) error {
 
 func QueryMaterialCategory(req *proto.QueryMaterialCategoryRequest, resp *proto.QueryMaterialCategoryResponse, preload bool) {
 	db := model.DB.DB().Model(&model.MaterialCategory{})
+	if req.Code != "" {
+		db = db.Where("`code` LIKE ? OR `description` LIKE ?", "%"+req.Code+"%", "%"+req.Code+"%")
+	}
 
 	orderStr, err := utils.GenerateOrderString(req.SortConfig, "created_at desc")
 	if err != nil {

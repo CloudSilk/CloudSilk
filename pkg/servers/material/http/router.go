@@ -9,4 +9,5 @@ func RegisterRouter(r *gin.Engine) {
 	RegisterMaterialInfoRouter(r)
 	RegisterMaterialSupplierRouter(r)
 	RegisterMaterialTrayRouter(r)
+	RegisterMaterialTrayBindingRecordRouter(r)
 }

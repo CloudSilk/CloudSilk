@@ -4,6 +4,7 @@ import (
 	"github.com/CloudSilk/CloudSilk/pkg/proto"
 )
 
+// 返工类型
 type ProductReworkType struct {
 	ModelID
 	Code        string `json:"code" gorm:"index;size:100;comment:代号"`

@@ -55,6 +55,13 @@ func AutoMigrate() {
 		&MaterialSupplier{},
 		&AvailableMaterial{},
 		&MaterialTray{},
+		&MaterialTrayBindingRecord{},
+		&MaterialChannelLayer{},
+		&MaterialChannel{},
+		&MaterialReturnRequestForm{},
+		&MaterialReturnType{},
+		&MaterialReturnCause{},
+		&MaterialReturnSolution{},
 
 		&ProductInfo{},
 		&ProductOrderAttribute{},
@@ -100,6 +107,8 @@ func AutoMigrate() {
 		&ProductPackageRecord{},
 		&ProcessStepParameter{},
 		&ProcessStepParameterValue{},
+		&ProductReworkOperation{},
+		&ProductReworkRoute{},
 
 		&ProductionProcess{},
 		&ProductionStationAlarm{},

@@ -8,7 +8,7 @@ import (
 )
 
 type ProductOrderAttributeProvider struct {
-	proto.ProductOrderAttributeServer
+	proto.UnimplementedProductOrderAttributeServer
 }
 
 func (u *ProductOrderAttributeProvider) Query(ctx context.Context, in *proto.QueryProductOrderAttributeRequest) (*proto.QueryProductOrderAttributeResponse, error) {

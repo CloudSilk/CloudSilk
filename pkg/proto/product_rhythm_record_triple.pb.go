@@ -29,6 +29,7 @@ const _ = grpc_go.SupportPackageIsVersion7
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type ProductRhythmRecordClient interface {
 	Add(ctx context.Context, in *ProductRhythmRecordInfo, opts ...grpc_go.CallOption) (*CommonResponse, common.ErrorWithAttachment)
+	Update(ctx context.Context, in *ProductRhythmRecordInfo, opts ...grpc_go.CallOption) (*CommonResponse, common.ErrorWithAttachment)
 	Get(ctx context.Context, in *GetProductRhythmRecordRequest, opts ...grpc_go.CallOption) (*GetProductRhythmRecordDetailResponse, common.ErrorWithAttachment)
 }
 
@@ -37,8 +38,9 @@ type productRhythmRecordClient struct {
 }
 
 type ProductRhythmRecordClientImpl struct {
-	Add func(ctx context.Context, in *ProductRhythmRecordInfo) (*CommonResponse, error)
-	Get func(ctx context.Context, in *GetProductRhythmRecordRequest) (*GetProductRhythmRecordDetailResponse, error)
+	Add    func(ctx context.Context, in *ProductRhythmRecordInfo) (*CommonResponse, error)
+	Update func(ctx context.Context, in *ProductRhythmRecordInfo) (*CommonResponse, error)
+	Get    func(ctx context.Context, in *GetProductRhythmRecordRequest) (*GetProductRhythmRecordDetailResponse, error)
 }
 
 func (c *ProductRhythmRecordClientImpl) GetDubboStub(cc *triple.TripleConn) ProductRhythmRecordClient {
@@ -59,6 +61,12 @@ func (c *productRhythmRecordClient) Add(ctx context.Context, in *ProductRhythmRe
 	return out, c.cc.Invoke(ctx, "/"+interfaceKey+"/Add", in, out)
 }
 
+func (c *productRhythmRecordClient) Update(ctx context.Context, in *ProductRhythmRecordInfo, opts ...grpc_go.CallOption) (*CommonResponse, common.ErrorWithAttachment) {
+	out := new(CommonResponse)
+	interfaceKey := ctx.Value(constant.InterfaceKey).(string)
+	return out, c.cc.Invoke(ctx, "/"+interfaceKey+"/Update", in, out)
+}
+
 func (c *productRhythmRecordClient) Get(ctx context.Context, in *GetProductRhythmRecordRequest, opts ...grpc_go.CallOption) (*GetProductRhythmRecordDetailResponse, common.ErrorWithAttachment) {
 	out := new(GetProductRhythmRecordDetailResponse)
 	interfaceKey := ctx.Value(constant.InterfaceKey).(string)
@@ -70,6 +78,7 @@ func (c *productRhythmRecordClient) Get(ctx context.Context, in *GetProductRhyth
 // for forward compatibility
 type ProductRhythmRecordServer interface {
 	Add(context.Context, *ProductRhythmRecordInfo) (*CommonResponse, error)
+	Update(context.Context, *ProductRhythmRecordInfo) (*CommonResponse, error)
 	Get(context.Context, *GetProductRhythmRecordRequest) (*GetProductRhythmRecordDetailResponse, error)
 	mustEmbedUnimplementedProductRhythmRecordServer()
 }
@@ -81,6 +90,9 @@ type UnimplementedProductRhythmRecordServer struct {
 
 func (UnimplementedProductRhythmRecordServer) Add(context.Context, *ProductRhythmRecordInfo) (*CommonResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Add not implemented")
+}
+func (UnimplementedProductRhythmRecordServer) Update(context.Context, *ProductRhythmRecordInfo) (*CommonResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Update not implemented")
 }
 func (UnimplementedProductRhythmRecordServer) Get(context.Context, *GetProductRhythmRecordRequest) (*GetProductRhythmRecordDetailResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Get not implemented")
@@ -142,6 +154,35 @@ func _ProductRhythmRecord_Add_Handler(srv interface{}, ctx context.Context, dec 
 	return interceptor(ctx, in, info, handler)
 }
 
+func _ProductRhythmRecord_Update_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc_go.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ProductRhythmRecordInfo)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	base := srv.(dubbo3.Dubbo3GrpcService)
+	args := []interface{}{}
+	args = append(args, in)
+	md, _ := metadata.FromIncomingContext(ctx)
+	invAttachment := make(map[string]interface{}, len(md))
+	for k, v := range md {
+		invAttachment[k] = v
+	}
+	invo := invocation.NewRPCInvocation("Update", args, invAttachment)
+	if interceptor == nil {
+		result := base.XXX_GetProxyImpl().Invoke(ctx, invo)
+		return result, result.Error()
+	}
+	info := &grpc_go.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: ctx.Value("XXX_TRIPLE_GO_INTERFACE_NAME").(string),
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		result := base.XXX_GetProxyImpl().Invoke(ctx, invo)
+		return result, result.Error()
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _ProductRhythmRecord_Get_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc_go.UnaryServerInterceptor) (interface{}, error) {
 	in := new(GetProductRhythmRecordRequest)
 	if err := dec(in); err != nil {
@@ -181,6 +222,10 @@ var ProductRhythmRecord_ServiceDesc = grpc_go.ServiceDesc{
 		{
 			MethodName: "Add",
 			Handler:    _ProductRhythmRecord_Add_Handler,
+		},
+		{
+			MethodName: "Update",
+			Handler:    _ProductRhythmRecord_Update_Handler,
 		},
 		{
 			MethodName: "Get",

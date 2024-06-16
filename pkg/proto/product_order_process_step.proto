@@ -4,6 +4,11 @@ package proto;
 option go_package = "./;proto";
 
 import "mom_common.proto";
+import "process_step_type.proto";
+
+service ProductOrderProcessStep{
+    rpc Query(QueryProductOrderProcessStepRequest)returns(QueryProductOrderProcessStepResponse);
+}
 
 message ProductOrderProcessStepInfo {
 	//ID 
@@ -23,14 +28,13 @@ message ProductOrderProcessStepInfo {
     string remark=8;
 	//作业类型ID 
     string processStepTypeID=9;
+    ProcessStepTypeInfo processStepType=13;
 	//工单工序ID 
     string productOrderProcessID=10;
     //工步附件
     repeated ProductOrderProcessStepAttachmentInfo productOrderProcessStepAttachments=11;
     //工布参数
     repeated ProductOrderProcessStepTypeParameterInfo productOrderProcessStepTypeParameters=12;
-	//作业类型
-	string processStepType=13;
 }
 
 message ProductOrderProcessStepAttachmentInfo {
@@ -77,6 +81,10 @@ message QueryProductOrderProcessStepRequest{
 	//工单工序ID
 	// @inject_tag: uri:"productOrderProcessID" form:"productOrderProcessID"
 	string productOrderProcessID=4;
+    // @inject_tag: uri:"productionProcessID" form:"productionProcessID"
+	string productionProcessID=5;
+    // @inject_tag: uri:"productOrderID" form:"productOrderID"
+	string productOrderID=6;
 }
 
 message QueryProductOrderProcessStepResponse{

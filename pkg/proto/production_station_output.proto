@@ -9,6 +9,7 @@ import "product_order.proto";
 
 service ProductionStationOutput{
     rpc Add(ProductionStationOutputInfo)returns(CommonResponse){}
+    rpc Update(ProductionStationOutputInfo)returns(CommonResponse){}
     rpc Get(GetProductionStationOutputRequest)returns(GetProductionStationOutputDetailResponse){}
 }
 

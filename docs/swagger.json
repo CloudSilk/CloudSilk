@@ -1528,6 +1528,262 @@
                 }
             }
         },
+        "/api/mom/material/materialchannellayer/add": {
+            "post": {
+                "description": "新增",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "料架通道管理"
+                ],
+                "summary": "新增",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "jwt token",
+                        "name": "authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "description": "Add MaterialChannelLayer",
+                        "name": "account",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/proto.MaterialChannelLayerInfo"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/proto.CommonResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/mom/material/materialchannellayer/all": {
+            "get": {
+                "description": "查询所有",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "料架通道管理"
+                ],
+                "summary": "查询所有",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "jwt token",
+                        "name": "authorization",
+                        "in": "header",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/proto.GetAllMaterialChannelLayerResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/mom/material/materialchannellayer/delete": {
+            "delete": {
+                "description": "删除",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "料架通道管理"
+                ],
+                "summary": "删除",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "jwt token",
+                        "name": "authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "description": "Delete MaterialChannelLayer",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/proto.DelRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/proto.CommonResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/mom/material/materialchannellayer/detail": {
+            "get": {
+                "description": "查询明细",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "料架通道管理"
+                ],
+                "summary": "查询明细",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "ID",
+                        "name": "id",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "jwt token",
+                        "name": "authorization",
+                        "in": "header",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/proto.GetMaterialChannelLayerDetailResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/mom/material/materialchannellayer/query": {
+            "get": {
+                "description": "分页查询",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/octet-stream"
+                ],
+                "tags": [
+                    "料架通道管理"
+                ],
+                "summary": "分页查询",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "jwt token",
+                        "name": "authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "从1开始",
+                        "name": "pageIndex",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "默认每页10条",
+                        "name": "pageSize",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "排序字段",
+                        "name": "orderField",
+                        "in": "query"
+                    },
+                    {
+                        "type": "boolean",
+                        "description": "是否倒序排序",
+                        "name": "desc",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "代号或描述",
+                        "name": "code",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/proto.QueryMaterialChannelLayerResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/mom/material/materialchannellayer/update": {
+            "put": {
+                "description": "更新",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "料架通道管理"
+                ],
+                "summary": "更新",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "jwt token",
+                        "name": "authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "description": "Update MaterialChannelLayer",
+                        "name": "account",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/proto.MaterialChannelLayerInfo"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/proto.CommonResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/api/mom/material/materialinfo/add": {
             "post": {
                 "description": "新增",
@@ -2283,6 +2539,274 @@
                         "required": true,
                         "schema": {
                             "$ref": "#/definitions/proto.MaterialTrayInfo"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/proto.CommonResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/mom/material/materialtraybindingrecord/add": {
+            "post": {
+                "description": "新增",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "物料托盘绑定记录"
+                ],
+                "summary": "新增",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "jwt token",
+                        "name": "authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "description": "Add MaterialTrayBindingRecord",
+                        "name": "account",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/proto.MaterialTrayBindingRecordInfo"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/proto.CommonResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/mom/material/materialtraybindingrecord/all": {
+            "get": {
+                "description": "查询所有",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "物料托盘绑定记录"
+                ],
+                "summary": "查询所有",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "jwt token",
+                        "name": "authorization",
+                        "in": "header",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/proto.GetAllMaterialTrayBindingRecordResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/mom/material/materialtraybindingrecord/delete": {
+            "delete": {
+                "description": "删除",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "物料托盘绑定记录"
+                ],
+                "summary": "删除",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "jwt token",
+                        "name": "authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "description": "Delete MaterialTrayBindingRecord",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/proto.DelRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/proto.CommonResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/mom/material/materialtraybindingrecord/detail": {
+            "get": {
+                "description": "查询明细",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "物料托盘绑定记录"
+                ],
+                "summary": "查询明细",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "ID",
+                        "name": "id",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "jwt token",
+                        "name": "authorization",
+                        "in": "header",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/proto.GetMaterialTrayBindingRecordDetailResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/mom/material/materialtraybindingrecord/query": {
+            "get": {
+                "description": "分页查询",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/octet-stream"
+                ],
+                "tags": [
+                    "物料托盘绑定记录"
+                ],
+                "summary": "分页查询",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "jwt token",
+                        "name": "authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "从1开始",
+                        "name": "pageIndex",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "默认每页10条",
+                        "name": "pageSize",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "排序字段",
+                        "name": "orderField",
+                        "in": "query"
+                    },
+                    {
+                        "type": "boolean",
+                        "description": "是否倒序排序",
+                        "name": "desc",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "产线ID",
+                        "name": "productionLineID",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "发料时间开始",
+                        "name": "createTime0",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "发料时间结束",
+                        "name": "createTime1",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/proto.QueryMaterialTrayBindingRecordResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/mom/material/materialtraybindingrecord/update": {
+            "put": {
+                "description": "更新",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "物料托盘绑定记录"
+                ],
+                "summary": "更新",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "jwt token",
+                        "name": "authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "description": "Update MaterialTrayBindingRecord",
+                        "name": "account",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/proto.MaterialTrayBindingRecordInfo"
                         }
                     }
                 ],
@@ -20641,7 +21165,7 @@
                 }
             }
         },
-        "/api/mom/webapi/infrastructure/getAllProductionLine": {
+        "/api/mom/webapi/infrastructure/getallproductionline": {
             "get": {
                 "description": "获取全部产线信息",
                 "consumes": [
@@ -20673,7 +21197,7 @@
                 }
             }
         },
-        "/api/mom/webapi/infrastructure/retrieveProductAttribute": {
+        "/api/mom/webapi/infrastructure/retrieveproductattribute": {
             "post": {
                 "description": "查询产品特性信息",
                 "consumes": [
@@ -20714,7 +21238,7 @@
                 }
             }
         },
-        "/api/mom/webapi/infrastructure/retrieveProductionCrossway": {
+        "/api/mom/webapi/infrastructure/retrieveproductioncrossway": {
             "post": {
                 "description": "查询产线路口信息",
                 "consumes": [
@@ -20755,7 +21279,7 @@
                 }
             }
         },
-        "/api/mom/webapi/infrastructure/retrieveProductionStation": {
+        "/api/mom/webapi/infrastructure/retrieveproductionstation": {
             "post": {
                 "description": "查询产线工位信息",
                 "consumes": [
@@ -20796,7 +21320,48 @@
                 }
             }
         },
-        "/api/mom/webapi/production/checkProductProcessRouteFailure": {
+        "/api/mom/webapi/material/bindmaterialtray": {
+            "post": {
+                "description": "绑定物料托盘",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "WebAPI"
+                ],
+                "summary": "绑定物料托盘",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "jwt token",
+                        "name": "authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "description": "BindMaterialTrayRequest",
+                        "name": "account",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/proto.BindMaterialTrayRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/proto.CommonResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/mom/webapi/production/checkproductprocessroutefailure": {
             "post": {
                 "description": "设置失败后续处理接口",
                 "consumes": [
@@ -20837,9 +21402,9 @@
                 }
             }
         },
-        "/api/mom/webapi/production/createProductTestRecord": {
+        "/api/mom/webapi/production/createproductprocessrecord": {
             "post": {
-                "description": "创建产品测试记录",
+                "description": "创建产品过程记录",
                 "consumes": [
                     "application/json"
                 ],
@@ -20849,7 +21414,7 @@
                 "tags": [
                     "WebAPI"
                 ],
-                "summary": "创建产品测试记录",
+                "summary": "创建产品过程记录",
                 "parameters": [
                     {
                         "type": "string",
@@ -20859,12 +21424,12 @@
                         "required": true
                     },
                     {
-                        "description": "CreateProductTestRecordRequest",
+                        "description": "CreateProductProcessRecordRequest",
                         "name": "account",
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/proto.CreateProductTestRecordRequest"
+                            "$ref": "#/definitions/proto.CreateProductProcessRecordRequest"
                         }
                     }
                 ],
@@ -20878,7 +21443,48 @@
                 }
             }
         },
-        "/api/mom/webapi/production/enterProductionStation": {
+        "/api/mom/webapi/production/createproductworkrecord": {
+            "post": {
+                "description": "创建产品作业记录",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "WebAPI"
+                ],
+                "summary": "创建产品作业记录",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "jwt token",
+                        "name": "authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "description": "CreateProductWorkRecordRequest",
+                        "name": "account",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/proto.CreateProductWorkRecordRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/proto.CommonResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/mom/webapi/production/enterproductionstation": {
             "post": {
                 "description": "请求进站接口",
                 "consumes": [
@@ -20919,7 +21525,7 @@
                 }
             }
         },
-        "/api/mom/webapi/production/exitProductionStation": {
+        "/api/mom/webapi/production/exitproductionstation": {
             "post": {
                 "description": "请求出站接口",
                 "consumes": [
@@ -20947,6 +21553,170 @@
                         "required": true,
                         "schema": {
                             "$ref": "#/definitions/proto.ExitProductionStationRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/proto.CommonResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/mom/webapi/production/getproductionprocessstepwithparameter": {
+            "post": {
+                "description": "获取作业步骤和作业参数",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "WebAPI"
+                ],
+                "summary": "获取作业步骤和作业参数",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "jwt token",
+                        "name": "authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "description": "GetProductionProcessStepWithParameterRequest",
+                        "name": "account",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/proto.GetProductionProcessStepWithParameterRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/proto.CommonResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/mom/webapi/production/onlineproductinfo": {
+            "post": {
+                "description": "设定产品信息状态为上线装配",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "WebAPI"
+                ],
+                "summary": "设定产品信息状态为上线装配",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "jwt token",
+                        "name": "authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "description": "OnlineProductInfoRequest",
+                        "name": "account",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/proto.OnlineProductInfoRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/proto.CommonResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/mom/webapi/production/retrieveproductreworkrecord": {
+            "post": {
+                "description": "获取产品返工记录",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "WebAPI"
+                ],
+                "summary": "获取产品返工记录",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "jwt token",
+                        "name": "authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "description": "RetrieveProductReworkRecordRequest",
+                        "name": "account",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/proto.RetrieveProductReworkRecordRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/proto.CommonResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/mom/webapi/production/updateproductreworkrecord": {
+            "post": {
+                "description": "更新产品返工记录",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "WebAPI"
+                ],
+                "summary": "更新产品返工记录",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "jwt token",
+                        "name": "authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "description": "UpdateProductReworkRecordRequest",
+                        "name": "account",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/proto.UpdateProductReworkRecordRequest"
                         }
                     }
                 ],
@@ -21039,6 +21809,17 @@
                     "$ref": "#/definitions/proto.ProductionProcessStepInfo"
                 },
                 "productionProcessStepID": {
+                    "type": "string"
+                }
+            }
+        },
+        "proto.BindMaterialTrayRequest": {
+            "type": "object",
+            "properties": {
+                "materialTray": {
+                    "type": "string"
+                },
+                "productSerialNo": {
                     "type": "string"
                 }
             }
@@ -21263,28 +22044,64 @@
                 }
             }
         },
-        "proto.CreateProductTestRecordRequest": {
+        "proto.CreateProductProcessRecordRequest": {
             "type": "object",
             "properties": {
-                "isQualified": {
-                    "type": "boolean"
+                "processStepType": {
+                    "description": "作业类型",
+                    "type": "string"
                 },
                 "productSerialNo": {
+                    "description": "产品序列号",
                     "type": "string"
                 },
                 "productionStation": {
+                    "description": "工位代号",
                     "type": "string"
                 },
-                "testData": {
+                "workData": {
+                    "description": "作业数据",
                     "type": "string"
                 },
-                "testEndTime": {
+                "workDescription": {
+                    "description": "作业描述",
                     "type": "string"
                 },
-                "testProject": {
+                "workResult": {
+                    "description": "作业结果",
+                    "type": "string"
+                }
+            }
+        },
+        "proto.CreateProductWorkRecordRequest": {
+            "type": "object",
+            "properties": {
+                "isQualified": {
+                    "description": "是否合格",
+                    "type": "boolean"
+                },
+                "productSerialNo": {
+                    "description": "产品序列号",
                     "type": "string"
                 },
-                "testStartTime": {
+                "productionProcessStep": {
+                    "description": "作业步骤",
+                    "type": "string"
+                },
+                "productionStation": {
+                    "description": "产线工位",
+                    "type": "string"
+                },
+                "workData": {
+                    "description": "作业数据",
+                    "type": "string"
+                },
+                "workEndTime": {
+                    "description": "结束时间",
+                    "type": "string"
+                },
+                "workStartTime": {
+                    "description": "起始时间",
                     "type": "string"
                 }
             }
@@ -21495,30 +22312,39 @@
             "type": "object",
             "properties": {
                 "isFail": {
+                    "description": "是否失败",
                     "type": "boolean"
                 },
                 "isRework": {
+                    "description": "是否返工",
                     "type": "boolean"
                 },
                 "packageNo": {
+                    "description": "包装箱号",
                     "type": "string"
                 },
                 "productSerialNo": {
+                    "description": "产品序列号",
                     "type": "string"
                 },
                 "productionStation": {
+                    "description": "工位代号",
                     "type": "string"
                 },
                 "reworkReason": {
+                    "description": "返工原因",
                     "type": "string"
                 },
                 "trayNo": {
+                    "description": "托盘号",
                     "type": "string"
                 },
                 "unbindTray": {
+                    "description": "是否解除托盘",
                     "type": "boolean"
                 },
                 "waitTime": {
+                    "description": "等待时长",
                     "type": "integer"
                 }
             }
@@ -21693,6 +22519,23 @@
                 }
             }
         },
+        "proto.GetAllMaterialChannelLayerResponse": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "$ref": "#/definitions/proto.Code"
+                },
+                "data": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/proto.MaterialChannelLayerInfo"
+                    }
+                },
+                "message": {
+                    "type": "string"
+                }
+            }
+        },
         "proto.GetAllMaterialInfoResponse": {
             "type": "object",
             "properties": {
@@ -21720,6 +22563,23 @@
                     "type": "array",
                     "items": {
                         "$ref": "#/definitions/proto.MaterialSupplierInfo"
+                    }
+                },
+                "message": {
+                    "type": "string"
+                }
+            }
+        },
+        "proto.GetAllMaterialTrayBindingRecordResponse": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "$ref": "#/definitions/proto.Code"
+                },
+                "data": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/proto.MaterialTrayBindingRecordInfo"
                     }
                 },
                 "message": {
@@ -22983,6 +23843,20 @@
                 }
             }
         },
+        "proto.GetMaterialChannelLayerDetailResponse": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "$ref": "#/definitions/proto.Code"
+                },
+                "data": {
+                    "$ref": "#/definitions/proto.MaterialChannelLayerInfo"
+                },
+                "message": {
+                    "type": "string"
+                }
+            }
+        },
         "proto.GetMaterialInfoDetailResponse": {
             "type": "object",
             "properties": {
@@ -23005,6 +23879,20 @@
                 },
                 "data": {
                     "$ref": "#/definitions/proto.MaterialSupplierInfo"
+                },
+                "message": {
+                    "type": "string"
+                }
+            }
+        },
+        "proto.GetMaterialTrayBindingRecordDetailResponse": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "$ref": "#/definitions/proto.Code"
+                },
+                "data": {
+                    "$ref": "#/definitions/proto.MaterialTrayBindingRecordInfo"
                 },
                 "message": {
                     "type": "string"
@@ -23697,6 +24585,23 @@
                 }
             }
         },
+        "proto.GetProductionProcessStepWithParameterRequest": {
+            "type": "object",
+            "properties": {
+                "productSerialNo": {
+                    "description": "产品序列号",
+                    "type": "string"
+                },
+                "productionStation": {
+                    "description": "生产工站代号",
+                    "type": "string"
+                },
+                "trayNo": {
+                    "description": "载具识别码",
+                    "type": "string"
+                }
+            }
+        },
         "proto.GetProductionRhythmDetailResponse": {
             "type": "object",
             "properties": {
@@ -24124,6 +25029,46 @@
                 }
             }
         },
+        "proto.MaterialChannelLayerInfo": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "description": "代号",
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "lightRegisterAddress": {
+                    "description": "亮灯寄存器地址",
+                    "type": "integer"
+                },
+                "productionStation": {
+                    "description": "隶属工站",
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/proto.ProductionStationInfo"
+                        }
+                    ]
+                },
+                "productionStationID": {
+                    "description": "隶属工站ID",
+                    "type": "string"
+                },
+                "remark": {
+                    "description": "备注",
+                    "type": "string"
+                },
+                "sortIndex": {
+                    "description": "顺序",
+                    "type": "integer"
+                },
+                "statusRegisterAddress": {
+                    "description": "状态寄存器地址",
+                    "type": "integer"
+                }
+            }
+        },
         "proto.MaterialInfoInfo": {
             "type": "object",
             "properties": {
@@ -24180,6 +25125,32 @@
                 }
             }
         },
+        "proto.MaterialRecordInfo": {
+            "type": "object",
+            "properties": {
+                "controlType": {
+                    "type": "string"
+                },
+                "materialDescription": {
+                    "type": "string"
+                },
+                "materialNo": {
+                    "type": "string"
+                },
+                "newMaterialTraceNo": {
+                    "type": "string"
+                },
+                "oldMaterialTraceNo": {
+                    "type": "string"
+                },
+                "operationMode": {
+                    "type": "string"
+                },
+                "productIssueRecordID": {
+                    "type": "string"
+                }
+            }
+        },
         "proto.MaterialSupplierInfo": {
             "type": "object",
             "properties": {
@@ -24199,6 +25170,58 @@
                     "type": "string"
                 },
                 "id": {
+                    "type": "string"
+                },
+                "remark": {
+                    "description": "备注",
+                    "type": "string"
+                }
+            }
+        },
+        "proto.MaterialTrayBindingRecordInfo": {
+            "type": "object",
+            "properties": {
+                "createTime": {
+                    "description": "发料时间",
+                    "type": "string"
+                },
+                "createUserID": {
+                    "description": "发料人员ID",
+                    "type": "string"
+                },
+                "currentState": {
+                    "description": "当前状态",
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "lastUpdateTime": {
+                    "description": "状态变更时间",
+                    "type": "string"
+                },
+                "materialTray": {
+                    "description": "状态变更时间",
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/proto.MaterialTrayInfo"
+                        }
+                    ]
+                },
+                "materialTrayID": {
+                    "description": "使用托盘ID",
+                    "type": "string"
+                },
+                "productInfo": {
+                    "description": "隶属产线ID",
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/proto.ProductInfoInfo"
+                        }
+                    ]
+                },
+                "productInfoID": {
+                    "description": "绑定产品ID",
                     "type": "string"
                 },
                 "remark": {
@@ -24267,6 +25290,27 @@
                 },
                 "trayType": {
                     "description": "托盘类型",
+                    "type": "string"
+                }
+            }
+        },
+        "proto.OnlineProductInfoRequest": {
+            "type": "object",
+            "properties": {
+                "productOrderNo": {
+                    "description": "产品工单号",
+                    "type": "string"
+                },
+                "productSerialNo": {
+                    "description": "产品序列号",
+                    "type": "string"
+                },
+                "productionLine": {
+                    "description": "产线代号",
+                    "type": "string"
+                },
+                "trayNo": {
+                    "description": "托盘号",
                     "type": "string"
                 }
             }
@@ -25941,8 +26985,7 @@
                     "type": "string"
                 },
                 "processStepType": {
-                    "description": "作业类型",
-                    "type": "string"
+                    "$ref": "#/definitions/proto.ProcessStepTypeInfo"
                 },
                 "processStepTypeID": {
                     "description": "作业类型ID",
@@ -27264,6 +28307,9 @@
                     "description": "生产工线ID",
                     "type": "string"
                 },
+                "productionProcess": {
+                    "$ref": "#/definitions/proto.ProductionProcessInfo"
+                },
                 "productionProcessID": {
                     "description": "生产工序ID",
                     "type": "string"
@@ -27989,6 +29035,32 @@
                 }
             }
         },
+        "proto.QueryMaterialChannelLayerResponse": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "$ref": "#/definitions/proto.Code"
+                },
+                "data": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/proto.MaterialChannelLayerInfo"
+                    }
+                },
+                "message": {
+                    "type": "string"
+                },
+                "pages": {
+                    "type": "integer"
+                },
+                "records": {
+                    "type": "integer"
+                },
+                "total": {
+                    "type": "integer"
+                }
+            }
+        },
         "proto.QueryMaterialInfoResponse": {
             "type": "object",
             "properties": {
@@ -28025,6 +29097,32 @@
                     "type": "array",
                     "items": {
                         "$ref": "#/definitions/proto.MaterialSupplierInfo"
+                    }
+                },
+                "message": {
+                    "type": "string"
+                },
+                "pages": {
+                    "type": "integer"
+                },
+                "records": {
+                    "type": "integer"
+                },
+                "total": {
+                    "type": "integer"
+                }
+            }
+        },
+        "proto.QueryMaterialTrayBindingRecordResponse": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "$ref": "#/definitions/proto.Code"
+                },
+                "data": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/proto.MaterialTrayBindingRecordInfo"
                     }
                 },
                 "message": {
@@ -29970,6 +31068,31 @@
                 }
             }
         },
+        "proto.RetrieveProductReworkRecordRequest": {
+            "type": "object",
+            "properties": {
+                "finishDate": {
+                    "description": "结束日期",
+                    "type": "string"
+                },
+                "isCompleted": {
+                    "description": "已返工完成",
+                    "type": "boolean"
+                },
+                "productSerialNo": {
+                    "description": "产品序列号",
+                    "type": "string"
+                },
+                "productionLine": {
+                    "description": "生产产线",
+                    "type": "string"
+                },
+                "startDate": {
+                    "description": "起始日期",
+                    "type": "string"
+                }
+            }
+        },
         "proto.RetrieveProductionCrosswayRequest": {
             "type": "object",
             "properties": {
@@ -30034,7 +31157,7 @@
             "type": "object",
             "properties": {
                 "code": {
-                    "$ref": "#/definitions/proto.Code"
+                    "type": "integer"
                 },
                 "data": {
                     "$ref": "#/definitions/proto.Data"
@@ -30315,6 +31438,45 @@
                 },
                 "value": {
                     "description": "值",
+                    "type": "string"
+                }
+            }
+        },
+        "proto.UpdateProductReworkRecordRequest": {
+            "type": "object",
+            "properties": {
+                "materialRecords": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/proto.MaterialRecordInfo"
+                    }
+                },
+                "productReworkCauseID": {
+                    "description": "返工原因ID",
+                    "type": "string"
+                },
+                "productReworkRecordID": {
+                    "description": "返工记录ID",
+                    "type": "string"
+                },
+                "productReworkSolutionID": {
+                    "description": "返工解决方案ID",
+                    "type": "string"
+                },
+                "productReworkTypeID": {
+                    "description": "返工类型ID",
+                    "type": "string"
+                },
+                "productReworkUserID": {
+                    "description": "操作人员ID",
+                    "type": "string"
+                },
+                "remark": {
+                    "description": "备注",
+                    "type": "string"
+                },
+                "reworkBrief": {
+                    "description": "返工简述",
                     "type": "string"
                 }
             }

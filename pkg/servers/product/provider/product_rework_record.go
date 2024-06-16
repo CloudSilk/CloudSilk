@@ -9,7 +9,7 @@ import (
 )
 
 type ProductReworkRecordProvider struct {
-	proto.ProductReworkRecordServer
+	proto.UnimplementedProductReworkRecordServer
 }
 
 func (u *ProductReworkRecordProvider) Add(ctx context.Context, in *proto.ProductReworkRecordInfo) (*proto.CommonResponse, error) {

@@ -7,6 +7,7 @@ import "mom_common.proto";
 
 service ProductRhythmRecord{
     rpc Add(ProductRhythmRecordInfo)returns(CommonResponse){}
+    rpc Update(ProductRhythmRecordInfo)returns(CommonResponse){}
     rpc Get(GetProductRhythmRecordRequest)returns(GetProductRhythmRecordDetailResponse){}
 }
 

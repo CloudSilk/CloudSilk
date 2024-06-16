@@ -13,7 +13,7 @@ func CreateProductRhythmRecord(m *model.ProductRhythmRecord) (string, error) {
 }
 
 func UpdateProductRhythmRecord(m *model.ProductRhythmRecord) error {
-	return model.DB.DB().Omit("created_at").Save(m).Error
+	return model.DB.DB().Omit("created_at", "create_time").Save(m).Error
 }
 
 func QueryProductRhythmRecord(req *proto.QueryProductRhythmRecordRequest, resp *proto.QueryProductRhythmRecordResponse, preload bool) {
@@ -62,16 +62,26 @@ func GetProductRhythmRecordByID(id string) (*model.ProductRhythmRecord, error) {
 	return m, err
 }
 
-func GetProductRhythmRecord(productionProcessID, productInfoID, productionStationID string, hasWorkEndTime bool) (*model.ProductRhythmRecord, error) {
+func GetProductRhythmRecord(req *proto.GetProductRhythmRecordRequest) (*model.ProductRhythmRecord, error) {
 	m := &model.ProductRhythmRecord{}
 
-	workEndTime := " AND work_end_time IS NOT NULL"
-	if !hasWorkEndTime {
-		workEndTime = " AND work_end_time IS NULL"
+	workEndTime := "work_end_time IS NOT NULL"
+	if !req.HasWorkEndTime {
+		workEndTime = "work_end_time IS NULL"
 	}
 
-	err := model.DB.DB().Preload(clause.Associations).Where("`production_process_id` = ? AND `product_info_id` = ? AND `production_station_id` = ?"+workEndTime,
-		productionProcessID, productInfoID, productionStationID).First(m).Error
+	whereMap := map[string]interface{}{}
+	if req.ProductionProcessID != "" {
+		whereMap["production_process_id"] = req.ProductionProcessID
+	}
+	if req.ProductInfoID != "" {
+		whereMap["product_info_id"] = req.ProductInfoID
+	}
+	if req.ProductionStationID != "" {
+		whereMap["production_station_id"] = req.ProductionStationID
+	}
+
+	err := model.DB.DB().Preload(clause.Associations).First(m, whereMap).Where(workEndTime).Error
 	return m, err
 }
 

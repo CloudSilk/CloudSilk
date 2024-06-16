@@ -3,8 +3,6 @@ syntax="proto3";
 package proto;
 option go_package = "./;proto";
 
-import "mom_common.proto";
-
 message LoginRequest{
     string productionStation=1;
     string cardNo=2;
@@ -18,7 +16,7 @@ message LogoutRequest{
 }
 
 message ServiceResponse{
-    Code code=1;
+    int32 code=1;
     string message=2;
     Data data=3;
 }
