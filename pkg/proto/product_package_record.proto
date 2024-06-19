@@ -7,10 +7,6 @@ import "mom_common.proto";
 import "product_order_package.proto";
 import "product_order.proto";
 
-service ProductPackageRecord{
-    rpc Get(GetProductPackageRecordRequest)returns(GetProductPackageRecordDetailResponse){}
-}
-
 message GetProductPackageRecordRequest{
     string packageNo=1;
 }

@@ -8,12 +8,6 @@ import "production_crossway.proto";
 import "attribute_expression.proto";
 import "process_step_type.proto";
 
-service ProductionLine{
-    rpc GetAll(GetAllRequest)returns(GetAllProductionLineResponse){}
-    rpc GetDetail(GetDetailRequest)returns(GetProductionLineDetailResponse){}
-    rpc Get(GetProductionLineRequest)returns(GetProductionLineDetailResponse){}
-}
-
 message GetProductionLineRequest{
     string code=1;
 }
@@ -93,12 +87,6 @@ message GetProductionLineDetailResponse{
     ProductionLineInfo data=3;
 }
 
-
-service ProductionStation{
-    rpc Update(ProductionStationInfo)returns(CommonResponse){}
-    rpc Get(GetProductionStationRequest)returns(GetProductionStationDetailResponse){}
-}
-
 message GetProductionStationRequest{
     string code=1;
 }
@@ -172,11 +160,6 @@ message GetProductionStationDetailResponse{
     Code code=1;
     string message=2;
     ProductionStationInfo data=3;
-}
-
-service ProductionProcess{
-    rpc Query(QueryProductionProcessRequest)returns(QueryProductionProcessResponse){}
-    rpc GetDetail(GetDetailRequest)returns(GetProductionProcessDetailResponse){}
 }
 
 message ProductionProcessInfo {
@@ -261,11 +244,6 @@ message GetProductionProcessDetailResponse{
     ProductionProcessInfo data=3;
 }
 
-
-service ProcessStepParameter{
-    rpc Query(QueryProcessStepParameterRequest)returns(QueryProcessStepParameterResponse);
-}
-
 message ProcessStepParameterInfo {
 	//ID 
  	string id=1;
@@ -348,12 +326,6 @@ message GetProcessStepParameterDetailResponse{
     Code code=1;
     string message=2;
     ProcessStepParameterInfo data=3;
-}
-
-
-service ProductionProcessStep{
-    rpc Get(GetProductionProcessStepRequest)returns(GetProductionProcessStepDetailResponse){}
-    rpc Query(QueryProductionProcessStepRequest)returns(QueryProductionProcessStepResponse){}
 }
 
 message GetProductionProcessStepRequest{

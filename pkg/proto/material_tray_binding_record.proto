@@ -7,11 +7,6 @@ import "mom_common.proto";
 import "product_order.proto";
 import "material_tray.proto";
 
-service MaterialTrayBindingRecord{
-    rpc Add(MaterialTrayBindingRecordInfo)returns(CommonResponse){}
-    rpc Get(GetMaterialTrayBindingRecordRequest)returns(GetMaterialTrayBindingRecordDetailResponse){}
-}
-
 message GetMaterialTrayBindingRecordRequest{
     string productInfoID=1;
     string materialTrayID=2;
@@ -29,7 +24,7 @@ message MaterialTrayBindingRecordInfo{
     string lastUpdateTime=5;
     //备注
     string remark=6;
-    //使用托盘ID
+    //使用载具ID
     string materialTrayID=7;
     //状态变更时间
     MaterialTrayInfo materialTray=8;

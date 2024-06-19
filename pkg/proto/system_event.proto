@@ -5,10 +5,6 @@ option go_package = "./;proto";
 
 import "mom_common.proto";
 
-service SystemEvent{
-    rpc Get(GetSystemEventRequest)returns(GetSystemEventDetailResponse){}
-}
-
 message GetSystemEventRequest{
     string code=1;
     bool enable=2;

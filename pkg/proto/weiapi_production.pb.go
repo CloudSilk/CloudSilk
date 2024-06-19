@@ -31,7 +31,7 @@ type OnlineProductInfoRequest struct {
 	ProductOrderNo string `protobuf:"bytes,2,opt,name=productOrderNo,proto3" json:"productOrderNo"`
 	// 产品序列号
 	ProductSerialNo string `protobuf:"bytes,4,opt,name=productSerialNo,proto3" json:"productSerialNo"`
-	// 托盘号
+	// 载具号
 	TrayNo string `protobuf:"bytes,5,opt,name=trayNo,proto3" json:"trayNo"`
 }
 
@@ -102,7 +102,7 @@ type EnterProductionStationRequest struct {
 
 	// 工位代号
 	ProductionStation string `protobuf:"bytes,1,opt,name=productionStation,proto3" json:"productionStation"`
-	// 托盘号
+	// 载具号
 	TrayNo string `protobuf:"bytes,2,opt,name=trayNo,proto3" json:"trayNo"`
 	// 产品序列号
 	ProductSerialNo string `protobuf:"bytes,3,opt,name=productSerialNo,proto3" json:"productSerialNo"`
@@ -462,7 +462,7 @@ type ExitProductionStationRequest struct {
 
 	// 工位代号
 	ProductionStation string `protobuf:"bytes,1,opt,name=productionStation,proto3" json:"productionStation"`
-	// 托盘号
+	// 载具号
 	TrayNo string `protobuf:"bytes,2,opt,name=trayNo,proto3" json:"trayNo"`
 	// 产品序列号
 	ProductSerialNo string `protobuf:"bytes,3,opt,name=productSerialNo,proto3" json:"productSerialNo"`
@@ -476,7 +476,7 @@ type ExitProductionStationRequest struct {
 	ReworkReason string `protobuf:"bytes,7,opt,name=reworkReason,proto3" json:"reworkReason"`
 	// 等待时长
 	WaitTime int32 `protobuf:"varint,8,opt,name=waitTime,proto3" json:"waitTime"`
-	// 是否解除托盘
+	// 是否解除载具
 	UnbindTray bool `protobuf:"varint,9,opt,name=unbindTray,proto3" json:"unbindTray"`
 }
 

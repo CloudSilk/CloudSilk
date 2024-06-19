@@ -2306,7 +2306,7 @@
                     "application/json"
                 ],
                 "tags": [
-                    "物料托盘管理"
+                    "物料载具管理"
                 ],
                 "summary": "新增",
                 "parameters": [
@@ -2347,7 +2347,7 @@
                     "application/json"
                 ],
                 "tags": [
-                    "物料托盘管理"
+                    "物料载具管理"
                 ],
                 "summary": "查询所有",
                 "parameters": [
@@ -2379,7 +2379,7 @@
                     "application/json"
                 ],
                 "tags": [
-                    "物料托盘管理"
+                    "物料载具管理"
                 ],
                 "summary": "删除",
                 "parameters": [
@@ -2420,7 +2420,7 @@
                     "application/json"
                 ],
                 "tags": [
-                    "物料托盘管理"
+                    "物料载具管理"
                 ],
                 "summary": "查询明细",
                 "parameters": [
@@ -2459,7 +2459,7 @@
                     "application/octet-stream"
                 ],
                 "tags": [
-                    "物料托盘管理"
+                    "物料载具管理"
                 ],
                 "summary": "分页查询",
                 "parameters": [
@@ -2521,7 +2521,7 @@
                     "application/json"
                 ],
                 "tags": [
-                    "物料托盘管理"
+                    "物料载具管理"
                 ],
                 "summary": "更新",
                 "parameters": [
@@ -2562,7 +2562,7 @@
                     "application/json"
                 ],
                 "tags": [
-                    "物料托盘绑定记录"
+                    "物料载具绑定记录"
                 ],
                 "summary": "新增",
                 "parameters": [
@@ -2603,7 +2603,7 @@
                     "application/json"
                 ],
                 "tags": [
-                    "物料托盘绑定记录"
+                    "物料载具绑定记录"
                 ],
                 "summary": "查询所有",
                 "parameters": [
@@ -2635,7 +2635,7 @@
                     "application/json"
                 ],
                 "tags": [
-                    "物料托盘绑定记录"
+                    "物料载具绑定记录"
                 ],
                 "summary": "删除",
                 "parameters": [
@@ -2676,7 +2676,7 @@
                     "application/json"
                 ],
                 "tags": [
-                    "物料托盘绑定记录"
+                    "物料载具绑定记录"
                 ],
                 "summary": "查询明细",
                 "parameters": [
@@ -2715,7 +2715,7 @@
                     "application/octet-stream"
                 ],
                 "tags": [
-                    "物料托盘绑定记录"
+                    "物料载具绑定记录"
                 ],
                 "summary": "分页查询",
                 "parameters": [
@@ -2789,7 +2789,7 @@
                     "application/json"
                 ],
                 "tags": [
-                    "物料托盘绑定记录"
+                    "物料载具绑定记录"
                 ],
                 "summary": "更新",
                 "parameters": [
@@ -21320,47 +21320,6 @@
                 }
             }
         },
-        "/api/mom/webapi/material/bindmaterialtray": {
-            "post": {
-                "description": "绑定物料托盘",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "WebAPI"
-                ],
-                "summary": "绑定物料托盘",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "jwt token",
-                        "name": "authorization",
-                        "in": "header",
-                        "required": true
-                    },
-                    {
-                        "description": "BindMaterialTrayRequest",
-                        "name": "account",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/proto.BindMaterialTrayRequest"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/proto.CommonResponse"
-                        }
-                    }
-                }
-            }
-        },
         "/api/mom/webapi/production/checkproductprocessroutefailure": {
             "post": {
                 "description": "设置失败后续处理接口",
@@ -21813,17 +21772,6 @@
                 }
             }
         },
-        "proto.BindMaterialTrayRequest": {
-            "type": "object",
-            "properties": {
-                "materialTray": {
-                    "type": "string"
-                },
-                "productSerialNo": {
-                    "type": "string"
-                }
-            }
-        },
         "proto.CheckProductProcessRouteFailureRequest": {
             "type": "object",
             "properties": {
@@ -22245,7 +22193,7 @@
                     "type": "string"
                 },
                 "trayNo": {
-                    "description": "托盘号",
+                    "description": "载具号",
                     "type": "string"
                 }
             }
@@ -22336,11 +22284,11 @@
                     "type": "string"
                 },
                 "trayNo": {
-                    "description": "托盘号",
+                    "description": "载具号",
                     "type": "string"
                 },
                 "unbindTray": {
-                    "description": "是否解除托盘",
+                    "description": "是否解除载具",
                     "type": "boolean"
                 },
                 "waitTime": {
@@ -25209,7 +25157,7 @@
                     ]
                 },
                 "materialTrayID": {
-                    "description": "使用托盘ID",
+                    "description": "使用载具ID",
                     "type": "string"
                 },
                 "productInfo": {
@@ -25289,7 +25237,7 @@
                     "type": "string"
                 },
                 "trayType": {
-                    "description": "托盘类型",
+                    "description": "载具类型",
                     "type": "string"
                 }
             }
@@ -25310,7 +25258,7 @@
                     "type": "string"
                 },
                 "trayNo": {
-                    "description": "托盘号",
+                    "description": "载具号",
                     "type": "string"
                 }
             }
@@ -25401,6 +25349,21 @@
                 }
             }
         },
+        "proto.PersonnelQualificationTypeAvailableModelInfo": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "description": "ID",
+                    "type": "string"
+                },
+                "personnelQualificationTypeID": {
+                    "type": "string"
+                },
+                "productModelID": {
+                    "type": "string"
+                }
+            }
+        },
         "proto.PersonnelQualificationTypeInfo": {
             "type": "object",
             "properties": {
@@ -25428,7 +25391,7 @@
                     "description": "产品型号",
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/proto.ProductModelInfo"
+                        "$ref": "#/definitions/proto.PersonnelQualificationTypeAvailableModelInfo"
                     }
                 },
                 "productionProcess": {

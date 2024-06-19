@@ -5,10 +5,6 @@ option go_package = "./;proto";
 
 import "mom_common.proto";
 
-service ProductWorkRecord{
-    rpc Query(QueryProductWorkRecordRequest)returns(QueryProductWorkRecordResponse);
-}
-
 message ProductWorkRecordInfo {
 	//ID 
  	string id=2;

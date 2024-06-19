@@ -5,12 +5,6 @@ option go_package = "./;proto";
 
 import "mom_common.proto";
 
-service ProductRhythmRecord{
-    rpc Add(ProductRhythmRecordInfo)returns(CommonResponse){}
-    rpc Update(ProductRhythmRecordInfo)returns(CommonResponse){}
-    rpc Get(GetProductRhythmRecordRequest)returns(GetProductRhythmRecordDetailResponse){}
-}
-
 message GetProductRhythmRecordRequest{
     string productionProcessID=1;
     string productInfoID=2;

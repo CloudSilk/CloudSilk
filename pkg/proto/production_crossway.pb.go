@@ -596,14 +596,7 @@ var file_production_crossway_proto_rawDesc = []byte{
 	0x67, 0x65, 0x12, 0x31, 0x0a, 0x04, 0x64, 0x61, 0x74, 0x61, 0x18, 0x03, 0x20, 0x01, 0x28, 0x0b,
 	0x32, 0x1d, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x2e, 0x50, 0x72, 0x6f, 0x64, 0x75, 0x63, 0x74,
 	0x69, 0x6f, 0x6e, 0x43, 0x72, 0x6f, 0x73, 0x73, 0x77, 0x61, 0x79, 0x49, 0x6e, 0x66, 0x6f, 0x52,
-	0x04, 0x64, 0x61, 0x74, 0x61, 0x32, 0x6e, 0x0a, 0x12, 0x50, 0x72, 0x6f, 0x64, 0x75, 0x63, 0x74,
-	0x69, 0x6f, 0x6e, 0x43, 0x72, 0x6f, 0x73, 0x73, 0x77, 0x61, 0x79, 0x12, 0x58, 0x0a, 0x05, 0x51,
-	0x75, 0x65, 0x72, 0x79, 0x12, 0x25, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x2e, 0x51, 0x75, 0x65,
-	0x72, 0x79, 0x50, 0x72, 0x6f, 0x64, 0x75, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x43, 0x72, 0x6f, 0x73,
-	0x73, 0x77, 0x61, 0x79, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x26, 0x2e, 0x70, 0x72,
-	0x6f, 0x74, 0x6f, 0x2e, 0x51, 0x75, 0x65, 0x72, 0x79, 0x50, 0x72, 0x6f, 0x64, 0x75, 0x63, 0x74,
-	0x69, 0x6f, 0x6e, 0x43, 0x72, 0x6f, 0x73, 0x73, 0x77, 0x61, 0x79, 0x52, 0x65, 0x73, 0x70, 0x6f,
-	0x6e, 0x73, 0x65, 0x22, 0x00, 0x42, 0x0a, 0x5a, 0x08, 0x2e, 0x2f, 0x3b, 0x70, 0x72, 0x6f, 0x74,
+	0x04, 0x64, 0x61, 0x74, 0x61, 0x42, 0x0a, 0x5a, 0x08, 0x2e, 0x2f, 0x3b, 0x70, 0x72, 0x6f, 0x74,
 	0x6f, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
 }
 
@@ -630,22 +623,20 @@ var file_production_crossway_proto_goTypes = []interface{}{
 	(Code)(0), // 6: proto.Code
 }
 var file_production_crossway_proto_depIdxs = []int32{
-	1,  // 0: proto.ProductionCrosswayInfo.productionCrosswayLeftTurnStations:type_name -> proto.ProductionCrosswayStationInfo
-	1,  // 1: proto.ProductionCrosswayInfo.productionCrosswayRightTurnStations:type_name -> proto.ProductionCrosswayStationInfo
-	1,  // 2: proto.ProductionCrosswayInfo.productionCrosswayStraightStations:type_name -> proto.ProductionCrosswayStationInfo
-	6,  // 3: proto.QueryProductionCrosswayResponse.code:type_name -> proto.Code
-	0,  // 4: proto.QueryProductionCrosswayResponse.data:type_name -> proto.ProductionCrosswayInfo
-	6,  // 5: proto.GetAllProductionCrosswayResponse.code:type_name -> proto.Code
-	0,  // 6: proto.GetAllProductionCrosswayResponse.data:type_name -> proto.ProductionCrosswayInfo
-	6,  // 7: proto.GetProductionCrosswayDetailResponse.code:type_name -> proto.Code
-	0,  // 8: proto.GetProductionCrosswayDetailResponse.data:type_name -> proto.ProductionCrosswayInfo
-	2,  // 9: proto.ProductionCrossway.Query:input_type -> proto.QueryProductionCrosswayRequest
-	3,  // 10: proto.ProductionCrossway.Query:output_type -> proto.QueryProductionCrosswayResponse
-	10, // [10:11] is the sub-list for method output_type
-	9,  // [9:10] is the sub-list for method input_type
-	9,  // [9:9] is the sub-list for extension type_name
-	9,  // [9:9] is the sub-list for extension extendee
-	0,  // [0:9] is the sub-list for field type_name
+	1, // 0: proto.ProductionCrosswayInfo.productionCrosswayLeftTurnStations:type_name -> proto.ProductionCrosswayStationInfo
+	1, // 1: proto.ProductionCrosswayInfo.productionCrosswayRightTurnStations:type_name -> proto.ProductionCrosswayStationInfo
+	1, // 2: proto.ProductionCrosswayInfo.productionCrosswayStraightStations:type_name -> proto.ProductionCrosswayStationInfo
+	6, // 3: proto.QueryProductionCrosswayResponse.code:type_name -> proto.Code
+	0, // 4: proto.QueryProductionCrosswayResponse.data:type_name -> proto.ProductionCrosswayInfo
+	6, // 5: proto.GetAllProductionCrosswayResponse.code:type_name -> proto.Code
+	0, // 6: proto.GetAllProductionCrosswayResponse.data:type_name -> proto.ProductionCrosswayInfo
+	6, // 7: proto.GetProductionCrosswayDetailResponse.code:type_name -> proto.Code
+	0, // 8: proto.GetProductionCrosswayDetailResponse.data:type_name -> proto.ProductionCrosswayInfo
+	9, // [9:9] is the sub-list for method output_type
+	9, // [9:9] is the sub-list for method input_type
+	9, // [9:9] is the sub-list for extension type_name
+	9, // [9:9] is the sub-list for extension extendee
+	0, // [0:9] is the sub-list for field type_name
 }
 
 func init() { file_production_crossway_proto_init() }
@@ -736,7 +727,7 @@ func file_production_crossway_proto_init() {
 			NumEnums:      0,
 			NumMessages:   6,
 			NumExtensions: 0,
-			NumServices:   1,
+			NumServices:   0,
 		},
 		GoTypes:           file_production_crossway_proto_goTypes,
 		DependencyIndexes: file_production_crossway_proto_depIdxs,

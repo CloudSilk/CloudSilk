@@ -825,16 +825,8 @@ var file_product_order_process_step_proto_rawDesc = []byte{
 	0x74, 0x61, 0x18, 0x03, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x22, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f,
 	0x2e, 0x50, 0x72, 0x6f, 0x64, 0x75, 0x63, 0x74, 0x4f, 0x72, 0x64, 0x65, 0x72, 0x50, 0x72, 0x6f,
 	0x63, 0x65, 0x73, 0x73, 0x53, 0x74, 0x65, 0x70, 0x49, 0x6e, 0x66, 0x6f, 0x52, 0x04, 0x64, 0x61,
-	0x74, 0x61, 0x32, 0x7b, 0x0a, 0x17, 0x50, 0x72, 0x6f, 0x64, 0x75, 0x63, 0x74, 0x4f, 0x72, 0x64,
-	0x65, 0x72, 0x50, 0x72, 0x6f, 0x63, 0x65, 0x73, 0x73, 0x53, 0x74, 0x65, 0x70, 0x12, 0x60, 0x0a,
-	0x05, 0x51, 0x75, 0x65, 0x72, 0x79, 0x12, 0x2a, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x2e, 0x51,
-	0x75, 0x65, 0x72, 0x79, 0x50, 0x72, 0x6f, 0x64, 0x75, 0x63, 0x74, 0x4f, 0x72, 0x64, 0x65, 0x72,
-	0x50, 0x72, 0x6f, 0x63, 0x65, 0x73, 0x73, 0x53, 0x74, 0x65, 0x70, 0x52, 0x65, 0x71, 0x75, 0x65,
-	0x73, 0x74, 0x1a, 0x2b, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x2e, 0x51, 0x75, 0x65, 0x72, 0x79,
-	0x50, 0x72, 0x6f, 0x64, 0x75, 0x63, 0x74, 0x4f, 0x72, 0x64, 0x65, 0x72, 0x50, 0x72, 0x6f, 0x63,
-	0x65, 0x73, 0x73, 0x53, 0x74, 0x65, 0x70, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x42,
-	0x0a, 0x5a, 0x08, 0x2e, 0x2f, 0x3b, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x06, 0x70, 0x72, 0x6f,
-	0x74, 0x6f, 0x33,
+	0x74, 0x61, 0x42, 0x0a, 0x5a, 0x08, 0x2e, 0x2f, 0x3b, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x06,
+	0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
 }
 
 var (
@@ -862,22 +854,20 @@ var file_product_order_process_step_proto_goTypes = []interface{}{
 	(Code)(0),                                        // 8: proto.Code
 }
 var file_product_order_process_step_proto_depIdxs = []int32{
-	7,  // 0: proto.ProductOrderProcessStepInfo.processStepType:type_name -> proto.ProcessStepTypeInfo
-	1,  // 1: proto.ProductOrderProcessStepInfo.productOrderProcessStepAttachments:type_name -> proto.ProductOrderProcessStepAttachmentInfo
-	2,  // 2: proto.ProductOrderProcessStepInfo.productOrderProcessStepTypeParameters:type_name -> proto.ProductOrderProcessStepTypeParameterInfo
-	8,  // 3: proto.QueryProductOrderProcessStepResponse.code:type_name -> proto.Code
-	0,  // 4: proto.QueryProductOrderProcessStepResponse.data:type_name -> proto.ProductOrderProcessStepInfo
-	8,  // 5: proto.GetAllProductOrderProcessStepResponse.code:type_name -> proto.Code
-	0,  // 6: proto.GetAllProductOrderProcessStepResponse.data:type_name -> proto.ProductOrderProcessStepInfo
-	8,  // 7: proto.GetProductOrderProcessStepDetailResponse.code:type_name -> proto.Code
-	0,  // 8: proto.GetProductOrderProcessStepDetailResponse.data:type_name -> proto.ProductOrderProcessStepInfo
-	3,  // 9: proto.ProductOrderProcessStep.Query:input_type -> proto.QueryProductOrderProcessStepRequest
-	4,  // 10: proto.ProductOrderProcessStep.Query:output_type -> proto.QueryProductOrderProcessStepResponse
-	10, // [10:11] is the sub-list for method output_type
-	9,  // [9:10] is the sub-list for method input_type
-	9,  // [9:9] is the sub-list for extension type_name
-	9,  // [9:9] is the sub-list for extension extendee
-	0,  // [0:9] is the sub-list for field type_name
+	7, // 0: proto.ProductOrderProcessStepInfo.processStepType:type_name -> proto.ProcessStepTypeInfo
+	1, // 1: proto.ProductOrderProcessStepInfo.productOrderProcessStepAttachments:type_name -> proto.ProductOrderProcessStepAttachmentInfo
+	2, // 2: proto.ProductOrderProcessStepInfo.productOrderProcessStepTypeParameters:type_name -> proto.ProductOrderProcessStepTypeParameterInfo
+	8, // 3: proto.QueryProductOrderProcessStepResponse.code:type_name -> proto.Code
+	0, // 4: proto.QueryProductOrderProcessStepResponse.data:type_name -> proto.ProductOrderProcessStepInfo
+	8, // 5: proto.GetAllProductOrderProcessStepResponse.code:type_name -> proto.Code
+	0, // 6: proto.GetAllProductOrderProcessStepResponse.data:type_name -> proto.ProductOrderProcessStepInfo
+	8, // 7: proto.GetProductOrderProcessStepDetailResponse.code:type_name -> proto.Code
+	0, // 8: proto.GetProductOrderProcessStepDetailResponse.data:type_name -> proto.ProductOrderProcessStepInfo
+	9, // [9:9] is the sub-list for method output_type
+	9, // [9:9] is the sub-list for method input_type
+	9, // [9:9] is the sub-list for extension type_name
+	9, // [9:9] is the sub-list for extension extendee
+	0, // [0:9] is the sub-list for field type_name
 }
 
 func init() { file_product_order_process_step_proto_init() }
@@ -981,7 +971,7 @@ func file_product_order_process_step_proto_init() {
 			NumEnums:      0,
 			NumMessages:   7,
 			NumExtensions: 0,
-			NumServices:   1,
+			NumServices:   0,
 		},
 		GoTypes:           file_product_order_process_step_proto_goTypes,
 		DependencyIndexes: file_product_order_process_step_proto_depIdxs,

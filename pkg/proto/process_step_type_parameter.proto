@@ -5,10 +5,6 @@ option go_package = "./;proto";
 
 import "mom_common.proto";
 
-service ProcessStepTypeParameter{
-    rpc Query(QueryTestProjectMatchRuleRequest)returns(QueryTestProjectMatchRuleResponse){}
-}
-
 message ProcessStepTypeParameterInfo {
 	//ID 
     string id=1;

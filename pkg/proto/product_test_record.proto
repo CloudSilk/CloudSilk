@@ -7,10 +7,6 @@ import "mom_common.proto";
 import "production_line.proto";
 import "product_order.proto";
 
-service ProductTestRecord{
-    rpc Add(ProductTestRecordInfo)returns(CommonResponse){}
-}
-
 message ProductTestRecordInfo {
 	//ID 
  	string id=1;

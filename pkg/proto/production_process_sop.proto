@@ -6,10 +6,6 @@ option go_package = "./;proto";
 import "mom_common.proto";
 import "production_line.proto";
 
-service ProductionProcessSop{
-    rpc Get(GetProductionProcessSopRequest)returns(GetProductionProcessSopDetailResponse){}
-}
-
 message GetProductionProcessSopRequest{
     string productionProcessID=1;
     string productModelID=2;

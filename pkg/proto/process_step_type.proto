@@ -6,10 +6,6 @@ option go_package = "./;proto";
 import "mom_common.proto";
 import "process_step_type_parameter.proto";
 
-service ProcessStepType{
-    rpc Query(QueryProcessStepTypeRequest)returns(QueryProcessStepTypeResponse){}
-}
-
 message ProcessStepTypeInfo {
 	//ID 
     string id=1;

@@ -5,10 +5,6 @@ option go_package = "./;proto";
 
 import "mom_common.proto";
 
-service SystemEventTriggerParameter{
-    rpc Add(SystemEventTriggerParameterInfo)returns(CommonResponse){}
-}
-
 message SystemEventTriggerParameterInfo {
 	//ID 
  	string id=2;

@@ -5,10 +5,6 @@ option go_package = "./;proto";
 
 import "mom_common.proto";
 
-service ProductOrderBom{
-	rpc Query(QueryProductOrderBomRequest)returns(QueryProductOrderBomResponse);
-}
-
 message ProductOrderBomInfo {
 	//ID 
 	string id=2;

@@ -1,6 +1,6 @@
 package types
 
 const (
-	MaterialTrayTypeMaterialTray = "物料托盘"
-	MaterialTrayTypeAssembleTray = "装配托盘"
+	MaterialTrayTypeMaterialTray = "物料载具"
+	MaterialTrayTypeAssembleTray = "装配载具"
 )

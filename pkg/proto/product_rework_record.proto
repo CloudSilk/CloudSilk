@@ -7,10 +7,6 @@ import "mom_common.proto";
 import "production_line.proto";
 import "product_order.proto";
 
-service ProductReworkRecord{
-    rpc Add(ProductReworkRecordInfo)returns(CommonResponse){}
-}
-
 message ProductReworkRecordInfo {
 	//ID 
  	string id=2;

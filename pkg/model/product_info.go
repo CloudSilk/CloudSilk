@@ -28,7 +28,7 @@ type ProductInfo struct {
 	Remark              string        `json:"remark" gorm:"size:1000;comment:备注"`
 	ProductOrderID      string        `json:"productOrderID" gorm:"size:36;comment:产品工单ID"`
 	ProductOrder        *ProductOrder `json:"productOrder" gorm:"constraint:OnDelete:CASCADE"` //产品工单
-	ProductionProcessID string        `json:"productionProcessID" gorm:"size:36;comment:当前工序ID"`
+	ProductionProcessID *string       `json:"productionProcessID" gorm:"size:36;comment:当前工序ID"`
 }
 
 func PBToProductInfos(in []*proto.ProductInfoInfo) []*ProductInfo {
@@ -43,6 +43,12 @@ func PBToProductInfo(in *proto.ProductInfoInfo) *ProductInfo {
 	if in == nil {
 		return nil
 	}
+
+	var productionProcessID *string
+	if in.ProductionProcessID != "" {
+		productionProcessID = &in.ProductionProcessID
+	}
+
 	return &ProductInfo{
 		ModelID:         ModelID{ID: in.Id},
 		ProductSerialNo: in.ProductSerialNo,
@@ -61,7 +67,7 @@ func PBToProductInfo(in *proto.ProductInfoInfo) *ProductInfo {
 		// LastUpdateTime:      utils.ParseTime(in.LastUpdateTime),
 		Remark:              in.Remark,
 		ProductOrderID:      in.ProductOrderID,
-		ProductionProcessID: in.ProductionProcessID,
+		ProductionProcessID: productionProcessID,
 	}
 }
 
@@ -77,6 +83,12 @@ func ProductInfoToPB(in *ProductInfo) *proto.ProductInfoInfo {
 	if in == nil {
 		return nil
 	}
+
+	var productionProcessID string
+	if in.ProductionProcessID != nil {
+		productionProcessID = *in.ProductionProcessID
+	}
+
 	m := &proto.ProductInfoInfo{
 		Id:                  in.ID,
 		ProductSerialNo:     in.ProductSerialNo,
@@ -96,7 +108,7 @@ func ProductInfoToPB(in *ProductInfo) *proto.ProductInfoInfo {
 		Remark:              in.Remark,
 		ProductOrderID:      in.ProductOrderID,
 		ProductOrder:        ProductOrderToPB(in.ProductOrder),
-		ProductionProcessID: in.ProductionProcessID,
+		ProductionProcessID: productionProcessID,
 	}
 	return m
 }

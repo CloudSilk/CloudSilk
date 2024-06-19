@@ -6,12 +6,6 @@ option go_package = "./;proto";
 import "mom_common.proto";
 import "production_line.proto";
 
-service ProductionStationSignup{
-    rpc Add(ProductionStationSignupInfo)returns(CommonResponse){}
-    rpc Update(ProductionStationSignupInfo)returns(CommonResponse){}
-    rpc Get(GetProductionStationSignupRequest)returns(GetProductionStationSignupDetailResponse){}
-}
-
 message GetProductionStationSignupRequest{
     string productionStationID=1;
     string loginUserID=2;

@@ -8,10 +8,6 @@ import "product_model_bom.proto";
 import "product_category.proto";
 import "product_attribute.proto";
 
-service ProductModel{
-	rpc GetDetail(GetDetailRequest)returns(GetProductModelDetailResponse){}
-}
-
 message ProductModelInfo {
 	//ID 
 	string id=2;

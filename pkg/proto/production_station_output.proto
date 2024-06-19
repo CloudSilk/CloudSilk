@@ -7,12 +7,6 @@ import "mom_common.proto";
 import "production_line.proto";
 import "product_order.proto";
 
-service ProductionStationOutput{
-    rpc Add(ProductionStationOutputInfo)returns(CommonResponse){}
-    rpc Update(ProductionStationOutputInfo)returns(CommonResponse){}
-    rpc Get(GetProductionStationOutputRequest)returns(GetProductionStationOutputDetailResponse){}
-}
-
 message GetProductionStationOutputRequest{
     string productionStationID=1;
     string productInfoID=2;

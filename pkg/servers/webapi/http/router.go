@@ -7,5 +7,5 @@ import (
 func RegisterRouter(r *gin.Engine) {
 	RegisterInfrastructureRouter(r)
 	RegisterProductionRouter(r)
-	RegisterMaterialRouter(r)
+	// RegisterMaterialRouter(r)
 }

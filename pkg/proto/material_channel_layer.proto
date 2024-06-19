@@ -7,10 +7,6 @@ import "mom_common.proto";
 import "production_line.proto";
 import "material_info.proto";
 
-service MaterialChannelLayer{
-    rpc GetMaterialChannels(GetMaterialChannelRequest)returns(GetAllMaterialChannelResponse);
-}
-
 message MaterialChannelLayerInfo{
     string id=1;
     //顺序

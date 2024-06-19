@@ -7,8 +7,6 @@ require (
 	github.com/CloudSilk/curd v1.0.0
 	github.com/CloudSilk/pkg v1.0.1
 	github.com/CloudSilk/usercenter v1.0.1
-	github.com/dubbogo/grpc-go v1.42.10
-	github.com/dubbogo/triple v1.2.2-rc2
 	github.com/gin-gonic/gin v1.9.1
 	github.com/google/uuid v1.3.0
 	github.com/swaggo/gin-swagger v1.4.1
@@ -49,6 +47,8 @@ require (
 	github.com/dlclark/regexp2 v1.7.0 // indirect
 	github.com/dubbogo/go-zookeeper v1.0.4-0.20211212162352-f9d2183d89d5 // indirect
 	github.com/dubbogo/gost v1.13.2 // indirect
+	github.com/dubbogo/grpc-go v1.42.10 // indirect
+	github.com/dubbogo/triple v1.2.2-rc2 // indirect
 	github.com/dustin/go-humanize v1.0.1 // indirect
 	github.com/elithrar/simple-scrypt v1.3.0 // indirect
 	github.com/emicklei/go-restful/v3 v3.10.1 // indirect

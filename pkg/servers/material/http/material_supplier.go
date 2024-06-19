@@ -4,9 +4,9 @@ import (
 	"context"
 	"net/http"
 
-	"github.com/CloudSilk/CloudSilk/pkg/servers/material/logic"
 	"github.com/CloudSilk/CloudSilk/pkg/model"
 	"github.com/CloudSilk/CloudSilk/pkg/proto"
+	"github.com/CloudSilk/CloudSilk/pkg/servers/material/logic"
 	"github.com/CloudSilk/pkg/utils/log"
 	"github.com/CloudSilk/pkg/utils/middleware"
 	"github.com/gin-gonic/gin"
@@ -33,7 +33,7 @@ func AddMaterialSupplier(c *gin.Context) {
 		resp.Code = proto.Code_BadRequest
 		resp.Message = err.Error()
 		c.JSON(http.StatusOK, resp)
-		log.Warnf(context.Background(), "TransID:%s,新建物料托盘请求参数无效:%v", transID, err)
+		log.Warnf(context.Background(), "TransID:%s,新建物料载具请求参数无效:%v", transID, err)
 		return
 	}
 	err = middleware.Validate.Struct(req)
@@ -75,7 +75,7 @@ func UpdateMaterialSupplier(c *gin.Context) {
 		resp.Code = proto.Code_BadRequest
 		resp.Message = err.Error()
 		c.JSON(http.StatusOK, resp)
-		log.Warnf(context.Background(), "TransID:%s,更新物料托盘请求参数无效:%v", transID, err)
+		log.Warnf(context.Background(), "TransID:%s,更新物料载具请求参数无效:%v", transID, err)
 		return
 	}
 	err = middleware.Validate.Struct(req)
@@ -201,7 +201,7 @@ func DeleteMaterialSupplier(c *gin.Context) {
 		resp.Code = proto.Code_BadRequest
 		resp.Message = err.Error()
 		c.JSON(http.StatusOK, resp)
-		log.Warnf(context.Background(), "TransID:%s,删除物料托盘请求参数无效:%v", transID, err)
+		log.Warnf(context.Background(), "TransID:%s,删除物料载具请求参数无效:%v", transID, err)
 		return
 	}
 	err = middleware.Validate.Struct(req)

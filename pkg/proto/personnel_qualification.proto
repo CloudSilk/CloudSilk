@@ -6,11 +6,6 @@ option go_package = "./;proto";
 import "mom_common.proto";
 import "personnel_qualification_type.proto";
 
-service PersonnelQualification{
-    rpc Query(QueryPersonnelQualificationRequest)returns(QueryPersonnelQualificationResponse){}
-    rpc Get(GetPersonnelQualificationRequest)returns(GetPersonnelQualificationDetailResponse){}
-}
-
 message GetPersonnelQualificationRequest{
     string certifiedUserID=1;
 }

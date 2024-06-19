@@ -22,7 +22,7 @@ import (
 // @Success 200 {object} proto.GetAllProductionLineResponse
 // @Router /api/mom/webapi/infrastructure/getallproductionline [get]
 func GetAllProductionLine(c *gin.Context) {
-	resp := map[string]interface{}{"code": types.ServiceResponseCodeSuccess}
+	resp := map[string]interface{}{"code": types.ServiceResponseCodeSuccess, "message": "", "data": nil}
 	// resp := &proto.GetAllProductionLineResponse{
 	// 	Code: proto.Code_Success,
 	// }
@@ -30,11 +30,10 @@ func GetAllProductionLine(c *gin.Context) {
 	if err != nil {
 		resp["code"] = types.ServiceResponseCodeFailure
 		resp["message"] = err.Error()
-		c.JSON(http.StatusOK, resp)
-		return
+	} else {
+		resp["data"] = data
 	}
 
-	resp["data"] = data
 	c.JSON(http.StatusOK, resp)
 }
 
@@ -52,7 +51,7 @@ func RetrieveProductionStation(c *gin.Context) {
 	transID := middleware.GetTransID(c)
 	req := &proto.RetrieveProductionStationRequest{}
 	// resp := &proto.GetAllProductionStationResponse{Code: 200}
-	resp := map[string]interface{}{"code": types.ServiceResponseCodeSuccess}
+	resp := map[string]interface{}{"code": types.ServiceResponseCodeSuccess, "message": "", "data": nil}
 
 	if err := c.BindJSON(req); err != nil {
 		resp["code"] = types.ServiceResponseCodeFailure
@@ -73,11 +72,10 @@ func RetrieveProductionStation(c *gin.Context) {
 	if err != nil {
 		resp["code"] = types.ServiceResponseCodeFailure
 		resp["message"] = err.Error()
-		c.JSON(http.StatusOK, resp)
-		return
+	} else {
+		resp["data"] = data
 	}
 
-	resp["data"] = data
 	c.JSON(http.StatusOK, resp)
 }
 
@@ -95,7 +93,7 @@ func RetrieveProductAttribute(c *gin.Context) {
 	transID := middleware.GetTransID(c)
 	req := &proto.RetrieveProductAttributeRequest{}
 	// resp := &proto.GetAllProductAttributeResponse{Code: 200}
-	resp := map[string]interface{}{"code": types.ServiceResponseCodeSuccess}
+	resp := map[string]interface{}{"code": types.ServiceResponseCodeSuccess, "message": "", "data": nil}
 
 	if err := c.BindJSON(req); err != nil {
 		resp["code"] = types.ServiceResponseCodeFailure
@@ -116,11 +114,10 @@ func RetrieveProductAttribute(c *gin.Context) {
 	if err != nil {
 		resp["code"] = types.ServiceResponseCodeFailure
 		resp["message"] = err.Error()
-		c.JSON(http.StatusOK, resp)
-		return
+	} else {
+		resp["data"] = data
 	}
 
-	resp["data"] = data
 	c.JSON(http.StatusOK, resp)
 }
 
@@ -137,7 +134,7 @@ func RetrieveProductAttribute(c *gin.Context) {
 func RetrieveProductionCrossway(c *gin.Context) {
 	transID := middleware.GetTransID(c)
 	req := &proto.RetrieveProductionCrosswayRequest{}
-	resp := map[string]interface{}{"code": types.ServiceResponseCodeSuccess}
+	resp := map[string]interface{}{"code": types.ServiceResponseCodeSuccess, "message": "", "data": nil}
 	// resp := &proto.GetAllProductionCrosswayResponse{Code: 200}
 
 	if err := c.BindJSON(req); err != nil {
@@ -159,11 +156,10 @@ func RetrieveProductionCrossway(c *gin.Context) {
 	if err != nil {
 		resp["code"] = types.ServiceResponseCodeFailure
 		resp["message"] = err.Error()
-		c.JSON(http.StatusOK, resp)
-		return
+	} else {
+		resp["data"] = data
 	}
 
-	resp["data"] = data
 	c.JSON(http.StatusOK, resp)
 }
 
