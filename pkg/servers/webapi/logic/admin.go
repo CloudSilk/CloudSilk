@@ -177,7 +177,7 @@ func TryLogout(req *proto.LogoutRequest, resp *proto.CommonResponse) {
 		resp.Message = "无效的工位或账号"
 		return
 	}
-	if productionStation.CurrentUserID != &userID {
+	if *productionStation.CurrentUserID != userID {
 		resp.Code = modelcode.BadRequest
 		resp.Message = "登录信息错误，用于账号与工位登录当前账号不符"
 		return

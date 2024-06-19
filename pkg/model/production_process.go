@@ -29,7 +29,8 @@ type ProductionProcess struct {
 type ProductionProcessAvailableStation struct {
 	ModelID
 	ProductionProcessID string             `gorm:"index;size:36;comment:生产工序ID"`
-	ProductionStationID string             `gorm:"size:36;comment:生产工站ID"`
+	ProductionProcess   *ProductionProcess `gorm:"constraint:OnDelete:CASCADE"`
+	ProductionStationID string             `gorm:"index;size:36;comment:生产工站ID"`
 	ProductionStation   *ProductionStation `gorm:"constraint:OnDelete:CASCADE"`
 }
 

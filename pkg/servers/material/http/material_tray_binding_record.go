@@ -15,7 +15,7 @@ import (
 // AddMaterialTrayBindingRecord godoc
 // @Summary 新增
 // @Description 新增
-// @Tags 物料托盘绑定记录
+// @Tags 物料载具绑定记录
 // @Accept  json
 // @Produce  json
 // @Param authorization header string true "jwt token"
@@ -33,7 +33,7 @@ func AddMaterialTrayBindingRecord(c *gin.Context) {
 		resp.Code = proto.Code_BadRequest
 		resp.Message = err.Error()
 		c.JSON(http.StatusOK, resp)
-		log.Warnf(context.Background(), "TransID:%s,新建物料托盘绑定记录请求参数无效:%v", transID, err)
+		log.Warnf(context.Background(), "TransID:%s,新建物料载具绑定记录请求参数无效:%v", transID, err)
 		return
 	}
 	err = middleware.Validate.Struct(req)
@@ -57,7 +57,7 @@ func AddMaterialTrayBindingRecord(c *gin.Context) {
 // UpdateMaterialTrayBindingRecord godoc
 // @Summary 更新
 // @Description 更新
-// @Tags 物料托盘绑定记录
+// @Tags 物料载具绑定记录
 // @Accept  json
 // @Produce  json
 // @Param authorization header string true "jwt token"
@@ -75,7 +75,7 @@ func UpdateMaterialTrayBindingRecord(c *gin.Context) {
 		resp.Code = proto.Code_BadRequest
 		resp.Message = err.Error()
 		c.JSON(http.StatusOK, resp)
-		log.Warnf(context.Background(), "TransID:%s,更新物料托盘绑定记录请求参数无效:%v", transID, err)
+		log.Warnf(context.Background(), "TransID:%s,更新物料载具绑定记录请求参数无效:%v", transID, err)
 		return
 	}
 	err = middleware.Validate.Struct(req)
@@ -96,7 +96,7 @@ func UpdateMaterialTrayBindingRecord(c *gin.Context) {
 // QueryMaterialTrayBindingRecord godoc
 // @Summary 分页查询
 // @Description 分页查询
-// @Tags 物料托盘绑定记录
+// @Tags 物料载具绑定记录
 // @Accept  json
 // @Produce  octet-stream
 // @Param authorization header string true "jwt token"
@@ -129,7 +129,7 @@ func QueryMaterialTrayBindingRecord(c *gin.Context) {
 // GetAllMaterialTrayBindingRecord godoc
 // @Summary 查询所有
 // @Description 查询所有
-// @Tags 物料托盘绑定记录
+// @Tags 物料载具绑定记录
 // @Accept  json
 // @Produce  json
 // @Param authorization header string true "jwt token"
@@ -153,7 +153,7 @@ func GetAllMaterialTrayBindingRecord(c *gin.Context) {
 // GetMaterialTrayBindingRecordDetail godoc
 // @Summary 查询明细
 // @Description 查询明细
-// @Tags 物料托盘绑定记录
+// @Tags 物料载具绑定记录
 // @Accept  json
 // @Produce  json
 // @Param id query string true "ID"
@@ -185,7 +185,7 @@ func GetMaterialTrayBindingRecordDetail(c *gin.Context) {
 // DeleteMaterialTrayBindingRecord godoc
 // @Summary 删除
 // @Description 删除
-// @Tags 物料托盘绑定记录
+// @Tags 物料载具绑定记录
 // @Accept  json
 // @Produce  json
 // @Param authorization header string true "jwt token"
@@ -203,7 +203,7 @@ func DeleteMaterialTrayBindingRecord(c *gin.Context) {
 		resp.Code = proto.Code_BadRequest
 		resp.Message = err.Error()
 		c.JSON(http.StatusOK, resp)
-		log.Warnf(context.Background(), "TransID:%s,删除物料托盘请求参数无效:%v", transID, err)
+		log.Warnf(context.Background(), "TransID:%s,删除物料载具请求参数无效:%v", transID, err)
 		return
 	}
 	err = middleware.Validate.Struct(req)

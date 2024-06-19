@@ -25,7 +25,7 @@ import (
 func OnlineProductInfo(c *gin.Context) {
 	transID := middleware.GetTransID(c)
 	req := &proto.OnlineProductInfoRequest{}
-	resp := &proto.CommonResponse{Code: types.ServiceResponseCodeSuccess}
+	resp := &proto.CommonResponse{Code: types.ServiceResponseCodeSuccess, Message: "上线成功"}
 
 	var err error
 	if err = c.BindJSON(req); err != nil {
@@ -43,7 +43,13 @@ func OnlineProductInfo(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, logic.OnlineProductInfo(req))
+	code, err := logic.OnlineProductInfo(req)
+	if err != nil {
+		resp.Code = proto.Code(code)
+		resp.Message = err.Error()
+	}
+
+	c.JSON(http.StatusOK, resp)
 }
 
 // EnterProductionStation godoc
@@ -61,8 +67,7 @@ func EnterProductionStation(c *gin.Context) {
 	req := &proto.EnterProductionStationRequest{}
 	resp := &proto.EnterProductionStationResponse{Code: types.ServiceResponseCodeSuccess}
 
-	var err error
-	if err = c.BindJSON(req); err != nil {
+	if err := c.BindJSON(req); err != nil {
 		resp.Code = types.ServiceResponseCodeFailure
 		resp.Message = err.Error()
 		c.JSON(http.StatusOK, resp)
@@ -70,14 +75,21 @@ func EnterProductionStation(c *gin.Context) {
 		return
 	}
 
-	if err = middleware.Validate.Struct(req); err != nil {
+	if err := middleware.Validate.Struct(req); err != nil {
 		resp.Code = types.ServiceResponseCodeFailure
 		resp.Message = err.Error()
 		c.JSON(http.StatusOK, resp)
 		return
 	}
 
-	c.JSON(http.StatusOK, logic.EnterProductionStation(req))
+	data, code, err := logic.EnterProductionStation(req)
+	if err != nil {
+		resp.Message = err.Error()
+	}
+	resp.Data = data
+	resp.Code = code
+
+	c.JSON(http.StatusOK, resp)
 }
 
 // GetProductionStationExhibition godoc
@@ -142,7 +154,7 @@ func ExitProductionStation(c *gin.Context) {
 		return
 	}
 
-	_, err := logic.ExitProductionStation(req)
+	err := logic.ExitProductionStation(req)
 	if err != nil {
 		resp.Code = types.ServiceResponseCodeFailure
 		resp.Message = err.Error()
