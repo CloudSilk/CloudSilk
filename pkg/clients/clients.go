@@ -139,7 +139,7 @@ func Init(serviceMode string) {
 		productWorkRecordProvider := new(ppp.ProductWorkRecordProvider)
 		ProductWorkRecordClient.Query = productWorkRecordProvider.Query
 	} else {
-		if os.Getenv("MES_DISABLE_AUTH") != "true" {
+		if os.Getenv("MOM_DISABLE_AUTH") != "true" {
 			config.SetConsumerService(UserClient)
 		}
 		config.SetConsumerService(ProductionStationClient)
@@ -171,5 +171,6 @@ func Init(serviceMode string) {
 		config.SetConsumerService(ProductionProcessStepClient)
 		config.SetConsumerService(ProductTestRecordClient)
 		config.SetConsumerService(ProductWorkRecordClient)
+		config.SetConsumerService(ProductOrderBomClient)
 	}
 }

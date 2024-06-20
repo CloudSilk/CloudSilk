@@ -10,7 +10,7 @@ import (
 // 工站产量记录
 type ProductionStationOutput struct {
 	ModelID
-	OutputTime          time.Time          `json:"OutputTime" gorm:"autoCreateTime:nano;comment:产出时间"`
+	OutputTime          time.Time          `json:"OutputTime" gorm:"autoUpdateTime:nano;comment:产出时间"`
 	LoginUserID         string             `json:"LoginUserID" gorm:"size:36;comment:登录人员ID"`
 	ProductionStationID string             `json:"ProductionStationID" gorm:"size:36;comment:生产工站ID"`
 	ProductionStation   *ProductionStation `json:"productionStation" gorm:"constraint:OnDelete:CASCADE"` //生产工站

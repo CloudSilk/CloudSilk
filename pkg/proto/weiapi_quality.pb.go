@@ -27,7 +27,7 @@ type GetTestProjectWithParameterRequest struct {
 
 	// 工位代号
 	ProductionStation string `protobuf:"bytes,1,opt,name=productionStation,proto3" json:"productionStation"`
-	// 托盘号
+	// 载具号
 	TrayNo string `protobuf:"bytes,2,opt,name=trayNo,proto3" json:"trayNo"`
 	// 产品序列号
 	ProductSerialNo string `protobuf:"bytes,3,opt,name=productSerialNo,proto3" json:"productSerialNo"`

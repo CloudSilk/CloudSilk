@@ -95,7 +95,7 @@ type MaterialTrayInfo struct {
 	Description string `protobuf:"bytes,3,opt,name=description,proto3" json:"description"`
 	// 识别码
 	Identifier string `protobuf:"bytes,4,opt,name=identifier,proto3" json:"identifier"`
-	// 托盘类型
+	// 载具类型
 	TrayType string `protobuf:"bytes,5,opt,name=trayType,proto3" json:"trayType"`
 	// 是否启用
 	Enable bool `protobuf:"varint,6,opt,name=enable,proto3" json:"enable"`

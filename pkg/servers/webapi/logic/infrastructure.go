@@ -1,48 +1,61 @@
 package logic
 
 import (
-	"context"
 	"fmt"
 
-	"github.com/CloudSilk/CloudSilk/pkg/clients"
 	"github.com/CloudSilk/CloudSilk/pkg/model"
 	"github.com/CloudSilk/CloudSilk/pkg/proto"
-	modelcode "github.com/CloudSilk/pkg/model"
-	"gorm.io/gorm"
 )
 
 // GetAllProductionLine 获取全部产线信息
 func GetAllProductionLine() ([]map[string]interface{}, error) {
-	_productionLine, _ := clients.ProductionLineClient.GetAll(context.Background(), &proto.GetAllRequest{})
-	if _productionLine.Code != modelcode.Success {
-		return nil, fmt.Errorf(_productionLine.Message)
+	productionLines := []*model.ProductionLine{}
+	if err := model.DB.DB().Preload("ProductionStations").
+		Preload("ProductionStations.AvailableProductionProcesses").
+		Preload("ProductionStations.AvailableProductionProcesses.ProductionProcess").
+		Find(&productionLines).Error; err != nil {
+		return nil, err
 	}
-	productionLines := _productionLine.Data
 
 	data := make([]map[string]interface{}, len(productionLines))
 	for pli, pl := range productionLines {
-		productionLine := map[string]interface{}{
-			"id":              pl.Id,
-			"code":            pl.Code,
-			"description":     pl.Description,
-			"accountControl":  pl.AccountControl,
-			"materialControl": pl.MaterialControl,
-		}
-
 		productionStations := make([]map[string]interface{}, len(pl.ProductionStations))
 		for psi, ps := range pl.ProductionStations {
+			productionProcesses := []map[string]interface{}{}
+			for _, pp := range ps.AvailableProductionProcesses {
+				if pp.ProductionStationID == ps.ID && pp.ProductionProcess.Enable {
+					productionProcesses = append(productionProcesses, map[string]interface{}{
+						"id":            pp.ProductionProcess.ID,
+						"code":          pp.ProductionProcess.Code,
+						"description":   pp.ProductionProcess.Description,
+						"processType":   pp.ProductionProcess.ProcessType,
+						"vehicleType":   pp.ProductionProcess.VehicleType,
+						"enableControl": pp.ProductionProcess.EnableControl,
+					})
+				}
+			}
+
 			productionStation := map[string]interface{}{
-				"id":              ps.Id,
-				"code":            ps.Code,
-				"description":     ps.Description,
-				"stationType":     ps.StationType,
-				"accountControl":  ps.AccountControl,
-				"materialControl": ps.MaterialControl,
+				"id":                  ps.ID,
+				"code":                ps.Code,
+				"description":         ps.Description,
+				"stationType":         ps.StationType,
+				"accountControl":      ps.AccountControl,
+				"materialControl":     ps.MaterialControl,
+				"productionProcesses": productionProcesses,
 			}
 
 			productionStations[psi] = productionStation
 		}
-		productionLine["productionStations"] = productionStations
+
+		productionLine := map[string]interface{}{
+			"id":                 pl.ID,
+			"code":               pl.Code,
+			"description":        pl.Description,
+			"accountControl":     pl.AccountControl,
+			"materialControl":    pl.MaterialControl,
+			"productionStations": productionStations,
+		}
 
 		data[pli] = productionLine
 	}
@@ -56,23 +69,21 @@ func RetrieveProductionStation(req *proto.RetrieveProductionStationRequest) ([]m
 		return nil, fmt.Errorf("ProductionLine不能为空")
 	}
 
-	whereMap := map[string]interface{}{"id": req.ProductionLine}
+	whereMap := map[string]interface{}{"production_line_id": req.ProductionLine}
 	if req.StationType != "" {
-		whereMap["atation_type"] = req.StationType
+		whereMap["station_type"] = req.StationType
 	}
 
-	productionLine := &model.ProductionLine{}
-	if err := model.DB.DB().Preload("ProductionStations").First(productionLine, whereMap).Error; err == gorm.ErrRecordNotFound {
-		return nil, fmt.Errorf("ProductionLine不存在")
-	} else if err != nil {
+	productionStations := []*model.ProductionStation{}
+	if err := model.DB.DB().Find(&productionStations, whereMap).Error; err != nil {
 		return nil, err
 	}
 
 	data := []map[string]interface{}{}
-	for _, s := range productionLine.ProductionStations {
+	for _, s := range productionStations {
 		data = append(data, map[string]interface{}{
-			"dd":              s.ID,
-			"dode":            s.Code,
+			"id":              s.ID,
+			"code":            s.Code,
 			"description":     s.Description,
 			"stationType":     s.StationType,
 			"accountControl":  s.AccountControl,

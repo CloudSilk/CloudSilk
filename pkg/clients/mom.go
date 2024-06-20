@@ -1,8 +1,6 @@
 package clients
 
-import (
-	"github.com/CloudSilk/CloudSilk/pkg/proto"
-)
+import "github.com/CloudSilk/CloudSilk/pkg/proto"
 
 var ProductionStationClient = new(proto.ProductionStationClientImpl)
 var ProductionStationSignupClient = new(proto.ProductionStationSignupClientImpl)

@@ -11,7 +11,7 @@ import (
 	"gorm.io/gorm"
 )
 
-// 绑定物料托盘，写入产品信息
+// 绑定物料载具，写入产品信息
 func BindMaterialTray(req *proto.BindMaterialTrayRequest) error {
 	if req.MaterialTray == "" {
 		return fmt.Errorf("MaterialTray不能为空")
@@ -22,7 +22,7 @@ func BindMaterialTray(req *proto.BindMaterialTrayRequest) error {
 
 	_materialTray, _ := clients.MaterialTrayClient.Get(context.Background(), &proto.GetMaterialTrayRequest{Identifier: req.MaterialTray})
 	if _materialTray.Message == gorm.ErrRecordNotFound.Error() {
-		return fmt.Errorf("无效的物料托盘识别码")
+		return fmt.Errorf("无效的物料载具识别码")
 	}
 	if _materialTray.Code != modelcode.Success {
 		return fmt.Errorf(_materialTray.Message)
@@ -30,7 +30,7 @@ func BindMaterialTray(req *proto.BindMaterialTrayRequest) error {
 	materialTray := _materialTray.Data
 
 	if !materialTray.Enable {
-		return fmt.Errorf("托盘已禁用")
+		return fmt.Errorf("载具已禁用")
 	}
 
 	_productInfo, _ := clients.ProductInfoClient.Get(context.Background(), &proto.GetProductInfoRequest{ProductSerialNo: req.ProductSerialNo})
@@ -43,7 +43,7 @@ func BindMaterialTray(req *proto.BindMaterialTrayRequest) error {
 	productInfo := _productInfo.Data
 
 	if materialTray.ProductInfoID != "" && materialTray.ProductInfoID != productInfo.Id {
-		return fmt.Errorf("非法操作，此托盘已绑定其他产品信息")
+		return fmt.Errorf("非法操作，此载具已绑定其他产品信息")
 	}
 
 	_MaterialTrayBindingRecord, _ := clients.MaterialTrayBindingRecordClient.Get(context.Background(), &proto.GetMaterialTrayBindingRecordRequest{
