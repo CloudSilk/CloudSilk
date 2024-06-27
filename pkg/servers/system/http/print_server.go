@@ -147,6 +147,30 @@ func GetAllPrintServer(c *gin.Context) {
 	c.JSON(http.StatusOK, resp)
 }
 
+// GetAllPrinter godoc
+// @Summary 查询所有打印机
+// @Description 查询所有打印机
+// @Tags 打印服务器管理
+// @Accept  json
+// @Produce  json
+// @Param authorization header string true "jwt token"
+// @Success 200 {object} apipb.GetAllPrinterResponse
+// @Router /api/mom/printserver/all/printer [get]
+func GetAllPrinter(c *gin.Context) {
+	resp := &apipb.GetAllPrinterResponse{
+		Code: apipb.Code_Success,
+	}
+	list, err := logic.GetAllPrinters()
+	if err != nil {
+		resp.Code = apipb.Code_InternalServerError
+		resp.Message = err.Error()
+		c.JSON(http.StatusOK, resp)
+		return
+	}
+	resp.Data = model.PrintersToPB(list)
+	c.JSON(http.StatusOK, resp)
+}
+
 // GetPrintServerDetail godoc
 // @Summary 查询明细
 // @Description 查询明细
@@ -226,5 +250,6 @@ func RegisterPrintServerRouter(r *gin.Engine) {
 	g.GET("query", QueryPrintServer)
 	g.DELETE("delete", DeletePrintServer)
 	g.GET("all", GetAllPrintServer)
+	g.GET("all/printer", GetAllPrinter)
 	g.GET("detail", GetPrintServerDetail)
 }

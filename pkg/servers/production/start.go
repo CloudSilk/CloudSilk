@@ -18,4 +18,5 @@ func (s *Server) Start(r *gin.Engine) {
 	config.SetProviderService(&provider.ProductionProcessStepProvider{})
 	config.SetProviderService(&provider.ProductionStationSignupProvider{})
 	config.SetProviderService(&provider.ProcessStepParameterProvider{})
+	config.SetProviderService(&provider.PersonnelQualificationProvider{})
 }

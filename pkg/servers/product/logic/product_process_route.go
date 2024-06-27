@@ -27,7 +27,7 @@ func QueryProductProcessRoute(req *proto.QueryProductProcessRouteRequest, resp *
 	}
 	if req.ProductOrderNo != "" {
 		db = db.Joins("JOIN product_infos AS Info1 ON product_process_routes.product_info_id = Info1.ID").
-			Joins("JOIN product_orders ON Info1.product_order_id = product_order.id").
+			Joins("JOIN product_orders ON Info1.product_order_id = product_orders.id").
 			Where("product_orders.product_order_no = ?", req.ProductOrderNo)
 	}
 	if req.CreateTime0 != "" && req.CreateTime1 != "" {

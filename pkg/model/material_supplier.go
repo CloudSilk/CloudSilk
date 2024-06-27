@@ -16,7 +16,7 @@ type MaterialSupplier struct {
 // 持有物料信息
 type AvailableMaterial struct {
 	ModelID
-	MaterialSupplierID string        `json:"materialSupplierID" gorm:"size:36;comment:物料供应商ID"`
+	MaterialSupplierID string        `json:"materialSupplierID" gorm:"index;size:36;comment:物料供应商ID"`
 	MaterialInfoID     string        `json:"materialInfoID" gorm:"size:36;comment:物料信息ID"`
 	MaterialInfo       *MaterialInfo `gorm:"constraint:OnDelete:CASCADE"`
 }
