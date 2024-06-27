@@ -19,7 +19,7 @@ func UpdateProductReworkRecord(m *model.ProductReworkRecord) error {
 func QueryProductReworkRecord(req *proto.QueryProductReworkRecordRequest, resp *proto.QueryProductReworkRecordResponse, preload bool) {
 	db := model.DB.DB().Model(&model.ProductReworkRecord{}).Preload("ProductionStation").Preload("ProductionStation.ProductionLine").Preload("ProductInfo").Preload("ProductInfo.ProductOrder").Preload(clause.Associations)
 	if req.ProductionLineID != "" {
-		db = db.Joins("JOIN production_Stations ON product_rework_records.production_Station_id = production_Stations.id").
+		db = db.Joins("JOIN production_stations ON product_rework_records.production_Station_id = production_Stations.id").
 			Where("production_stations.production_line_id = ?", req.ProductionLineID)
 	}
 	if req.ProductSerialNo != "" || req.ProductOrderNo != "" {

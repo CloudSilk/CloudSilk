@@ -38,6 +38,11 @@ func AutoMigrate() {
 		&LabelTemplate{},
 		&LabelParameter{},
 		&LabelType{},
+		&LabelPrintQueue{},
+		&LabelPrintQueueParameter{},
+		&LabelPrintQueueExecution{},
+		&LabelPrintTask{},
+		&LabelAdaptationRule{},
 
 		&ProductCategory{},
 		&ProductAttribute{},
@@ -112,6 +117,9 @@ func AutoMigrate() {
 		&ProcessStepParameterValue{},
 		&ProductReworkOperation{},
 		&ProductReworkRoute{},
+		&ProductReworkProcess{},
+		&ProductReworkProcessAvailableStation{},
+		&ProductReworkProcessAvailableProcess{},
 
 		&ProductionProcess{},
 		&ProductionStationAlarm{},
@@ -149,6 +157,8 @@ func AutoMigrate() {
 		&CodingTemplate{},
 		&CodingElement{},
 		&CodingElementValue{},
+		&PrintServer{},
+		&Printer{},
 
 		&OperationTrace{},
 		&InvocationTrace{},
@@ -161,8 +171,8 @@ func AutoMigrate() {
 		&AttributeExpression{},
 		&PropertyExpression{},
 
-		&PrintServer{},
-		&Printer{},
+		&ProductionStationEfficiency{},
+		&ProductionEfficiency{},
 	)
 }
 

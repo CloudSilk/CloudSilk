@@ -1,0 +1,97 @@
+syntax="proto3";
+
+package proto;
+option go_package = "./;proto";
+
+import "mom_common.proto";
+import "production_line.proto";
+
+message ProductionEfficiencyInfo {
+    string id=1;
+	//产出日期
+	string outputDate=3;
+	//当日产量
+	int32 outputOfThisDay=4;
+	//作业次数
+	int32 numberOfWork=5;
+	//合格次数
+	int32 numberOfPass=6;
+	//失败次数
+	int32 numberOfFail=7;
+	//一次通过率
+	float fpy=8;
+	//理论节拍
+	float estimateRhythm=9;
+	//平均节拍
+	float averageRhythm=10;
+	//开机时长
+	float startupDuration=11;
+	//计划内停机时长
+	float plannedShutdownDuration=12;
+	//预计稼动时长
+	float estimateAvailableDuration=13;
+	//故障次数
+	int32 numberOfBreakdown=14;
+	//故障时长
+	float breakdownDuration=15;
+	//计划外停机次数
+	int32 numberOfShutdown=16;
+	//计划外停机时长
+	float unplannedShutdownDuration=17;
+	//设备故障率
+	float oef=18;
+	//实际稼动时长
+	float actualAvailableDuration=19;
+	//实际作业时长
+	float actualEffectiveDuration=20;
+	//时间稼动率
+	float oeu=21;
+	//性能稼动率
+	float oep=22;
+	//设备综合效率
+	float oee=23;
+	//最后更新时间
+	string lastUpdateTime=24;
+	//生产工站ID
+	string productionStationID=25;
+	ProductionStationInfo productionStation=26;
+}
+
+message QueryProductionEfficiencyRequest{
+    // @inject_tag: uri:"pageIndex" form:"pageIndex"
+    int64 pageIndex=1;
+    // @inject_tag: uri:"pageSize" form:"pageSize"
+    int64 pageSize=2;
+    // @inject_tag: uri:"sortConfig" form:"sortConfig"
+    string sortConfig=3;
+	//创建时间开始
+    // @inject_tag: uri:"outputDate0" form:"outputDate0"
+    string outputDate0=5;
+    //创建时间结束
+    // @inject_tag: uri:"outputDate1" form:"outputDate1"
+    string outputDate1=6;
+    //生产产线ID
+    // @inject_tag: uri:"productionLineID" form:"productionLineID"
+    string productionLineID=14;
+}
+
+message QueryProductionEfficiencyResponse{
+    Code code=1;
+    string message=2;
+    repeated ProductionEfficiencyInfo data=3;
+    int64 pages=4;
+    int64 records=5;
+    int64 total=6;
+}
+
+message GetAllProductionEfficiencyResponse{
+    Code code=1;
+    string message=2;
+    repeated ProductionEfficiencyInfo data=3;
+}
+
+message GetProductionEfficiencyDetailResponse{
+    Code code=1;
+    string message=2;
+    ProductionEfficiencyInfo data=3;
+}

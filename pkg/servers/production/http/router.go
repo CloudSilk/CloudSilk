@@ -16,4 +16,6 @@ func RegisterRouter(r *gin.Engine) {
 	RegisterProductionStationOutputRouter(r)
 	RegisterProductionStationSignupRouter(r)
 	RegisterProductionStationStartupRouter(r)
+	RegisterPersonnelQualificationTypeRouter(r)
+	RegisterPersonnelQualificationRouter(r)
 }

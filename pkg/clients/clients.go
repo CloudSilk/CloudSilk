@@ -10,7 +10,6 @@ import (
 	ptpp "github.com/CloudSilk/CloudSilk/pkg/servers/production/provider"
 	ptbpp "github.com/CloudSilk/CloudSilk/pkg/servers/production_base/provider"
 	spp "github.com/CloudSilk/CloudSilk/pkg/servers/system/provider"
-	upp "github.com/CloudSilk/CloudSilk/pkg/servers/user/provider"
 	ucprovider "github.com/CloudSilk/usercenter/provider"
 )
 
@@ -93,7 +92,7 @@ func Init(serviceMode string) {
 		productModelProvider := new(pbpp.ProductModelProvider)
 		ProductModelClient.GetDetail = productModelProvider.GetDetail
 
-		personnelQualificationProvider := new(upp.PersonnelQualificationProvider)
+		personnelQualificationProvider := new(ptpp.PersonnelQualificationProvider)
 		PersonnelQualificationClient.Query = personnelQualificationProvider.Query
 		PersonnelQualificationClient.Get = personnelQualificationProvider.Get
 
