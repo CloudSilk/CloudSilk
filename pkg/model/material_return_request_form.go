@@ -3,6 +3,9 @@ package model
 import (
 	"database/sql"
 	"time"
+
+	"github.com/CloudSilk/CloudSilk/pkg/proto"
+	"github.com/CloudSilk/pkg/utils"
 )
 
 // 材料退货申请表
@@ -15,10 +18,10 @@ type MaterialReturnRequestForm struct {
 	MaterialSupplier         *MaterialSupplier       `gorm:"constraint:OnDelete:SET NULL"`
 	MaterialInfoID           string                  `gorm:"size:36;comment:物料信息ID"`
 	MaterialInfo             *MaterialInfo           `gorm:"constraint:OnDelete:CASCADE"`
-	ProductionStationID      *string                 `gorm:"size:36;comment:发现工站ID"`
-	ProductionStation        *ProductionStation      `gorm:"constraint:OnDelete:SET NULL"`
+	ProductionLineID         string                  `gorm:"size:36;comment:发现产线ID"`
+	ProductionLine           *ProductionLine         `gorm:"constraint:OnDelete:CASCADE"`
 	MaterialTraceNo          string                  `gorm:"size:100;comment:物料追溯号"`
-	Quantity                 float64                 `gorm:"comment:退料数量"`
+	Quantity                 float32                 `gorm:"comment:退料数量"`
 	ReturnID                 string                  `gorm:"size:36;comment:退料来源ID"`
 	ReturnSource             string                  `gorm:"size:50;comment:退料来源"`
 	ReturnReason             string                  `gorm:"size:500;comment:退料原因"`
@@ -36,43 +39,117 @@ type MaterialReturnRequestForm struct {
 	Remark                   string                  `gorm:"size:500;comment:备注"`
 }
 
-// 物料退料类型
-type MaterialReturnType struct {
-	ModelID
-	Code        string `gorm:"size:50;comment:代号"`  //代号
-	Description string `gorm:"size:500;comment:描述"` //描述
-	Remark      string `gorm:"size:500;comment:备注"` //备注
+func PBToMaterialReturnRequestForms(in []*proto.MaterialReturnRequestFormInfo) []*MaterialReturnRequestForm {
+	var result []*MaterialReturnRequestForm
+	for _, c := range in {
+		result = append(result, PBToMaterialReturnRequestForm(c))
+	}
+	return result
 }
 
-// 物料退料原因
-type MaterialReturnCause struct {
-	ModelID
-	Code                string                                  `gorm:"size:50;comment:代号"`          //代号
-	Description         string                                  `gorm:"size:500;comment:描述"`         //描述
-	Remark              string                                  `gorm:"size:500;comment:备注"`         //备注
-	MaterialCategories  []*MaterialReturnCauseAvailableCategory `gorm:"constraint:OnDelete:CASCADE"` //物料类别
-	MaterialReturnTypes []*MaterialReturnCauseAvailableType     `gorm:"constraint:OnDelete:CASCADE"` //归属类型
+func PBToMaterialReturnRequestForm(in *proto.MaterialReturnRequestFormInfo) *MaterialReturnRequestForm {
+	if in == nil {
+		return nil
+	}
+
+	var materialSupplierID, materialReturnTypeID, materialReturnCauseID, materialReturnSolutionID, checkUserID *string
+	if in.MaterialSupplierID != "" {
+		materialSupplierID = &in.MaterialSupplierID
+	}
+	if in.MaterialReturnTypeID != "" {
+		materialReturnTypeID = &in.MaterialReturnTypeID
+	}
+	if in.MaterialReturnCauseID != "" {
+		materialReturnCauseID = &in.MaterialReturnCauseID
+	}
+	if in.MaterialReturnSolutionID != "" {
+		materialReturnSolutionID = &in.MaterialReturnSolutionID
+	}
+	if in.CheckUserID != "" {
+		checkUserID = &in.CheckUserID
+	}
+
+	return &MaterialReturnRequestForm{
+		ModelID:                  ModelID{ID: in.Id},
+		FormNo:                   in.FormNo,
+		CreateUserID:             in.CreateUserID,
+		MaterialSupplierID:       materialSupplierID,
+		MaterialInfoID:           in.MaterialInfoID,
+		ProductionLineID:         in.ProductionLineID,
+		MaterialTraceNo:          in.MaterialTraceNo,
+		Quantity:                 in.Quantity,
+		ReturnID:                 in.ReturnID,
+		ReturnSource:             in.ReturnSource,
+		ReturnReason:             in.ReturnReason,
+		MaterialReturnTypeID:     materialReturnTypeID,
+		MaterialReturnCauseID:    materialReturnCauseID,
+		MaterialReturnSolutionID: materialReturnSolutionID,
+		ReturnBrief:              in.ReturnBrief,
+		CheckUserID:              checkUserID,
+		HandleMethod:             in.HandleMethod,
+		CurrentState:             in.CurrentState,
+		Remark:                   in.Remark,
+	}
 }
 
-type MaterialReturnCauseAvailableCategory struct {
-	MaterialReturnCauseID string `gorm:"index;size:36;comment:物料退料原因ID"`
-	MaterialCategoryID    string `gorm:"size:36;comment:物料类别ID"`
+func MaterialReturnRequestFormsToPB(in []*MaterialReturnRequestForm) []*proto.MaterialReturnRequestFormInfo {
+	var list []*proto.MaterialReturnRequestFormInfo
+	for _, f := range in {
+		list = append(list, MaterialReturnRequestFormToPB(f))
+	}
+	return list
 }
 
-type MaterialReturnCauseAvailableType struct {
-	MaterialReturnCauseID string `gorm:"index;size:36;comment:物料退料原因ID"`
-	MaterialReturnTypeID  string `gorm:"size:36;comment:物料退料类型ID"`
-}
+func MaterialReturnRequestFormToPB(in *MaterialReturnRequestForm) *proto.MaterialReturnRequestFormInfo {
+	if in == nil {
+		return nil
+	}
 
-// 物料退料方案
-type MaterialReturnSolution struct {
-	ModelID
-	Code                 string                                  `gorm:"size:50;comment:代号"`          //代号
-	Description          string                                  `gorm:"size:500;comment:描述"`         //描述
-	Remark               string                                  `gorm:"size:500;comment:备注"`         //备注
-	MaterialReturnCauses []*MaterialReturnSolutionAvailableCause `gorm:"constraint:OnDelete:CASCADE"` //退料原因
-}
-type MaterialReturnSolutionAvailableCause struct {
-	MaterialReturnSolutionID string `gorm:"index;size:36;comment:物料退料方案ID"`
-	MaterialReturnCauseID    string `gorm:"size:36;comment:物料退料原因ID"`
+	var materialSupplierID, materialReturnTypeID, materialReturnCauseID, materialReturnSolutionID, checkUserID string
+	if in.MaterialSupplierID != nil {
+		materialSupplierID = *in.MaterialSupplierID
+	}
+	if in.MaterialReturnTypeID != nil {
+		materialReturnTypeID = *in.MaterialReturnTypeID
+	}
+	if in.MaterialReturnCauseID != nil {
+		materialReturnCauseID = *in.MaterialReturnCauseID
+	}
+	if in.MaterialReturnSolutionID != nil {
+		materialReturnSolutionID = *in.MaterialReturnSolutionID
+	}
+	if in.CheckUserID != nil {
+		checkUserID = *in.CheckUserID
+	}
+
+	m := &proto.MaterialReturnRequestFormInfo{
+		Id:                       in.ID,
+		FormNo:                   in.FormNo,
+		CreateTime:               utils.FormatTime(in.CreateTime),
+		CreateUserID:             in.CreateUserID,
+		MaterialSupplierID:       materialSupplierID,
+		MaterialSupplier:         MaterialSupplierToPB(in.MaterialSupplier),
+		MaterialInfoID:           in.MaterialInfoID,
+		MaterialInfo:             MaterialInfoToPB(in.MaterialInfo),
+		ProductionLineID:         in.ProductionLineID,
+		ProductionLine:           ProductionLineToPB(in.ProductionLine),
+		MaterialTraceNo:          in.MaterialTraceNo,
+		Quantity:                 in.Quantity,
+		ReturnID:                 in.ReturnID,
+		ReturnSource:             in.ReturnSource,
+		ReturnReason:             in.ReturnReason,
+		MaterialReturnTypeID:     materialReturnTypeID,
+		MaterialReturnType:       MaterialReturnTypeToPB(in.MaterialReturnType),
+		MaterialReturnCauseID:    materialReturnCauseID,
+		MaterialReturnCause:      MaterialReturnCauseToPB(in.MaterialReturnCause),
+		MaterialReturnSolutionID: materialReturnSolutionID,
+		MaterialReturnSolution:   MaterialReturnSolutionToPB(in.MaterialReturnSolution),
+		ReturnBrief:              in.ReturnBrief,
+		CheckTime:                utils.FormatSqlNullTime(in.CheckTime),
+		CheckUserID:              checkUserID,
+		HandleMethod:             in.HandleMethod,
+		CurrentState:             in.CurrentState,
+		Remark:                   in.Remark,
+	}
+	return m
 }

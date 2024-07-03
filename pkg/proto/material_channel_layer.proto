@@ -25,8 +25,9 @@ message MaterialChannelLayerInfo{
     string remark=6;
     //隶属工站ID
     string productionStationID=7;
-    //隶属工站
     ProductionStationInfo productionStation=8;
+    //
+    repeated MaterialChannelInfo materialChannels=9;
 }
 
 message QueryMaterialChannelLayerRequest{
@@ -81,11 +82,9 @@ message MaterialChannelInfo{
     string remark=10;
     //物料通道层ID
     string materialChannelLayerID=11;
-    //物料通道层
     MaterialChannelLayerInfo materialChannelLayer=12;
     //物料信息ID
     string materialInfoID=13;
-    //物料通道层
     MaterialInfoInfo materialInfo=14;
 }
 

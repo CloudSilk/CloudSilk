@@ -103,6 +103,7 @@ func AvailableMaterialToPB(in *AvailableMaterial) *proto.AvailableMaterialInfo {
 		Id:                 in.ID,
 		MaterialSupplierID: in.MaterialSupplierID,
 		MaterialInfoID:     in.MaterialInfoID,
+		MaterialInfo:       MaterialInfoToPB(in.MaterialInfo),
 	}
 	return m
 }

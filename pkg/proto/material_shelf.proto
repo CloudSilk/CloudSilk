@@ -1,0 +1,59 @@
+syntax="proto3";
+
+package proto;
+option go_package="./;proto";
+
+import "mom_common.proto";
+import "material_store.proto";
+
+message MaterialShelfInfo{
+    string id=1;
+    //代号
+    string code=2;
+    //描述
+    string description=3;
+    //识别码
+    string identifier=4;
+    //货架类型
+    int32 shelfType=5;
+    //是否启用
+    bool enable=6;
+    //备注
+    string remark=7;
+    //隶属仓库ID
+    string materialStoreID=8;
+    MaterialStoreInfo materialStore=9;
+}
+
+message QueryMaterialShelfRequest{
+    // @inject_tag: uri:"pageIndex" form:"pageIndex"
+    int64 pageIndex=1;
+    // @inject_tag: uri:"pageSize" form:"pageSize"
+    int64 pageSize=2;
+    // @inject_tag: uri:"sortConfig" form:"sortConfig"
+    string sortConfig=3;
+    //隶属仓库ID
+    // @inject_tag: uri:"materialStoreID" form:"materialStoreID"
+    string materialStoreID=8;
+}
+
+message QueryMaterialShelfResponse{
+    Code code=1;
+    string message=2;
+    repeated MaterialShelfInfo data=3;
+    int64 pages=4;
+    int64 records=5;
+    int64 total=6;
+}
+
+message GetAllMaterialShelfResponse{
+    Code code=1;
+    string message=2;
+    repeated MaterialShelfInfo data=3;
+}
+
+message GetMaterialShelfDetailResponse{
+    Code code=1;
+    string message=2;
+    MaterialShelfInfo data=3;
+}

@@ -9,8 +9,8 @@ import (
 	"github.com/CloudSilk/CloudSilk/pkg/proto"
 	"github.com/CloudSilk/CloudSilk/pkg/servers/product/logic"
 	"github.com/CloudSilk/pkg/utils/log"
-	"github.com/CloudSilk/pkg/utils/middleware"
 	usercenter "github.com/CloudSilk/usercenter/proto"
+	"github.com/CloudSilk/usercenter/utils/middleware"
 	ucmiddleware "github.com/CloudSilk/usercenter/utils/middleware"
 	"github.com/gin-gonic/gin"
 )

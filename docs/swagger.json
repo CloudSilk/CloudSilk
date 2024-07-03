@@ -2588,6 +2588,542 @@
                 }
             }
         },
+        "/api/mom/material/agvtaskqueue/add": {
+            "post": {
+                "description": "新增",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "AGV任务队列管理"
+                ],
+                "summary": "新增",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "jwt token",
+                        "name": "authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "description": "Add AGVTaskQueue",
+                        "name": "account",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/proto.AGVTaskQueueInfo"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/proto.CommonResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/mom/material/agvtaskqueue/all": {
+            "get": {
+                "description": "查询所有",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "AGV任务队列管理"
+                ],
+                "summary": "查询所有",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "jwt token",
+                        "name": "authorization",
+                        "in": "header",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/proto.GetAllAGVTaskQueueResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/mom/material/agvtaskqueue/delete": {
+            "delete": {
+                "description": "删除",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "AGV任务队列管理"
+                ],
+                "summary": "删除",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "jwt token",
+                        "name": "authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "description": "Delete AGVTaskQueue",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/proto.DelRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/proto.CommonResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/mom/material/agvtaskqueue/detail": {
+            "get": {
+                "description": "查询明细",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "AGV任务队列管理"
+                ],
+                "summary": "查询明细",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "ID",
+                        "name": "id",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "jwt token",
+                        "name": "authorization",
+                        "in": "header",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/proto.GetAGVTaskQueueDetailResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/mom/material/agvtaskqueue/query": {
+            "get": {
+                "description": "分页查询",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/octet-stream"
+                ],
+                "tags": [
+                    "AGV任务队列管理"
+                ],
+                "summary": "分页查询",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "jwt token",
+                        "name": "authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "从1开始",
+                        "name": "pageIndex",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "默认每页10条",
+                        "name": "pageSize",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "排序字段",
+                        "name": "orderField",
+                        "in": "query"
+                    },
+                    {
+                        "type": "boolean",
+                        "description": "是否倒序排序",
+                        "name": "desc",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "创建时间开始",
+                        "name": "createTime0",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "创建时间结束",
+                        "name": "createTime1",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "任务编号",
+                        "name": "taskNo",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/proto.QueryAGVTaskQueueResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/mom/material/agvtaskqueue/update": {
+            "put": {
+                "description": "更新",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "AGV任务队列管理"
+                ],
+                "summary": "更新",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "jwt token",
+                        "name": "authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "description": "Update AGVTaskQueue",
+                        "name": "account",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/proto.AGVTaskQueueInfo"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/proto.CommonResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/mom/material/agvtasktype/add": {
+            "post": {
+                "description": "新增",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "AGV任务类型管理"
+                ],
+                "summary": "新增",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "jwt token",
+                        "name": "authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "description": "Add AGVTaskType",
+                        "name": "account",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/proto.AGVTaskTypeInfo"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/proto.CommonResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/mom/material/agvtasktype/all": {
+            "get": {
+                "description": "查询所有",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "AGV任务类型管理"
+                ],
+                "summary": "查询所有",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "jwt token",
+                        "name": "authorization",
+                        "in": "header",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/proto.GetAllAGVTaskTypeResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/mom/material/agvtasktype/delete": {
+            "delete": {
+                "description": "删除",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "AGV任务类型管理"
+                ],
+                "summary": "删除",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "jwt token",
+                        "name": "authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "description": "Delete AGVTaskType",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/proto.DelRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/proto.CommonResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/mom/material/agvtasktype/detail": {
+            "get": {
+                "description": "查询明细",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "AGV任务类型管理"
+                ],
+                "summary": "查询明细",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "ID",
+                        "name": "id",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "jwt token",
+                        "name": "authorization",
+                        "in": "header",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/proto.GetAGVTaskTypeDetailResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/mom/material/agvtasktype/query": {
+            "get": {
+                "description": "分页查询",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/octet-stream"
+                ],
+                "tags": [
+                    "AGV任务类型管理"
+                ],
+                "summary": "分页查询",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "jwt token",
+                        "name": "authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "从1开始",
+                        "name": "pageIndex",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "默认每页10条",
+                        "name": "pageSize",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "排序字段",
+                        "name": "orderField",
+                        "in": "query"
+                    },
+                    {
+                        "type": "boolean",
+                        "description": "是否倒序排序",
+                        "name": "desc",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "货架类型",
+                        "name": "shelfType",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "场景类型",
+                        "name": "sceneType",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "容器类型ID",
+                        "name": "materialContainerTypeID",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/proto.QueryAGVTaskTypeResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/mom/material/agvtasktype/update": {
+            "put": {
+                "description": "更新",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "AGV任务类型管理"
+                ],
+                "summary": "更新",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "jwt token",
+                        "name": "authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "description": "Update AGVTaskType",
+                        "name": "account",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/proto.AGVTaskTypeInfo"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/proto.CommonResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/api/mom/material/materialcategory/add": {
             "post": {
                 "description": "新增",
@@ -3100,6 +3636,530 @@
                 }
             }
         },
+        "/api/mom/material/materialcontainer/add": {
+            "post": {
+                "description": "新增",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "物料容器管理"
+                ],
+                "summary": "新增",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "jwt token",
+                        "name": "authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "description": "Add MaterialContainer",
+                        "name": "account",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/proto.MaterialContainerInfo"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/proto.CommonResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/mom/material/materialcontainer/all": {
+            "get": {
+                "description": "查询所有",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "物料容器管理"
+                ],
+                "summary": "查询所有",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "jwt token",
+                        "name": "authorization",
+                        "in": "header",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/proto.GetAllMaterialContainerResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/mom/material/materialcontainer/delete": {
+            "delete": {
+                "description": "删除",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "物料容器管理"
+                ],
+                "summary": "删除",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "jwt token",
+                        "name": "authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "description": "Delete MaterialContainer",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/proto.DelRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/proto.CommonResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/mom/material/materialcontainer/detail": {
+            "get": {
+                "description": "查询明细",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "物料容器管理"
+                ],
+                "summary": "查询明细",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "ID",
+                        "name": "id",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "jwt token",
+                        "name": "authorization",
+                        "in": "header",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/proto.GetMaterialContainerDetailResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/mom/material/materialcontainer/query": {
+            "get": {
+                "description": "分页查询",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/octet-stream"
+                ],
+                "tags": [
+                    "物料容器管理"
+                ],
+                "summary": "分页查询",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "jwt token",
+                        "name": "authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "从1开始",
+                        "name": "pageIndex",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "默认每页10条",
+                        "name": "pageSize",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "排序字段",
+                        "name": "orderField",
+                        "in": "query"
+                    },
+                    {
+                        "type": "boolean",
+                        "description": "是否倒序排序",
+                        "name": "desc",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "编号或描述",
+                        "name": "code",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "当前状态",
+                        "name": "currentState",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "容器类型ID",
+                        "name": "materialContainerTypeID",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/proto.QueryMaterialContainerResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/mom/material/materialcontainer/update": {
+            "put": {
+                "description": "更新",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "物料容器管理"
+                ],
+                "summary": "更新",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "jwt token",
+                        "name": "authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "description": "Update MaterialContainer",
+                        "name": "account",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/proto.MaterialContainerInfo"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/proto.CommonResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/mom/material/materialcontainertype/add": {
+            "post": {
+                "description": "新增",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "物料容器类型管理"
+                ],
+                "summary": "新增",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "jwt token",
+                        "name": "authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "description": "Add MaterialContainerType",
+                        "name": "account",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/proto.MaterialContainerTypeInfo"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/proto.CommonResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/mom/material/materialcontainertype/all": {
+            "get": {
+                "description": "查询所有",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "物料容器类型管理"
+                ],
+                "summary": "查询所有",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "jwt token",
+                        "name": "authorization",
+                        "in": "header",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/proto.GetAllMaterialContainerTypeResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/mom/material/materialcontainertype/delete": {
+            "delete": {
+                "description": "删除",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "物料容器类型管理"
+                ],
+                "summary": "删除",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "jwt token",
+                        "name": "authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "description": "Delete MaterialContainerType",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/proto.DelRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/proto.CommonResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/mom/material/materialcontainertype/detail": {
+            "get": {
+                "description": "查询明细",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "物料容器类型管理"
+                ],
+                "summary": "查询明细",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "ID",
+                        "name": "id",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "jwt token",
+                        "name": "authorization",
+                        "in": "header",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/proto.GetMaterialContainerTypeDetailResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/mom/material/materialcontainertype/query": {
+            "get": {
+                "description": "分页查询",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/octet-stream"
+                ],
+                "tags": [
+                    "物料容器类型管理"
+                ],
+                "summary": "分页查询",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "jwt token",
+                        "name": "authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "从1开始",
+                        "name": "pageIndex",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "默认每页10条",
+                        "name": "pageSize",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "排序字段",
+                        "name": "orderField",
+                        "in": "query"
+                    },
+                    {
+                        "type": "boolean",
+                        "description": "是否倒序排序",
+                        "name": "desc",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "代号或描述",
+                        "name": "code",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/proto.QueryMaterialContainerTypeResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/mom/material/materialcontainertype/update": {
+            "put": {
+                "description": "更新",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "物料容器类型管理"
+                ],
+                "summary": "更新",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "jwt token",
+                        "name": "authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "description": "Update MaterialContainerType",
+                        "name": "account",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/proto.MaterialContainerTypeInfo"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/proto.CommonResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/api/mom/material/materialinfo/add": {
             "post": {
                 "description": "新增",
@@ -3343,6 +4403,2328 @@
                         "required": true,
                         "schema": {
                             "$ref": "#/definitions/proto.MaterialInfoInfo"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/proto.CommonResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/mom/material/materialinventory/add": {
+            "post": {
+                "description": "新增",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "物料库存管理"
+                ],
+                "summary": "新增",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "jwt token",
+                        "name": "authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "description": "Add MaterialInventory",
+                        "name": "account",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/proto.MaterialInventoryInfo"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/proto.CommonResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/mom/material/materialinventory/all": {
+            "get": {
+                "description": "查询所有",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "物料库存管理"
+                ],
+                "summary": "查询所有",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "jwt token",
+                        "name": "authorization",
+                        "in": "header",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/proto.GetAllMaterialInventoryResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/mom/material/materialinventory/delete": {
+            "delete": {
+                "description": "删除",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "物料库存管理"
+                ],
+                "summary": "删除",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "jwt token",
+                        "name": "authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "description": "Delete MaterialInventory",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/proto.DelRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/proto.CommonResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/mom/material/materialinventory/detail": {
+            "get": {
+                "description": "查询明细",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "物料库存管理"
+                ],
+                "summary": "查询明细",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "ID",
+                        "name": "id",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "jwt token",
+                        "name": "authorization",
+                        "in": "header",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/proto.GetMaterialInventoryDetailResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/mom/material/materialinventory/query": {
+            "get": {
+                "description": "分页查询",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/octet-stream"
+                ],
+                "tags": [
+                    "物料库存管理"
+                ],
+                "summary": "分页查询",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "jwt token",
+                        "name": "authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "从1开始",
+                        "name": "pageIndex",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "默认每页10条",
+                        "name": "pageSize",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "排序字段",
+                        "name": "orderField",
+                        "in": "query"
+                    },
+                    {
+                        "type": "boolean",
+                        "description": "是否倒序排序",
+                        "name": "desc",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "创建时间开始",
+                        "name": "createTime0",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "创建时间结束",
+                        "name": "createTime1",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "物料代号或描述",
+                        "name": "materialInfo",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "仓库代号或描述",
+                        "name": "materialStore",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/proto.QueryMaterialInventoryResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/mom/material/materialinventory/update": {
+            "put": {
+                "description": "更新",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "物料库存管理"
+                ],
+                "summary": "更新",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "jwt token",
+                        "name": "authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "description": "Update MaterialInventory",
+                        "name": "account",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/proto.MaterialInventoryInfo"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/proto.CommonResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/mom/material/materialreturncause/add": {
+            "post": {
+                "description": "新增",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "物料退料原因管理"
+                ],
+                "summary": "新增",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "jwt token",
+                        "name": "authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "description": "Add MaterialReturnCause",
+                        "name": "account",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/proto.MaterialReturnCauseInfo"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/proto.CommonResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/mom/material/materialreturncause/all": {
+            "get": {
+                "description": "查询所有",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "物料退料原因管理"
+                ],
+                "summary": "查询所有",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "jwt token",
+                        "name": "authorization",
+                        "in": "header",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/proto.GetAllMaterialReturnCauseResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/mom/material/materialreturncause/delete": {
+            "delete": {
+                "description": "删除",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "物料退料原因管理"
+                ],
+                "summary": "删除",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "jwt token",
+                        "name": "authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "description": "Delete MaterialReturnCause",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/proto.DelRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/proto.CommonResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/mom/material/materialreturncause/detail": {
+            "get": {
+                "description": "查询明细",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "物料退料原因管理"
+                ],
+                "summary": "查询明细",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "ID",
+                        "name": "id",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "jwt token",
+                        "name": "authorization",
+                        "in": "header",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/proto.GetMaterialReturnCauseDetailResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/mom/material/materialreturncause/query": {
+            "get": {
+                "description": "分页查询",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/octet-stream"
+                ],
+                "tags": [
+                    "物料退料原因管理"
+                ],
+                "summary": "分页查询",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "jwt token",
+                        "name": "authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "从1开始",
+                        "name": "pageIndex",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "默认每页10条",
+                        "name": "pageSize",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "排序字段",
+                        "name": "orderField",
+                        "in": "query"
+                    },
+                    {
+                        "type": "boolean",
+                        "description": "是否倒序排序",
+                        "name": "desc",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "代号或描述",
+                        "name": "code",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/proto.QueryMaterialReturnCauseResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/mom/material/materialreturncause/update": {
+            "put": {
+                "description": "更新",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "物料退料原因管理"
+                ],
+                "summary": "更新",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "jwt token",
+                        "name": "authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "description": "Update MaterialReturnCause",
+                        "name": "account",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/proto.MaterialReturnCauseInfo"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/proto.CommonResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/mom/material/materialreturnrequestform/add": {
+            "post": {
+                "description": "新增",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "材料退货申请表管理"
+                ],
+                "summary": "新增",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "jwt token",
+                        "name": "authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "description": "Add MaterialReturnRequestForm",
+                        "name": "account",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/proto.MaterialReturnRequestFormInfo"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/proto.CommonResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/mom/material/materialreturnrequestform/all": {
+            "get": {
+                "description": "查询所有",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "材料退货申请表管理"
+                ],
+                "summary": "查询所有",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "jwt token",
+                        "name": "authorization",
+                        "in": "header",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/proto.GetAllMaterialReturnRequestFormResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/mom/material/materialreturnrequestform/delete": {
+            "delete": {
+                "description": "删除",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "材料退货申请表管理"
+                ],
+                "summary": "删除",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "jwt token",
+                        "name": "authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "description": "Delete MaterialReturnRequestForm",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/proto.DelRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/proto.CommonResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/mom/material/materialreturnrequestform/detail": {
+            "get": {
+                "description": "查询明细",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "材料退货申请表管理"
+                ],
+                "summary": "查询明细",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "ID",
+                        "name": "id",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "jwt token",
+                        "name": "authorization",
+                        "in": "header",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/proto.GetMaterialReturnRequestFormDetailResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/mom/material/materialreturnrequestform/query": {
+            "get": {
+                "description": "分页查询",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/octet-stream"
+                ],
+                "tags": [
+                    "材料退货申请表管理"
+                ],
+                "summary": "分页查询",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "jwt token",
+                        "name": "authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "从1开始",
+                        "name": "pageIndex",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "默认每页10条",
+                        "name": "pageSize",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "排序字段",
+                        "name": "orderField",
+                        "in": "query"
+                    },
+                    {
+                        "type": "boolean",
+                        "description": "是否倒序排序",
+                        "name": "desc",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/proto.QueryMaterialReturnRequestFormResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/mom/material/materialreturnrequestform/update": {
+            "put": {
+                "description": "更新",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "材料退货申请表管理"
+                ],
+                "summary": "更新",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "jwt token",
+                        "name": "authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "description": "Update MaterialReturnRequestForm",
+                        "name": "account",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/proto.MaterialReturnRequestFormInfo"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/proto.CommonResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/mom/material/materialreturnsolution/add": {
+            "post": {
+                "description": "新增",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "物料退料方案管理"
+                ],
+                "summary": "新增",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "jwt token",
+                        "name": "authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "description": "Add MaterialReturnSolution",
+                        "name": "account",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/proto.MaterialReturnSolutionInfo"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/proto.CommonResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/mom/material/materialreturnsolution/all": {
+            "get": {
+                "description": "查询所有",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "物料退料方案管理"
+                ],
+                "summary": "查询所有",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "jwt token",
+                        "name": "authorization",
+                        "in": "header",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/proto.GetAllMaterialReturnSolutionResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/mom/material/materialreturnsolution/delete": {
+            "delete": {
+                "description": "删除",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "物料退料方案管理"
+                ],
+                "summary": "删除",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "jwt token",
+                        "name": "authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "description": "Delete MaterialReturnSolution",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/proto.DelRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/proto.CommonResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/mom/material/materialreturnsolution/detail": {
+            "get": {
+                "description": "查询明细",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "物料退料方案管理"
+                ],
+                "summary": "查询明细",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "ID",
+                        "name": "id",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "jwt token",
+                        "name": "authorization",
+                        "in": "header",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/proto.GetMaterialReturnSolutionDetailResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/mom/material/materialreturnsolution/query": {
+            "get": {
+                "description": "分页查询",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/octet-stream"
+                ],
+                "tags": [
+                    "物料退料方案管理"
+                ],
+                "summary": "分页查询",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "jwt token",
+                        "name": "authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "从1开始",
+                        "name": "pageIndex",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "默认每页10条",
+                        "name": "pageSize",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "排序字段",
+                        "name": "orderField",
+                        "in": "query"
+                    },
+                    {
+                        "type": "boolean",
+                        "description": "是否倒序排序",
+                        "name": "desc",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "代号或描述",
+                        "name": "code",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/proto.QueryMaterialReturnSolutionResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/mom/material/materialreturnsolution/update": {
+            "put": {
+                "description": "更新",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "物料退料方案管理"
+                ],
+                "summary": "更新",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "jwt token",
+                        "name": "authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "description": "Update MaterialReturnSolution",
+                        "name": "account",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/proto.MaterialReturnSolutionInfo"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/proto.CommonResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/mom/material/materialreturntype/add": {
+            "post": {
+                "description": "新增",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "物料退料类型管理"
+                ],
+                "summary": "新增",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "jwt token",
+                        "name": "authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "description": "Add MaterialReturnType",
+                        "name": "account",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/proto.MaterialReturnTypeInfo"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/proto.CommonResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/mom/material/materialreturntype/all": {
+            "get": {
+                "description": "查询所有",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "物料退料类型管理"
+                ],
+                "summary": "查询所有",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "jwt token",
+                        "name": "authorization",
+                        "in": "header",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/proto.GetAllMaterialReturnTypeResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/mom/material/materialreturntype/delete": {
+            "delete": {
+                "description": "删除",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "物料退料类型管理"
+                ],
+                "summary": "删除",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "jwt token",
+                        "name": "authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "description": "Delete MaterialReturnType",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/proto.DelRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/proto.CommonResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/mom/material/materialreturntype/detail": {
+            "get": {
+                "description": "查询明细",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "物料退料类型管理"
+                ],
+                "summary": "查询明细",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "ID",
+                        "name": "id",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "jwt token",
+                        "name": "authorization",
+                        "in": "header",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/proto.GetMaterialReturnTypeDetailResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/mom/material/materialreturntype/query": {
+            "get": {
+                "description": "分页查询",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/octet-stream"
+                ],
+                "tags": [
+                    "物料退料类型管理"
+                ],
+                "summary": "分页查询",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "jwt token",
+                        "name": "authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "从1开始",
+                        "name": "pageIndex",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "默认每页10条",
+                        "name": "pageSize",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "排序字段",
+                        "name": "orderField",
+                        "in": "query"
+                    },
+                    {
+                        "type": "boolean",
+                        "description": "是否倒序排序",
+                        "name": "desc",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "代号或描述",
+                        "name": "code",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/proto.QueryMaterialReturnTypeResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/mom/material/materialreturntype/update": {
+            "put": {
+                "description": "更新",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "物料退料类型管理"
+                ],
+                "summary": "更新",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "jwt token",
+                        "name": "authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "description": "Update MaterialReturnType",
+                        "name": "account",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/proto.MaterialReturnTypeInfo"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/proto.CommonResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/mom/material/materialshelf/add": {
+            "post": {
+                "description": "新增",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "物料货架管理"
+                ],
+                "summary": "新增",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "jwt token",
+                        "name": "authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "description": "Add MaterialShelf",
+                        "name": "account",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/proto.MaterialShelfInfo"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/proto.CommonResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/mom/material/materialshelf/all": {
+            "get": {
+                "description": "查询所有",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "物料货架管理"
+                ],
+                "summary": "查询所有",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "jwt token",
+                        "name": "authorization",
+                        "in": "header",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/proto.GetAllMaterialShelfResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/mom/material/materialshelf/delete": {
+            "delete": {
+                "description": "删除",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "物料货架管理"
+                ],
+                "summary": "删除",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "jwt token",
+                        "name": "authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "description": "Delete MaterialShelf",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/proto.DelRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/proto.CommonResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/mom/material/materialshelf/detail": {
+            "get": {
+                "description": "查询明细",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "物料货架管理"
+                ],
+                "summary": "查询明细",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "ID",
+                        "name": "id",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "jwt token",
+                        "name": "authorization",
+                        "in": "header",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/proto.GetMaterialShelfDetailResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/mom/material/materialshelf/query": {
+            "get": {
+                "description": "分页查询",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/octet-stream"
+                ],
+                "tags": [
+                    "物料货架管理"
+                ],
+                "summary": "分页查询",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "jwt token",
+                        "name": "authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "从1开始",
+                        "name": "pageIndex",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "默认每页10条",
+                        "name": "pageSize",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "排序字段",
+                        "name": "orderField",
+                        "in": "query"
+                    },
+                    {
+                        "type": "boolean",
+                        "description": "是否倒序排序",
+                        "name": "desc",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "代号或描述",
+                        "name": "code",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/proto.QueryMaterialShelfResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/mom/material/materialshelf/update": {
+            "put": {
+                "description": "更新",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "物料货架管理"
+                ],
+                "summary": "更新",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "jwt token",
+                        "name": "authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "description": "Update MaterialShelf",
+                        "name": "account",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/proto.MaterialShelfInfo"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/proto.CommonResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/mom/material/materialshelfbin/add": {
+            "post": {
+                "description": "新增",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "物料货架库位管理"
+                ],
+                "summary": "新增",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "jwt token",
+                        "name": "authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "description": "Add MaterialShelfBin",
+                        "name": "account",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/proto.MaterialShelfBinInfo"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/proto.CommonResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/mom/material/materialshelfbin/all": {
+            "get": {
+                "description": "查询所有",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "物料货架库位管理"
+                ],
+                "summary": "查询所有",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "jwt token",
+                        "name": "authorization",
+                        "in": "header",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/proto.GetAllMaterialShelfBinResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/mom/material/materialshelfbin/delete": {
+            "delete": {
+                "description": "删除",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "物料货架库位管理"
+                ],
+                "summary": "删除",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "jwt token",
+                        "name": "authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "description": "Delete MaterialShelfBin",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/proto.DelRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/proto.CommonResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/mom/material/materialshelfbin/detail": {
+            "get": {
+                "description": "查询明细",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "物料货架库位管理"
+                ],
+                "summary": "查询明细",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "ID",
+                        "name": "id",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "jwt token",
+                        "name": "authorization",
+                        "in": "header",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/proto.GetMaterialShelfBinDetailResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/mom/material/materialshelfbin/query": {
+            "get": {
+                "description": "分页查询",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/octet-stream"
+                ],
+                "tags": [
+                    "物料货架库位管理"
+                ],
+                "summary": "分页查询",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "jwt token",
+                        "name": "authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "从1开始",
+                        "name": "pageIndex",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "默认每页10条",
+                        "name": "pageSize",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "排序字段",
+                        "name": "orderField",
+                        "in": "query"
+                    },
+                    {
+                        "type": "boolean",
+                        "description": "是否倒序排序",
+                        "name": "desc",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "编号",
+                        "name": "code",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "当前状态",
+                        "name": "currentState",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/proto.QueryMaterialShelfBinResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/mom/material/materialshelfbin/update": {
+            "put": {
+                "description": "更新",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "物料货架库位管理"
+                ],
+                "summary": "更新",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "jwt token",
+                        "name": "authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "description": "Update MaterialShelfBin",
+                        "name": "account",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/proto.MaterialShelfBinInfo"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/proto.CommonResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/mom/material/materialstore/add": {
+            "post": {
+                "description": "新增",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "物料仓库管理"
+                ],
+                "summary": "新增",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "jwt token",
+                        "name": "authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "description": "Add MaterialStore",
+                        "name": "account",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/proto.MaterialStoreInfo"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/proto.CommonResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/mom/material/materialstore/all": {
+            "get": {
+                "description": "查询所有",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "物料仓库管理"
+                ],
+                "summary": "查询所有",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "jwt token",
+                        "name": "authorization",
+                        "in": "header",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/proto.GetAllMaterialStoreResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/mom/material/materialstore/delete": {
+            "delete": {
+                "description": "删除",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "物料仓库管理"
+                ],
+                "summary": "删除",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "jwt token",
+                        "name": "authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "description": "Delete MaterialStore",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/proto.DelRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/proto.CommonResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/mom/material/materialstore/detail": {
+            "get": {
+                "description": "查询明细",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "物料仓库管理"
+                ],
+                "summary": "查询明细",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "ID",
+                        "name": "id",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "jwt token",
+                        "name": "authorization",
+                        "in": "header",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/proto.GetMaterialStoreDetailResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/mom/material/materialstore/query": {
+            "get": {
+                "description": "分页查询",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/octet-stream"
+                ],
+                "tags": [
+                    "物料仓库管理"
+                ],
+                "summary": "分页查询",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "jwt token",
+                        "name": "authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "从1开始",
+                        "name": "pageIndex",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "默认每页10条",
+                        "name": "pageSize",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "排序字段",
+                        "name": "orderField",
+                        "in": "query"
+                    },
+                    {
+                        "type": "boolean",
+                        "description": "是否倒序排序",
+                        "name": "desc",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "代号或描述",
+                        "name": "code",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/proto.QueryMaterialStoreResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/mom/material/materialstore/update": {
+            "put": {
+                "description": "更新",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "物料仓库管理"
+                ],
+                "summary": "更新",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "jwt token",
+                        "name": "authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "description": "Update MaterialStore",
+                        "name": "account",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/proto.MaterialStoreInfo"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/proto.CommonResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/mom/material/materialstorefeedrule/add": {
+            "post": {
+                "description": "新增",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "物料仓库补料规则"
+                ],
+                "summary": "新增",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "jwt token",
+                        "name": "authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "description": "Add MaterialStoreFeedRule",
+                        "name": "account",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/proto.MaterialStoreFeedRuleInfo"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/proto.CommonResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/mom/material/materialstorefeedrule/all": {
+            "get": {
+                "description": "查询所有",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "物料仓库补料规则"
+                ],
+                "summary": "查询所有",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "jwt token",
+                        "name": "authorization",
+                        "in": "header",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/proto.GetAllMaterialStoreFeedRuleResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/mom/material/materialstorefeedrule/delete": {
+            "delete": {
+                "description": "删除",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "物料仓库补料规则"
+                ],
+                "summary": "删除",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "jwt token",
+                        "name": "authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "description": "Delete MaterialStoreFeedRule",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/proto.DelRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/proto.CommonResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/mom/material/materialstorefeedrule/detail": {
+            "get": {
+                "description": "查询明细",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "物料仓库补料规则"
+                ],
+                "summary": "查询明细",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "ID",
+                        "name": "id",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "jwt token",
+                        "name": "authorization",
+                        "in": "header",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/proto.GetMaterialStoreFeedRuleDetailResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/mom/material/materialstorefeedrule/query": {
+            "get": {
+                "description": "分页查询",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/octet-stream"
+                ],
+                "tags": [
+                    "物料仓库补料规则"
+                ],
+                "summary": "分页查询",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "jwt token",
+                        "name": "authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "从1开始",
+                        "name": "pageIndex",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "默认每页10条",
+                        "name": "pageSize",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "排序字段",
+                        "name": "orderField",
+                        "in": "query"
+                    },
+                    {
+                        "type": "boolean",
+                        "description": "是否倒序排序",
+                        "name": "desc",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "物料号或描述",
+                        "name": "materialInfo",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/proto.QueryMaterialStoreFeedRuleResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/mom/material/materialstorefeedrule/update": {
+            "put": {
+                "description": "更新",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "物料仓库补料规则"
+                ],
+                "summary": "更新",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "jwt token",
+                        "name": "authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "description": "Update MaterialStoreFeedRule",
+                        "name": "account",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/proto.MaterialStoreFeedRuleInfo"
                         }
                     }
                 ],
@@ -4123,6 +7505,274 @@
                         "required": true,
                         "schema": {
                             "$ref": "#/definitions/proto.MaterialTrayBindingRecordInfo"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/proto.CommonResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/mom/material/wmsbillqueue/add": {
+            "post": {
+                "description": "新增",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "WMS过帐队列管理"
+                ],
+                "summary": "新增",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "jwt token",
+                        "name": "authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "description": "Add WMSBillQueue",
+                        "name": "account",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/proto.WMSBillQueueInfo"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/proto.CommonResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/mom/material/wmsbillqueue/all": {
+            "get": {
+                "description": "查询所有",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "WMS过帐队列管理"
+                ],
+                "summary": "查询所有",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "jwt token",
+                        "name": "authorization",
+                        "in": "header",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/proto.GetAllWMSBillQueueResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/mom/material/wmsbillqueue/delete": {
+            "delete": {
+                "description": "删除",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "WMS过帐队列管理"
+                ],
+                "summary": "删除",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "jwt token",
+                        "name": "authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "description": "Delete WMSBillQueue",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/proto.DelRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/proto.CommonResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/mom/material/wmsbillqueue/detail": {
+            "get": {
+                "description": "查询明细",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "WMS过帐队列管理"
+                ],
+                "summary": "查询明细",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "ID",
+                        "name": "id",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "jwt token",
+                        "name": "authorization",
+                        "in": "header",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/proto.GetWMSBillQueueDetailResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/mom/material/wmsbillqueue/query": {
+            "get": {
+                "description": "分页查询",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/octet-stream"
+                ],
+                "tags": [
+                    "WMS过帐队列管理"
+                ],
+                "summary": "分页查询",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "jwt token",
+                        "name": "authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "从1开始",
+                        "name": "pageIndex",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "默认每页10条",
+                        "name": "pageSize",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "排序字段",
+                        "name": "orderField",
+                        "in": "query"
+                    },
+                    {
+                        "type": "boolean",
+                        "description": "是否倒序排序",
+                        "name": "desc",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "创建时间开始",
+                        "name": "createTime0",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "创建时间结束",
+                        "name": "createTime1",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "物料仓库信息",
+                        "name": "materialStore",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/proto.QueryWMSBillQueueResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/mom/material/wmsbillqueue/update": {
+            "put": {
+                "description": "更新",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "WMS过帐队列管理"
+                ],
+                "summary": "更新",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "jwt token",
+                        "name": "authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "description": "Update WMSBillQueue",
+                        "name": "account",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/proto.WMSBillQueueInfo"
                         }
                     }
                 ],
@@ -23766,6 +27416,108 @@
         }
     },
     "definitions": {
+        "proto.AGVTaskQueueInfo": {
+            "type": "object",
+            "properties": {
+                "aGVTaskType": {
+                    "$ref": "#/definitions/proto.AGVTaskTypeInfo"
+                },
+                "aGVTaskTypeID": {
+                    "description": "任务类型ID",
+                    "type": "string"
+                },
+                "continueTask": {
+                    "description": "后续任务",
+                    "type": "boolean"
+                },
+                "createTime": {
+                    "description": "创建时间",
+                    "type": "string"
+                },
+                "createUserID": {
+                    "description": "配料人员",
+                    "type": "string"
+                },
+                "currentState": {
+                    "description": "当前状态",
+                    "type": "string"
+                },
+                "departure": {
+                    "$ref": "#/definitions/proto.MaterialShelfBinInfo"
+                },
+                "departureID": {
+                    "description": "起点库位ID",
+                    "type": "string"
+                },
+                "destination": {
+                    "$ref": "#/definitions/proto.MaterialShelfBinInfo"
+                },
+                "destinationID": {
+                    "description": "终点库位ID",
+                    "type": "string"
+                },
+                "id": {
+                    "description": "ID",
+                    "type": "string"
+                },
+                "lastUpdateTime": {
+                    "description": "状态变更时间",
+                    "type": "string"
+                },
+                "remark": {
+                    "description": "备注",
+                    "type": "string"
+                },
+                "taskNo": {
+                    "description": "任务编号",
+                    "type": "string"
+                },
+                "transactionState": {
+                    "description": "事务状态",
+                    "type": "string"
+                }
+            }
+        },
+        "proto.AGVTaskTypeInfo": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "description": "代号",
+                    "type": "string"
+                },
+                "description": {
+                    "description": "描述",
+                    "type": "string"
+                },
+                "id": {
+                    "description": "ID",
+                    "type": "string"
+                },
+                "materialContainerType": {
+                    "$ref": "#/definitions/proto.MaterialContainerTypeInfo"
+                },
+                "materialContainerTypeID": {
+                    "description": "容器类型ID",
+                    "type": "string"
+                },
+                "positionCode": {
+                    "description": "任务点位",
+                    "type": "string"
+                },
+                "remark": {
+                    "description": "备注",
+                    "type": "string"
+                },
+                "sceneType": {
+                    "description": "场景类型",
+                    "type": "integer"
+                },
+                "shelfType": {
+                    "description": "货架类型",
+                    "type": "integer"
+                }
+            }
+        },
         "proto.AttributeExpressionInfo": {
             "type": "object",
             "properties": {
@@ -23816,6 +27568,9 @@
             "properties": {
                 "id": {
                     "type": "string"
+                },
+                "materialInfo": {
+                    "$ref": "#/definitions/proto.MaterialInfoInfo"
                 },
                 "materialInfoID": {
                     "description": "物料信息ID",
@@ -24383,6 +28138,68 @@
                 }
             }
         },
+        "proto.GetAGVTaskQueueDetailResponse": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "$ref": "#/definitions/proto.Code"
+                },
+                "data": {
+                    "$ref": "#/definitions/proto.AGVTaskQueueInfo"
+                },
+                "message": {
+                    "type": "string"
+                }
+            }
+        },
+        "proto.GetAGVTaskTypeDetailResponse": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "$ref": "#/definitions/proto.Code"
+                },
+                "data": {
+                    "$ref": "#/definitions/proto.AGVTaskTypeInfo"
+                },
+                "message": {
+                    "type": "string"
+                }
+            }
+        },
+        "proto.GetAllAGVTaskQueueResponse": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "$ref": "#/definitions/proto.Code"
+                },
+                "data": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/proto.AGVTaskQueueInfo"
+                    }
+                },
+                "message": {
+                    "type": "string"
+                }
+            }
+        },
+        "proto.GetAllAGVTaskTypeResponse": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "$ref": "#/definitions/proto.Code"
+                },
+                "data": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/proto.AGVTaskTypeInfo"
+                    }
+                },
+                "message": {
+                    "type": "string"
+                }
+            }
+        },
         "proto.GetAllCodingGenerationResponse": {
             "type": "object",
             "properties": {
@@ -24621,6 +28438,40 @@
                 }
             }
         },
+        "proto.GetAllMaterialContainerResponse": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "$ref": "#/definitions/proto.Code"
+                },
+                "data": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/proto.MaterialContainerInfo"
+                    }
+                },
+                "message": {
+                    "type": "string"
+                }
+            }
+        },
+        "proto.GetAllMaterialContainerTypeResponse": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "$ref": "#/definitions/proto.Code"
+                },
+                "data": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/proto.MaterialContainerTypeInfo"
+                    }
+                },
+                "message": {
+                    "type": "string"
+                }
+            }
+        },
         "proto.GetAllMaterialInfoResponse": {
             "type": "object",
             "properties": {
@@ -24631,6 +28482,159 @@
                     "type": "array",
                     "items": {
                         "$ref": "#/definitions/proto.MaterialInfoInfo"
+                    }
+                },
+                "message": {
+                    "type": "string"
+                }
+            }
+        },
+        "proto.GetAllMaterialInventoryResponse": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "$ref": "#/definitions/proto.Code"
+                },
+                "data": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/proto.MaterialInventoryInfo"
+                    }
+                },
+                "message": {
+                    "type": "string"
+                }
+            }
+        },
+        "proto.GetAllMaterialReturnCauseResponse": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "$ref": "#/definitions/proto.Code"
+                },
+                "data": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/proto.MaterialReturnCauseInfo"
+                    }
+                },
+                "message": {
+                    "type": "string"
+                }
+            }
+        },
+        "proto.GetAllMaterialReturnRequestFormResponse": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "$ref": "#/definitions/proto.Code"
+                },
+                "data": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/proto.MaterialReturnRequestFormInfo"
+                    }
+                },
+                "message": {
+                    "type": "string"
+                }
+            }
+        },
+        "proto.GetAllMaterialReturnSolutionResponse": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "$ref": "#/definitions/proto.Code"
+                },
+                "data": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/proto.MaterialReturnSolutionInfo"
+                    }
+                },
+                "message": {
+                    "type": "string"
+                }
+            }
+        },
+        "proto.GetAllMaterialReturnTypeResponse": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "$ref": "#/definitions/proto.Code"
+                },
+                "data": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/proto.MaterialReturnTypeInfo"
+                    }
+                },
+                "message": {
+                    "type": "string"
+                }
+            }
+        },
+        "proto.GetAllMaterialShelfBinResponse": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "$ref": "#/definitions/proto.Code"
+                },
+                "data": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/proto.MaterialShelfBinInfo"
+                    }
+                },
+                "message": {
+                    "type": "string"
+                }
+            }
+        },
+        "proto.GetAllMaterialShelfResponse": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "$ref": "#/definitions/proto.Code"
+                },
+                "data": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/proto.MaterialShelfInfo"
+                    }
+                },
+                "message": {
+                    "type": "string"
+                }
+            }
+        },
+        "proto.GetAllMaterialStoreFeedRuleResponse": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "$ref": "#/definitions/proto.Code"
+                },
+                "data": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/proto.MaterialStoreFeedRuleInfo"
+                    }
+                },
+                "message": {
+                    "type": "string"
+                }
+            }
+        },
+        "proto.GetAllMaterialStoreResponse": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "$ref": "#/definitions/proto.Code"
+                },
+                "data": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/proto.MaterialStoreInfo"
                     }
                 },
                 "message": {
@@ -25862,6 +29866,23 @@
                 }
             }
         },
+        "proto.GetAllWMSBillQueueResponse": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "$ref": "#/definitions/proto.Code"
+                },
+                "data": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/proto.WMSBillQueueInfo"
+                    }
+                },
+                "message": {
+                    "type": "string"
+                }
+            }
+        },
         "proto.GetByIDsRequest": {
             "type": "object",
             "properties": {
@@ -26069,6 +30090,34 @@
                 }
             }
         },
+        "proto.GetMaterialContainerDetailResponse": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "$ref": "#/definitions/proto.Code"
+                },
+                "data": {
+                    "$ref": "#/definitions/proto.MaterialContainerInfo"
+                },
+                "message": {
+                    "type": "string"
+                }
+            }
+        },
+        "proto.GetMaterialContainerTypeDetailResponse": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "$ref": "#/definitions/proto.Code"
+                },
+                "data": {
+                    "$ref": "#/definitions/proto.MaterialContainerTypeInfo"
+                },
+                "message": {
+                    "type": "string"
+                }
+            }
+        },
         "proto.GetMaterialInfoDetailResponse": {
             "type": "object",
             "properties": {
@@ -26077,6 +30126,132 @@
                 },
                 "data": {
                     "$ref": "#/definitions/proto.MaterialInfoInfo"
+                },
+                "message": {
+                    "type": "string"
+                }
+            }
+        },
+        "proto.GetMaterialInventoryDetailResponse": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "$ref": "#/definitions/proto.Code"
+                },
+                "data": {
+                    "$ref": "#/definitions/proto.MaterialInventoryInfo"
+                },
+                "message": {
+                    "type": "string"
+                }
+            }
+        },
+        "proto.GetMaterialReturnCauseDetailResponse": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "$ref": "#/definitions/proto.Code"
+                },
+                "data": {
+                    "$ref": "#/definitions/proto.MaterialReturnCauseInfo"
+                },
+                "message": {
+                    "type": "string"
+                }
+            }
+        },
+        "proto.GetMaterialReturnRequestFormDetailResponse": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "$ref": "#/definitions/proto.Code"
+                },
+                "data": {
+                    "$ref": "#/definitions/proto.MaterialReturnRequestFormInfo"
+                },
+                "message": {
+                    "type": "string"
+                }
+            }
+        },
+        "proto.GetMaterialReturnSolutionDetailResponse": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "$ref": "#/definitions/proto.Code"
+                },
+                "data": {
+                    "$ref": "#/definitions/proto.MaterialReturnSolutionInfo"
+                },
+                "message": {
+                    "type": "string"
+                }
+            }
+        },
+        "proto.GetMaterialReturnTypeDetailResponse": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "$ref": "#/definitions/proto.Code"
+                },
+                "data": {
+                    "$ref": "#/definitions/proto.MaterialReturnTypeInfo"
+                },
+                "message": {
+                    "type": "string"
+                }
+            }
+        },
+        "proto.GetMaterialShelfBinDetailResponse": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "$ref": "#/definitions/proto.Code"
+                },
+                "data": {
+                    "$ref": "#/definitions/proto.MaterialShelfBinInfo"
+                },
+                "message": {
+                    "type": "string"
+                }
+            }
+        },
+        "proto.GetMaterialShelfDetailResponse": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "$ref": "#/definitions/proto.Code"
+                },
+                "data": {
+                    "$ref": "#/definitions/proto.MaterialShelfInfo"
+                },
+                "message": {
+                    "type": "string"
+                }
+            }
+        },
+        "proto.GetMaterialStoreDetailResponse": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "$ref": "#/definitions/proto.Code"
+                },
+                "data": {
+                    "$ref": "#/definitions/proto.MaterialStoreInfo"
+                },
+                "message": {
+                    "type": "string"
+                }
+            }
+        },
+        "proto.GetMaterialStoreFeedRuleDetailResponse": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "$ref": "#/definitions/proto.Code"
+                },
+                "data": {
+                    "$ref": "#/definitions/proto.MaterialStoreFeedRuleInfo"
                 },
                 "message": {
                     "type": "string"
@@ -27105,6 +31280,20 @@
                 }
             }
         },
+        "proto.GetWMSBillQueueDetailResponse": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "$ref": "#/definitions/proto.Code"
+                },
+                "data": {
+                    "$ref": "#/definitions/proto.WMSBillQueueInfo"
+                },
+                "message": {
+                    "type": "string"
+                }
+            }
+        },
         "proto.InvocationAuthenticationInfo": {
             "type": "object",
             "properties": {
@@ -27531,6 +31720,64 @@
                 }
             }
         },
+        "proto.MaterialChannelInfo": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "description": "代号",
+                    "type": "string"
+                },
+                "currentState": {
+                    "description": "当前状态",
+                    "type": "string"
+                },
+                "description": {
+                    "description": "描述",
+                    "type": "string"
+                },
+                "enableMonitor": {
+                    "description": "启用监控",
+                    "type": "boolean"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "lastUpdateTime": {
+                    "description": "状态变更时间",
+                    "type": "string"
+                },
+                "materialChannelLayer": {
+                    "$ref": "#/definitions/proto.MaterialChannelLayerInfo"
+                },
+                "materialChannelLayerID": {
+                    "description": "物料通道层ID",
+                    "type": "string"
+                },
+                "materialInfo": {
+                    "$ref": "#/definitions/proto.MaterialInfoInfo"
+                },
+                "materialInfoID": {
+                    "description": "物料信息ID",
+                    "type": "string"
+                },
+                "remark": {
+                    "description": "备注",
+                    "type": "string"
+                },
+                "size": {
+                    "description": "尺寸",
+                    "type": "string"
+                },
+                "sortIndex": {
+                    "description": "顺序",
+                    "type": "integer"
+                },
+                "spec": {
+                    "description": "规格",
+                    "type": "number"
+                }
+            }
+        },
         "proto.MaterialChannelLayerInfo": {
             "type": "object",
             "properties": {
@@ -27545,13 +31792,14 @@
                     "description": "亮灯寄存器地址",
                     "type": "integer"
                 },
+                "materialChannels": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/proto.MaterialChannelInfo"
+                    }
+                },
                 "productionStation": {
-                    "description": "隶属工站",
-                    "allOf": [
-                        {
-                            "$ref": "#/definitions/proto.ProductionStationInfo"
-                        }
-                    ]
+                    "$ref": "#/definitions/proto.ProductionStationInfo"
                 },
                 "productionStationID": {
                     "description": "隶属工站ID",
@@ -27567,6 +31815,92 @@
                 },
                 "statusRegisterAddress": {
                     "description": "状态寄存器地址",
+                    "type": "integer"
+                }
+            }
+        },
+        "proto.MaterialContainerInfo": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "description": "编号",
+                    "type": "string"
+                },
+                "currentState": {
+                    "description": "当前状态",
+                    "type": "string"
+                },
+                "description": {
+                    "description": "描述",
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "identifier": {
+                    "description": "识别码",
+                    "type": "string"
+                },
+                "lastUpdateTime": {
+                    "description": "状态变更时间",
+                    "type": "string"
+                },
+                "materialContainerType": {
+                    "$ref": "#/definitions/proto.MaterialContainerTypeInfo"
+                },
+                "materialContainerTypeID": {
+                    "description": "容器类型ID",
+                    "type": "string"
+                },
+                "materialShelfBin": {
+                    "$ref": "#/definitions/proto.MaterialShelfBinInfo"
+                },
+                "materialShelfBinID": {
+                    "description": "当前库位ID",
+                    "type": "string"
+                },
+                "remark": {
+                    "description": "备注",
+                    "type": "string"
+                }
+            }
+        },
+        "proto.MaterialContainerTypeInfo": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "description": "编号",
+                    "type": "string"
+                },
+                "description": {
+                    "description": "描述",
+                    "type": "string"
+                },
+                "height": {
+                    "description": "高(mm)",
+                    "type": "integer"
+                },
+                "heightLimit": {
+                    "description": "限高(mm)",
+                    "type": "integer"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "length": {
+                    "description": "长(mm)",
+                    "type": "integer"
+                },
+                "remark": {
+                    "description": "备注",
+                    "type": "string"
+                },
+                "weightLimit": {
+                    "description": "限重(kg)",
+                    "type": "number"
+                },
+                "width": {
+                    "description": "宽(mm)",
                     "type": "integer"
                 }
             }
@@ -27627,6 +31961,67 @@
                 }
             }
         },
+        "proto.MaterialInventoryInfo": {
+            "type": "object",
+            "properties": {
+                "createTime": {
+                    "description": "创建时间",
+                    "type": "string"
+                },
+                "createUserID": {
+                    "description": "创建人员",
+                    "type": "string"
+                },
+                "createUserName": {
+                    "type": "string"
+                },
+                "currentState": {
+                    "description": "当前状态",
+                    "type": "string"
+                },
+                "feedingQTY": {
+                    "description": "正在补料数量",
+                    "type": "integer"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "issuedQTY": {
+                    "description": "锁定数量",
+                    "type": "integer"
+                },
+                "issuingQTY": {
+                    "description": "正在备库数量",
+                    "type": "integer"
+                },
+                "lastUpdateTime": {
+                    "description": "状态变更时间",
+                    "type": "string"
+                },
+                "materialInfo": {
+                    "$ref": "#/definitions/proto.MaterialInfoInfo"
+                },
+                "materialInfoID": {
+                    "description": "物料信息ID",
+                    "type": "string"
+                },
+                "materialStore": {
+                    "$ref": "#/definitions/proto.MaterialStoreInfo"
+                },
+                "materialStoreID": {
+                    "description": "物料仓库ID",
+                    "type": "string"
+                },
+                "remark": {
+                    "description": "备注",
+                    "type": "string"
+                },
+                "storedQTY": {
+                    "description": "库存数量",
+                    "type": "integer"
+                }
+            }
+        },
         "proto.MaterialRecordInfo": {
             "type": "object",
             "properties": {
@@ -27649,6 +32044,450 @@
                     "type": "string"
                 },
                 "productIssueRecordID": {
+                    "type": "string"
+                }
+            }
+        },
+        "proto.MaterialReturnCauseAvailableCategoryInfo": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "string"
+                },
+                "materialCategory": {
+                    "$ref": "#/definitions/proto.MaterialCategoryInfo"
+                },
+                "materialCategoryID": {
+                    "type": "string"
+                },
+                "materialReturnCauseID": {
+                    "type": "string"
+                }
+            }
+        },
+        "proto.MaterialReturnCauseAvailableTypeInfo": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "string"
+                },
+                "materialReturnCauseID": {
+                    "type": "string"
+                },
+                "materialReturnType": {
+                    "$ref": "#/definitions/proto.MaterialReturnTypeInfo"
+                },
+                "materialReturnTypeID": {
+                    "type": "string"
+                }
+            }
+        },
+        "proto.MaterialReturnCauseInfo": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "description": "代号",
+                    "type": "string"
+                },
+                "description": {
+                    "description": "描述",
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "materialCategories": {
+                    "description": "物料类别",
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/proto.MaterialReturnCauseAvailableCategoryInfo"
+                    }
+                },
+                "materialReturnTypes": {
+                    "description": "归属类型",
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/proto.MaterialReturnCauseAvailableTypeInfo"
+                    }
+                },
+                "remark": {
+                    "description": "备注",
+                    "type": "string"
+                }
+            }
+        },
+        "proto.MaterialReturnRequestFormInfo": {
+            "type": "object",
+            "properties": {
+                "checkTime": {
+                    "description": "复核时间",
+                    "type": "string"
+                },
+                "checkUserID": {
+                    "description": "复核人员ID",
+                    "type": "string"
+                },
+                "createTime": {
+                    "description": "创建时间",
+                    "type": "string"
+                },
+                "createUserID": {
+                    "description": "创建人员ID",
+                    "type": "string"
+                },
+                "currentState": {
+                    "description": "当前状态",
+                    "type": "integer"
+                },
+                "formNo": {
+                    "description": "申请单号",
+                    "type": "string"
+                },
+                "handleMethod": {
+                    "description": "旧件处理",
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "materialInfo": {
+                    "$ref": "#/definitions/proto.MaterialInfoInfo"
+                },
+                "materialInfoID": {
+                    "description": "物料信息ID",
+                    "type": "string"
+                },
+                "materialReturnCause": {
+                    "$ref": "#/definitions/proto.MaterialReturnCauseInfo"
+                },
+                "materialReturnCauseID": {
+                    "description": "退料原因ID",
+                    "type": "string"
+                },
+                "materialReturnSolution": {
+                    "description": "锁定数量",
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/proto.MaterialReturnSolutionInfo"
+                        }
+                    ]
+                },
+                "materialReturnSolutionID": {
+                    "description": "处理方案ID",
+                    "type": "string"
+                },
+                "materialReturnType": {
+                    "$ref": "#/definitions/proto.MaterialReturnTypeInfo"
+                },
+                "materialReturnTypeID": {
+                    "description": "退料类型ID",
+                    "type": "string"
+                },
+                "materialSupplier": {
+                    "$ref": "#/definitions/proto.MaterialSupplierInfo"
+                },
+                "materialSupplierID": {
+                    "description": "物料供应商ID",
+                    "type": "string"
+                },
+                "materialTraceNo": {
+                    "description": "物料追溯号",
+                    "type": "string"
+                },
+                "productionLine": {
+                    "$ref": "#/definitions/proto.ProductionLineInfo"
+                },
+                "productionLineID": {
+                    "description": "发现工站ID",
+                    "type": "string"
+                },
+                "quantity": {
+                    "description": "退料数量",
+                    "type": "number"
+                },
+                "remark": {
+                    "description": "备注",
+                    "type": "string"
+                },
+                "returnBrief": {
+                    "description": "退料简述",
+                    "type": "string"
+                },
+                "returnID": {
+                    "description": "退料来源ID",
+                    "type": "string"
+                },
+                "returnReason": {
+                    "description": "退料原因",
+                    "type": "string"
+                },
+                "returnSource": {
+                    "description": "退料来源",
+                    "type": "string"
+                }
+            }
+        },
+        "proto.MaterialReturnSolutionAvailableCauseInfo": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "string"
+                },
+                "materialReturnCause": {
+                    "$ref": "#/definitions/proto.MaterialReturnCauseInfo"
+                },
+                "materialReturnCauseID": {
+                    "type": "string"
+                },
+                "materialReturnSolutionID": {
+                    "type": "string"
+                }
+            }
+        },
+        "proto.MaterialReturnSolutionInfo": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "description": "代号",
+                    "type": "string"
+                },
+                "description": {
+                    "description": "描述",
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "materialReturnCauses": {
+                    "description": "退料原因",
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/proto.MaterialReturnSolutionAvailableCauseInfo"
+                    }
+                },
+                "remark": {
+                    "description": "备注",
+                    "type": "string"
+                }
+            }
+        },
+        "proto.MaterialReturnTypeInfo": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "description": "代号",
+                    "type": "string"
+                },
+                "description": {
+                    "description": "描述",
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "remark": {
+                    "description": "备注",
+                    "type": "string"
+                }
+            }
+        },
+        "proto.MaterialShelfBinInfo": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "description": "编号",
+                    "type": "string"
+                },
+                "columnIndex": {
+                    "description": "列",
+                    "type": "integer"
+                },
+                "currentState": {
+                    "description": "当前状态",
+                    "type": "string"
+                },
+                "enableDispatch": {
+                    "description": "缺料调度",
+                    "type": "boolean"
+                },
+                "enableMonitor": {
+                    "description": "状态监控",
+                    "type": "boolean"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "identifier": {
+                    "description": "识别码",
+                    "type": "string"
+                },
+                "lastUpdateTime": {
+                    "description": "状态变更时间",
+                    "type": "string"
+                },
+                "materialContainerType": {
+                    "$ref": "#/definitions/proto.MaterialContainerTypeInfo"
+                },
+                "materialContainerTypeID": {
+                    "description": "兼容容器类型ID",
+                    "type": "string"
+                },
+                "materialInfo": {
+                    "$ref": "#/definitions/proto.MaterialInfoInfo"
+                },
+                "materialInfoID": {
+                    "description": "当前物料ID",
+                    "type": "string"
+                },
+                "materialShelf": {
+                    "$ref": "#/definitions/proto.MaterialShelfInfo"
+                },
+                "materialShelfID": {
+                    "description": "隶属料架ID",
+                    "type": "string"
+                },
+                "remark": {
+                    "description": "备注",
+                    "type": "string"
+                },
+                "rowIndex": {
+                    "description": "行",
+                    "type": "integer"
+                }
+            }
+        },
+        "proto.MaterialShelfInfo": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "description": "代号",
+                    "type": "string"
+                },
+                "description": {
+                    "description": "描述",
+                    "type": "string"
+                },
+                "enable": {
+                    "description": "是否启用",
+                    "type": "boolean"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "identifier": {
+                    "description": "识别码",
+                    "type": "string"
+                },
+                "materialStore": {
+                    "$ref": "#/definitions/proto.MaterialStoreInfo"
+                },
+                "materialStoreID": {
+                    "description": "隶属仓库ID",
+                    "type": "string"
+                },
+                "remark": {
+                    "description": "备注",
+                    "type": "string"
+                },
+                "shelfType": {
+                    "description": "货架类型",
+                    "type": "integer"
+                }
+            }
+        },
+        "proto.MaterialStoreAvailableLineInfo": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "string"
+                },
+                "materialStoreID": {
+                    "type": "string"
+                },
+                "productionLine": {
+                    "$ref": "#/definitions/proto.ProductionLineInfo"
+                },
+                "productionLineID": {
+                    "type": "string"
+                }
+            }
+        },
+        "proto.MaterialStoreFeedRuleInfo": {
+            "type": "object",
+            "properties": {
+                "attributeExpressions": {
+                    "description": "特征表达式",
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/proto.AttributeExpressionInfo"
+                    }
+                },
+                "defaultRequestQTY": {
+                    "description": "默认申请量",
+                    "type": "integer"
+                },
+                "enable": {
+                    "description": "是否启用",
+                    "type": "boolean"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "materialInfo": {
+                    "$ref": "#/definitions/proto.MaterialInfoInfo"
+                },
+                "materialInfoID": {
+                    "description": "物料信息ID",
+                    "type": "string"
+                },
+                "materialStore": {
+                    "$ref": "#/definitions/proto.MaterialStoreInfo"
+                },
+                "materialStoreID": {
+                    "description": "物料仓库ID",
+                    "type": "string"
+                },
+                "minimumStoreQTY": {
+                    "description": "最低库存量",
+                    "type": "integer"
+                },
+                "priority": {
+                    "description": "优先级",
+                    "type": "integer"
+                },
+                "remark": {
+                    "description": "备注",
+                    "type": "string"
+                },
+                "sortIndex": {
+                    "description": "排序",
+                    "type": "integer"
+                }
+            }
+        },
+        "proto.MaterialStoreInfo": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "description": "代号",
+                    "type": "string"
+                },
+                "description": {
+                    "description": "描述",
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "productionLines": {
+                    "description": "支援产线",
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/proto.MaterialStoreAvailableLineInfo"
+                    }
+                },
+                "remark": {
+                    "description": "备注",
                     "type": "string"
                 }
             }
@@ -31618,6 +36457,58 @@
                 }
             }
         },
+        "proto.QueryAGVTaskQueueResponse": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "$ref": "#/definitions/proto.Code"
+                },
+                "data": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/proto.AGVTaskQueueInfo"
+                    }
+                },
+                "message": {
+                    "type": "string"
+                },
+                "pages": {
+                    "type": "integer"
+                },
+                "records": {
+                    "type": "integer"
+                },
+                "total": {
+                    "type": "integer"
+                }
+            }
+        },
+        "proto.QueryAGVTaskTypeResponse": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "$ref": "#/definitions/proto.Code"
+                },
+                "data": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/proto.AGVTaskTypeInfo"
+                    }
+                },
+                "message": {
+                    "type": "string"
+                },
+                "pages": {
+                    "type": "integer"
+                },
+                "records": {
+                    "type": "integer"
+                },
+                "total": {
+                    "type": "integer"
+                }
+            }
+        },
         "proto.QueryCodingGenerationResponse": {
             "type": "object",
             "properties": {
@@ -31982,6 +36873,58 @@
                 }
             }
         },
+        "proto.QueryMaterialContainerResponse": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "$ref": "#/definitions/proto.Code"
+                },
+                "data": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/proto.MaterialContainerInfo"
+                    }
+                },
+                "message": {
+                    "type": "string"
+                },
+                "pages": {
+                    "type": "integer"
+                },
+                "records": {
+                    "type": "integer"
+                },
+                "total": {
+                    "type": "integer"
+                }
+            }
+        },
+        "proto.QueryMaterialContainerTypeResponse": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "$ref": "#/definitions/proto.Code"
+                },
+                "data": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/proto.MaterialContainerTypeInfo"
+                    }
+                },
+                "message": {
+                    "type": "string"
+                },
+                "pages": {
+                    "type": "integer"
+                },
+                "records": {
+                    "type": "integer"
+                },
+                "total": {
+                    "type": "integer"
+                }
+            }
+        },
         "proto.QueryMaterialInfoResponse": {
             "type": "object",
             "properties": {
@@ -31992,6 +36935,240 @@
                     "type": "array",
                     "items": {
                         "$ref": "#/definitions/proto.MaterialInfoInfo"
+                    }
+                },
+                "message": {
+                    "type": "string"
+                },
+                "pages": {
+                    "type": "integer"
+                },
+                "records": {
+                    "type": "integer"
+                },
+                "total": {
+                    "type": "integer"
+                }
+            }
+        },
+        "proto.QueryMaterialInventoryResponse": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "$ref": "#/definitions/proto.Code"
+                },
+                "data": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/proto.MaterialInventoryInfo"
+                    }
+                },
+                "message": {
+                    "type": "string"
+                },
+                "pages": {
+                    "type": "integer"
+                },
+                "records": {
+                    "type": "integer"
+                },
+                "total": {
+                    "type": "integer"
+                }
+            }
+        },
+        "proto.QueryMaterialReturnCauseResponse": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "$ref": "#/definitions/proto.Code"
+                },
+                "data": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/proto.MaterialReturnCauseInfo"
+                    }
+                },
+                "message": {
+                    "type": "string"
+                },
+                "pages": {
+                    "type": "integer"
+                },
+                "records": {
+                    "type": "integer"
+                },
+                "total": {
+                    "type": "integer"
+                }
+            }
+        },
+        "proto.QueryMaterialReturnRequestFormResponse": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "$ref": "#/definitions/proto.Code"
+                },
+                "data": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/proto.MaterialReturnRequestFormInfo"
+                    }
+                },
+                "message": {
+                    "type": "string"
+                },
+                "pages": {
+                    "type": "integer"
+                },
+                "records": {
+                    "type": "integer"
+                },
+                "total": {
+                    "type": "integer"
+                }
+            }
+        },
+        "proto.QueryMaterialReturnSolutionResponse": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "$ref": "#/definitions/proto.Code"
+                },
+                "data": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/proto.MaterialReturnSolutionInfo"
+                    }
+                },
+                "message": {
+                    "type": "string"
+                },
+                "pages": {
+                    "type": "integer"
+                },
+                "records": {
+                    "type": "integer"
+                },
+                "total": {
+                    "type": "integer"
+                }
+            }
+        },
+        "proto.QueryMaterialReturnTypeResponse": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "$ref": "#/definitions/proto.Code"
+                },
+                "data": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/proto.MaterialReturnTypeInfo"
+                    }
+                },
+                "message": {
+                    "type": "string"
+                },
+                "pages": {
+                    "type": "integer"
+                },
+                "records": {
+                    "type": "integer"
+                },
+                "total": {
+                    "type": "integer"
+                }
+            }
+        },
+        "proto.QueryMaterialShelfBinResponse": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "$ref": "#/definitions/proto.Code"
+                },
+                "data": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/proto.MaterialShelfBinInfo"
+                    }
+                },
+                "message": {
+                    "type": "string"
+                },
+                "pages": {
+                    "type": "integer"
+                },
+                "records": {
+                    "type": "integer"
+                },
+                "total": {
+                    "type": "integer"
+                }
+            }
+        },
+        "proto.QueryMaterialShelfResponse": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "$ref": "#/definitions/proto.Code"
+                },
+                "data": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/proto.MaterialShelfInfo"
+                    }
+                },
+                "message": {
+                    "type": "string"
+                },
+                "pages": {
+                    "type": "integer"
+                },
+                "records": {
+                    "type": "integer"
+                },
+                "total": {
+                    "type": "integer"
+                }
+            }
+        },
+        "proto.QueryMaterialStoreFeedRuleResponse": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "$ref": "#/definitions/proto.Code"
+                },
+                "data": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/proto.MaterialStoreFeedRuleInfo"
+                    }
+                },
+                "message": {
+                    "type": "string"
+                },
+                "pages": {
+                    "type": "integer"
+                },
+                "records": {
+                    "type": "integer"
+                },
+                "total": {
+                    "type": "integer"
+                }
+            }
+        },
+        "proto.QueryMaterialStoreResponse": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "$ref": "#/definitions/proto.Code"
+                },
+                "data": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/proto.MaterialStoreInfo"
                     }
                 },
                 "message": {
@@ -33854,6 +39031,32 @@
                 }
             }
         },
+        "proto.QueryWMSBillQueueResponse": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "$ref": "#/definitions/proto.Code"
+                },
+                "data": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/proto.WMSBillQueueInfo"
+                    }
+                },
+                "message": {
+                    "type": "string"
+                },
+                "pages": {
+                    "type": "integer"
+                },
+                "records": {
+                    "type": "integer"
+                },
+                "total": {
+                    "type": "integer"
+                }
+            }
+        },
         "proto.RemoteServiceInfo": {
             "type": "object",
             "properties": {
@@ -34574,6 +39777,74 @@
                 },
                 "unplannedShutdownDuration": {
                     "type": "number"
+                }
+            }
+        },
+        "proto.WMSBillQueueInfo": {
+            "type": "object",
+            "properties": {
+                "billNo": {
+                    "description": "拣货单号",
+                    "type": "string"
+                },
+                "createTime": {
+                    "description": "申请时间",
+                    "type": "string"
+                },
+                "createUserID": {
+                    "description": "申请人员ID",
+                    "type": "string"
+                },
+                "createUserName": {
+                    "type": "string"
+                },
+                "currentState": {
+                    "description": "当前状态",
+                    "type": "string"
+                },
+                "id": {
+                    "description": "ID",
+                    "type": "string"
+                },
+                "lastUpdateTime": {
+                    "description": "状态变更时间",
+                    "type": "string"
+                },
+                "materialStore": {
+                    "description": "后续任务",
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/proto.MaterialStoreInfo"
+                        }
+                    ]
+                },
+                "materialStoreID": {
+                    "description": "物料仓库ID",
+                    "type": "string"
+                },
+                "productOrder": {
+                    "description": "事务状态",
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/proto.ProductOrderInfo"
+                        }
+                    ]
+                },
+                "productOrderID": {
+                    "description": "生产工单号ID",
+                    "type": "string"
+                },
+                "remark": {
+                    "description": "备注",
+                    "type": "string"
+                },
+                "taskNo": {
+                    "description": "任务单号",
+                    "type": "string"
+                },
+                "transactionState": {
+                    "description": "事务状态",
+                    "type": "string"
                 }
             }
         }

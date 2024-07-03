@@ -7,7 +7,7 @@ import (
 	"github.com/CloudSilk/pkg/utils"
 )
 
-// 物料货架
+// 物料通道层
 type MaterialChannelLayer struct {
 	ModelID
 	SortIndex             int32              `gorm:"comment:顺序"`
@@ -58,6 +58,7 @@ func PBToMaterialChannelLayer(in *proto.MaterialChannelLayerInfo) *MaterialChann
 		LightRegisterAddress:  in.LightRegisterAddress,
 		Remark:                in.Remark,
 		ProductionStationID:   in.ProductionStationID,
+		MaterialChannels:      PBToMaterialChannels(in.MaterialChannels),
 	}
 }
 
@@ -82,6 +83,7 @@ func MaterialChannelLayerToPB(in *MaterialChannelLayer) *proto.MaterialChannelLa
 		Remark:                in.Remark,
 		ProductionStationID:   in.ProductionStationID,
 		ProductionStation:     ProductionStationToPB(in.ProductionStation),
+		MaterialChannels:      MaterialChannelsToPB(in.MaterialChannels),
 	}
 	return m
 }

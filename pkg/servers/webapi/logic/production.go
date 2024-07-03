@@ -469,12 +469,19 @@ func EnterProductionStation(req *proto.EnterProductionStationRequest) (data *pro
 
 			//获取人员资格
 			personnelQualification := &model.PersonnelQualification{}
-			if err := tx.Joins("JOIN personnel_qualification_types ON personnel_qualifications.personnel_qualification_type_id=personnel_qualification_types.id").
-				Joins("JOIN personnel_qualification_type_available_models ON personnel_qualification_types.id=personnel_qualification_type_available_models.personnel_qualification_type_id").
-				Where("personnel_qualification_types.production_process_id = ?", productionProcess.ID).
-				Where("personnel_qualification_type_available_models.product_model_id = ?", productModel.ID).
-				Where("personnel_qualifications.certified_user_id = ?", productionStation.CurrentUserID).
-				First(personnelQualification).Error; err == gorm.ErrRecordNotFound {
+			// if err := tx.Joins("JOIN personnel_qualification_types ON personnel_qualifications.personnel_qualification_type_id=personnel_qualification_types.id").
+			// 	Joins("JOIN personnel_qualification_type_available_models ON personnel_qualification_types.id=personnel_qualification_type_available_models.personnel_qualification_type_id").
+			// 	Where("personnel_qualification_types.production_process_id = ?", productionProcess.ID).
+			// 	Where("personnel_qualification_type_available_models.product_model_id = ?", productModel.ID).
+			// 	Where("personnel_qualifications.certified_user_id = ?", productionStation.CurrentUserID).
+			// 	First(personnelQualification).Error; err == gorm.ErrRecordNotFound {
+			// 	code = 1
+			// 	return fmt.Errorf("当前作业人员缺少认证资质，无法开工")
+			// } else if err != nil {
+			// 	code = 1
+			// 	return err
+			// }
+			if err := tx.Where("production_process_id = ? AND product_model_id = ? AND certified_user_id = ?", productionProcess.ID, productModel.ID, productionStation.CurrentUserID).First(personnelQualification).Error; err == gorm.ErrRecordNotFound {
 				code = 1
 				return fmt.Errorf("当前作业人员缺少认证资质，无法开工")
 			} else if err != nil {
