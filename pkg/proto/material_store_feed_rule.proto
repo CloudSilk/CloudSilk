@@ -1,0 +1,66 @@
+syntax="proto3";
+
+package proto;
+option go_package="./;proto";
+
+import "mom_common.proto";
+import "material_store.proto";
+import "material_info.proto";
+import "attribute_expression.proto";
+
+message MaterialStoreFeedRuleInfo{
+    string id=1;
+    //排序
+    int32 sortIndex=2;
+    //物料仓库ID
+    string materialStoreID=3;
+    MaterialStoreInfo materialStore=4;
+    //物料信息ID
+    string materialInfoID=5;
+    MaterialInfoInfo materialInfo=6;
+    //最低库存量
+    int64 minimumStoreQTY=7;
+    //默认申请量
+    int64 defaultRequestQTY=8;
+	//是否启用
+    bool enable=9;
+    //备注
+    string remark=10;
+    //优先级
+    int32 priority=11;
+	//特征表达式
+    repeated AttributeExpressionInfo attributeExpressions=12;
+}
+
+message QueryMaterialStoreFeedRuleRequest{
+    // @inject_tag: uri:"pageIndex" form:"pageIndex"
+    int64 pageIndex=1;
+    // @inject_tag: uri:"pageSize" form:"pageSize"
+    int64 pageSize=2;
+    // @inject_tag: uri:"sortConfig" form:"sortConfig"
+    string sortConfig=3;
+    // 物料号或描述
+    // @inject_tag: uri:"materialInfo" form:"materialInfo"
+    string materialInfo=8;
+}
+
+message QueryMaterialStoreFeedRuleResponse{
+    Code code=1;
+    string message=2;
+    repeated MaterialStoreFeedRuleInfo data=3;
+    int64 pages=4;
+    int64 records=5;
+    int64 total=6;
+}
+
+message GetAllMaterialStoreFeedRuleResponse{
+    Code code=1;
+    string message=2;
+    repeated MaterialStoreFeedRuleInfo data=3;
+}
+
+message GetMaterialStoreFeedRuleDetailResponse{
+    Code code=1;
+    string message=2;
+    MaterialStoreFeedRuleInfo data=3;
+}

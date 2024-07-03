@@ -13,7 +13,7 @@ type PersonnelQualification struct {
 	ModelID
 	ProductModelID      string            `json:"productModelID" gorm:"size:36;comment:产品型号ID"`
 	ProductionProcessID string            `json:"productionProcessID" gorm:"size:36;comment:生产工序ID"`
-	ProductionProcess   ProductionProcess `json:"productionProcessID" gorm:"size:36;comment:生产工序ID"`
+	ProductionProcess   ProductionProcess `json:"productionProcess" gorm:"size:36;comment:生产工序ID"`
 	CertifiedUserID     string            `json:"certifiedUserID" gorm:"index;size:36;comment:认证人员ID"`
 	EffectiveDate       sql.NullTime      `json:"effectiveDate" gorm:"comment:生效日期"`
 	ExpirationDate      sql.NullTime      `json:"expirationDate" gorm:"comment:失效日期"`

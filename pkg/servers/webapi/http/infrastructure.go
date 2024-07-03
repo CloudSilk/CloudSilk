@@ -8,7 +8,7 @@ import (
 	"github.com/CloudSilk/CloudSilk/pkg/servers/webapi/logic"
 	"github.com/CloudSilk/CloudSilk/pkg/types"
 	"github.com/CloudSilk/pkg/utils/log"
-	"github.com/CloudSilk/pkg/utils/middleware"
+	"github.com/CloudSilk/usercenter/utils/middleware"
 	"github.com/gin-gonic/gin"
 )
 
