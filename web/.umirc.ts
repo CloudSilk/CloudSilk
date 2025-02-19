@@ -154,7 +154,6 @@ export default defineConfig({
     target: ['chrome80', 'es2020']
   },
   scripts: [
-    'https://api.map.baidu.com/api?v=3.0&ak=H5pKkiqL3XGwDyNrGU3IBiQQvdj8RcOL',
     { src: (process.env.WEB_BASE !== undefined && process.env.WEB_BASE !== "" ? process.env.WEB_BASE : "") + `/js/editor/loader.js` }
   ],
 });

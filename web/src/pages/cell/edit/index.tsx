@@ -104,7 +104,7 @@ export class EditCellComponent extends React.Component<EditCompomemtProps, EditC
         },async ()=>{
             const graph=this.createGraph()
             const cellCache= new CellCache()
-            cellCache.init('','https://hhm.xw.life')
+            cellCache.init('','http://101.132.37.232')
             if (this.state && !this.state.isAdd) {
                 eval(this.state.pageConfig?.loadDetailBefore ?? '')
                 const resp = await this.state.service.detail2({ pageName: this.state.pageConfig?.name, id: this.state.id })
