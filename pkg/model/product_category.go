@@ -31,14 +31,15 @@ func PBToProductCategory(in *proto.ProductCategoryInfo) *ProductCategory {
 		return nil
 	}
 	return &ProductCategory{
-		ModelID:             ModelID{ID: in.Id},
-		Code:                in.Code,
-		Description:         in.Description,
-		Identifier:          in.Identifier,
-		IsAuthorized:        in.IsAuthorized,
-		AttributeExpression: in.AttributeExpression,
-		Remark:              in.Remark,
-		ProductBrandID:      in.ProductBrandID,
+		ModelID:                   ModelID{ID: in.Id},
+		Code:                      in.Code,
+		Description:               in.Description,
+		Identifier:                in.Identifier,
+		IsAuthorized:              in.IsAuthorized,
+		AttributeExpression:       in.AttributeExpression,
+		Remark:                    in.Remark,
+		ProductBrandID:            in.ProductBrandID,
+		ProductCategoryAttributes: PBToProductCategoryAttributes(in.ProductCategoryAttributes),
 	}
 }
 
@@ -59,15 +60,16 @@ func ProductCategoryToPB(in *ProductCategory) *proto.ProductCategoryInfo {
 		productBrandName = in.ProductBrand.Description
 	}
 	m := &proto.ProductCategoryInfo{
-		Id:                  in.ID,
-		Code:                in.Code,
-		Description:         in.Description,
-		Identifier:          in.Identifier,
-		IsAuthorized:        in.IsAuthorized,
-		AttributeExpression: in.AttributeExpression,
-		Remark:              in.Remark,
-		ProductBrandID:      in.ProductBrandID,
-		ProductBrandName:    productBrandName,
+		Id:                      in.ID,
+		Code:                    in.Code,
+		Description:             in.Description,
+		Identifier:              in.Identifier,
+		IsAuthorized:            in.IsAuthorized,
+		AttributeExpression:     in.AttributeExpression,
+		Remark:                  in.Remark,
+		ProductBrandID:          in.ProductBrandID,
+		ProductBrandName:        productBrandName,
+		ProductCategoryAttributes: ProductCategoryAttributesToPB(in.ProductCategoryAttributes),
 	}
 	return m
 }

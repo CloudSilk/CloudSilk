@@ -42,6 +42,7 @@ type ProductCategoryInfo struct {
 	// 产品品牌ID
 	ProductBrandID   string `protobuf:"bytes,9,opt,name=productBrandID,proto3" json:"productBrandID"`
 	ProductBrandName string `protobuf:"bytes,10,opt,name=productBrandName,proto3" json:"productBrandName"`
+	ProductCategoryAttributes []*ProductCategoryAttributeInfo `protobuf:"bytes,11,rep,name=productCategoryAttributes,proto3" json:"productCategoryAttributes"`
 }
 
 func (x *ProductCategoryInfo) Reset() {
@@ -137,6 +138,13 @@ func (x *ProductCategoryInfo) GetProductBrandName() string {
 		return x.ProductBrandName
 	}
 	return ""
+}
+
+func (x *ProductCategoryInfo) GetProductCategoryAttributes() []*ProductCategoryAttributeInfo {
+	if x != nil {
+		return x.ProductCategoryAttributes
+	}
+	return nil
 }
 
 type QueryProductCategoryRequest struct {
