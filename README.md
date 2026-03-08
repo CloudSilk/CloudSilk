@@ -1,6 +1,6 @@
 # CloudSilk
 
-[Discord](https://discord.gg/AXgZhNPv)
+[Discord](https://discord.gg/AXgZhNPv) | [部署文档](./docs/DEPLOYMENT.md)
 
 云梭（MOM系统），英文名CloudSilk。
 
