@@ -62,12 +62,9 @@
 
 # 二、P1 — 被注释禁用的功能（恢复/补齐链路）
 
-### TASK-006 质量测试项获取接口整文件被注释
-- **位置**：`pkg/servers/webapi/logic/quality.go`（163 行几乎全部注释）
-- **应实现**：`GetTestProjectWithParameter` — 根据工位/托盘/产品序列号匹配测试工序，按"工序步骤匹配规则 + 特性表达式"筛选测试项目及输入/输出参数（`TestProjectInfo`、`ParameterInfo`）。proto 已在 `pkg/proto/weiapi_quality.proto` 定义。
-- **影响**：质量管理模块对外的测试项下发能力不可用。
-- **验收标准**：恢复并适配最新模型结构，注册路由，联调通过。
-- **工作量**：大
+### TASK-006 ✅ 质量测试项获取接口已恢复
+- **位置**：`pkg/servers/webapi/logic/quality.go`（重写）、`pkg/servers/webapi/http/quality.go`（新增）
+- **完成内容**：`GetTestProjectWithParameter` 按当前直连 DB 风格重写——托盘号/序列号定位产品 → 定位测试工序（工位代号）→ 加载工单特性 → 按特性表达式匹配测试步骤 → 汇总测试项目与输入/输出参数。路由 `POST /api/mom/webapi/quality/gettestprojectwithparameter` 已注册。
 
 ### TASK-007 工位生产看板接口整链路被注释
 - **位置**：

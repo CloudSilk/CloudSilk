@@ -9,4 +9,5 @@ func RegisterRouter(r *gin.Engine) {
 	RegisterProductionRouter(r)
 	RegisterMaterialRouter(r)
 	RegisterStatisticRouter(r)
+	RegisterQualityRouter(r)
 }
