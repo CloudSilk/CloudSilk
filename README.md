@@ -1,6 +1,119 @@
-# CloudSilk
+# CloudSilk (云梭)
 
-[Discord](https://discord.gg/AXgZhNPv) | [部署文档](./docs/DEPLOYMENT.md)
+[![License](https://img.shields.io/badge/license-Apache%202-blue.svg)](./LICENSE)
+[![Go Version](https://img.shields.io/badge/Go-1.20%2B-00ADD8.svg)](https://go.dev)
+[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](./CONTRIBUTING.md)
+
+[Discord](https://discord.gg/AXgZhNPv) | [Deployment](./docs/DEPLOYMENT.md) | [Contributing](./CONTRIBUTING.md) | [Roadmap & Tasks](./TASKS.md) | [中文介绍](#中文介绍)
+
+---
+
+## What is CloudSilk?
+
+**CloudSilk** (云梭) is an open-source **MOM (Manufacturing Operations Management)** system — the "smart hub" of a factory. It schedules and optimizes every step of the production process: telling machines when to run, telling operators what to do next, tracking quality and output in real time, and giving managers the data they need to make better decisions.
+
+It sits between the enterprise layer (ERP) and the shop-floor control layer (SCADA/PLC), connecting business orders to actual execution on production lines.
+
+### Architecture
+
+```
+                    ┌─────────────────────────────────────────────────┐
+                    │              Web UI  (React + AntD)              │
+                    │   low-code CRUD pages · form designer · BPM      │
+                    └────────────────────────┬────────────────────────┘
+                                             │ HTTP / JSON
+┌────────────────────────────────────────────▼────────────────────────────────────┐
+│                          CloudSilk Server (Go / Gin)                             │
+│                                                                                  │
+│   ┌────────────────┐  ┌──────────────────────┐  ┌─────────────────────────────┐ │
+│   │   usercenter   │  │       curd           │  │         MOM domain          │ │
+│   │ auth · RBAC ·  │  │ low-code metadata    │  │ ┌─────────────────────────┐ │ │
+│   │ tenant · token │  │ engine · dynamic     │  │ │ MES 生产执行             │ │ │
+│   └────────────────┘  │ forms & pages        │  │ │  order · process route  │ │ │
+│                       └──────────────────────┘  │ │  station in/out · work  │ │ │
+│   ┌─────────────────────────────────────────┐   │ │  records · rework       │ │ │
+│   │      WebAPI (shop-floor devices)        │   │ ├─────────────────────────┤ │ │
+│   │  online · enter/exit station · report   │   │ │ MSS 物料/仓储            │ │ │
+│   └─────────────────────────────────────────┘   │ │  store · shelf · bin    │ │ │
+│                                                 │ │  inventory · container  │ │ │
+│   ┌─────────────────────────────────────────┐   │ │  AGV task queue         │ │ │
+│   │      Label Print Service (C#, optional) │   │ ├─────────────────────────┤ │ │
+│   │      BarTender templates · MQTT         │   │ │ Label · Trace · System  │ │ │
+│   └─────────────────────────────────────────┘   │ └─────────────────────────┘ │ │
+│                                                 └─────────────────────────────┘ │
+└──────────┬──────────────────────────────────────────────────────┬───────────────┘
+           │                                                      │
+┌──────────▼───────────┐                          ┌───────────────▼───────────────┐
+│   MySQL / SQLite     │                          │  Nacos (optional)             │
+│   via GORM           │                          │  service registry for         │
+└──────────────────────┘                          │  dubbo-go microservice mode   │
+                                                  └───────────────────────────────┘
+
+Planned (see Roadmap):  APS scheduling ─ ─ SCADA gateway ─ ─ Equipment management ─ ─ QM
+```
+
+### Module status
+
+| Module | Status | Highlights |
+|--------|--------|-----------|
+| MES 生产执行 | ✅ Maintained | 工单、工艺路线、进/出站、报工、返工、工位节拍 |
+| MSS 物料/仓储 | ✅ Maintained | 仓库/货架/库位、库存、容器、AGV 任务队列、退料单 |
+| Label 标签打印 | ✅ Maintained | 标签模板/类型、打印队列、C# BarTender 打印服务 |
+| Traceability 追溯 | ✅ Maintained | 操作/调用/异常追溯，人员资质 |
+| Low-code platform | ✅ Maintained | curd 元数据引擎、动态表单/页面、BPM 设计器 |
+| Auth 用户中心 | ✅ Maintained | [usercenter](https://github.com/CloudSilk/usercenter)：认证、RBAC、多租户 |
+| QM 质量管理 | 🚧 Partial | 测试记录落库；检验单/SPC/质量看板开发中 |
+| APS 高级排程 | 📋 Planned | 排程引擎、甘特图、产能平衡 |
+| SCADA 网关 | 📋 Planned | Modbus/OPC UA 采集、点位管理 |
+| EM 设备管理 | 📋 Planned | 设备台账、维保计划、OEE |
+
+### Quick Start
+
+**Prerequisites:** Go 1.20+ (Node.js 18+ only when rebuilding the web UI). Or just use Docker.
+
+```bash
+# ── Option A: Docker (recommended) ─────────────────────────────
+docker build -t cloudsilk/mom .
+docker run -d --name cloudsilk -p 20000:20000 cloudsilk/mom
+# open http://localhost:20000/web   (default password: CloudSilk, see config.yaml → defaultPwd)
+
+# ── Option B: From source (single binary, embedded SQLite) ────
+go build -o CloudSilk main.go
+./CloudSilk --ui ./web/dist --service_mode=ALL --single_db=true --port=48900
+
+# ── Web UI development ─────────────────────────────────────────
+cd web && WEB_BASE=/web yarn install && WEB_BASE=/web yarn start
+```
+
+See [docs/DEPLOYMENT.md](./docs/DEPLOYMENT.md) for production deployment (MySQL, Nacos, microservice mode via dubbo-go) and troubleshooting.
+
+### Tech stack
+
+- **Backend:** Golang, Gin, GORM (MySQL / SQLite), dubbo-go + Nacos for optional microservice mode
+- **Frontend:** React, Ant Design, Formily, umi — business pages are rendered dynamically from metadata ([SwiftEase](https://github.com/CloudSilk/SwiftEase) low-code platform)
+- **Printing:** C# label service built on Seagull BarTender, MQTT task dispatch
+
+### Roadmap
+
+The full backlog with priorities lives in [TASKS.md](./TASKS.md). Highlights:
+
+- **Short term:** fix station-dashboard & test-report APIs, order dispatch step, duplicate-report dedup
+- **Mid term:** quality management (inspection orders, SPC), production monitoring dashboards
+- **Long term:** APS scheduling engine, SCADA gateway (Modbus/OPC UA), equipment management
+
+### Contributing
+
+Issues and pull requests are welcome — and actively triaged. See [CONTRIBUTING.md](./CONTRIBUTING.md) for the workflow, code style, and commit conventions.
+
+## License
+
+[Apache 2.0](./LICENSE)
+
+---
+
+# 中文介绍
+
+[Discord](https://discord.gg/AXgZhNPv)
 
 云梭（MOM系统），英文名CloudSilk。
 
@@ -12,34 +125,29 @@
 
 总之，MOM系统就像是一个智能的“管家”，它让工厂的生产更加有序、高效，同时还能确保生产出来的产品质量优良，让工厂的生意越做越好。
 
+## 快速开始
+
+```bash
+# Docker 方式（推荐）
+docker build -t cloudsilk/mom .
+docker run -d --name cloudsilk -p 20000:20000 cloudsilk/mom
+# 浏览器打开 http://localhost:20000/web（默认密码见 config.yaml → defaultPwd）
+
+# 源码方式（单进程 + SQLite，开箱即用）
+go build -o CloudSilk main.go
+./CloudSilk --ui ./web/dist --service_mode=ALL --single_db=true --port=48900
+
+# 前端开发
+cd web && WEB_BASE=/web yarn install && WEB_BASE=/web yarn start
+```
+
+详细部署说明（MySQL、Nacos、微服务模式）见 [docs/DEPLOYMENT.md](./docs/DEPLOYMENT.md)。
+
 ## 系统架构设计
 
 ![](./images/mom-design.png)
 
-## 功能特点
-
-- **MES（Manufacturing Execution System）生产执行系统** - 是专门为制造业设计的一种计算机系统，它位于企业信息技术架构的中间层，连接了企业的管理层（如ERP系统）和工厂的现场控制层（如SCADA系统）。MES系统的主要目的是实时监控和控制生产过程，确保生产计划的执行，并优化生产活动。
-- **APS（Advanced Planning and Scheduling）高级计划和排程系统** - 是一种基于先进算法和技术的软件工具，用于帮助企业优化其生产计划和排程过程。APS系统通常作为企业资源规划（ERP）系统的一个补充，专注于生产调度和详细的排程任务，以确保生产活动能够高效、及时地完成。
-- **WMS（Warehouse Management System）仓库管理系统** - 是一种用于优化仓库运作的软件解决方案。它通过实时监控和指导仓库的日常操作，帮助企业提高仓库效率、减少错误、降低成本，并提供更好的客户服务。
-- **SCADA（Supervisory Control and Data Acquisition）网关** - 是一种硬件和/或软件解决方案，它充当了生产执行系统（MES）和设备之间的桥梁。SCADA网关的主要作用是收集来自各种工业设备和传感器的数据，并将这些数据转换为可以用于监控和控制的信息。
-- **质量管理系统** - 通过实时监控和控制生产过程中的质量指标，确保产品质量符合标准要求。
-- **设备管理系统** - 跟踪和管理生产设备的状态、性能和维护，确保设备的正常运行和生产效率。
-
-## 功能模块
-
-![](/images/mom-function1.png)
-
-![](/images/mom-function2.png)
-
-![](/images/mom-function3.png)
-
-![](/images/mom-function4.png)
-
-![](/images/mom-function5.png)
-
-![](/images/mom-function6.png)
-
-![](/images/mom-function7.png)
+英文版架构图与模块状态表见 [Architecture](#architecture)。
 
 ## 技术架构
 
@@ -50,10 +158,20 @@
 - **微服务架构：** 将系统拆分成多个小型、独立的服务，提高了系统的可扩展性和可维护性。
 - **服务治理：** 使用Nacos进行服务注册与发现，实现了服务之间的解耦和动态扩展。
 - **前后端分离：** 采用前后端分离的设计模式，提高了开发效率和系统的可维护性。
-- **高效稳定：** 通过选用高性能的编程语言和框架，保证了系统的高效稳定运行。
-- **易扩展和易维护：** 采用微服务架构，使得系统具有更好的可扩展性和可维护性。
+
+## 路线图与维护状态
+
+- **正在维护的模块**：MES 生产执行、MSS 物料/仓储、标签打印、追溯、低代码平台（配合 [usercenter](https://github.com/CloudSilk/usercenter) 用户中心）
+- **规划中的模块**：质量管理（检验单/SPC）、APS 高级排程、SCADA 网关（Modbus/OPC UA）、设备管理
+
+完整任务清单与优先级见 [TASKS.md](./TASKS.md)，欢迎认领。
+
+## 参与贡献
+
+Issue 和 PR 都会被认真处理，参与方式见 [CONTRIBUTING.md](./CONTRIBUTING.md)。
 
 ## 截图
+
 ![1](/images/screen1.png)
 ![2](/images/screen2.png)
 ![3](/images/screen3.png)

@@ -1,0 +1,291 @@
+# 云梭 MOM 生产运营管理系统 — 未完成功能任务清单
+
+> 生成日期：2026-08-13（2026-08-14 更新：合并远程 main 的 PR #17-#20 后修订）
+> 分析范围：后端 `pkg/`（432 个 Go 文件）、前端 `web/src`（206 个 TS/TSX 文件）、`csharp/PrintService`
+> 分析方法：TODO/FIXME 标记扫描、被注释代码块排查、README 承诺功能与代码实现对照、前端路由/页面完整性检查
+
+## 总体结论
+
+系统实际完成度：**MES 生产执行核心流程基本可用**（上线装配、进/出站、报工、返工、工艺路线校验），外加 MSS 物料/仓储基础功能（仓库/货架/库位/库存/容器/AGV 任务/退料，来自 PR #17-#20）、低代码 CRUD 平台与 BarTender 标签打印服务。
+
+但 README 宣传的六大模块中，**APS 排程、SCADA 网关、设备管理三块尚无代码实现**，质量管理仅有数据表与基础测试记录。此外存在若干被整段注释禁用的接口。
+
+## 已完成（本轮维护）
+
+- ~~TASK-003 infrastructure.go 字段拼写错误~~ — 已由 PR #17-#20 修复（`station_type`、`id`、`code` 均已正确）
+- 合并远程 main 丢失的 PR #17-#20（webapi 事务处理、MSS/WMS 模块）
+- 修复 PR #20 引入的编译错误（`personnel_qualification.go` 使用了已删除的 `req.Name` 字段）
+- Dockerfile 修复：补齐 config.yaml/web/dist 拷贝、前端多阶段构建、端口对齐（见提交记录）
+
+---
+
+## 优先级说明
+
+| 级别 | 含义 |
+|------|------|
+| P0 | 核心生产流程缺失或线上 Bug，直接影响业务正确性 |
+| P1 | 已有骨架但被禁用/不完整的功能，恢复或补齐即可用 |
+| P2 | README 承诺但未实现的模块，需要立项开发 |
+| P3 | 前端问题与体验缺陷 |
+| P4 | 代码质量、死代码清理、国际化 |
+
+---
+
+# 一、P0 — 核心流程缺失与线上 Bug（后端）
+
+### TASK-001 工单"签派"环节完全未实现
+- **位置**：`pkg/servers/product/logic/product_order.go:379`（`// TODO 签派`，此处无函数体）
+- **现状**：工单生命周期为 接单(ReceiveProductOrder) → 核验(VerifyProductOrder) → **签派【缺失】** → 发放(ReleaseProductOrder)，创建后直接跳过签派。
+- **应实现**：将工单/工序分配到具体产线、班组或人员的派工调度逻辑。
+- **验收标准**：新增 DispatchProductOrder 逻辑函数 + HTTP 接口 + 前端操作入口；工单状态机包含"已签派"状态；签派记录可追溯。
+- **工作量**：大
+
+### TASK-002 重复进站报工去重（以首次进站时间为准）
+- **位置**：`pkg/servers/webapi/logic/production.go:355`
+- **现状**：`//TODO: 重复进站不重复报工，以第一次进站时间为准`。查不到未结束的节拍记录（`HasWorkEndTime:false`）时新建 `ProductRhythmRecord`，重复进站会导致工时重复统计或时间基准错误。
+- **验收标准**：同一产品同一工序重复进站时复用首次进站时间，不重复生成节拍/报工记录，并有集成测试覆盖。
+- **工作量**：中
+
+### TASK-003 ~~webapi 工位查询接口字段名拼写错误~~ ✅ 已修复
+- **位置**：`pkg/servers/webapi/logic/infrastructure.go`
+- **结果**：已由合并进来的 PR #17-#20 修复（`station_type` 过滤、返回字段 `id`/`code` 均已正确），无需再处理。
+
+### TASK-004 产品型号特性表达式正则解析存在 panic 风险
+- **位置**：`pkg/servers/product_base/logic/product_model.go:181`
+- **现状**：`//TODO 原正则在go语言报错，需替换字符`，用 `strings.ReplaceAll(expr, "(?<", "(?P<")` 把 .NET 具名分组转成 Go RE2 语法。但 RE2 不支持反向引用、环视等 .NET 特性，遇到即 `regexp.MustCompile` panic，且该解析是产品型号属性自动赋值的核心路径。
+- **验收标准**：预编译校验 + 错误降级（记录失败并跳过，不 panic）；或引入支持 .NET 语法的正则库；补齐含 `(?<=`、`(?=`、`\1` 等语法的单测。
+- **工作量**：中
+
+### TASK-005 更新接口空值覆盖外键（数据丢失风险）
+- **位置**：
+  - `pkg/servers/product/logic/product_package_type.go:25-31`：`LabelTypeID`/`SystemEventID` 的 omit 逻辑被注释，更新时空值会覆盖这两个外键；
+  - `pkg/servers/product_base/logic/product_model_bom.go:30-33`：`ProductModelID` omit 逻辑被注释，更新型号 BOM 时型号 ID 可能被误清。
+- **验收标准**：恢复 omit 判断逻辑，更新时空字段不覆盖原值。
+- **工作量**：小
+
+---
+
+# 二、P1 — 被注释禁用的功能（恢复/补齐链路）
+
+### TASK-006 质量测试项获取接口整文件被注释
+- **位置**：`pkg/servers/webapi/logic/quality.go`（163 行几乎全部注释）
+- **应实现**：`GetTestProjectWithParameter` — 根据工位/托盘/产品序列号匹配测试工序，按"工序步骤匹配规则 + 特性表达式"筛选测试项目及输入/输出参数（`TestProjectInfo`、`ParameterInfo`）。proto 已在 `pkg/proto/weiapi_quality.proto` 定义。
+- **影响**：质量管理模块对外的测试项下发能力不可用。
+- **验收标准**：恢复并适配最新模型结构，注册路由，联调通过。
+- **工作量**：大
+
+### TASK-007 工位生产看板接口整链路被注释
+- **位置**：
+  - 逻辑层：`pkg/servers/webapi/logic/production.go:591-723`（`GetProductionStationExhibition` 整段注释）
+  - HTTP 层：`pkg/servers/webapi/http/production.go:93-113`（handler 注释）
+  - 路由层：`pkg/servers/webapi/http/production.go:440`（`getproductionstationexhibition` 路由注释）
+- **应实现**：给工位看板返回当前工单号、销售单号、产品型号、开工/完工数量、当前工序、SOP 链接、在制/已制数量、工单 BOM 等聚合数据。
+- **验收标准**：三处恢复并保证数据正确，前端看板可展示。
+- **工作量**：中
+
+### TASK-008 测试记录上报接口被注释
+- **位置**：`pkg/servers/webapi/http/production.go:164-193`（handler）、`:442`（`createproducttestrecord` 路由）
+- **现状**：底层 `ProductTestRecordClient.Add` provider 已存在，仅缺 webapi 编排层。
+- **验收标准**：恢复 handler + 路由，测试设备上报数据可落库。
+- **工作量**：小
+
+### TASK-009 工单核验失败时任务队列执行记录未写入
+- **位置**：`pkg/servers/product/logic/product_order.go:366-372`（`TaskQueueExecution` 创建逻辑被注释）
+- **影响**：核验失败无执行轨迹，排错信息丢失。
+- **验收标准**：恢复失败记录写入，或明确说明移除原因后删除死代码。
+- **工作量**：小
+
+### TASK-010 产线工艺路线两种创建模式的兼容仍是临时方案
+- **位置**：`pkg/servers/webapi/logic/production.go:62`
+- **现状**：`//TODO: 兼容，部分产线是直接创建产品工艺路线，部分是根据工单工艺动态创建`。当前先查 `ProductProcessRoute`，查不到再从 `ProductOrderProcess` 动态创建首道工序路线。
+- **验收标准**：抽象统一的工艺路线解析策略（按产线配置选择模式），补充两种模式的单测。
+- **工作量**：中
+
+### TASK-011 工序步骤匹配算法存在裸 TODO
+- **位置**：`pkg/servers/webapi/logic/production.go:842`（`//TODO` 无说明）
+- **现状**：按工单特性（`AttributeExpressions`）匹配 `ProductionProcessStep` 的算法（`InitialValue` 初值 + 嵌套 break）较脆弱。
+- **验收标准**：确认原意后重构匹配逻辑并补充边界用例，或删除裸 TODO。
+- **工作量**：中
+
+---
+
+# 三、P2 — README 承诺但未实现的模块（需立项开发）
+
+> 以下模块经全量代码搜索（模型/逻辑/proto/前端）确认无实现，按业务依赖建议排序。
+
+### TASK-012 质量管理系统（QM）— 从模型到逻辑整体补齐
+- **现状**：仅有被动记录表 `pkg/model/product_test_record.go`（测试时间、JSON 数据、是否合格）；quality API 全注释、路由未注册。
+- **缺失清单**：
+  - [ ] 检验单/检验项/检验标准主数据管理
+  - [ ] 抽样规则与 AQL 判定
+  - [ ] SPC 统计过程控制（控制图、CPK 计算）
+  - [ ] 不合格品处理流程（与现有返工模块 `product_rework_*` 打通）
+  - [ ] 质量看板与质量指标实时监控
+- **前置依赖**：TASK-006、TASK-008
+- **工作量**：特大（建议拆分为独立子项目分期实施）
+
+### TASK-013 设备管理系统（EM）— 从零开发
+- **现状**：无设备台账/状态机/维护模型。仅 `production_station_breakdown.go` 中有 `EquipmentID`、故障类型/原因/方案等**故障记录**字段。
+- **缺失清单**：
+  - [ ] 设备台账（主数据、资产、位置、责任班组）
+  - [ ] 设备状态实时跟踪（与工站 `CurrentState` 联动）
+  - [ ] 预防性维护计划与点检保养
+  - [ ] 维修工单流程（复用故障记录数据）
+  - [ ] 设备绩效分析（OEE：时间稼动率×性能稼动率×良品率）
+- **工作量**：特大
+
+### TASK-014 WMS 仓库管理系统 — 基础已有，作业流程待补齐
+- **现状**（2026-08-14 更新）：PR #20 已带来 MSS 物料/仓储基础：`material_store`（仓库）、`material_shelf`/`material_shelf_bin`（货架/库位）、`material_inventory`（库存）、`material_container`（容器）、`agv_task_queue`（AGV 任务）、`wms_bill_queue`（单据队列）、退料单系列（`material_return_*`），模型与 CRUD logic 齐全。
+- **仍缺失清单**：
+  - [ ] 收货/上架/拣货/补料作业流程（状态机驱动，目前主要是主数据 CRUD）
+  - [ ] 出入库单据与工单领料联动（对接 `product_order_bom`、`material_store_feed_rule`）
+  - [ ] 盘点与库存调整流程
+  - [ ] 库存周转/预警看板
+  - [ ] AGV 任务下发的实际对接（驱动接口）
+- **工作量**：大（基础比原评估好很多，从"从零开发"降级为"补作业流程"）
+
+### TASK-015 APS 高级计划与排程 — 从零开发
+- **现状**：全库搜索 `schedule/scheduling/排程/APS` 零命中。仅有静态的 `product_order_priority_rule.go`（优先级规则）和 `product_order_release_rule.go`（发放规则），非排程算法。
+- **缺失清单**：
+  - [ ] 资源与产能建模（产线、工位、班组、日历）
+  - [ ] 排程引擎（约束满足或启发式算法：交期/优先级/换型时间）
+  - [ ] 甘特图展示与人工干预调整
+  - [ ] 排程结果下发生成/调整生产工单
+  - [ ] 与 MES 实际进度回滚重排（插单、缺料响应）
+- **建议**：可作为独立服务开发，复用现有 `SmartFlow` 规则引擎做规则编排
+- **工作量**：特大
+
+### TASK-016 SCADA 网关（设备数据采集）— 从零开发
+- **现状**：全仓库（Go/C#/TS）搜索 `modbus/opcua/plc/s7/采集/scada` 零业务命中。`csharp/PrintService` 的 MQTT 仅用于接收打印任务。
+- **缺失清单**：
+  - [ ] 工业协议驱动（建议优先 Modbus，社区库已有 `github.com/CloudSilk/pkg/modbus` 基础；再扩展 OPC UA）
+  - [ ] 点位（Tag）配置管理与采集任务调度
+  - [ ] 设备连接管理（断线重连、状态上报，对接 TASK-013 设备管理）
+  - [ ] 采集数据清洗后进入规则引擎（可复用 `SmartFlow`/RuleGo）与 MES 报工流程
+  - [ ] 边缘网关部署形态（Agent 模式 + 中心配置下发）
+- **工作量**：特大
+
+### TASK-017 生产监控大屏后端聚合接口
+- **现状**：MES 无实时监控数据聚合接口（工位看板接口已在 TASK-007 恢复，但厂级/产线级大屏无数据源）。
+- **缺失清单**：
+  - [ ] 产线级 OEE/节拍/产量达成率聚合接口
+  - [ ] 厂级生产进度、异常告警（复用 `production_station_alarm`）汇总接口
+  - [ ] WebSocket/SSE 实时推送
+- **前置依赖**：TASK-007
+- **工作量**：大
+
+---
+
+# 四、P3 — 前端未完成功能（web/）
+
+### TASK-018 首页 Home 页面导入路径断裂（坏页面）
+- **位置**：`web/src/pages/Home/index.tsx` — `import Editor from '@/form/components/common/AtaliEditor/editor'`，但 `src/form` 目录不存在（只有 `src/pages/form`）。路由 `/home` 已注册，运行时必报错。
+- **验收标准**：修正导入或移除该页面与路由。
+- **工作量**：小
+
+### TASK-019 点击菜单时多页签（Tab）不刷新
+- **位置**：`web/src/app.tsx:167` — `// TODO 如何在这边点击的时候更新tab`
+- **验收标准**：点击菜单项时已打开的 Tab 正确刷新/激活。
+- **工作量**：中
+
+### TASK-020 权限控制形同虚设
+- **位置**：`web/src/access.ts` 定义了 `canSeeAdmin`，但所有路由均无 `access` 字段，权限从未生效。
+- **验收标准**：路由/菜单接入 usercenter RBAC 权限（菜单权限由后端 curd 元数据下发）。
+- **工作量**：中
+
+### TASK-021 服务器地址硬编码
+- **位置**：
+  - `web/src/pages/bpm/DesignerPage/index.tsx:212`：`fileUrlPrefix='http://101.132.37.232'`
+  - `web/src/pages/cell/edit/index.tsx:107`：`cellCache.init('','http://101.132.37.232')`
+  - `web/config/proxy.ts:12`：prod target 同 IP
+- **验收标准**：全部改为环境变量配置。
+- **工作量**：小
+
+### TASK-022 修改密码失败提示类型错误（Bug）
+- **位置**：`web/src/components/RightContent/AvatarDropdown.tsx:106` — 失败时调用 `message.success('密码修改失败!')`，应为 `message.error`。
+- **工作量**：小
+
+### TASK-023 "个人中心"菜单无点击处理
+- **位置**：`web/src/components/RightContent/AvatarDropdown.tsx` — `onMenuClick` 无 `key === "center"` 分支，点击无响应。
+- **验收标准**：实现跳转个人中心页（或移除该菜单项）。
+- **工作量**：小
+
+### TASK-024 BPM 流程设计器右侧菜单为占位样例
+- **位置**：`web/src/pages/bpm/DesignerPage/index.tsx:25-52` — antd 样例菜单（"Navigation One/Two"、"Option 1~12"），onClick 仅 console.log。
+- **验收标准**：替换为真实的流程组件面板（节点/网关/属性配置）。
+- **工作量**：大
+
+### TASK-025 AI 对话面板使用假数据
+- **位置**：`web/src/pages/ResizablePanel/index.tsx:26-30` — `ProChat` request 返回写死的模拟回复，未对接真实 AI 接口（usercenter 已有 OpenAI 兼容网关 `/v1/chat/completions` 可直接对接）。
+- **工作量**：中
+
+### TASK-026 多语言切换入口被注释禁用
+- **位置**：`web/src/components/RightContent/index.tsx:25` — `<SelectLang/>` 被注释，用户无法切换语言。
+- **验收标准**：恢复入口并确认 locale 文件完整（见 TASK-032）。
+- **工作量**：小
+
+### TASK-027 登录页国际化失效
+- **位置**：`web/src/pages/user/Login/index.tsx:28-29` — `formatMessage` 直接 `return defaultMessage`，真实 `intl.formatMessage` 被注释。
+- **工作量**：小
+
+### TASK-028 Dashboard 兜底 formID 硬编码
+- **位置**：`web/src/pages/dashboard/index.tsx` — URL 无 `formID` 时硬编码 `formID="7877b188-2593-4c1c-bb1e-7ca7eb9dc0f5"`，跨环境指向错误表单。
+- **验收标准**：改为按环境配置或后端默认表单接口获取。
+- **工作量**：小
+
+---
+
+# 五、P4 — 代码质量、死代码与国际化
+
+### TASK-029 清理后端陈旧 TODO 标记（5 处）
+- **位置**：`pkg/servers/webapi/logic/production.go` 行 106、130、167、201、1660 — TODO 注释下方代码已实现所描述动作，属标记未清理。
+- **工作量**：小
+
+### TASK-030 恢复被注释的必填校验与状态分支
+- `pkg/servers/product_base/logic/product_model.go:82`：`ProductCategoryID` 非空校验被注释（创建型号时类别可不填）；
+- `pkg/servers/product/logic/product_order.go:114-116`：`if false {...}` 死代码，工单状态固定为 `Uploaded`，确认原意后恢复或删除。
+- **工作量**：小
+
+### TASK-031 前端死代码清理
+- **清单**：
+  - `web/src/services/demo/`（OneAPI 生成的样例，无引用）
+  - `web/src/components/Footer/`（版权年份过期 2023、外链指向其它系统、已被注释禁用）
+  - `web/src/components/Guide/`、`HeaderSearch/`、`HeaderContent/`（无引用）
+  - `web/src/pages/editor/index.tsx`（无路由，内容为无关的测试数据）
+  - `web/src/pages/dashboard/data.ts`（mock 聊天数据，无引用）
+  - `web/src/pages/block/index.tsx`（Blocksuite POC，直接 appendChild 到 body，脱离 React 体系——移除或正式集成）
+  - 9 处 `console.log` 调试残留（`app.tsx:58`、`bpm/DesignerPage:115` 等）
+- **工作量**：小
+
+### TASK-032 国际化补全与裁剪
+- **清单**：
+  - zh-TW 相对 zh-CN 缺失约 35 个 key（整份 `menu.*`、`app.settings.*`、`app.setting.*`、`component.globalHeader.*`、`app.pwa.*` 等）
+  - en-US `pages.layouts.userLayout.title` 仍是 antd 脚手架原文，zh-CN 已改为"智能工厂"
+  - 所有 locale 均为 ant-design-pro 样板文案，与本项目实际页面不符；MOM 业务术语（生产/物料/标签/追溯）完全未做国际化
+  - `web/src/pages/404.tsx` 文案硬编码英文未走国际化
+- **工作量**：中
+
+### TASK-033 接口调用未纳入 service 层
+- **位置**：`web/src/app.tsx:26-38`、`AvatarDropdown.tsx:15-36` — 裸用 `umiRequest` 硬写 URL（`/api/core/auth/user/profile` 等）。
+- **验收标准**：统一收敛到 service 层。
+- **工作量**：小
+
+---
+
+# 六、任务统计与建议实施顺序
+
+| 优先级 | 任务数 | 说明 |
+|--------|--------|------|
+| P0 | 4 (TASK-001/002/004/005) | 直接影响生产数据正确性，建议立即排期（TASK-003 已修复） |
+| P1 | 6 (TASK-006~011) | 恢复/补齐被禁用链路，投入产出比最高 |
+| P2 | 6 (TASK-012~017) | 大模块立项，建议按 质量→设备→WMS作业流程→SCADA→APS 顺序分期 |
+| P3 | 11 (TASK-018~028) | 前端问题，其中 018/021/022 为快速修复项 |
+| P4 | 5 (TASK-029~033) | 技术债清理，可穿插进行 |
+
+**建议第一阶段（快速见效，约 1~2 周）**：TASK-003、005、008、009、018、021、022、023、029、030、031 — 全部为小工作量修复。
+
+**建议第二阶段（核心补全）**：TASK-001、002、004、006、007、010、011、017、019、020、024、025。
+
+**第三阶段（大模块分期立项）**：TASK-012 质量管理 → TASK-013 设备管理 → TASK-014 WMS → TASK-016 SCADA → TASK-015 APS。
+
+**文档修正**：在上述模块落地前，建议同步修订 README.md 中对 APS/WMS/SCADA/设备管理/质量管理的描述，标注"规划中"，避免宣传与实现不符。
