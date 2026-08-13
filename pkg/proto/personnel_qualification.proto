@@ -4,7 +4,6 @@ package proto;
 option go_package = "./;proto";
 
 import "mom_common.proto";
-import "personnel_qualification_type.proto";
 
 service PersonnelQualification{
     rpc Query(QueryPersonnelQualificationRequest)returns(QueryPersonnelQualificationResponse){}
@@ -18,9 +17,10 @@ message GetPersonnelQualificationRequest{
 message PersonnelQualificationInfo {
 	//ID 
     string id=1;
-	//资质类型ID 
-    string personnelQualificationTypeID=2;
-    PersonnelQualificationTypeInfo personnelQualificationType=3;
+	//产品型号ID 
+    string productModelID=2;
+    //生产工序ID 
+    string productionProcessID=3;
 	//认证人员ID 
     string certifiedUserID=4;
     string certifiedUserName=10;
@@ -46,8 +46,8 @@ message QueryPersonnelQualificationRequest{
     string sortConfig=3;
     // @inject_tag: uri:"productionLineID" form:"productionLineID"
     string productionLineID=4;
-    // @inject_tag: uri:"name" form:"name"
-    string name=5;
+    // @inject_tag: uri:"certifiedUserID" form:"certifiedUserID"
+    string certifiedUserID=5;
     // @inject_tag: uri:"productionProcessID" form:"productionProcessID"
     string productionProcessID=6;
     // @inject_tag: uri:"productModelID" form:"productModelID"

@@ -6,7 +6,7 @@ option go_package = "./;proto";
 message GetTestProjectWithParameterRequest{
     //工位代号
     string productionStation=1;
-    //托盘号
+    //载具号
     string trayNo=2;
     //产品序列号
     string productSerialNo=3;

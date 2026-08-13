@@ -1,0 +1,49 @@
+syntax="proto3";
+
+package proto;
+option go_package="./;proto";
+
+import "mom_common.proto";
+
+message MaterialReturnTypeInfo{
+    string id=1;
+    //代号
+    string code=2;
+    //描述
+    string description=3;
+    //备注
+    string remark=4;
+}
+
+message QueryMaterialReturnTypeRequest{
+    // @inject_tag: uri:"pageIndex" form:"pageIndex"
+    int64 pageIndex=1;
+    // @inject_tag: uri:"pageSize" form:"pageSize"
+    int64 pageSize=2;
+    // @inject_tag: uri:"sortConfig" form:"sortConfig"
+    string sortConfig=3;
+    // 代号或描述
+    // @inject_tag: uri:"code" form:"code"
+    string code=4;
+}
+
+message QueryMaterialReturnTypeResponse{
+    Code code=1;
+    string message=2;
+    repeated MaterialReturnTypeInfo data=3;
+    int64 pages=4;
+    int64 records=5;
+    int64 total=6;
+}
+
+message GetAllMaterialReturnTypeResponse{
+    Code code=1;
+    string message=2;
+    repeated MaterialReturnTypeInfo data=3;
+}
+
+message GetMaterialReturnTypeDetailResponse{
+    Code code=1;
+    string message=2;
+    MaterialReturnTypeInfo data=3;
+}

@@ -1,0 +1,66 @@
+syntax="proto3";
+
+package proto;
+option go_package = "./;proto";
+
+import "mom_common.proto";
+import "material_container_type.proto";
+
+message AGVTaskTypeInfo {
+	//ID 
+ 	string id=1;
+	//代号 
+ 	string code=2;
+	//描述 
+    string description=3;
+	//货架类型 
+    int32 shelfType=4;
+	//场景类型 
+    int32 sceneType=5;
+	//任务点位 
+ 	string positionCode=6;
+	//备注 
+    string remark=7;
+	//容器类型ID 
+    string materialContainerTypeID=8;
+    MaterialContainerTypeInfo materialContainerType=9;
+}
+
+message QueryAGVTaskTypeRequest{
+    // @inject_tag: uri:"pageIndex" form:"pageIndex"
+    int64 pageIndex=1;
+    // @inject_tag: uri:"pageSize" form:"pageSize"
+    int64 pageSize=2;
+    // @inject_tag: uri:"sortConfig" form:"sortConfig"
+    string sortConfig=3;
+    //货架类型 
+	// @inject_tag: uri:"shelfType" form:"shelfType"
+    int32 shelfType=4;
+	//场景类型 
+	// @inject_tag: uri:"sceneType" form:"sceneType"
+    int32 sceneType=5;
+	//容器类型ID 
+	// @inject_tag: uri:"materialContainerTypeID" form:"materialContainerTypeID"
+    string materialContainerTypeID=6;
+}
+
+message QueryAGVTaskTypeResponse{
+    Code code=1;
+    string message=2;
+    repeated AGVTaskTypeInfo data=3;
+    int64 pages=4;
+    int64 records=5;
+    int64 total=6;
+}
+
+message GetAllAGVTaskTypeResponse{
+    Code code=1;
+    string message=2;
+    repeated AGVTaskTypeInfo data=3;
+}
+
+message GetAGVTaskTypeDetailResponse{
+    Code code=1;
+    string message=2;
+    AGVTaskTypeInfo data=3;
+}

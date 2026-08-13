@@ -1,0 +1,76 @@
+syntax="proto3";
+
+package proto;
+option go_package="./;proto";
+
+import "mom_common.proto";
+import "material_container_type.proto";
+import "material_shelf.proto";
+import "material_info.proto";
+
+message MaterialShelfBinInfo{
+    string id=1;
+    //编号
+    string code=2;
+    //行
+    int32 rowIndex=3;
+    //列
+    int32 columnIndex=4;
+    //识别码
+    string identifier=5;
+    //兼容容器类型ID
+    string materialContainerTypeID=6;
+    MaterialContainerTypeInfo materialContainerType=7;
+    //缺料调度
+    bool enableDispatch=8;
+    //状态监控
+    bool enableMonitor=9;
+    //当前状态
+    string currentState=10;
+    //状态变更时间
+    string lastUpdateTime=11;
+    //备注
+    string remark=12;
+    //隶属料架ID
+    string materialShelfID=13;
+    MaterialShelfInfo materialShelf=14;
+    //当前物料ID
+    string materialInfoID=15;
+    MaterialInfoInfo materialInfo=16;
+}
+
+message QueryMaterialShelfBinRequest{
+    // @inject_tag: uri:"pageIndex" form:"pageIndex"
+    int64 pageIndex=1;
+    // @inject_tag: uri:"pageSize" form:"pageSize"
+    int64 pageSize=2;
+    // @inject_tag: uri:"sortConfig" form:"sortConfig"
+    string sortConfig=3;
+    //编号
+    // @inject_tag: uri:"code" form:"code"
+    string code=4;
+    //当前状态
+    // @inject_tag: uri:"currentState" form:"currentState"
+    string currentState=5;
+}
+
+message QueryMaterialShelfBinResponse{
+    Code code=1;
+    string message=2;
+    repeated MaterialShelfBinInfo data=3;
+    int64 pages=4;
+    int64 records=5;
+    int64 total=6;
+}
+
+message GetAllMaterialShelfBinResponse{
+    Code code=1;
+    string message=2;
+    repeated MaterialShelfBinInfo data=3;
+}
+
+message GetMaterialShelfBinDetailResponse{
+    Code code=1;
+    string message=2;
+    MaterialShelfBinInfo data=3;
+}

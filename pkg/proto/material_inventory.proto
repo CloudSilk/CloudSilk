@@ -1,0 +1,79 @@
+syntax="proto3";
+
+package proto;
+option go_package="./;proto";
+
+import "mom_common.proto";
+import "material_info.proto";
+import "material_store.proto";
+
+message MaterialInventoryInfo{
+    string id=1;
+    //物料信息ID
+    string materialInfoID=2;
+    MaterialInfoInfo materialInfo=3;
+    //物料仓库ID
+    string materialStoreID=4;
+    MaterialStoreInfo materialStore=5;
+    //库存数量
+    int64 storedQTY=6;
+    //锁定数量
+    int64 issuedQTY=7;
+    //正在补料数量
+    int64 feedingQTY=8;
+    //正在备库数量
+    int64 issuingQTY=9;
+    //创建时间
+    string createTime=10;
+    //创建人员
+    string createUserID=11;
+    string createUserName=15;
+    //当前状态
+    string currentState=12;
+    //状态变更时间
+    string lastUpdateTime=13;
+    //备注
+    string remark=14;
+}
+
+message QueryMaterialInventoryRequest{
+    // @inject_tag: uri:"pageIndex" form:"pageIndex"
+    int64 pageIndex=1;
+    // @inject_tag: uri:"pageSize" form:"pageSize"
+    int64 pageSize=2;
+    // @inject_tag: uri:"sortConfig" form:"sortConfig"
+    string sortConfig=3;
+    //创建时间开始
+    // @inject_tag: uri:"createTime0" form:"createTime0"
+    string createTime0=4;
+    //创建时间结束
+    // @inject_tag: uri:"createTime1" form:"createTime1"
+    string createTime1=5;
+    //物料代号或描述
+    // @inject_tag: uri:"materialInfo" form:"materialInfo"
+    string materialInfo=6;
+    //仓库代号或描述
+    // @inject_tag: uri:"materialStore" form:"materialStore"
+    string materialStore=7; 
+}
+
+message QueryMaterialInventoryResponse{
+    Code code=1;
+    string message=2;
+    repeated MaterialInventoryInfo data=3;
+    int64 pages=4;
+    int64 records=5;
+    int64 total=6;
+}
+
+message GetAllMaterialInventoryResponse{
+    Code code=1;
+    string message=2;
+    repeated MaterialInventoryInfo data=3;
+}
+
+message GetMaterialInventoryDetailResponse{
+    Code code=1;
+    string message=2;
+    MaterialInventoryInfo data=3;
+}

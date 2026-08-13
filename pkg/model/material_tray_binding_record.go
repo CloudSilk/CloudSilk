@@ -14,7 +14,7 @@ type MaterialTrayBindingRecord struct {
 	CurrentState   string        `gorm:"size:50;comment:当前状态"`
 	LastUpdateTime time.Time     `gorm:"autoUpdateTime:nano;comment:状态变更时间"`
 	Remark         string        `gorm:"size:500;comment:备注"`
-	MaterialTrayID string        `gorm:"size:36;comment:使用托盘ID"`
+	MaterialTrayID string        `gorm:"size:36;comment:使用载具ID"`
 	MaterialTray   *MaterialTray `gorm:"constraint:OnDelete:CASCADE"`
 	ProductInfoID  string        `gorm:"size:36;comment:绑定产品ID"`
 	ProductInfo    *ProductInfo  `gorm:"constraint:OnDelete:CASCADE"`

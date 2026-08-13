@@ -4,6 +4,8 @@ package proto;
 option go_package = "./;proto";
 
 import "mom_common.proto";
+import "production_line.proto";
+import "product_order.proto";
 
 service ProductRhythmRecord{
     rpc Add(ProductRhythmRecordInfo)returns(CommonResponse){}
@@ -43,18 +45,13 @@ message ProductRhythmRecordInfo {
  	string remark=12;
 	//生产工站ID 
     string productionStationID=13;
+    ProductionStationInfo productionStation=14;
 	//生产工序ID 
-    string productionProcessID=14;
+    string productionProcessID=15;
+    ProductionProcessInfo productionProcess=16;
 	//产品信息ID 
-    string productInfoID=15;
-	//生产工单号
-	string productOrderNo=16;
-	//产品序列号
-	string productSerialNo=17;
-	//生产工站
-	string productionStationDescription=18;
-	//生产工序
-	string productionProcessDescription=19;
+    string productInfoID=17;
+    ProductInfoInfo productInfo=18;
 }
 
 message QueryProductRhythmRecordRequest{

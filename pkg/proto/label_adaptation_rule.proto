@@ -1,0 +1,56 @@
+syntax="proto3";
+
+package proto;
+option go_package = "./;proto";
+
+import "mom_common.proto";
+import "label_template.proto";
+import "attribute_expression.proto";
+
+message LabelAdaptationRuleInfo {
+ 	string id=1;
+	//优先级
+	int32 priority=2;
+	//适配标签模板ID
+	string labelTemplateID=3;
+	LabelTemplateInfo labelTemplate=4;
+	//是否启用
+	bool enable=5;
+	//默认适配
+	bool initialValue=6;
+	//需要复核
+	bool doubleCheck=7;
+	//备注
+	string remark=8;
+	repeated AttributeExpressionInfo attributeExpressions=9;
+}
+
+message QueryLabelAdaptationRuleRequest{
+    // @inject_tag: uri:"pageIndex" form:"pageIndex"
+    int64 pageIndex=1;
+    // @inject_tag: uri:"pageSize" form:"pageSize"
+    int64 pageSize=2;
+    // @inject_tag: uri:"sortConfig" form:"sortConfig"
+    string sortConfig=3;
+}
+
+message QueryLabelAdaptationRuleResponse{
+    Code code=1;
+    string message=2;
+    repeated LabelAdaptationRuleInfo data=3;
+    int64 pages=4;
+    int64 records=5;
+    int64 total=6;
+}
+
+message GetAllLabelAdaptationRuleResponse{
+    Code code=1;
+    string message=2;
+    repeated LabelAdaptationRuleInfo data=3;
+}
+
+message GetLabelAdaptationRuleDetailResponse{
+    Code code=1;
+    string message=2;
+    LabelAdaptationRuleInfo data=3;
+}

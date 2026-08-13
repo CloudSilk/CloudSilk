@@ -38,6 +38,11 @@ func AutoMigrate() {
 		&LabelTemplate{},
 		&LabelParameter{},
 		&LabelType{},
+		&LabelPrintQueue{},
+		&LabelPrintQueueParameter{},
+		&LabelPrintQueueExecution{},
+		&LabelPrintTask{},
+		&LabelAdaptationRule{},
 
 		&ProductCategory{},
 		&ProductAttribute{},
@@ -61,7 +66,21 @@ func AutoMigrate() {
 		&MaterialReturnRequestForm{},
 		&MaterialReturnType{},
 		&MaterialReturnCause{},
+		&MaterialReturnCauseAvailableCategory{},
+		&MaterialReturnCauseAvailableType{},
 		&MaterialReturnSolution{},
+		&MaterialReturnSolutionAvailableCause{},
+		&MaterialContainer{},
+		&MaterialContainerType{},
+		&MaterialShelf{},
+		&MaterialShelfBin{},
+		&MaterialStore{},
+		&MaterialStoreAvailableLine{},
+		&MaterialInventory{},
+		&MaterialStoreFeedRule{},
+		&AGVTaskType{},
+		&AGVTaskQueue{},
+		&WMSBillQueue{},
 
 		&ProductInfo{},
 		&ProductOrderAttribute{},
@@ -109,6 +128,9 @@ func AutoMigrate() {
 		&ProcessStepParameterValue{},
 		&ProductReworkOperation{},
 		&ProductReworkRoute{},
+		&ProductReworkProcess{},
+		&ProductReworkProcessAvailableStation{},
+		&ProductReworkProcessAvailableProcess{},
 
 		&ProductionProcess{},
 		&ProductionStationAlarm{},
@@ -146,18 +168,22 @@ func AutoMigrate() {
 		&CodingTemplate{},
 		&CodingElement{},
 		&CodingElementValue{},
+		&PrintServer{},
+		&Printer{},
 
 		&OperationTrace{},
 		&InvocationTrace{},
 		&ExceptionTrace{},
 
 		&PersonnelQualification{},
+		&PersonnelQualificationType{},
+		&PersonnelQualificationTypeAvailableModel{},
 
 		&AttributeExpression{},
 		&PropertyExpression{},
 
-		&PrintServer{},
-		&Printer{},
+		&ProductionStationEfficiency{},
+		&ProductionEfficiency{},
 	)
 }
 

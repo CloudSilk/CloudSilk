@@ -1,0 +1,93 @@
+syntax="proto3";
+
+package proto;
+option go_package="./;proto";
+
+import "mom_common.proto";
+import "material_supplier.proto";
+import "production_line.proto";
+import "material_return_type.proto";
+import "material_return_cause.proto";
+import "material_return_solution.proto";
+import "material_info.proto";
+
+message MaterialReturnRequestFormInfo{
+    string id=1;
+    //申请单号
+    string formNo=2;
+    //创建时间
+    string createTime=3;
+    //创建人员ID
+    string createUserID=4;
+    //物料供应商ID
+    string materialSupplierID=5;
+    MaterialSupplierInfo materialSupplier=6;
+    //物料信息ID
+    string materialInfoID=7;
+    MaterialInfoInfo materialInfo=8;
+    //发现工站ID
+    string productionLineID=9;
+    ProductionLineInfo productionLine=10;
+    //物料追溯号
+    string materialTraceNo=11;
+    //退料数量
+    float quantity=12;
+    //退料来源ID
+    string returnID=13;
+    //退料来源
+    string returnSource=14;
+    //退料原因
+    string returnReason=15;
+    //退料类型ID
+    string materialReturnTypeID=16;
+    MaterialReturnTypeInfo materialReturnType=17;
+    //退料原因ID
+    string materialReturnCauseID=18;
+    MaterialReturnCauseInfo materialReturnCause=19;
+    //处理方案ID
+    string materialReturnSolutionID=20;
+    //锁定数量
+    MaterialReturnSolutionInfo materialReturnSolution=21;
+    //退料简述
+    string returnBrief=22;
+    //复核时间
+    string checkTime=23;
+    //复核人员ID
+    string checkUserID=24;
+    //旧件处理
+    string handleMethod=25;
+    //当前状态
+    int32 currentState=26;
+    //备注
+    string remark=27;
+}
+
+message QueryMaterialReturnRequestFormRequest{
+    // @inject_tag: uri:"pageIndex" form:"pageIndex"
+    int64 pageIndex=1;
+    // @inject_tag: uri:"pageSize" form:"pageSize"
+    int64 pageSize=2;
+    // @inject_tag: uri:"sortConfig" form:"sortConfig"
+    string sortConfig=3;
+}
+
+message QueryMaterialReturnRequestFormResponse{
+    Code code=1;
+    string message=2;
+    repeated MaterialReturnRequestFormInfo data=3;
+    int64 pages=4;
+    int64 records=5;
+    int64 total=6;
+}
+
+message GetAllMaterialReturnRequestFormResponse{
+    Code code=1;
+    string message=2;
+    repeated MaterialReturnRequestFormInfo data=3;
+}
+
+message GetMaterialReturnRequestFormDetailResponse{
+    Code code=1;
+    string message=2;
+    MaterialReturnRequestFormInfo data=3;
+}

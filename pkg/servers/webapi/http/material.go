@@ -12,8 +12,8 @@ import (
 )
 
 // BindMaterialTray godoc
-// @Summary 绑定物料托盘
-// @Description 绑定物料托盘
+// @Summary 绑定物料载具
+// @Description 绑定物料载具
 // @Tags WebAPI
 // @Accept  json
 // @Produce  json
@@ -31,7 +31,7 @@ func BindMaterialTray(c *gin.Context) {
 		resp.Code = 400
 		resp.Message = err.Error()
 		c.JSON(http.StatusOK, resp)
-		log.Warnf(context.Background(), "TransID:%s,请求绑定物料托盘接口参数无效:%v", transID, err)
+		log.Warnf(context.Background(), "TransID:%s,请求绑定物料载具接口参数无效:%v", transID, err)
 		return
 	}
 

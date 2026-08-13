@@ -4,11 +4,11 @@ import (
 	"context"
 	"net/http"
 
-	"github.com/CloudSilk/CloudSilk/pkg/servers/trace/logic"
 	"github.com/CloudSilk/CloudSilk/pkg/model"
 	"github.com/CloudSilk/CloudSilk/pkg/proto"
+	"github.com/CloudSilk/CloudSilk/pkg/servers/trace/logic"
 	"github.com/CloudSilk/pkg/utils/log"
-	"github.com/CloudSilk/pkg/utils/middleware"
+	"github.com/CloudSilk/usercenter/utils/middleware"
 	"github.com/gin-gonic/gin"
 )
 

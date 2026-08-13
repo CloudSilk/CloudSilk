@@ -25,10 +25,10 @@ func UpdateMaterialTray(m *model.MaterialTray) error {
 		return err
 	}
 	if !m.Enable && materialTray.ProductInfoID != nil {
-		return fmt.Errorf("停用失败，当前托盘已绑定序列号为%s的产品。", materialTray.ProductInfo.ProductSerialNo)
+		return fmt.Errorf("停用失败，当前载具已绑定序列号为%s的产品。", materialTray.ProductInfo.ProductSerialNo)
 	}
 	if m.ProductionLineID != materialTray.ProductionLineID && materialTray.ProductInfoID != nil {
-		return fmt.Errorf("变更产线失败，当前托盘已绑定序列号为%s的产品。", materialTray.ProductInfo.ProductSerialNo)
+		return fmt.Errorf("变更产线失败，当前载具已绑定序列号为%s的产品。", materialTray.ProductInfo.ProductSerialNo)
 	}
 
 	return model.DB.DB().Omit("created_at").Save(m).Error
@@ -98,7 +98,7 @@ func DeleteMaterialTray(id string) (err error) {
 		return err
 	}
 	if productInfoID != "" {
-		return fmt.Errorf("托盘正在使用中，无法删除")
+		return fmt.Errorf("载具正在使用中，无法删除")
 	}
 
 	return model.DB.DB().Delete(&model.MaterialTray{}, "`id` = ?", id).Error

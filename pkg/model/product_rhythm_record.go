@@ -24,8 +24,9 @@ type ProductRhythmRecord struct {
 	ProductionStationID string             `json:"productionStationID" gorm:"comment:生产工站ID"`
 	ProductionStation   *ProductionStation `json:"productionStation" gorm:"constraint:OnDelete:CASCADE"` //生产工站
 	ProductionProcessID string             `json:"productionProcessID" gorm:"comment:生产工序ID"`
+	ProductionProcess   *ProductionProcess `json:"productionProcess" gorm:"constraint:OnDelete:CASCADE"` //生产工序
 	ProductInfoID       string             `json:"productInfoID" gorm:"comment:产品信息ID"`
-	ProductInfo         *ProductInfo       ` gorm:"constraint:OnDelete:CASCADE"`
+	ProductInfo         *ProductInfo       `gorm:"constraint:OnDelete:CASCADE"`
 }
 
 func PBToProductRhythmRecords(in []*proto.ProductRhythmRecordInfo) []*ProductRhythmRecord {
@@ -41,8 +42,7 @@ func PBToProductRhythmRecord(in *proto.ProductRhythmRecordInfo) *ProductRhythmRe
 		return nil
 	}
 	return &ProductRhythmRecord{
-		ModelID: ModelID{ID: in.Id},
-		// CreateTime:          utils.ParseTime(in.CreateTime),
+		ModelID:             ModelID{ID: in.Id},
 		StandardWorkTime:    in.StandardWorkTime,
 		WorkUserID:          in.WorkUserID,
 		WorkStartTime:       utils.ParseSqlNullTime(in.WorkStartTime),
@@ -70,41 +70,25 @@ func ProductRhythmRecordToPB(in *ProductRhythmRecord) *proto.ProductRhythmRecord
 	if in == nil {
 		return nil
 	}
-	productOrderNo := ""
-	productSerialNo := ""
-	productionStationDescription := ""
-	productionProcessDescription := ""
-	if in.ProductionStation != nil {
-		productionStationDescription = in.ProductionStation.Description
-	}
-	// if in.ProductionProcess != nil {
-	// 	productionProcessDescription = in.ProductionProcess.Description
-	// }
-	// if in.ProductInfo != nil {
-	// 	productSerialNo = in.ProductInfo.ProductSerialNo
-	// 	if in.ProductInfo.ProductOrder != nil {
-	// 		productOrderNo = in.ProductInfo.ProductOrder.ProductOrderNo
-	// 	}
-	// }
+
 	m := &proto.ProductRhythmRecordInfo{
-		Id:                           in.ID,
-		CreateTime:                   utils.FormatTime(in.CreateTime),
-		StandardWorkTime:             in.StandardWorkTime,
-		WorkUserID:                   in.WorkUserID,
-		WorkStartTime:                utils.FormatSqlNullTime(in.WorkStartTime),
-		WaitTime:                     in.WaitTime,
-		WorkTime:                     in.WorkTime,
-		OverTime:                     in.OverTime,
-		WorkEndTime:                  utils.FormatSqlNullTime(in.WorkEndTime),
-		IsRework:                     in.IsRework,
-		Remark:                       in.Remark,
-		ProductionStationID:          in.ProductionStationID,
-		ProductionProcessID:          in.ProductionProcessID,
-		ProductInfoID:                in.ProductInfoID,
-		ProductOrderNo:               productOrderNo,
-		ProductSerialNo:              productSerialNo,
-		ProductionStationDescription: productionStationDescription,
-		ProductionProcessDescription: productionProcessDescription,
+		Id:                  in.ID,
+		CreateTime:          utils.FormatTime(in.CreateTime),
+		StandardWorkTime:    in.StandardWorkTime,
+		WorkUserID:          in.WorkUserID,
+		WorkStartTime:       utils.FormatSqlNullTime(in.WorkStartTime),
+		WaitTime:            in.WaitTime,
+		WorkTime:            in.WorkTime,
+		OverTime:            in.OverTime,
+		WorkEndTime:         utils.FormatSqlNullTime(in.WorkEndTime),
+		IsRework:            in.IsRework,
+		Remark:              in.Remark,
+		ProductionStationID: in.ProductionStationID,
+		ProductionStation:   ProductionStationToPB(in.ProductionStation),
+		ProductionProcessID: in.ProductionProcessID,
+		ProductionProcess:   ProductionProcessToPB(in.ProductionProcess),
+		ProductInfoID:       in.ProductInfoID,
+		ProductInfo:         ProductInfoToPB(in.ProductInfo),
 	}
 	return m
 }

@@ -116,61 +116,47 @@ func CreateProductOrder(m *model.ProductOrder) (string, error) {
 	// }
 	m.OrderTime = sql.NullTime{Time: time.Now(), Valid: true}
 
-	err = model.DB.DB().Transaction(func(tx *gorm.DB) error {
+	source := ""
+	if err = model.DB.DB().Transaction(func(tx *gorm.DB) error {
 		//上传
 		if err := tx.Create(m).Error; err != nil {
+			source = "工单上传"
 			return err
 		}
 
 		//工单接单
 		if err := ReceiveProductOrder(tx, m.ID); err != nil {
-			if err := tx.Create(&model.ExceptionTrace{
-				Host:         "/api/mom/product/productorder/add",
-				Level:        types.EventTypeError,
-				ReportUserID: m.CreateUserID,
-				Source:       "工单接单",
-				Message:      err.Error(),
-				StackTrace:   string(debug.Stack()),
-			}).Error; err != nil {
-				return err
-			}
+			source = "工单接单"
 			return err
 		}
 
 		//工单核验
 		if err := VerifyProductOrder(tx, m.ID); err != nil {
-			if err := tx.Create(&model.ExceptionTrace{
-				Host:         "/api/mom/product/productorder/add",
-				Level:        types.EventTypeError,
-				ReportUserID: m.CreateUserID,
-				Source:       "工单核验",
-				Message:      err.Error(),
-				StackTrace:   string(debug.Stack()),
-			}).Error; err != nil {
-				return err
-			}
+			source = "工单核验"
 			return err
 		}
 
 		//工单发放
 		if err := ReleaseProductOrder(tx, m.ID); err != nil {
-			if err := tx.Create(&model.ExceptionTrace{
-				Host:         "/api/mom/product/productorder/add",
-				Level:        types.EventTypeError,
-				ReportUserID: m.CreateUserID,
-				Source:       "工单发放",
-				Message:      err.Error(),
-				StackTrace:   string(debug.Stack()),
-			}).Error; err != nil {
-				return err
-			}
+			source = "工单发放"
 			return err
 		}
 
 		return nil
-	})
+	}); err != nil {
+		if err := model.DB.DB().Create(&model.ExceptionTrace{
+			Host:         "/api/mom/product/productorder/add",
+			Level:        types.EventTypeError,
+			ReportUserID: m.CreateUserID,
+			Source:       source,
+			Message:      err.Error(),
+			StackTrace:   string(debug.Stack()),
+		}).Error; err != nil {
+			return "", err
+		}
+	}
 
-	return m.ID, err
+	return m.ID, nil
 }
 
 func UpdateProductOrder(m *model.ProductOrder) error {
@@ -363,13 +349,6 @@ func VerifyProductOrder(tx *gorm.DB, id string) (err error) {
 	}
 
 	if err = tx.Model(productOrder).Where("`id` = ?", id).Update("current_state", types.ProductOrderStateVerified).Error; err != nil {
-		// if err = model.DB.DB().Create(model.TaskQueueExecution{
-		// 	Success:       false,
-		// 	FailureReason: fmt.Sprintf("%v", err),
-		// 	DataTrace:     fmt.Sprintf("数据表: ProductOrder, 索引: %s", productOrder.ProductOrderNo),
-		// }).Error; err != nil {
-		// 	return
-		// }
 		return
 	}
 

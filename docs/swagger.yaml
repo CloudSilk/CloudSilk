@@ -1,4 +1,78 @@
 definitions:
+  proto.AGVTaskQueueInfo:
+    properties:
+      aGVTaskType:
+        $ref: '#/definitions/proto.AGVTaskTypeInfo'
+      aGVTaskTypeID:
+        description: 任务类型ID
+        type: string
+      continueTask:
+        description: 后续任务
+        type: boolean
+      createTime:
+        description: 创建时间
+        type: string
+      createUserID:
+        description: 配料人员
+        type: string
+      currentState:
+        description: 当前状态
+        type: string
+      departure:
+        $ref: '#/definitions/proto.MaterialShelfBinInfo'
+      departureID:
+        description: 起点库位ID
+        type: string
+      destination:
+        $ref: '#/definitions/proto.MaterialShelfBinInfo'
+      destinationID:
+        description: 终点库位ID
+        type: string
+      id:
+        description: ID
+        type: string
+      lastUpdateTime:
+        description: 状态变更时间
+        type: string
+      remark:
+        description: 备注
+        type: string
+      taskNo:
+        description: 任务编号
+        type: string
+      transactionState:
+        description: 事务状态
+        type: string
+    type: object
+  proto.AGVTaskTypeInfo:
+    properties:
+      code:
+        description: 代号
+        type: string
+      description:
+        description: 描述
+        type: string
+      id:
+        description: ID
+        type: string
+      materialContainerType:
+        $ref: '#/definitions/proto.MaterialContainerTypeInfo'
+      materialContainerTypeID:
+        description: 容器类型ID
+        type: string
+      positionCode:
+        description: 任务点位
+        type: string
+      remark:
+        description: 备注
+        type: string
+      sceneType:
+        description: 场景类型
+        type: integer
+      shelfType:
+        description: 货架类型
+        type: integer
+    type: object
   proto.AttributeExpressionInfo:
     properties:
       attributeValue:
@@ -34,6 +108,8 @@ definitions:
     properties:
       id:
         type: string
+      materialInfo:
+        $ref: '#/definitions/proto.MaterialInfoInfo'
       materialInfoID:
         description: 物料信息ID
         type: string
@@ -361,7 +437,7 @@ definitions:
         description: 工位代号
         type: string
       trayNo:
-        description: 托盘号
+        description: 载具号
         type: string
     type: object
   proto.EnterProductionStationResponse:
@@ -426,14 +502,54 @@ definitions:
         description: 返工原因
         type: string
       trayNo:
-        description: 托盘号
+        description: 载具号
         type: string
       unbindTray:
-        description: 是否解除托盘
+        description: 是否解除载具
         type: boolean
       waitTime:
         description: 等待时长
         type: integer
+    type: object
+  proto.GetAGVTaskQueueDetailResponse:
+    properties:
+      code:
+        $ref: '#/definitions/proto.Code'
+      data:
+        $ref: '#/definitions/proto.AGVTaskQueueInfo'
+      message:
+        type: string
+    type: object
+  proto.GetAGVTaskTypeDetailResponse:
+    properties:
+      code:
+        $ref: '#/definitions/proto.Code'
+      data:
+        $ref: '#/definitions/proto.AGVTaskTypeInfo'
+      message:
+        type: string
+    type: object
+  proto.GetAllAGVTaskQueueResponse:
+    properties:
+      code:
+        $ref: '#/definitions/proto.Code'
+      data:
+        items:
+          $ref: '#/definitions/proto.AGVTaskQueueInfo'
+        type: array
+      message:
+        type: string
+    type: object
+  proto.GetAllAGVTaskTypeResponse:
+    properties:
+      code:
+        $ref: '#/definitions/proto.Code'
+      data:
+        items:
+          $ref: '#/definitions/proto.AGVTaskTypeInfo'
+        type: array
+      message:
+        type: string
     type: object
   proto.GetAllCodingGenerationResponse:
     properties:
@@ -512,6 +628,39 @@ definitions:
       message:
         type: string
     type: object
+  proto.GetAllLabelAdaptationRuleResponse:
+    properties:
+      code:
+        $ref: '#/definitions/proto.Code'
+      data:
+        items:
+          $ref: '#/definitions/proto.LabelAdaptationRuleInfo'
+        type: array
+      message:
+        type: string
+    type: object
+  proto.GetAllLabelPrintQueueResponse:
+    properties:
+      code:
+        $ref: '#/definitions/proto.Code'
+      data:
+        items:
+          $ref: '#/definitions/proto.LabelPrintQueueInfo'
+        type: array
+      message:
+        type: string
+    type: object
+  proto.GetAllLabelPrintTaskResponse:
+    properties:
+      code:
+        $ref: '#/definitions/proto.Code'
+      data:
+        items:
+          $ref: '#/definitions/proto.LabelPrintTaskInfo'
+        type: array
+      message:
+        type: string
+    type: object
   proto.GetAllLabelTemplateResponse:
     properties:
       code:
@@ -556,6 +705,28 @@ definitions:
       message:
         type: string
     type: object
+  proto.GetAllMaterialContainerResponse:
+    properties:
+      code:
+        $ref: '#/definitions/proto.Code'
+      data:
+        items:
+          $ref: '#/definitions/proto.MaterialContainerInfo'
+        type: array
+      message:
+        type: string
+    type: object
+  proto.GetAllMaterialContainerTypeResponse:
+    properties:
+      code:
+        $ref: '#/definitions/proto.Code'
+      data:
+        items:
+          $ref: '#/definitions/proto.MaterialContainerTypeInfo'
+        type: array
+      message:
+        type: string
+    type: object
   proto.GetAllMaterialInfoResponse:
     properties:
       code:
@@ -563,6 +734,105 @@ definitions:
       data:
         items:
           $ref: '#/definitions/proto.MaterialInfoInfo'
+        type: array
+      message:
+        type: string
+    type: object
+  proto.GetAllMaterialInventoryResponse:
+    properties:
+      code:
+        $ref: '#/definitions/proto.Code'
+      data:
+        items:
+          $ref: '#/definitions/proto.MaterialInventoryInfo'
+        type: array
+      message:
+        type: string
+    type: object
+  proto.GetAllMaterialReturnCauseResponse:
+    properties:
+      code:
+        $ref: '#/definitions/proto.Code'
+      data:
+        items:
+          $ref: '#/definitions/proto.MaterialReturnCauseInfo'
+        type: array
+      message:
+        type: string
+    type: object
+  proto.GetAllMaterialReturnRequestFormResponse:
+    properties:
+      code:
+        $ref: '#/definitions/proto.Code'
+      data:
+        items:
+          $ref: '#/definitions/proto.MaterialReturnRequestFormInfo'
+        type: array
+      message:
+        type: string
+    type: object
+  proto.GetAllMaterialReturnSolutionResponse:
+    properties:
+      code:
+        $ref: '#/definitions/proto.Code'
+      data:
+        items:
+          $ref: '#/definitions/proto.MaterialReturnSolutionInfo'
+        type: array
+      message:
+        type: string
+    type: object
+  proto.GetAllMaterialReturnTypeResponse:
+    properties:
+      code:
+        $ref: '#/definitions/proto.Code'
+      data:
+        items:
+          $ref: '#/definitions/proto.MaterialReturnTypeInfo'
+        type: array
+      message:
+        type: string
+    type: object
+  proto.GetAllMaterialShelfBinResponse:
+    properties:
+      code:
+        $ref: '#/definitions/proto.Code'
+      data:
+        items:
+          $ref: '#/definitions/proto.MaterialShelfBinInfo'
+        type: array
+      message:
+        type: string
+    type: object
+  proto.GetAllMaterialShelfResponse:
+    properties:
+      code:
+        $ref: '#/definitions/proto.Code'
+      data:
+        items:
+          $ref: '#/definitions/proto.MaterialShelfInfo'
+        type: array
+      message:
+        type: string
+    type: object
+  proto.GetAllMaterialStoreFeedRuleResponse:
+    properties:
+      code:
+        $ref: '#/definitions/proto.Code'
+      data:
+        items:
+          $ref: '#/definitions/proto.MaterialStoreFeedRuleInfo'
+        type: array
+      message:
+        type: string
+    type: object
+  proto.GetAllMaterialStoreResponse:
+    properties:
+      code:
+        $ref: '#/definitions/proto.Code'
+      data:
+        items:
+          $ref: '#/definitions/proto.MaterialStoreInfo'
         type: array
       message:
         type: string
@@ -640,6 +910,17 @@ definitions:
       data:
         items:
           $ref: '#/definitions/proto.PrintServerInfo'
+        type: array
+      message:
+        type: string
+    type: object
+  proto.GetAllPrinterResponse:
+    properties:
+      code:
+        $ref: '#/definitions/proto.Code'
+      data:
+        items:
+          $ref: '#/definitions/proto.PrinterInfo'
         type: array
       message:
         type: string
@@ -996,6 +1277,17 @@ definitions:
       message:
         type: string
     type: object
+  proto.GetAllProductReworkProcessResponse:
+    properties:
+      code:
+        $ref: '#/definitions/proto.Code'
+      data:
+        items:
+          $ref: '#/definitions/proto.ProductReworkProcessInfo'
+        type: array
+      message:
+        type: string
+    type: object
   proto.GetAllProductReworkRecordResponse:
     properties:
       code:
@@ -1003,6 +1295,17 @@ definitions:
       data:
         items:
           $ref: '#/definitions/proto.ProductReworkRecordInfo'
+        type: array
+      message:
+        type: string
+    type: object
+  proto.GetAllProductReworkRouteResponse:
+    properties:
+      code:
+        $ref: '#/definitions/proto.Code'
+      data:
+        items:
+          $ref: '#/definitions/proto.ProductReworkRouteInfo'
         type: array
       message:
         type: string
@@ -1069,6 +1372,17 @@ definitions:
       data:
         items:
           $ref: '#/definitions/proto.ProductionCrosswayInfo'
+        type: array
+      message:
+        type: string
+    type: object
+  proto.GetAllProductionEfficiencyResponse:
+    properties:
+      code:
+        $ref: '#/definitions/proto.Code'
+      data:
+        items:
+          $ref: '#/definitions/proto.ProductionEfficiencyInfo'
         type: array
       message:
         type: string
@@ -1157,6 +1471,17 @@ definitions:
       data:
         items:
           $ref: '#/definitions/proto.ProductionStationBreakdownInfo'
+        type: array
+      message:
+        type: string
+    type: object
+  proto.GetAllProductionStationEfficiencyResponse:
+    properties:
+      code:
+        $ref: '#/definitions/proto.Code'
+      data:
+        items:
+          $ref: '#/definitions/proto.ProductionStationEfficiencyInfo'
         type: array
       message:
         type: string
@@ -1304,6 +1629,17 @@ definitions:
       message:
         type: string
     type: object
+  proto.GetAllWMSBillQueueResponse:
+    properties:
+      code:
+        $ref: '#/definitions/proto.Code'
+      data:
+        items:
+          $ref: '#/definitions/proto.WMSBillQueueInfo'
+        type: array
+      message:
+        type: string
+    type: object
   proto.GetByIDsRequest:
     properties:
       ids:
@@ -1374,6 +1710,33 @@ definitions:
       message:
         type: string
     type: object
+  proto.GetLabelAdaptationRuleDetailResponse:
+    properties:
+      code:
+        $ref: '#/definitions/proto.Code'
+      data:
+        $ref: '#/definitions/proto.LabelAdaptationRuleInfo'
+      message:
+        type: string
+    type: object
+  proto.GetLabelPrintQueueDetailResponse:
+    properties:
+      code:
+        $ref: '#/definitions/proto.Code'
+      data:
+        $ref: '#/definitions/proto.LabelPrintQueueInfo'
+      message:
+        type: string
+    type: object
+  proto.GetLabelPrintTaskDetailResponse:
+    properties:
+      code:
+        $ref: '#/definitions/proto.Code'
+      data:
+        $ref: '#/definitions/proto.LabelPrintTaskInfo'
+      message:
+        type: string
+    type: object
   proto.GetLabelTemplateDetailResponse:
     properties:
       code:
@@ -1410,12 +1773,111 @@ definitions:
       message:
         type: string
     type: object
+  proto.GetMaterialContainerDetailResponse:
+    properties:
+      code:
+        $ref: '#/definitions/proto.Code'
+      data:
+        $ref: '#/definitions/proto.MaterialContainerInfo'
+      message:
+        type: string
+    type: object
+  proto.GetMaterialContainerTypeDetailResponse:
+    properties:
+      code:
+        $ref: '#/definitions/proto.Code'
+      data:
+        $ref: '#/definitions/proto.MaterialContainerTypeInfo'
+      message:
+        type: string
+    type: object
   proto.GetMaterialInfoDetailResponse:
     properties:
       code:
         $ref: '#/definitions/proto.Code'
       data:
         $ref: '#/definitions/proto.MaterialInfoInfo'
+      message:
+        type: string
+    type: object
+  proto.GetMaterialInventoryDetailResponse:
+    properties:
+      code:
+        $ref: '#/definitions/proto.Code'
+      data:
+        $ref: '#/definitions/proto.MaterialInventoryInfo'
+      message:
+        type: string
+    type: object
+  proto.GetMaterialReturnCauseDetailResponse:
+    properties:
+      code:
+        $ref: '#/definitions/proto.Code'
+      data:
+        $ref: '#/definitions/proto.MaterialReturnCauseInfo'
+      message:
+        type: string
+    type: object
+  proto.GetMaterialReturnRequestFormDetailResponse:
+    properties:
+      code:
+        $ref: '#/definitions/proto.Code'
+      data:
+        $ref: '#/definitions/proto.MaterialReturnRequestFormInfo'
+      message:
+        type: string
+    type: object
+  proto.GetMaterialReturnSolutionDetailResponse:
+    properties:
+      code:
+        $ref: '#/definitions/proto.Code'
+      data:
+        $ref: '#/definitions/proto.MaterialReturnSolutionInfo'
+      message:
+        type: string
+    type: object
+  proto.GetMaterialReturnTypeDetailResponse:
+    properties:
+      code:
+        $ref: '#/definitions/proto.Code'
+      data:
+        $ref: '#/definitions/proto.MaterialReturnTypeInfo'
+      message:
+        type: string
+    type: object
+  proto.GetMaterialShelfBinDetailResponse:
+    properties:
+      code:
+        $ref: '#/definitions/proto.Code'
+      data:
+        $ref: '#/definitions/proto.MaterialShelfBinInfo'
+      message:
+        type: string
+    type: object
+  proto.GetMaterialShelfDetailResponse:
+    properties:
+      code:
+        $ref: '#/definitions/proto.Code'
+      data:
+        $ref: '#/definitions/proto.MaterialShelfInfo'
+      message:
+        type: string
+    type: object
+  proto.GetMaterialStoreDetailResponse:
+    properties:
+      code:
+        $ref: '#/definitions/proto.Code'
+      data:
+        $ref: '#/definitions/proto.MaterialStoreInfo'
+      message:
+        type: string
+    type: object
+  proto.GetMaterialStoreFeedRuleDetailResponse:
+    properties:
+      code:
+        $ref: '#/definitions/proto.Code'
+      data:
+        $ref: '#/definitions/proto.MaterialStoreFeedRuleInfo'
       message:
         type: string
     type: object
@@ -1770,12 +2232,30 @@ definitions:
       message:
         type: string
     type: object
+  proto.GetProductReworkProcessDetailResponse:
+    properties:
+      code:
+        $ref: '#/definitions/proto.Code'
+      data:
+        $ref: '#/definitions/proto.ProductReworkProcessInfo'
+      message:
+        type: string
+    type: object
   proto.GetProductReworkRecordDetailResponse:
     properties:
       code:
         $ref: '#/definitions/proto.Code'
       data:
         $ref: '#/definitions/proto.ProductReworkRecordInfo'
+      message:
+        type: string
+    type: object
+  proto.GetProductReworkRouteDetailResponse:
+    properties:
+      code:
+        $ref: '#/definitions/proto.Code'
+      data:
+        $ref: '#/definitions/proto.ProductReworkRouteInfo'
       message:
         type: string
     type: object
@@ -1830,6 +2310,15 @@ definitions:
         $ref: '#/definitions/proto.Code'
       data:
         $ref: '#/definitions/proto.ProductionCrosswayInfo'
+      message:
+        type: string
+    type: object
+  proto.GetProductionEfficiencyDetailResponse:
+    properties:
+      code:
+        $ref: '#/definitions/proto.Code'
+      data:
+        $ref: '#/definitions/proto.ProductionEfficiencyInfo'
       message:
         type: string
     type: object
@@ -1924,6 +2413,22 @@ definitions:
       data:
         $ref: '#/definitions/proto.ProductionStationInfo'
       message:
+        type: string
+    type: object
+  proto.GetProductionStationEfficiencyDetailResponse:
+    properties:
+      code:
+        $ref: '#/definitions/proto.Code'
+      data:
+        $ref: '#/definitions/proto.ProductionStationEfficiencyInfo'
+      message:
+        type: string
+    type: object
+  proto.GetProductionStationEfficiencyRequest:
+    properties:
+      outputDate:
+        type: string
+      productionStation:
         type: string
     type: object
   proto.GetProductionStationOutputDetailResponse:
@@ -2034,6 +2539,15 @@ definitions:
       message:
         type: string
     type: object
+  proto.GetWMSBillQueueDetailResponse:
+    properties:
+      code:
+        $ref: '#/definitions/proto.Code'
+      data:
+        $ref: '#/definitions/proto.WMSBillQueueInfo'
+      message:
+        type: string
+    type: object
   proto.InvocationAuthenticationInfo:
     properties:
       aPIKey:
@@ -2088,6 +2602,35 @@ definitions:
         description: 响应文本
         type: string
     type: object
+  proto.LabelAdaptationRuleInfo:
+    properties:
+      attributeExpressions:
+        items:
+          $ref: '#/definitions/proto.AttributeExpressionInfo'
+        type: array
+      doubleCheck:
+        description: 需要复核
+        type: boolean
+      enable:
+        description: 是否启用
+        type: boolean
+      id:
+        type: string
+      initialValue:
+        description: 默认适配
+        type: boolean
+      labelTemplate:
+        $ref: '#/definitions/proto.LabelTemplateInfo'
+      labelTemplateID:
+        description: 适配标签模板ID
+        type: string
+      priority:
+        description: 优先级
+        type: integer
+      remark:
+        description: 备注
+        type: string
+    type: object
   proto.LabelParameterInfo:
     properties:
       defaultValue:
@@ -2101,6 +2644,136 @@ definitions:
         type: string
       name:
         description: 名称
+        type: string
+    type: object
+  proto.LabelPrintQueueExecutionInfo:
+    properties:
+      createTime:
+        description: 创建时间
+        type: string
+      failureReason:
+        description: 失败原因
+        type: string
+      id:
+        type: string
+      labelPrintQueueID:
+        description: 打印队列ID
+        type: string
+      success:
+        description: 是否成功
+        type: boolean
+    type: object
+  proto.LabelPrintQueueInfo:
+    properties:
+      createTime:
+        description: 创建时间
+        type: string
+      createUserID:
+        description: 创建人员
+        type: string
+      createUserName:
+        type: string
+      currentState:
+        description: 当前状态
+        type: string
+      filePath:
+        description: 模板文件
+        type: string
+      id:
+        type: string
+      labelParameters:
+        description: 标签打印队列参数
+        items:
+          $ref: '#/definitions/proto.LabelPrintQueueParameterInfo'
+        type: array
+      lastUpdateTime:
+        description: 状态变更时间
+        type: string
+      printCopies:
+        description: 打印份数
+        type: integer
+      printExecutions:
+        description: 标签打印队列执行
+        items:
+          $ref: '#/definitions/proto.LabelPrintQueueExecutionInfo'
+        type: array
+      printTimes:
+        description: 打印次数
+        type: integer
+      printer:
+        $ref: '#/definitions/proto.PrinterInfo'
+      printerID:
+        description: 打印机ID
+        type: string
+      remoteServiceTask:
+        $ref: '#/definitions/proto.RemoteServiceTaskInfo'
+      remoteServiceTaskID:
+        description: 远程任务ID
+        type: string
+      taskNo:
+        description: 任务编号
+        type: string
+    type: object
+  proto.LabelPrintQueueParameterInfo:
+    properties:
+      fixedValue:
+        description: 设定值
+        type: string
+      id:
+        type: string
+      labelPrintQueueID:
+        description: 打印队列ID
+        type: string
+      name:
+        description: 名称
+        type: string
+      remark:
+        description: 备注
+        type: string
+    type: object
+  proto.LabelPrintTaskInfo:
+    properties:
+      code:
+        description: 代号
+        type: string
+      description:
+        description: 描述
+        type: string
+      enable:
+        description: 是否启用
+        type: boolean
+      id:
+        type: string
+      labelType:
+        $ref: '#/definitions/proto.LabelTypeInfo'
+      labelTypeID:
+        description: 标签类型ID
+        type: string
+      printCopies:
+        description: 打印份数
+        type: integer
+      printer:
+        $ref: '#/definitions/proto.PrinterInfo'
+      printerID:
+        description: 打印机ID
+        type: string
+      productCategory:
+        $ref: '#/definitions/proto.ProductCategoryInfo'
+      productCategoryID:
+        description: 产品类别ID
+        type: string
+      productionLine:
+        $ref: '#/definitions/proto.ProductionLineInfo'
+      productionLineID:
+        description: 生产产线ID
+        type: string
+      remark:
+        description: 备注
+        type: string
+      remoteServiceTask:
+        $ref: '#/definitions/proto.RemoteServiceTaskInfo'
+      remoteServiceTaskID:
+        description: 远程任务ID
         type: string
     type: object
   proto.LabelTemplateInfo:
@@ -2178,6 +2851,48 @@ definitions:
         description: 备注
         type: string
     type: object
+  proto.MaterialChannelInfo:
+    properties:
+      code:
+        description: 代号
+        type: string
+      currentState:
+        description: 当前状态
+        type: string
+      description:
+        description: 描述
+        type: string
+      enableMonitor:
+        description: 启用监控
+        type: boolean
+      id:
+        type: string
+      lastUpdateTime:
+        description: 状态变更时间
+        type: string
+      materialChannelLayer:
+        $ref: '#/definitions/proto.MaterialChannelLayerInfo'
+      materialChannelLayerID:
+        description: 物料通道层ID
+        type: string
+      materialInfo:
+        $ref: '#/definitions/proto.MaterialInfoInfo'
+      materialInfoID:
+        description: 物料信息ID
+        type: string
+      remark:
+        description: 备注
+        type: string
+      size:
+        description: 尺寸
+        type: string
+      sortIndex:
+        description: 顺序
+        type: integer
+      spec:
+        description: 规格
+        type: number
+    type: object
   proto.MaterialChannelLayerInfo:
     properties:
       code:
@@ -2188,10 +2903,12 @@ definitions:
       lightRegisterAddress:
         description: 亮灯寄存器地址
         type: integer
+      materialChannels:
+        items:
+          $ref: '#/definitions/proto.MaterialChannelInfo'
+        type: array
       productionStation:
-        allOf:
-        - $ref: '#/definitions/proto.ProductionStationInfo'
-        description: 隶属工站
+        $ref: '#/definitions/proto.ProductionStationInfo'
       productionStationID:
         description: 隶属工站ID
         type: string
@@ -2203,6 +2920,68 @@ definitions:
         type: integer
       statusRegisterAddress:
         description: 状态寄存器地址
+        type: integer
+    type: object
+  proto.MaterialContainerInfo:
+    properties:
+      code:
+        description: 编号
+        type: string
+      currentState:
+        description: 当前状态
+        type: string
+      description:
+        description: 描述
+        type: string
+      id:
+        type: string
+      identifier:
+        description: 识别码
+        type: string
+      lastUpdateTime:
+        description: 状态变更时间
+        type: string
+      materialContainerType:
+        $ref: '#/definitions/proto.MaterialContainerTypeInfo'
+      materialContainerTypeID:
+        description: 容器类型ID
+        type: string
+      materialShelfBin:
+        $ref: '#/definitions/proto.MaterialShelfBinInfo'
+      materialShelfBinID:
+        description: 当前库位ID
+        type: string
+      remark:
+        description: 备注
+        type: string
+    type: object
+  proto.MaterialContainerTypeInfo:
+    properties:
+      code:
+        description: 编号
+        type: string
+      description:
+        description: 描述
+        type: string
+      height:
+        description: 高(mm)
+        type: integer
+      heightLimit:
+        description: 限高(mm)
+        type: integer
+      id:
+        type: string
+      length:
+        description: 长(mm)
+        type: integer
+      remark:
+        description: 备注
+        type: string
+      weightLimit:
+        description: 限重(kg)
+        type: number
+      width:
+        description: 宽(mm)
         type: integer
     type: object
   proto.MaterialInfoInfo:
@@ -2244,6 +3023,50 @@ definitions:
         description: 物料仓库
         type: string
     type: object
+  proto.MaterialInventoryInfo:
+    properties:
+      createTime:
+        description: 创建时间
+        type: string
+      createUserID:
+        description: 创建人员
+        type: string
+      createUserName:
+        type: string
+      currentState:
+        description: 当前状态
+        type: string
+      feedingQTY:
+        description: 正在补料数量
+        type: integer
+      id:
+        type: string
+      issuedQTY:
+        description: 锁定数量
+        type: integer
+      issuingQTY:
+        description: 正在备库数量
+        type: integer
+      lastUpdateTime:
+        description: 状态变更时间
+        type: string
+      materialInfo:
+        $ref: '#/definitions/proto.MaterialInfoInfo'
+      materialInfoID:
+        description: 物料信息ID
+        type: string
+      materialStore:
+        $ref: '#/definitions/proto.MaterialStoreInfo'
+      materialStoreID:
+        description: 物料仓库ID
+        type: string
+      remark:
+        description: 备注
+        type: string
+      storedQTY:
+        description: 库存数量
+        type: integer
+    type: object
   proto.MaterialRecordInfo:
     properties:
       controlType:
@@ -2259,6 +3082,318 @@ definitions:
       operationMode:
         type: string
       productIssueRecordID:
+        type: string
+    type: object
+  proto.MaterialReturnCauseAvailableCategoryInfo:
+    properties:
+      id:
+        type: string
+      materialCategory:
+        $ref: '#/definitions/proto.MaterialCategoryInfo'
+      materialCategoryID:
+        type: string
+      materialReturnCauseID:
+        type: string
+    type: object
+  proto.MaterialReturnCauseAvailableTypeInfo:
+    properties:
+      id:
+        type: string
+      materialReturnCauseID:
+        type: string
+      materialReturnType:
+        $ref: '#/definitions/proto.MaterialReturnTypeInfo'
+      materialReturnTypeID:
+        type: string
+    type: object
+  proto.MaterialReturnCauseInfo:
+    properties:
+      code:
+        description: 代号
+        type: string
+      description:
+        description: 描述
+        type: string
+      id:
+        type: string
+      materialCategories:
+        description: 物料类别
+        items:
+          $ref: '#/definitions/proto.MaterialReturnCauseAvailableCategoryInfo'
+        type: array
+      materialReturnTypes:
+        description: 归属类型
+        items:
+          $ref: '#/definitions/proto.MaterialReturnCauseAvailableTypeInfo'
+        type: array
+      remark:
+        description: 备注
+        type: string
+    type: object
+  proto.MaterialReturnRequestFormInfo:
+    properties:
+      checkTime:
+        description: 复核时间
+        type: string
+      checkUserID:
+        description: 复核人员ID
+        type: string
+      createTime:
+        description: 创建时间
+        type: string
+      createUserID:
+        description: 创建人员ID
+        type: string
+      currentState:
+        description: 当前状态
+        type: integer
+      formNo:
+        description: 申请单号
+        type: string
+      handleMethod:
+        description: 旧件处理
+        type: string
+      id:
+        type: string
+      materialInfo:
+        $ref: '#/definitions/proto.MaterialInfoInfo'
+      materialInfoID:
+        description: 物料信息ID
+        type: string
+      materialReturnCause:
+        $ref: '#/definitions/proto.MaterialReturnCauseInfo'
+      materialReturnCauseID:
+        description: 退料原因ID
+        type: string
+      materialReturnSolution:
+        allOf:
+        - $ref: '#/definitions/proto.MaterialReturnSolutionInfo'
+        description: 锁定数量
+      materialReturnSolutionID:
+        description: 处理方案ID
+        type: string
+      materialReturnType:
+        $ref: '#/definitions/proto.MaterialReturnTypeInfo'
+      materialReturnTypeID:
+        description: 退料类型ID
+        type: string
+      materialSupplier:
+        $ref: '#/definitions/proto.MaterialSupplierInfo'
+      materialSupplierID:
+        description: 物料供应商ID
+        type: string
+      materialTraceNo:
+        description: 物料追溯号
+        type: string
+      productionLine:
+        $ref: '#/definitions/proto.ProductionLineInfo'
+      productionLineID:
+        description: 发现工站ID
+        type: string
+      quantity:
+        description: 退料数量
+        type: number
+      remark:
+        description: 备注
+        type: string
+      returnBrief:
+        description: 退料简述
+        type: string
+      returnID:
+        description: 退料来源ID
+        type: string
+      returnReason:
+        description: 退料原因
+        type: string
+      returnSource:
+        description: 退料来源
+        type: string
+    type: object
+  proto.MaterialReturnSolutionAvailableCauseInfo:
+    properties:
+      id:
+        type: string
+      materialReturnCause:
+        $ref: '#/definitions/proto.MaterialReturnCauseInfo'
+      materialReturnCauseID:
+        type: string
+      materialReturnSolutionID:
+        type: string
+    type: object
+  proto.MaterialReturnSolutionInfo:
+    properties:
+      code:
+        description: 代号
+        type: string
+      description:
+        description: 描述
+        type: string
+      id:
+        type: string
+      materialReturnCauses:
+        description: 退料原因
+        items:
+          $ref: '#/definitions/proto.MaterialReturnSolutionAvailableCauseInfo'
+        type: array
+      remark:
+        description: 备注
+        type: string
+    type: object
+  proto.MaterialReturnTypeInfo:
+    properties:
+      code:
+        description: 代号
+        type: string
+      description:
+        description: 描述
+        type: string
+      id:
+        type: string
+      remark:
+        description: 备注
+        type: string
+    type: object
+  proto.MaterialShelfBinInfo:
+    properties:
+      code:
+        description: 编号
+        type: string
+      columnIndex:
+        description: 列
+        type: integer
+      currentState:
+        description: 当前状态
+        type: string
+      enableDispatch:
+        description: 缺料调度
+        type: boolean
+      enableMonitor:
+        description: 状态监控
+        type: boolean
+      id:
+        type: string
+      identifier:
+        description: 识别码
+        type: string
+      lastUpdateTime:
+        description: 状态变更时间
+        type: string
+      materialContainerType:
+        $ref: '#/definitions/proto.MaterialContainerTypeInfo'
+      materialContainerTypeID:
+        description: 兼容容器类型ID
+        type: string
+      materialInfo:
+        $ref: '#/definitions/proto.MaterialInfoInfo'
+      materialInfoID:
+        description: 当前物料ID
+        type: string
+      materialShelf:
+        $ref: '#/definitions/proto.MaterialShelfInfo'
+      materialShelfID:
+        description: 隶属料架ID
+        type: string
+      remark:
+        description: 备注
+        type: string
+      rowIndex:
+        description: 行
+        type: integer
+    type: object
+  proto.MaterialShelfInfo:
+    properties:
+      code:
+        description: 代号
+        type: string
+      description:
+        description: 描述
+        type: string
+      enable:
+        description: 是否启用
+        type: boolean
+      id:
+        type: string
+      identifier:
+        description: 识别码
+        type: string
+      materialStore:
+        $ref: '#/definitions/proto.MaterialStoreInfo'
+      materialStoreID:
+        description: 隶属仓库ID
+        type: string
+      remark:
+        description: 备注
+        type: string
+      shelfType:
+        description: 货架类型
+        type: integer
+    type: object
+  proto.MaterialStoreAvailableLineInfo:
+    properties:
+      id:
+        type: string
+      materialStoreID:
+        type: string
+      productionLine:
+        $ref: '#/definitions/proto.ProductionLineInfo'
+      productionLineID:
+        type: string
+    type: object
+  proto.MaterialStoreFeedRuleInfo:
+    properties:
+      attributeExpressions:
+        description: 特征表达式
+        items:
+          $ref: '#/definitions/proto.AttributeExpressionInfo'
+        type: array
+      defaultRequestQTY:
+        description: 默认申请量
+        type: integer
+      enable:
+        description: 是否启用
+        type: boolean
+      id:
+        type: string
+      materialInfo:
+        $ref: '#/definitions/proto.MaterialInfoInfo'
+      materialInfoID:
+        description: 物料信息ID
+        type: string
+      materialStore:
+        $ref: '#/definitions/proto.MaterialStoreInfo'
+      materialStoreID:
+        description: 物料仓库ID
+        type: string
+      minimumStoreQTY:
+        description: 最低库存量
+        type: integer
+      priority:
+        description: 优先级
+        type: integer
+      remark:
+        description: 备注
+        type: string
+      sortIndex:
+        description: 排序
+        type: integer
+    type: object
+  proto.MaterialStoreInfo:
+    properties:
+      code:
+        description: 代号
+        type: string
+      description:
+        description: 描述
+        type: string
+      id:
+        type: string
+      productionLines:
+        description: 支援产线
+        items:
+          $ref: '#/definitions/proto.MaterialStoreAvailableLineInfo'
+        type: array
+      remark:
+        description: 备注
         type: string
     type: object
   proto.MaterialSupplierInfo:
@@ -2301,7 +3436,7 @@ definitions:
         - $ref: '#/definitions/proto.MaterialTrayInfo'
         description: 状态变更时间
       materialTrayID:
-        description: 使用托盘ID
+        description: 使用载具ID
         type: string
       productInfo:
         allOf:
@@ -2354,7 +3489,7 @@ definitions:
         description: 备注
         type: string
       trayType:
-        description: 托盘类型
+        description: 载具类型
         type: string
     type: object
   proto.OnlineProductInfoRequest:
@@ -2369,7 +3504,7 @@ definitions:
         description: 产线代号
         type: string
       trayNo:
-        description: 托盘号
+        description: 载具号
         type: string
     type: object
   proto.OperationTraceInfo:
@@ -2425,13 +3560,24 @@ definitions:
       id:
         description: ID
         type: string
-      personnelQualificationType:
-        $ref: '#/definitions/proto.PersonnelQualificationTypeInfo'
-      personnelQualificationTypeID:
-        description: 资质类型ID
+      productModelID:
+        description: 产品型号ID
+        type: string
+      productionProcessID:
+        description: 生产工序ID
         type: string
       remark:
         description: 备注
+        type: string
+    type: object
+  proto.PersonnelQualificationTypeAvailableModelInfo:
+    properties:
+      id:
+        description: ID
+        type: string
+      personnelQualificationTypeID:
+        type: string
+      productModelID:
         type: string
     type: object
   proto.PersonnelQualificationTypeInfo:
@@ -2454,7 +3600,7 @@ definitions:
       productModels:
         description: 产品型号
         items:
-          $ref: '#/definitions/proto.ProductModelInfo'
+          $ref: '#/definitions/proto.PersonnelQualificationTypeAvailableModelInfo'
         type: array
       productionProcess:
         allOf:
@@ -2498,6 +3644,8 @@ definitions:
       name:
         description: 名称
         type: string
+      printServer:
+        $ref: '#/definitions/proto.PrintServerInfo'
       printServerID:
         description: 打印服务器ID
         type: string
@@ -4012,6 +5160,72 @@ definitions:
         description: 备注
         type: string
     type: object
+  proto.ProductReworkProcessAvailableProcessInfo:
+    properties:
+      ProductReworkProcessID:
+        type: string
+      ProductionProcess:
+        $ref: '#/definitions/proto.ProductionProcessInfo'
+      ProductionProcessID:
+        type: string
+      id:
+        type: string
+    type: object
+  proto.ProductReworkProcessAvailableStationInfo:
+    properties:
+      ProductReworkProcessID:
+        type: string
+      ProductionStation:
+        $ref: '#/definitions/proto.ProductionStationInfo'
+      ProductionStationID:
+        type: string
+      id:
+        type: string
+    type: object
+  proto.ProductReworkProcessInfo:
+    properties:
+      availableProcessIDs:
+        description: 支持生产工序
+        items:
+          type: string
+        type: array
+      availableStationIDs:
+        description: 可用生产工站
+        items:
+          type: string
+        type: array
+      code:
+        description: 代号
+        type: string
+      description:
+        description: 描述
+        type: string
+      enable:
+        description: 是否启用
+        type: boolean
+      enableReport:
+        description: 是否报工
+        type: boolean
+      id:
+        description: ID
+        type: string
+      productionLine:
+        $ref: '#/definitions/proto.ProductionLineInfo'
+      productionLineID:
+        description: 生产产线ID
+        type: string
+      productionProcesses:
+        items:
+          $ref: '#/definitions/proto.ProductReworkProcessAvailableProcessInfo'
+        type: array
+      productionStations:
+        items:
+          $ref: '#/definitions/proto.ProductReworkProcessAvailableStationInfo'
+        type: array
+      remark:
+        description: 备注
+        type: string
+    type: object
   proto.ProductReworkRecordInfo:
     properties:
       completeTime:
@@ -4062,6 +5276,24 @@ definitions:
         type: string
       reworkUserID:
         description: 返工人员ID
+        type: string
+    type: object
+  proto.ProductReworkRouteInfo:
+    properties:
+      followProcess:
+        $ref: '#/definitions/proto.ProductionProcessInfo'
+      followProcessID:
+        type: string
+      id:
+        description: ID
+        type: string
+      materialCategory:
+        $ref: '#/definitions/proto.MaterialCategoryInfo'
+      materialCategoryID:
+        type: string
+      productionLine:
+        $ref: '#/definitions/proto.ProductionLineInfo'
+      productionLineID:
         type: string
     type: object
   proto.ProductReworkSolutionInfo:
@@ -4124,24 +5356,18 @@ definitions:
       overTime:
         description: 超时时长(秒)
         type: integer
+      productInfo:
+        $ref: '#/definitions/proto.ProductInfoInfo'
       productInfoID:
         description: 产品信息ID
         type: string
-      productOrderNo:
-        description: 生产工单号
-        type: string
-      productSerialNo:
-        description: 产品序列号
-        type: string
-      productionProcessDescription:
-        description: 生产工序
-        type: string
+      productionProcess:
+        $ref: '#/definitions/proto.ProductionProcessInfo'
       productionProcessID:
         description: 生产工序ID
         type: string
-      productionStationDescription:
-        description: 生产工站
-        type: string
+      productionStation:
+        $ref: '#/definitions/proto.ProductionStationInfo'
       productionStationID:
         description: 生产工站ID
         type: string
@@ -4329,6 +5555,82 @@ definitions:
         type: string
       productionStationID:
         type: string
+    type: object
+  proto.ProductionEfficiencyInfo:
+    properties:
+      actualAvailableDuration:
+        description: 实际稼动时长
+        type: number
+      actualEffectiveDuration:
+        description: 实际作业时长
+        type: number
+      averageRhythm:
+        description: 平均节拍
+        type: number
+      breakdownDuration:
+        description: 故障时长
+        type: number
+      estimateAvailableDuration:
+        description: 预计稼动时长
+        type: number
+      estimateRhythm:
+        description: 理论节拍
+        type: number
+      fpy:
+        description: 一次通过率
+        type: number
+      id:
+        type: string
+      lastUpdateTime:
+        description: 最后更新时间
+        type: string
+      numberOfBreakdown:
+        description: 故障次数
+        type: integer
+      numberOfFail:
+        description: 失败次数
+        type: integer
+      numberOfPass:
+        description: 合格次数
+        type: integer
+      numberOfShutdown:
+        description: 计划外停机次数
+        type: integer
+      numberOfWork:
+        description: 作业次数
+        type: integer
+      oee:
+        description: 设备综合效率
+        type: number
+      oef:
+        description: 设备故障率
+        type: number
+      oep:
+        description: 性能稼动率
+        type: number
+      oeu:
+        description: 时间稼动率
+        type: number
+      outputDate:
+        description: 产出日期
+        type: string
+      outputOfThisDay:
+        description: 当日产量
+        type: integer
+      plannedShutdownDuration:
+        description: 计划内停机时长
+        type: number
+      productionStation:
+        $ref: '#/definitions/proto.ProductionStationInfo'
+      productionStationID:
+        description: 生产工站ID
+        type: string
+      startupDuration:
+        description: 开机时长
+        type: number
+      unplannedShutdownDuration:
+        description: 计划外停机时长
+        type: number
     type: object
   proto.ProductionFactoryInfo:
     properties:
@@ -4696,6 +5998,82 @@ definitions:
         description: 备注信息
         type: string
     type: object
+  proto.ProductionStationEfficiencyInfo:
+    properties:
+      actualAvailableDuration:
+        description: 实际稼动时长
+        type: number
+      actualEffectiveDuration:
+        description: 实际作业时长
+        type: number
+      averageRhythm:
+        description: 平均节拍
+        type: number
+      breakdownDuration:
+        description: 故障时长
+        type: number
+      estimateAvailableDuration:
+        description: 预计稼动时长
+        type: number
+      estimateRhythm:
+        description: 理论节拍
+        type: number
+      fPY:
+        description: 一次通过率
+        type: number
+      id:
+        type: string
+      lastUpdateTime:
+        description: 最后更新时间
+        type: string
+      numberOfBreakdown:
+        description: 故障次数
+        type: integer
+      numberOfFail:
+        description: 失败次数
+        type: integer
+      numberOfPass:
+        description: 合格次数
+        type: integer
+      numberOfShutdown:
+        description: 计划外停机次数
+        type: integer
+      numberOfWork:
+        description: 作业次数
+        type: integer
+      oEE:
+        description: 设备综合效率
+        type: number
+      oEF:
+        description: 设备故障率
+        type: number
+      oEP:
+        description: 性能稼动率
+        type: number
+      oEU:
+        description: 时间稼动率
+        type: number
+      outputDate:
+        description: 产出日期
+        type: string
+      outputOfThisDay:
+        description: 当日产量
+        type: integer
+      plannedShutdownDuration:
+        description: 计划内停机时长
+        type: number
+      productionStation:
+        $ref: '#/definitions/proto.ProductionStationInfo'
+      productionStationID:
+        description: 生产工站ID
+        type: string
+      startupDuration:
+        description: 开机时长
+        type: number
+      unplannedShutdownDuration:
+        description: 计划外停机时长
+        type: number
+    type: object
   proto.ProductionStationInfo:
     properties:
       accountControl:
@@ -4857,6 +6235,40 @@ definitions:
         description: 顺序
         type: integer
     type: object
+  proto.QueryAGVTaskQueueResponse:
+    properties:
+      code:
+        $ref: '#/definitions/proto.Code'
+      data:
+        items:
+          $ref: '#/definitions/proto.AGVTaskQueueInfo'
+        type: array
+      message:
+        type: string
+      pages:
+        type: integer
+      records:
+        type: integer
+      total:
+        type: integer
+    type: object
+  proto.QueryAGVTaskTypeResponse:
+    properties:
+      code:
+        $ref: '#/definitions/proto.Code'
+      data:
+        items:
+          $ref: '#/definitions/proto.AGVTaskTypeInfo'
+        type: array
+      message:
+        type: string
+      pages:
+        type: integer
+      records:
+        type: integer
+      total:
+        type: integer
+    type: object
   proto.QueryCodingGenerationResponse:
     properties:
       code:
@@ -4976,6 +6388,57 @@ definitions:
       total:
         type: integer
     type: object
+  proto.QueryLabelAdaptationRuleResponse:
+    properties:
+      code:
+        $ref: '#/definitions/proto.Code'
+      data:
+        items:
+          $ref: '#/definitions/proto.LabelAdaptationRuleInfo'
+        type: array
+      message:
+        type: string
+      pages:
+        type: integer
+      records:
+        type: integer
+      total:
+        type: integer
+    type: object
+  proto.QueryLabelPrintQueueResponse:
+    properties:
+      code:
+        $ref: '#/definitions/proto.Code'
+      data:
+        items:
+          $ref: '#/definitions/proto.LabelPrintQueueInfo'
+        type: array
+      message:
+        type: string
+      pages:
+        type: integer
+      records:
+        type: integer
+      total:
+        type: integer
+    type: object
+  proto.QueryLabelPrintTaskResponse:
+    properties:
+      code:
+        $ref: '#/definitions/proto.Code'
+      data:
+        items:
+          $ref: '#/definitions/proto.LabelPrintTaskInfo'
+        type: array
+      message:
+        type: string
+      pages:
+        type: integer
+      records:
+        type: integer
+      total:
+        type: integer
+    type: object
   proto.QueryLabelTemplateResponse:
     properties:
       code:
@@ -5044,6 +6507,40 @@ definitions:
       total:
         type: integer
     type: object
+  proto.QueryMaterialContainerResponse:
+    properties:
+      code:
+        $ref: '#/definitions/proto.Code'
+      data:
+        items:
+          $ref: '#/definitions/proto.MaterialContainerInfo'
+        type: array
+      message:
+        type: string
+      pages:
+        type: integer
+      records:
+        type: integer
+      total:
+        type: integer
+    type: object
+  proto.QueryMaterialContainerTypeResponse:
+    properties:
+      code:
+        $ref: '#/definitions/proto.Code'
+      data:
+        items:
+          $ref: '#/definitions/proto.MaterialContainerTypeInfo'
+        type: array
+      message:
+        type: string
+      pages:
+        type: integer
+      records:
+        type: integer
+      total:
+        type: integer
+    type: object
   proto.QueryMaterialInfoResponse:
     properties:
       code:
@@ -5051,6 +6548,159 @@ definitions:
       data:
         items:
           $ref: '#/definitions/proto.MaterialInfoInfo'
+        type: array
+      message:
+        type: string
+      pages:
+        type: integer
+      records:
+        type: integer
+      total:
+        type: integer
+    type: object
+  proto.QueryMaterialInventoryResponse:
+    properties:
+      code:
+        $ref: '#/definitions/proto.Code'
+      data:
+        items:
+          $ref: '#/definitions/proto.MaterialInventoryInfo'
+        type: array
+      message:
+        type: string
+      pages:
+        type: integer
+      records:
+        type: integer
+      total:
+        type: integer
+    type: object
+  proto.QueryMaterialReturnCauseResponse:
+    properties:
+      code:
+        $ref: '#/definitions/proto.Code'
+      data:
+        items:
+          $ref: '#/definitions/proto.MaterialReturnCauseInfo'
+        type: array
+      message:
+        type: string
+      pages:
+        type: integer
+      records:
+        type: integer
+      total:
+        type: integer
+    type: object
+  proto.QueryMaterialReturnRequestFormResponse:
+    properties:
+      code:
+        $ref: '#/definitions/proto.Code'
+      data:
+        items:
+          $ref: '#/definitions/proto.MaterialReturnRequestFormInfo'
+        type: array
+      message:
+        type: string
+      pages:
+        type: integer
+      records:
+        type: integer
+      total:
+        type: integer
+    type: object
+  proto.QueryMaterialReturnSolutionResponse:
+    properties:
+      code:
+        $ref: '#/definitions/proto.Code'
+      data:
+        items:
+          $ref: '#/definitions/proto.MaterialReturnSolutionInfo'
+        type: array
+      message:
+        type: string
+      pages:
+        type: integer
+      records:
+        type: integer
+      total:
+        type: integer
+    type: object
+  proto.QueryMaterialReturnTypeResponse:
+    properties:
+      code:
+        $ref: '#/definitions/proto.Code'
+      data:
+        items:
+          $ref: '#/definitions/proto.MaterialReturnTypeInfo'
+        type: array
+      message:
+        type: string
+      pages:
+        type: integer
+      records:
+        type: integer
+      total:
+        type: integer
+    type: object
+  proto.QueryMaterialShelfBinResponse:
+    properties:
+      code:
+        $ref: '#/definitions/proto.Code'
+      data:
+        items:
+          $ref: '#/definitions/proto.MaterialShelfBinInfo'
+        type: array
+      message:
+        type: string
+      pages:
+        type: integer
+      records:
+        type: integer
+      total:
+        type: integer
+    type: object
+  proto.QueryMaterialShelfResponse:
+    properties:
+      code:
+        $ref: '#/definitions/proto.Code'
+      data:
+        items:
+          $ref: '#/definitions/proto.MaterialShelfInfo'
+        type: array
+      message:
+        type: string
+      pages:
+        type: integer
+      records:
+        type: integer
+      total:
+        type: integer
+    type: object
+  proto.QueryMaterialStoreFeedRuleResponse:
+    properties:
+      code:
+        $ref: '#/definitions/proto.Code'
+      data:
+        items:
+          $ref: '#/definitions/proto.MaterialStoreFeedRuleInfo'
+        type: array
+      message:
+        type: string
+      pages:
+        type: integer
+      records:
+        type: integer
+      total:
+        type: integer
+    type: object
+  proto.QueryMaterialStoreResponse:
+    properties:
+      code:
+        $ref: '#/definitions/proto.Code'
+      data:
+        items:
+          $ref: '#/definitions/proto.MaterialStoreInfo'
         type: array
       message:
         type: string
@@ -5724,6 +7374,23 @@ definitions:
       total:
         type: integer
     type: object
+  proto.QueryProductReworkProcessResponse:
+    properties:
+      code:
+        $ref: '#/definitions/proto.Code'
+      data:
+        items:
+          $ref: '#/definitions/proto.ProductReworkProcessInfo'
+        type: array
+      message:
+        type: string
+      pages:
+        type: integer
+      records:
+        type: integer
+      total:
+        type: integer
+    type: object
   proto.QueryProductReworkRecordResponse:
     properties:
       code:
@@ -5731,6 +7398,23 @@ definitions:
       data:
         items:
           $ref: '#/definitions/proto.ProductReworkRecordInfo'
+        type: array
+      message:
+        type: string
+      pages:
+        type: integer
+      records:
+        type: integer
+      total:
+        type: integer
+    type: object
+  proto.QueryProductReworkRouteResponse:
+    properties:
+      code:
+        $ref: '#/definitions/proto.Code'
+      data:
+        items:
+          $ref: '#/definitions/proto.ProductReworkRouteInfo'
         type: array
       message:
         type: string
@@ -5833,6 +7517,23 @@ definitions:
       data:
         items:
           $ref: '#/definitions/proto.ProductionCrosswayInfo'
+        type: array
+      message:
+        type: string
+      pages:
+        type: integer
+      records:
+        type: integer
+      total:
+        type: integer
+    type: object
+  proto.QueryProductionEfficiencyResponse:
+    properties:
+      code:
+        $ref: '#/definitions/proto.Code'
+      data:
+        items:
+          $ref: '#/definitions/proto.ProductionEfficiencyInfo'
         type: array
       message:
         type: string
@@ -5969,6 +7670,23 @@ definitions:
       data:
         items:
           $ref: '#/definitions/proto.ProductionStationBreakdownInfo'
+        type: array
+      message:
+        type: string
+      pages:
+        type: integer
+      records:
+        type: integer
+      total:
+        type: integer
+    type: object
+  proto.QueryProductionStationEfficiencyResponse:
+    properties:
+      code:
+        $ref: '#/definitions/proto.Code'
+      data:
+        items:
+          $ref: '#/definitions/proto.ProductionStationEfficiencyInfo'
         type: array
       message:
         type: string
@@ -6190,6 +7908,23 @@ definitions:
       data:
         items:
           $ref: '#/definitions/proto.TaskQueueInfo'
+        type: array
+      message:
+        type: string
+      pages:
+        type: integer
+      records:
+        type: integer
+      total:
+        type: integer
+    type: object
+  proto.QueryWMSBillQueueResponse:
+    properties:
+      code:
+        $ref: '#/definitions/proto.Code'
+      data:
+        items:
+          $ref: '#/definitions/proto.WMSBillQueueInfo'
         type: array
       message:
         type: string
@@ -6665,6 +8400,99 @@ definitions:
         type: string
       reworkBrief:
         description: 返工简述
+        type: string
+    type: object
+  proto.UpdateProductionStationEfficiencyRequest:
+    properties:
+      actualAvailableDuration:
+        type: number
+      actualEffectiveDuration:
+        type: number
+      averageRhythm:
+        type: number
+      breakdownDuration:
+        type: number
+      estimateAvailableDuration:
+        type: number
+      estimateRhythm:
+        type: number
+      fPY:
+        type: number
+      numberOfBreakdown:
+        type: integer
+      numberOfFail:
+        type: integer
+      numberOfPass:
+        type: integer
+      numberOfShutdown:
+        type: integer
+      numberOfWork:
+        type: integer
+      oEE:
+        type: number
+      oEF:
+        type: number
+      oEP:
+        type: number
+      oEU:
+        type: number
+      outputDate:
+        type: string
+      outputOfThisDay:
+        type: integer
+      plannedShutdownDuration:
+        type: number
+      productionStation:
+        type: string
+      startupDuration:
+        type: number
+      unplannedShutdownDuration:
+        type: number
+    type: object
+  proto.WMSBillQueueInfo:
+    properties:
+      billNo:
+        description: 拣货单号
+        type: string
+      createTime:
+        description: 申请时间
+        type: string
+      createUserID:
+        description: 申请人员ID
+        type: string
+      createUserName:
+        type: string
+      currentState:
+        description: 当前状态
+        type: string
+      id:
+        description: ID
+        type: string
+      lastUpdateTime:
+        description: 状态变更时间
+        type: string
+      materialStore:
+        allOf:
+        - $ref: '#/definitions/proto.MaterialStoreInfo'
+        description: 后续任务
+      materialStoreID:
+        description: 物料仓库ID
+        type: string
+      productOrder:
+        allOf:
+        - $ref: '#/definitions/proto.ProductOrderInfo'
+        description: 事务状态
+      productOrderID:
+        description: 生产工单号ID
+        type: string
+      remark:
+        description: 备注
+        type: string
+      taskNo:
+        description: 任务单号
+        type: string
+      transactionState:
+        description: 事务状态
         type: string
     type: object
 info:
@@ -7165,6 +8993,875 @@ paths:
       summary: 更新
       tags:
       - 编码模版管理
+  /api/mom/efficiency/productionefficiency/add:
+    post:
+      consumes:
+      - application/json
+      description: 新增
+      parameters:
+      - description: jwt token
+        in: header
+        name: authorization
+        required: true
+        type: string
+      - description: Add ProductionEfficiency
+        in: body
+        name: account
+        required: true
+        schema:
+          $ref: '#/definitions/proto.ProductionEfficiencyInfo'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/proto.CommonResponse'
+      summary: 新增
+      tags:
+      - 生产效率统计
+  /api/mom/efficiency/productionefficiency/all:
+    get:
+      consumes:
+      - application/json
+      description: 查询所有
+      parameters:
+      - description: jwt token
+        in: header
+        name: authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/proto.GetAllProductionEfficiencyResponse'
+      summary: 查询所有
+      tags:
+      - 生产效率统计
+  /api/mom/efficiency/productionefficiency/delete:
+    delete:
+      consumes:
+      - application/json
+      description: 删除
+      parameters:
+      - description: jwt token
+        in: header
+        name: authorization
+        required: true
+        type: string
+      - description: Delete ProductionEfficiency
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/proto.DelRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/proto.CommonResponse'
+      summary: 删除
+      tags:
+      - 生产效率统计
+  /api/mom/efficiency/productionefficiency/detail:
+    get:
+      consumes:
+      - application/json
+      description: 查询明细
+      parameters:
+      - description: ID
+        in: query
+        name: id
+        required: true
+        type: string
+      - description: jwt token
+        in: header
+        name: authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/proto.GetProductionEfficiencyDetailResponse'
+      summary: 查询明细
+      tags:
+      - 生产效率统计
+  /api/mom/efficiency/productionefficiency/query:
+    get:
+      consumes:
+      - application/json
+      description: 分页查询
+      parameters:
+      - description: jwt token
+        in: header
+        name: authorization
+        required: true
+        type: string
+      - description: 从1开始
+        in: query
+        name: pageIndex
+        type: integer
+      - description: 默认每页10条
+        in: query
+        name: pageSize
+        type: integer
+      - description: 排序字段
+        in: query
+        name: orderField
+        type: string
+      - description: 是否倒序排序
+        in: query
+        name: desc
+        type: boolean
+      - description: 创建时间开始
+        in: query
+        name: outputDate0
+        type: string
+      - description: 创建时间结束
+        in: query
+        name: outputDate1
+        type: string
+      - description: 生产产线ID
+        in: query
+        name: productionLineID
+        type: string
+      produces:
+      - application/octet-stream
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/proto.QueryProductionEfficiencyResponse'
+      summary: 分页查询
+      tags:
+      - 生产效率统计
+  /api/mom/efficiency/productionefficiency/update:
+    put:
+      consumes:
+      - application/json
+      description: 更新
+      parameters:
+      - description: jwt token
+        in: header
+        name: authorization
+        required: true
+        type: string
+      - description: Update ProductionEfficiency
+        in: body
+        name: account
+        required: true
+        schema:
+          $ref: '#/definitions/proto.ProductionEfficiencyInfo'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/proto.CommonResponse'
+      summary: 更新
+      tags:
+      - 生产效率统计
+  /api/mom/efficiency/productionstationefficiency/add:
+    post:
+      consumes:
+      - application/json
+      description: 新增
+      parameters:
+      - description: jwt token
+        in: header
+        name: authorization
+        required: true
+        type: string
+      - description: Add ProductionStationEfficiency
+        in: body
+        name: account
+        required: true
+        schema:
+          $ref: '#/definitions/proto.ProductionStationEfficiencyInfo'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/proto.CommonResponse'
+      summary: 新增
+      tags:
+      - 工位效率统计
+  /api/mom/efficiency/productionstationefficiency/all:
+    get:
+      consumes:
+      - application/json
+      description: 查询所有
+      parameters:
+      - description: jwt token
+        in: header
+        name: authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/proto.GetAllProductionStationEfficiencyResponse'
+      summary: 查询所有
+      tags:
+      - 工位效率统计
+  /api/mom/efficiency/productionstationefficiency/delete:
+    delete:
+      consumes:
+      - application/json
+      description: 删除
+      parameters:
+      - description: jwt token
+        in: header
+        name: authorization
+        required: true
+        type: string
+      - description: Delete ProductionStationEfficiency
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/proto.DelRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/proto.CommonResponse'
+      summary: 删除
+      tags:
+      - 工位效率统计
+  /api/mom/efficiency/productionstationefficiency/detail:
+    get:
+      consumes:
+      - application/json
+      description: 查询明细
+      parameters:
+      - description: ID
+        in: query
+        name: id
+        required: true
+        type: string
+      - description: jwt token
+        in: header
+        name: authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/proto.GetProductionStationEfficiencyDetailResponse'
+      summary: 查询明细
+      tags:
+      - 工位效率统计
+  /api/mom/efficiency/productionstationefficiency/query:
+    get:
+      consumes:
+      - application/json
+      description: 分页查询
+      parameters:
+      - description: jwt token
+        in: header
+        name: authorization
+        required: true
+        type: string
+      - description: 从1开始
+        in: query
+        name: pageIndex
+        type: integer
+      - description: 默认每页10条
+        in: query
+        name: pageSize
+        type: integer
+      - description: 排序字段
+        in: query
+        name: orderField
+        type: string
+      - description: 是否倒序排序
+        in: query
+        name: desc
+        type: boolean
+      - description: 创建时间开始
+        in: query
+        name: outputDate0
+        type: string
+      - description: 创建时间结束
+        in: query
+        name: outputDate1
+        type: string
+      - description: 生产产线ID
+        in: query
+        name: productionLineID
+        type: string
+      produces:
+      - application/octet-stream
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/proto.QueryProductionStationEfficiencyResponse'
+      summary: 分页查询
+      tags:
+      - 工位效率统计
+  /api/mom/efficiency/productionstationefficiency/update:
+    put:
+      consumes:
+      - application/json
+      description: 更新
+      parameters:
+      - description: jwt token
+        in: header
+        name: authorization
+        required: true
+        type: string
+      - description: Update ProductionStationEfficiency
+        in: body
+        name: account
+        required: true
+        schema:
+          $ref: '#/definitions/proto.ProductionStationEfficiencyInfo'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/proto.CommonResponse'
+      summary: 更新
+      tags:
+      - 工位效率统计
+  /api/mom/label/labeladaptationrule/add:
+    post:
+      consumes:
+      - application/json
+      description: 新增
+      parameters:
+      - description: jwt token
+        in: header
+        name: authorization
+        required: true
+        type: string
+      - description: Add LabelAdaptationRule
+        in: body
+        name: account
+        required: true
+        schema:
+          $ref: '#/definitions/proto.LabelAdaptationRuleInfo'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/proto.CommonResponse'
+      summary: 新增
+      tags:
+      - 标签适配规则管理
+  /api/mom/label/labeladaptationrule/all:
+    get:
+      consumes:
+      - application/json
+      description: 查询所有
+      parameters:
+      - description: jwt token
+        in: header
+        name: authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/proto.GetAllLabelAdaptationRuleResponse'
+      summary: 查询所有
+      tags:
+      - 标签适配规则管理
+  /api/mom/label/labeladaptationrule/delete:
+    delete:
+      consumes:
+      - application/json
+      description: 删除
+      parameters:
+      - description: jwt token
+        in: header
+        name: authorization
+        required: true
+        type: string
+      - description: Delete LabelAdaptationRule
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/proto.DelRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/proto.CommonResponse'
+      summary: 删除
+      tags:
+      - 标签适配规则管理
+  /api/mom/label/labeladaptationrule/detail:
+    get:
+      consumes:
+      - application/json
+      description: 查询明细
+      parameters:
+      - description: ID
+        in: query
+        name: id
+        required: true
+        type: string
+      - description: jwt token
+        in: header
+        name: authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/proto.GetLabelAdaptationRuleDetailResponse'
+      summary: 查询明细
+      tags:
+      - 标签适配规则管理
+  /api/mom/label/labeladaptationrule/query:
+    get:
+      consumes:
+      - application/json
+      description: 分页查询
+      parameters:
+      - description: jwt token
+        in: header
+        name: authorization
+        required: true
+        type: string
+      - description: 从1开始
+        in: query
+        name: pageIndex
+        type: integer
+      - description: 默认每页10条
+        in: query
+        name: pageSize
+        type: integer
+      - description: 排序字段
+        in: query
+        name: orderField
+        type: string
+      - description: 是否倒序排序
+        in: query
+        name: desc
+        type: boolean
+      produces:
+      - application/octet-stream
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/proto.QueryLabelAdaptationRuleResponse'
+      summary: 分页查询
+      tags:
+      - 标签适配规则管理
+  /api/mom/label/labeladaptationrule/update:
+    put:
+      consumes:
+      - application/json
+      description: 更新
+      parameters:
+      - description: jwt token
+        in: header
+        name: authorization
+        required: true
+        type: string
+      - description: Update LabelAdaptationRule
+        in: body
+        name: account
+        required: true
+        schema:
+          $ref: '#/definitions/proto.LabelAdaptationRuleInfo'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/proto.CommonResponse'
+      summary: 更新
+      tags:
+      - 标签适配规则管理
+  /api/mom/label/labelprintqueue/add:
+    post:
+      consumes:
+      - application/json
+      description: 新增
+      parameters:
+      - description: jwt token
+        in: header
+        name: authorization
+        required: true
+        type: string
+      - description: Add LabelPrintQueue
+        in: body
+        name: account
+        required: true
+        schema:
+          $ref: '#/definitions/proto.LabelPrintQueueInfo'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/proto.CommonResponse'
+      summary: 新增
+      tags:
+      - 标签打印队列管理
+  /api/mom/label/labelprintqueue/all:
+    get:
+      consumes:
+      - application/json
+      description: 查询所有
+      parameters:
+      - description: jwt token
+        in: header
+        name: authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/proto.GetAllLabelPrintQueueResponse'
+      summary: 查询所有
+      tags:
+      - 标签打印队列管理
+  /api/mom/label/labelprintqueue/delete:
+    delete:
+      consumes:
+      - application/json
+      description: 删除
+      parameters:
+      - description: jwt token
+        in: header
+        name: authorization
+        required: true
+        type: string
+      - description: Delete LabelPrintQueue
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/proto.DelRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/proto.CommonResponse'
+      summary: 删除
+      tags:
+      - 标签打印队列管理
+  /api/mom/label/labelprintqueue/detail:
+    get:
+      consumes:
+      - application/json
+      description: 查询明细
+      parameters:
+      - description: ID
+        in: query
+        name: id
+        required: true
+        type: string
+      - description: jwt token
+        in: header
+        name: authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/proto.GetLabelPrintQueueDetailResponse'
+      summary: 查询明细
+      tags:
+      - 标签打印队列管理
+  /api/mom/label/labelprintqueue/query:
+    get:
+      consumes:
+      - application/json
+      description: 分页查询
+      parameters:
+      - description: jwt token
+        in: header
+        name: authorization
+        required: true
+        type: string
+      - description: 从1开始
+        in: query
+        name: pageIndex
+        type: integer
+      - description: 默认每页10条
+        in: query
+        name: pageSize
+        type: integer
+      - description: 排序字段
+        in: query
+        name: orderField
+        type: string
+      - description: 是否倒序排序
+        in: query
+        name: desc
+        type: boolean
+      - description: 任务编号
+        in: query
+        name: taskNo
+        type: string
+      - description: 创建时间开始
+        in: query
+        name: createTime0
+        type: string
+      - description: 创建时间结束
+        in: query
+        name: createTime1
+        type: string
+      produces:
+      - application/octet-stream
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/proto.QueryLabelPrintQueueResponse'
+      summary: 分页查询
+      tags:
+      - 标签打印队列管理
+  /api/mom/label/labelprintqueue/update:
+    put:
+      consumes:
+      - application/json
+      description: 更新
+      parameters:
+      - description: jwt token
+        in: header
+        name: authorization
+        required: true
+        type: string
+      - description: Update LabelPrintQueue
+        in: body
+        name: account
+        required: true
+        schema:
+          $ref: '#/definitions/proto.LabelPrintQueueInfo'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/proto.CommonResponse'
+      summary: 更新
+      tags:
+      - 标签打印队列管理
+  /api/mom/label/labelprinttask/add:
+    post:
+      consumes:
+      - application/json
+      description: 新增
+      parameters:
+      - description: jwt token
+        in: header
+        name: authorization
+        required: true
+        type: string
+      - description: Add LabelPrintTask
+        in: body
+        name: account
+        required: true
+        schema:
+          $ref: '#/definitions/proto.LabelPrintTaskInfo'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/proto.CommonResponse'
+      summary: 新增
+      tags:
+      - 标签打印任务管理
+  /api/mom/label/labelprinttask/all:
+    get:
+      consumes:
+      - application/json
+      description: 查询所有
+      parameters:
+      - description: jwt token
+        in: header
+        name: authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/proto.GetAllLabelPrintTaskResponse'
+      summary: 查询所有
+      tags:
+      - 标签打印任务管理
+  /api/mom/label/labelprinttask/delete:
+    delete:
+      consumes:
+      - application/json
+      description: 删除
+      parameters:
+      - description: jwt token
+        in: header
+        name: authorization
+        required: true
+        type: string
+      - description: Delete LabelPrintTask
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/proto.DelRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/proto.CommonResponse'
+      summary: 删除
+      tags:
+      - 标签打印任务管理
+  /api/mom/label/labelprinttask/detail:
+    get:
+      consumes:
+      - application/json
+      description: 查询明细
+      parameters:
+      - description: ID
+        in: query
+        name: id
+        required: true
+        type: string
+      - description: jwt token
+        in: header
+        name: authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/proto.GetLabelPrintTaskDetailResponse'
+      summary: 查询明细
+      tags:
+      - 标签打印任务管理
+  /api/mom/label/labelprinttask/query:
+    get:
+      consumes:
+      - application/json
+      description: 分页查询
+      parameters:
+      - description: jwt token
+        in: header
+        name: authorization
+        required: true
+        type: string
+      - description: 从1开始
+        in: query
+        name: pageIndex
+        type: integer
+      - description: 默认每页10条
+        in: query
+        name: pageSize
+        type: integer
+      - description: 排序字段
+        in: query
+        name: orderField
+        type: string
+      - description: 是否倒序排序
+        in: query
+        name: desc
+        type: boolean
+      - description: 代号或描述
+        in: query
+        name: code
+        type: string
+      - description: 生产产线ID
+        in: query
+        name: productionLineID
+        type: string
+      produces:
+      - application/octet-stream
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/proto.QueryLabelPrintTaskResponse'
+      summary: 分页查询
+      tags:
+      - 标签打印任务管理
+  /api/mom/label/labelprinttask/update:
+    put:
+      consumes:
+      - application/json
+      description: 更新
+      parameters:
+      - description: jwt token
+        in: header
+        name: authorization
+        required: true
+        type: string
+      - description: Update LabelPrintTask
+        in: body
+        name: account
+        required: true
+        schema:
+          $ref: '#/definitions/proto.LabelPrintTaskInfo'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/proto.CommonResponse'
+      summary: 更新
+      tags:
+      - 标签打印任务管理
   /api/mom/label/labeltemplate/add:
     post:
       consumes:
@@ -7507,6 +10204,360 @@ paths:
       summary: 更新
       tags:
       - 标签类型管理
+  /api/mom/material/agvtaskqueue/add:
+    post:
+      consumes:
+      - application/json
+      description: 新增
+      parameters:
+      - description: jwt token
+        in: header
+        name: authorization
+        required: true
+        type: string
+      - description: Add AGVTaskQueue
+        in: body
+        name: account
+        required: true
+        schema:
+          $ref: '#/definitions/proto.AGVTaskQueueInfo'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/proto.CommonResponse'
+      summary: 新增
+      tags:
+      - AGV任务队列管理
+  /api/mom/material/agvtaskqueue/all:
+    get:
+      consumes:
+      - application/json
+      description: 查询所有
+      parameters:
+      - description: jwt token
+        in: header
+        name: authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/proto.GetAllAGVTaskQueueResponse'
+      summary: 查询所有
+      tags:
+      - AGV任务队列管理
+  /api/mom/material/agvtaskqueue/delete:
+    delete:
+      consumes:
+      - application/json
+      description: 删除
+      parameters:
+      - description: jwt token
+        in: header
+        name: authorization
+        required: true
+        type: string
+      - description: Delete AGVTaskQueue
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/proto.DelRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/proto.CommonResponse'
+      summary: 删除
+      tags:
+      - AGV任务队列管理
+  /api/mom/material/agvtaskqueue/detail:
+    get:
+      consumes:
+      - application/json
+      description: 查询明细
+      parameters:
+      - description: ID
+        in: query
+        name: id
+        required: true
+        type: string
+      - description: jwt token
+        in: header
+        name: authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/proto.GetAGVTaskQueueDetailResponse'
+      summary: 查询明细
+      tags:
+      - AGV任务队列管理
+  /api/mom/material/agvtaskqueue/query:
+    get:
+      consumes:
+      - application/json
+      description: 分页查询
+      parameters:
+      - description: jwt token
+        in: header
+        name: authorization
+        required: true
+        type: string
+      - description: 从1开始
+        in: query
+        name: pageIndex
+        type: integer
+      - description: 默认每页10条
+        in: query
+        name: pageSize
+        type: integer
+      - description: 排序字段
+        in: query
+        name: orderField
+        type: string
+      - description: 是否倒序排序
+        in: query
+        name: desc
+        type: boolean
+      - description: 创建时间开始
+        in: query
+        name: createTime0
+        type: string
+      - description: 创建时间结束
+        in: query
+        name: createTime1
+        type: string
+      - description: 任务编号
+        in: query
+        name: taskNo
+        type: string
+      produces:
+      - application/octet-stream
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/proto.QueryAGVTaskQueueResponse'
+      summary: 分页查询
+      tags:
+      - AGV任务队列管理
+  /api/mom/material/agvtaskqueue/update:
+    put:
+      consumes:
+      - application/json
+      description: 更新
+      parameters:
+      - description: jwt token
+        in: header
+        name: authorization
+        required: true
+        type: string
+      - description: Update AGVTaskQueue
+        in: body
+        name: account
+        required: true
+        schema:
+          $ref: '#/definitions/proto.AGVTaskQueueInfo'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/proto.CommonResponse'
+      summary: 更新
+      tags:
+      - AGV任务队列管理
+  /api/mom/material/agvtasktype/add:
+    post:
+      consumes:
+      - application/json
+      description: 新增
+      parameters:
+      - description: jwt token
+        in: header
+        name: authorization
+        required: true
+        type: string
+      - description: Add AGVTaskType
+        in: body
+        name: account
+        required: true
+        schema:
+          $ref: '#/definitions/proto.AGVTaskTypeInfo'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/proto.CommonResponse'
+      summary: 新增
+      tags:
+      - AGV任务类型管理
+  /api/mom/material/agvtasktype/all:
+    get:
+      consumes:
+      - application/json
+      description: 查询所有
+      parameters:
+      - description: jwt token
+        in: header
+        name: authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/proto.GetAllAGVTaskTypeResponse'
+      summary: 查询所有
+      tags:
+      - AGV任务类型管理
+  /api/mom/material/agvtasktype/delete:
+    delete:
+      consumes:
+      - application/json
+      description: 删除
+      parameters:
+      - description: jwt token
+        in: header
+        name: authorization
+        required: true
+        type: string
+      - description: Delete AGVTaskType
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/proto.DelRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/proto.CommonResponse'
+      summary: 删除
+      tags:
+      - AGV任务类型管理
+  /api/mom/material/agvtasktype/detail:
+    get:
+      consumes:
+      - application/json
+      description: 查询明细
+      parameters:
+      - description: ID
+        in: query
+        name: id
+        required: true
+        type: string
+      - description: jwt token
+        in: header
+        name: authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/proto.GetAGVTaskTypeDetailResponse'
+      summary: 查询明细
+      tags:
+      - AGV任务类型管理
+  /api/mom/material/agvtasktype/query:
+    get:
+      consumes:
+      - application/json
+      description: 分页查询
+      parameters:
+      - description: jwt token
+        in: header
+        name: authorization
+        required: true
+        type: string
+      - description: 从1开始
+        in: query
+        name: pageIndex
+        type: integer
+      - description: 默认每页10条
+        in: query
+        name: pageSize
+        type: integer
+      - description: 排序字段
+        in: query
+        name: orderField
+        type: string
+      - description: 是否倒序排序
+        in: query
+        name: desc
+        type: boolean
+      - description: 货架类型
+        in: query
+        name: shelfType
+        type: integer
+      - description: 场景类型
+        in: query
+        name: sceneType
+        type: integer
+      - description: 容器类型ID
+        in: query
+        name: materialContainerTypeID
+        type: string
+      produces:
+      - application/octet-stream
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/proto.QueryAGVTaskTypeResponse'
+      summary: 分页查询
+      tags:
+      - AGV任务类型管理
+  /api/mom/material/agvtasktype/update:
+    put:
+      consumes:
+      - application/json
+      description: 更新
+      parameters:
+      - description: jwt token
+        in: header
+        name: authorization
+        required: true
+        type: string
+      - description: Update AGVTaskType
+        in: body
+        name: account
+        required: true
+        schema:
+          $ref: '#/definitions/proto.AGVTaskTypeInfo'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/proto.CommonResponse'
+      summary: 更新
+      tags:
+      - AGV任务类型管理
   /api/mom/material/materialcategory/add:
     post:
       consumes:
@@ -7845,6 +10896,352 @@ paths:
       summary: 更新
       tags:
       - 料架通道管理
+  /api/mom/material/materialcontainer/add:
+    post:
+      consumes:
+      - application/json
+      description: 新增
+      parameters:
+      - description: jwt token
+        in: header
+        name: authorization
+        required: true
+        type: string
+      - description: Add MaterialContainer
+        in: body
+        name: account
+        required: true
+        schema:
+          $ref: '#/definitions/proto.MaterialContainerInfo'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/proto.CommonResponse'
+      summary: 新增
+      tags:
+      - 物料容器管理
+  /api/mom/material/materialcontainer/all:
+    get:
+      consumes:
+      - application/json
+      description: 查询所有
+      parameters:
+      - description: jwt token
+        in: header
+        name: authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/proto.GetAllMaterialContainerResponse'
+      summary: 查询所有
+      tags:
+      - 物料容器管理
+  /api/mom/material/materialcontainer/delete:
+    delete:
+      consumes:
+      - application/json
+      description: 删除
+      parameters:
+      - description: jwt token
+        in: header
+        name: authorization
+        required: true
+        type: string
+      - description: Delete MaterialContainer
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/proto.DelRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/proto.CommonResponse'
+      summary: 删除
+      tags:
+      - 物料容器管理
+  /api/mom/material/materialcontainer/detail:
+    get:
+      consumes:
+      - application/json
+      description: 查询明细
+      parameters:
+      - description: ID
+        in: query
+        name: id
+        required: true
+        type: string
+      - description: jwt token
+        in: header
+        name: authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/proto.GetMaterialContainerDetailResponse'
+      summary: 查询明细
+      tags:
+      - 物料容器管理
+  /api/mom/material/materialcontainer/query:
+    get:
+      consumes:
+      - application/json
+      description: 分页查询
+      parameters:
+      - description: jwt token
+        in: header
+        name: authorization
+        required: true
+        type: string
+      - description: 从1开始
+        in: query
+        name: pageIndex
+        type: integer
+      - description: 默认每页10条
+        in: query
+        name: pageSize
+        type: integer
+      - description: 排序字段
+        in: query
+        name: orderField
+        type: string
+      - description: 是否倒序排序
+        in: query
+        name: desc
+        type: boolean
+      - description: 编号或描述
+        in: query
+        name: code
+        type: string
+      - description: 当前状态
+        in: query
+        name: currentState
+        type: string
+      - description: 容器类型ID
+        in: query
+        name: materialContainerTypeID
+        type: string
+      produces:
+      - application/octet-stream
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/proto.QueryMaterialContainerResponse'
+      summary: 分页查询
+      tags:
+      - 物料容器管理
+  /api/mom/material/materialcontainer/update:
+    put:
+      consumes:
+      - application/json
+      description: 更新
+      parameters:
+      - description: jwt token
+        in: header
+        name: authorization
+        required: true
+        type: string
+      - description: Update MaterialContainer
+        in: body
+        name: account
+        required: true
+        schema:
+          $ref: '#/definitions/proto.MaterialContainerInfo'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/proto.CommonResponse'
+      summary: 更新
+      tags:
+      - 物料容器管理
+  /api/mom/material/materialcontainertype/add:
+    post:
+      consumes:
+      - application/json
+      description: 新增
+      parameters:
+      - description: jwt token
+        in: header
+        name: authorization
+        required: true
+        type: string
+      - description: Add MaterialContainerType
+        in: body
+        name: account
+        required: true
+        schema:
+          $ref: '#/definitions/proto.MaterialContainerTypeInfo'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/proto.CommonResponse'
+      summary: 新增
+      tags:
+      - 物料容器类型管理
+  /api/mom/material/materialcontainertype/all:
+    get:
+      consumes:
+      - application/json
+      description: 查询所有
+      parameters:
+      - description: jwt token
+        in: header
+        name: authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/proto.GetAllMaterialContainerTypeResponse'
+      summary: 查询所有
+      tags:
+      - 物料容器类型管理
+  /api/mom/material/materialcontainertype/delete:
+    delete:
+      consumes:
+      - application/json
+      description: 删除
+      parameters:
+      - description: jwt token
+        in: header
+        name: authorization
+        required: true
+        type: string
+      - description: Delete MaterialContainerType
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/proto.DelRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/proto.CommonResponse'
+      summary: 删除
+      tags:
+      - 物料容器类型管理
+  /api/mom/material/materialcontainertype/detail:
+    get:
+      consumes:
+      - application/json
+      description: 查询明细
+      parameters:
+      - description: ID
+        in: query
+        name: id
+        required: true
+        type: string
+      - description: jwt token
+        in: header
+        name: authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/proto.GetMaterialContainerTypeDetailResponse'
+      summary: 查询明细
+      tags:
+      - 物料容器类型管理
+  /api/mom/material/materialcontainertype/query:
+    get:
+      consumes:
+      - application/json
+      description: 分页查询
+      parameters:
+      - description: jwt token
+        in: header
+        name: authorization
+        required: true
+        type: string
+      - description: 从1开始
+        in: query
+        name: pageIndex
+        type: integer
+      - description: 默认每页10条
+        in: query
+        name: pageSize
+        type: integer
+      - description: 排序字段
+        in: query
+        name: orderField
+        type: string
+      - description: 是否倒序排序
+        in: query
+        name: desc
+        type: boolean
+      - description: 代号或描述
+        in: query
+        name: code
+        type: string
+      produces:
+      - application/octet-stream
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/proto.QueryMaterialContainerTypeResponse'
+      summary: 分页查询
+      tags:
+      - 物料容器类型管理
+  /api/mom/material/materialcontainertype/update:
+    put:
+      consumes:
+      - application/json
+      description: 更新
+      parameters:
+      - description: jwt token
+        in: header
+        name: authorization
+        required: true
+        type: string
+      - description: Update MaterialContainerType
+        in: body
+        name: account
+        required: true
+        schema:
+          $ref: '#/definitions/proto.MaterialContainerTypeInfo'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/proto.CommonResponse'
+      summary: 更新
+      tags:
+      - 物料容器类型管理
   /api/mom/material/materialinfo/add:
     post:
       consumes:
@@ -8014,6 +11411,1539 @@ paths:
       summary: 更新
       tags:
       - 物料信息管理
+  /api/mom/material/materialinventory/add:
+    post:
+      consumes:
+      - application/json
+      description: 新增
+      parameters:
+      - description: jwt token
+        in: header
+        name: authorization
+        required: true
+        type: string
+      - description: Add MaterialInventory
+        in: body
+        name: account
+        required: true
+        schema:
+          $ref: '#/definitions/proto.MaterialInventoryInfo'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/proto.CommonResponse'
+      summary: 新增
+      tags:
+      - 物料库存管理
+  /api/mom/material/materialinventory/all:
+    get:
+      consumes:
+      - application/json
+      description: 查询所有
+      parameters:
+      - description: jwt token
+        in: header
+        name: authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/proto.GetAllMaterialInventoryResponse'
+      summary: 查询所有
+      tags:
+      - 物料库存管理
+  /api/mom/material/materialinventory/delete:
+    delete:
+      consumes:
+      - application/json
+      description: 删除
+      parameters:
+      - description: jwt token
+        in: header
+        name: authorization
+        required: true
+        type: string
+      - description: Delete MaterialInventory
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/proto.DelRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/proto.CommonResponse'
+      summary: 删除
+      tags:
+      - 物料库存管理
+  /api/mom/material/materialinventory/detail:
+    get:
+      consumes:
+      - application/json
+      description: 查询明细
+      parameters:
+      - description: ID
+        in: query
+        name: id
+        required: true
+        type: string
+      - description: jwt token
+        in: header
+        name: authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/proto.GetMaterialInventoryDetailResponse'
+      summary: 查询明细
+      tags:
+      - 物料库存管理
+  /api/mom/material/materialinventory/query:
+    get:
+      consumes:
+      - application/json
+      description: 分页查询
+      parameters:
+      - description: jwt token
+        in: header
+        name: authorization
+        required: true
+        type: string
+      - description: 从1开始
+        in: query
+        name: pageIndex
+        type: integer
+      - description: 默认每页10条
+        in: query
+        name: pageSize
+        type: integer
+      - description: 排序字段
+        in: query
+        name: orderField
+        type: string
+      - description: 是否倒序排序
+        in: query
+        name: desc
+        type: boolean
+      - description: 创建时间开始
+        in: query
+        name: createTime0
+        type: string
+      - description: 创建时间结束
+        in: query
+        name: createTime1
+        type: string
+      - description: 物料代号或描述
+        in: query
+        name: materialInfo
+        type: string
+      - description: 仓库代号或描述
+        in: query
+        name: materialStore
+        type: string
+      produces:
+      - application/octet-stream
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/proto.QueryMaterialInventoryResponse'
+      summary: 分页查询
+      tags:
+      - 物料库存管理
+  /api/mom/material/materialinventory/update:
+    put:
+      consumes:
+      - application/json
+      description: 更新
+      parameters:
+      - description: jwt token
+        in: header
+        name: authorization
+        required: true
+        type: string
+      - description: Update MaterialInventory
+        in: body
+        name: account
+        required: true
+        schema:
+          $ref: '#/definitions/proto.MaterialInventoryInfo'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/proto.CommonResponse'
+      summary: 更新
+      tags:
+      - 物料库存管理
+  /api/mom/material/materialreturncause/add:
+    post:
+      consumes:
+      - application/json
+      description: 新增
+      parameters:
+      - description: jwt token
+        in: header
+        name: authorization
+        required: true
+        type: string
+      - description: Add MaterialReturnCause
+        in: body
+        name: account
+        required: true
+        schema:
+          $ref: '#/definitions/proto.MaterialReturnCauseInfo'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/proto.CommonResponse'
+      summary: 新增
+      tags:
+      - 物料退料原因管理
+  /api/mom/material/materialreturncause/all:
+    get:
+      consumes:
+      - application/json
+      description: 查询所有
+      parameters:
+      - description: jwt token
+        in: header
+        name: authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/proto.GetAllMaterialReturnCauseResponse'
+      summary: 查询所有
+      tags:
+      - 物料退料原因管理
+  /api/mom/material/materialreturncause/delete:
+    delete:
+      consumes:
+      - application/json
+      description: 删除
+      parameters:
+      - description: jwt token
+        in: header
+        name: authorization
+        required: true
+        type: string
+      - description: Delete MaterialReturnCause
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/proto.DelRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/proto.CommonResponse'
+      summary: 删除
+      tags:
+      - 物料退料原因管理
+  /api/mom/material/materialreturncause/detail:
+    get:
+      consumes:
+      - application/json
+      description: 查询明细
+      parameters:
+      - description: ID
+        in: query
+        name: id
+        required: true
+        type: string
+      - description: jwt token
+        in: header
+        name: authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/proto.GetMaterialReturnCauseDetailResponse'
+      summary: 查询明细
+      tags:
+      - 物料退料原因管理
+  /api/mom/material/materialreturncause/query:
+    get:
+      consumes:
+      - application/json
+      description: 分页查询
+      parameters:
+      - description: jwt token
+        in: header
+        name: authorization
+        required: true
+        type: string
+      - description: 从1开始
+        in: query
+        name: pageIndex
+        type: integer
+      - description: 默认每页10条
+        in: query
+        name: pageSize
+        type: integer
+      - description: 排序字段
+        in: query
+        name: orderField
+        type: string
+      - description: 是否倒序排序
+        in: query
+        name: desc
+        type: boolean
+      - description: 代号或描述
+        in: query
+        name: code
+        type: string
+      produces:
+      - application/octet-stream
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/proto.QueryMaterialReturnCauseResponse'
+      summary: 分页查询
+      tags:
+      - 物料退料原因管理
+  /api/mom/material/materialreturncause/update:
+    put:
+      consumes:
+      - application/json
+      description: 更新
+      parameters:
+      - description: jwt token
+        in: header
+        name: authorization
+        required: true
+        type: string
+      - description: Update MaterialReturnCause
+        in: body
+        name: account
+        required: true
+        schema:
+          $ref: '#/definitions/proto.MaterialReturnCauseInfo'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/proto.CommonResponse'
+      summary: 更新
+      tags:
+      - 物料退料原因管理
+  /api/mom/material/materialreturnrequestform/add:
+    post:
+      consumes:
+      - application/json
+      description: 新增
+      parameters:
+      - description: jwt token
+        in: header
+        name: authorization
+        required: true
+        type: string
+      - description: Add MaterialReturnRequestForm
+        in: body
+        name: account
+        required: true
+        schema:
+          $ref: '#/definitions/proto.MaterialReturnRequestFormInfo'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/proto.CommonResponse'
+      summary: 新增
+      tags:
+      - 材料退货申请表管理
+  /api/mom/material/materialreturnrequestform/all:
+    get:
+      consumes:
+      - application/json
+      description: 查询所有
+      parameters:
+      - description: jwt token
+        in: header
+        name: authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/proto.GetAllMaterialReturnRequestFormResponse'
+      summary: 查询所有
+      tags:
+      - 材料退货申请表管理
+  /api/mom/material/materialreturnrequestform/delete:
+    delete:
+      consumes:
+      - application/json
+      description: 删除
+      parameters:
+      - description: jwt token
+        in: header
+        name: authorization
+        required: true
+        type: string
+      - description: Delete MaterialReturnRequestForm
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/proto.DelRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/proto.CommonResponse'
+      summary: 删除
+      tags:
+      - 材料退货申请表管理
+  /api/mom/material/materialreturnrequestform/detail:
+    get:
+      consumes:
+      - application/json
+      description: 查询明细
+      parameters:
+      - description: ID
+        in: query
+        name: id
+        required: true
+        type: string
+      - description: jwt token
+        in: header
+        name: authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/proto.GetMaterialReturnRequestFormDetailResponse'
+      summary: 查询明细
+      tags:
+      - 材料退货申请表管理
+  /api/mom/material/materialreturnrequestform/query:
+    get:
+      consumes:
+      - application/json
+      description: 分页查询
+      parameters:
+      - description: jwt token
+        in: header
+        name: authorization
+        required: true
+        type: string
+      - description: 从1开始
+        in: query
+        name: pageIndex
+        type: integer
+      - description: 默认每页10条
+        in: query
+        name: pageSize
+        type: integer
+      - description: 排序字段
+        in: query
+        name: orderField
+        type: string
+      - description: 是否倒序排序
+        in: query
+        name: desc
+        type: boolean
+      produces:
+      - application/octet-stream
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/proto.QueryMaterialReturnRequestFormResponse'
+      summary: 分页查询
+      tags:
+      - 材料退货申请表管理
+  /api/mom/material/materialreturnrequestform/update:
+    put:
+      consumes:
+      - application/json
+      description: 更新
+      parameters:
+      - description: jwt token
+        in: header
+        name: authorization
+        required: true
+        type: string
+      - description: Update MaterialReturnRequestForm
+        in: body
+        name: account
+        required: true
+        schema:
+          $ref: '#/definitions/proto.MaterialReturnRequestFormInfo'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/proto.CommonResponse'
+      summary: 更新
+      tags:
+      - 材料退货申请表管理
+  /api/mom/material/materialreturnsolution/add:
+    post:
+      consumes:
+      - application/json
+      description: 新增
+      parameters:
+      - description: jwt token
+        in: header
+        name: authorization
+        required: true
+        type: string
+      - description: Add MaterialReturnSolution
+        in: body
+        name: account
+        required: true
+        schema:
+          $ref: '#/definitions/proto.MaterialReturnSolutionInfo'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/proto.CommonResponse'
+      summary: 新增
+      tags:
+      - 物料退料方案管理
+  /api/mom/material/materialreturnsolution/all:
+    get:
+      consumes:
+      - application/json
+      description: 查询所有
+      parameters:
+      - description: jwt token
+        in: header
+        name: authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/proto.GetAllMaterialReturnSolutionResponse'
+      summary: 查询所有
+      tags:
+      - 物料退料方案管理
+  /api/mom/material/materialreturnsolution/delete:
+    delete:
+      consumes:
+      - application/json
+      description: 删除
+      parameters:
+      - description: jwt token
+        in: header
+        name: authorization
+        required: true
+        type: string
+      - description: Delete MaterialReturnSolution
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/proto.DelRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/proto.CommonResponse'
+      summary: 删除
+      tags:
+      - 物料退料方案管理
+  /api/mom/material/materialreturnsolution/detail:
+    get:
+      consumes:
+      - application/json
+      description: 查询明细
+      parameters:
+      - description: ID
+        in: query
+        name: id
+        required: true
+        type: string
+      - description: jwt token
+        in: header
+        name: authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/proto.GetMaterialReturnSolutionDetailResponse'
+      summary: 查询明细
+      tags:
+      - 物料退料方案管理
+  /api/mom/material/materialreturnsolution/query:
+    get:
+      consumes:
+      - application/json
+      description: 分页查询
+      parameters:
+      - description: jwt token
+        in: header
+        name: authorization
+        required: true
+        type: string
+      - description: 从1开始
+        in: query
+        name: pageIndex
+        type: integer
+      - description: 默认每页10条
+        in: query
+        name: pageSize
+        type: integer
+      - description: 排序字段
+        in: query
+        name: orderField
+        type: string
+      - description: 是否倒序排序
+        in: query
+        name: desc
+        type: boolean
+      - description: 代号或描述
+        in: query
+        name: code
+        type: string
+      produces:
+      - application/octet-stream
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/proto.QueryMaterialReturnSolutionResponse'
+      summary: 分页查询
+      tags:
+      - 物料退料方案管理
+  /api/mom/material/materialreturnsolution/update:
+    put:
+      consumes:
+      - application/json
+      description: 更新
+      parameters:
+      - description: jwt token
+        in: header
+        name: authorization
+        required: true
+        type: string
+      - description: Update MaterialReturnSolution
+        in: body
+        name: account
+        required: true
+        schema:
+          $ref: '#/definitions/proto.MaterialReturnSolutionInfo'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/proto.CommonResponse'
+      summary: 更新
+      tags:
+      - 物料退料方案管理
+  /api/mom/material/materialreturntype/add:
+    post:
+      consumes:
+      - application/json
+      description: 新增
+      parameters:
+      - description: jwt token
+        in: header
+        name: authorization
+        required: true
+        type: string
+      - description: Add MaterialReturnType
+        in: body
+        name: account
+        required: true
+        schema:
+          $ref: '#/definitions/proto.MaterialReturnTypeInfo'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/proto.CommonResponse'
+      summary: 新增
+      tags:
+      - 物料退料类型管理
+  /api/mom/material/materialreturntype/all:
+    get:
+      consumes:
+      - application/json
+      description: 查询所有
+      parameters:
+      - description: jwt token
+        in: header
+        name: authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/proto.GetAllMaterialReturnTypeResponse'
+      summary: 查询所有
+      tags:
+      - 物料退料类型管理
+  /api/mom/material/materialreturntype/delete:
+    delete:
+      consumes:
+      - application/json
+      description: 删除
+      parameters:
+      - description: jwt token
+        in: header
+        name: authorization
+        required: true
+        type: string
+      - description: Delete MaterialReturnType
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/proto.DelRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/proto.CommonResponse'
+      summary: 删除
+      tags:
+      - 物料退料类型管理
+  /api/mom/material/materialreturntype/detail:
+    get:
+      consumes:
+      - application/json
+      description: 查询明细
+      parameters:
+      - description: ID
+        in: query
+        name: id
+        required: true
+        type: string
+      - description: jwt token
+        in: header
+        name: authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/proto.GetMaterialReturnTypeDetailResponse'
+      summary: 查询明细
+      tags:
+      - 物料退料类型管理
+  /api/mom/material/materialreturntype/query:
+    get:
+      consumes:
+      - application/json
+      description: 分页查询
+      parameters:
+      - description: jwt token
+        in: header
+        name: authorization
+        required: true
+        type: string
+      - description: 从1开始
+        in: query
+        name: pageIndex
+        type: integer
+      - description: 默认每页10条
+        in: query
+        name: pageSize
+        type: integer
+      - description: 排序字段
+        in: query
+        name: orderField
+        type: string
+      - description: 是否倒序排序
+        in: query
+        name: desc
+        type: boolean
+      - description: 代号或描述
+        in: query
+        name: code
+        type: string
+      produces:
+      - application/octet-stream
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/proto.QueryMaterialReturnTypeResponse'
+      summary: 分页查询
+      tags:
+      - 物料退料类型管理
+  /api/mom/material/materialreturntype/update:
+    put:
+      consumes:
+      - application/json
+      description: 更新
+      parameters:
+      - description: jwt token
+        in: header
+        name: authorization
+        required: true
+        type: string
+      - description: Update MaterialReturnType
+        in: body
+        name: account
+        required: true
+        schema:
+          $ref: '#/definitions/proto.MaterialReturnTypeInfo'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/proto.CommonResponse'
+      summary: 更新
+      tags:
+      - 物料退料类型管理
+  /api/mom/material/materialshelf/add:
+    post:
+      consumes:
+      - application/json
+      description: 新增
+      parameters:
+      - description: jwt token
+        in: header
+        name: authorization
+        required: true
+        type: string
+      - description: Add MaterialShelf
+        in: body
+        name: account
+        required: true
+        schema:
+          $ref: '#/definitions/proto.MaterialShelfInfo'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/proto.CommonResponse'
+      summary: 新增
+      tags:
+      - 物料货架管理
+  /api/mom/material/materialshelf/all:
+    get:
+      consumes:
+      - application/json
+      description: 查询所有
+      parameters:
+      - description: jwt token
+        in: header
+        name: authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/proto.GetAllMaterialShelfResponse'
+      summary: 查询所有
+      tags:
+      - 物料货架管理
+  /api/mom/material/materialshelf/delete:
+    delete:
+      consumes:
+      - application/json
+      description: 删除
+      parameters:
+      - description: jwt token
+        in: header
+        name: authorization
+        required: true
+        type: string
+      - description: Delete MaterialShelf
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/proto.DelRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/proto.CommonResponse'
+      summary: 删除
+      tags:
+      - 物料货架管理
+  /api/mom/material/materialshelf/detail:
+    get:
+      consumes:
+      - application/json
+      description: 查询明细
+      parameters:
+      - description: ID
+        in: query
+        name: id
+        required: true
+        type: string
+      - description: jwt token
+        in: header
+        name: authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/proto.GetMaterialShelfDetailResponse'
+      summary: 查询明细
+      tags:
+      - 物料货架管理
+  /api/mom/material/materialshelf/query:
+    get:
+      consumes:
+      - application/json
+      description: 分页查询
+      parameters:
+      - description: jwt token
+        in: header
+        name: authorization
+        required: true
+        type: string
+      - description: 从1开始
+        in: query
+        name: pageIndex
+        type: integer
+      - description: 默认每页10条
+        in: query
+        name: pageSize
+        type: integer
+      - description: 排序字段
+        in: query
+        name: orderField
+        type: string
+      - description: 是否倒序排序
+        in: query
+        name: desc
+        type: boolean
+      - description: 代号或描述
+        in: query
+        name: code
+        type: string
+      produces:
+      - application/octet-stream
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/proto.QueryMaterialShelfResponse'
+      summary: 分页查询
+      tags:
+      - 物料货架管理
+  /api/mom/material/materialshelf/update:
+    put:
+      consumes:
+      - application/json
+      description: 更新
+      parameters:
+      - description: jwt token
+        in: header
+        name: authorization
+        required: true
+        type: string
+      - description: Update MaterialShelf
+        in: body
+        name: account
+        required: true
+        schema:
+          $ref: '#/definitions/proto.MaterialShelfInfo'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/proto.CommonResponse'
+      summary: 更新
+      tags:
+      - 物料货架管理
+  /api/mom/material/materialshelfbin/add:
+    post:
+      consumes:
+      - application/json
+      description: 新增
+      parameters:
+      - description: jwt token
+        in: header
+        name: authorization
+        required: true
+        type: string
+      - description: Add MaterialShelfBin
+        in: body
+        name: account
+        required: true
+        schema:
+          $ref: '#/definitions/proto.MaterialShelfBinInfo'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/proto.CommonResponse'
+      summary: 新增
+      tags:
+      - 物料货架库位管理
+  /api/mom/material/materialshelfbin/all:
+    get:
+      consumes:
+      - application/json
+      description: 查询所有
+      parameters:
+      - description: jwt token
+        in: header
+        name: authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/proto.GetAllMaterialShelfBinResponse'
+      summary: 查询所有
+      tags:
+      - 物料货架库位管理
+  /api/mom/material/materialshelfbin/delete:
+    delete:
+      consumes:
+      - application/json
+      description: 删除
+      parameters:
+      - description: jwt token
+        in: header
+        name: authorization
+        required: true
+        type: string
+      - description: Delete MaterialShelfBin
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/proto.DelRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/proto.CommonResponse'
+      summary: 删除
+      tags:
+      - 物料货架库位管理
+  /api/mom/material/materialshelfbin/detail:
+    get:
+      consumes:
+      - application/json
+      description: 查询明细
+      parameters:
+      - description: ID
+        in: query
+        name: id
+        required: true
+        type: string
+      - description: jwt token
+        in: header
+        name: authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/proto.GetMaterialShelfBinDetailResponse'
+      summary: 查询明细
+      tags:
+      - 物料货架库位管理
+  /api/mom/material/materialshelfbin/query:
+    get:
+      consumes:
+      - application/json
+      description: 分页查询
+      parameters:
+      - description: jwt token
+        in: header
+        name: authorization
+        required: true
+        type: string
+      - description: 从1开始
+        in: query
+        name: pageIndex
+        type: integer
+      - description: 默认每页10条
+        in: query
+        name: pageSize
+        type: integer
+      - description: 排序字段
+        in: query
+        name: orderField
+        type: string
+      - description: 是否倒序排序
+        in: query
+        name: desc
+        type: boolean
+      - description: 编号
+        in: query
+        name: code
+        type: string
+      - description: 当前状态
+        in: query
+        name: currentState
+        type: string
+      produces:
+      - application/octet-stream
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/proto.QueryMaterialShelfBinResponse'
+      summary: 分页查询
+      tags:
+      - 物料货架库位管理
+  /api/mom/material/materialshelfbin/update:
+    put:
+      consumes:
+      - application/json
+      description: 更新
+      parameters:
+      - description: jwt token
+        in: header
+        name: authorization
+        required: true
+        type: string
+      - description: Update MaterialShelfBin
+        in: body
+        name: account
+        required: true
+        schema:
+          $ref: '#/definitions/proto.MaterialShelfBinInfo'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/proto.CommonResponse'
+      summary: 更新
+      tags:
+      - 物料货架库位管理
+  /api/mom/material/materialstore/add:
+    post:
+      consumes:
+      - application/json
+      description: 新增
+      parameters:
+      - description: jwt token
+        in: header
+        name: authorization
+        required: true
+        type: string
+      - description: Add MaterialStore
+        in: body
+        name: account
+        required: true
+        schema:
+          $ref: '#/definitions/proto.MaterialStoreInfo'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/proto.CommonResponse'
+      summary: 新增
+      tags:
+      - 物料仓库管理
+  /api/mom/material/materialstore/all:
+    get:
+      consumes:
+      - application/json
+      description: 查询所有
+      parameters:
+      - description: jwt token
+        in: header
+        name: authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/proto.GetAllMaterialStoreResponse'
+      summary: 查询所有
+      tags:
+      - 物料仓库管理
+  /api/mom/material/materialstore/delete:
+    delete:
+      consumes:
+      - application/json
+      description: 删除
+      parameters:
+      - description: jwt token
+        in: header
+        name: authorization
+        required: true
+        type: string
+      - description: Delete MaterialStore
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/proto.DelRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/proto.CommonResponse'
+      summary: 删除
+      tags:
+      - 物料仓库管理
+  /api/mom/material/materialstore/detail:
+    get:
+      consumes:
+      - application/json
+      description: 查询明细
+      parameters:
+      - description: ID
+        in: query
+        name: id
+        required: true
+        type: string
+      - description: jwt token
+        in: header
+        name: authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/proto.GetMaterialStoreDetailResponse'
+      summary: 查询明细
+      tags:
+      - 物料仓库管理
+  /api/mom/material/materialstore/query:
+    get:
+      consumes:
+      - application/json
+      description: 分页查询
+      parameters:
+      - description: jwt token
+        in: header
+        name: authorization
+        required: true
+        type: string
+      - description: 从1开始
+        in: query
+        name: pageIndex
+        type: integer
+      - description: 默认每页10条
+        in: query
+        name: pageSize
+        type: integer
+      - description: 排序字段
+        in: query
+        name: orderField
+        type: string
+      - description: 是否倒序排序
+        in: query
+        name: desc
+        type: boolean
+      - description: 代号或描述
+        in: query
+        name: code
+        type: string
+      produces:
+      - application/octet-stream
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/proto.QueryMaterialStoreResponse'
+      summary: 分页查询
+      tags:
+      - 物料仓库管理
+  /api/mom/material/materialstore/update:
+    put:
+      consumes:
+      - application/json
+      description: 更新
+      parameters:
+      - description: jwt token
+        in: header
+        name: authorization
+        required: true
+        type: string
+      - description: Update MaterialStore
+        in: body
+        name: account
+        required: true
+        schema:
+          $ref: '#/definitions/proto.MaterialStoreInfo'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/proto.CommonResponse'
+      summary: 更新
+      tags:
+      - 物料仓库管理
+  /api/mom/material/materialstorefeedrule/add:
+    post:
+      consumes:
+      - application/json
+      description: 新增
+      parameters:
+      - description: jwt token
+        in: header
+        name: authorization
+        required: true
+        type: string
+      - description: Add MaterialStoreFeedRule
+        in: body
+        name: account
+        required: true
+        schema:
+          $ref: '#/definitions/proto.MaterialStoreFeedRuleInfo'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/proto.CommonResponse'
+      summary: 新增
+      tags:
+      - 物料仓库补料规则
+  /api/mom/material/materialstorefeedrule/all:
+    get:
+      consumes:
+      - application/json
+      description: 查询所有
+      parameters:
+      - description: jwt token
+        in: header
+        name: authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/proto.GetAllMaterialStoreFeedRuleResponse'
+      summary: 查询所有
+      tags:
+      - 物料仓库补料规则
+  /api/mom/material/materialstorefeedrule/delete:
+    delete:
+      consumes:
+      - application/json
+      description: 删除
+      parameters:
+      - description: jwt token
+        in: header
+        name: authorization
+        required: true
+        type: string
+      - description: Delete MaterialStoreFeedRule
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/proto.DelRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/proto.CommonResponse'
+      summary: 删除
+      tags:
+      - 物料仓库补料规则
+  /api/mom/material/materialstorefeedrule/detail:
+    get:
+      consumes:
+      - application/json
+      description: 查询明细
+      parameters:
+      - description: ID
+        in: query
+        name: id
+        required: true
+        type: string
+      - description: jwt token
+        in: header
+        name: authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/proto.GetMaterialStoreFeedRuleDetailResponse'
+      summary: 查询明细
+      tags:
+      - 物料仓库补料规则
+  /api/mom/material/materialstorefeedrule/query:
+    get:
+      consumes:
+      - application/json
+      description: 分页查询
+      parameters:
+      - description: jwt token
+        in: header
+        name: authorization
+        required: true
+        type: string
+      - description: 从1开始
+        in: query
+        name: pageIndex
+        type: integer
+      - description: 默认每页10条
+        in: query
+        name: pageSize
+        type: integer
+      - description: 排序字段
+        in: query
+        name: orderField
+        type: string
+      - description: 是否倒序排序
+        in: query
+        name: desc
+        type: boolean
+      - description: 物料号或描述
+        in: query
+        name: materialInfo
+        type: string
+      produces:
+      - application/octet-stream
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/proto.QueryMaterialStoreFeedRuleResponse'
+      summary: 分页查询
+      tags:
+      - 物料仓库补料规则
+  /api/mom/material/materialstorefeedrule/update:
+    put:
+      consumes:
+      - application/json
+      description: 更新
+      parameters:
+      - description: jwt token
+        in: header
+        name: authorization
+        required: true
+        type: string
+      - description: Update MaterialStoreFeedRule
+        in: body
+        name: account
+        required: true
+        schema:
+          $ref: '#/definitions/proto.MaterialStoreFeedRuleInfo'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/proto.CommonResponse'
+      summary: 更新
+      tags:
+      - 物料仓库补料规则
   /api/mom/material/materialsupplier/add:
     post:
       consumes:
@@ -8209,7 +13139,7 @@ paths:
             $ref: '#/definitions/proto.CommonResponse'
       summary: 新增
       tags:
-      - 物料托盘管理
+      - 物料载具管理
   /api/mom/material/materialtray/all:
     get:
       consumes:
@@ -8230,7 +13160,7 @@ paths:
             $ref: '#/definitions/proto.GetAllMaterialTrayResponse'
       summary: 查询所有
       tags:
-      - 物料托盘管理
+      - 物料载具管理
   /api/mom/material/materialtray/delete:
     delete:
       consumes:
@@ -8257,7 +13187,7 @@ paths:
             $ref: '#/definitions/proto.CommonResponse'
       summary: 删除
       tags:
-      - 物料托盘管理
+      - 物料载具管理
   /api/mom/material/materialtray/detail:
     get:
       consumes:
@@ -8283,7 +13213,7 @@ paths:
             $ref: '#/definitions/proto.GetMaterialTrayDetailResponse'
       summary: 查询明细
       tags:
-      - 物料托盘管理
+      - 物料载具管理
   /api/mom/material/materialtray/query:
     get:
       consumes:
@@ -8324,7 +13254,7 @@ paths:
             $ref: '#/definitions/proto.QueryMaterialTrayResponse'
       summary: 分页查询
       tags:
-      - 物料托盘管理
+      - 物料载具管理
   /api/mom/material/materialtray/update:
     put:
       consumes:
@@ -8351,7 +13281,7 @@ paths:
             $ref: '#/definitions/proto.CommonResponse'
       summary: 更新
       tags:
-      - 物料托盘管理
+      - 物料载具管理
   /api/mom/material/materialtraybindingrecord/add:
     post:
       consumes:
@@ -8378,7 +13308,7 @@ paths:
             $ref: '#/definitions/proto.CommonResponse'
       summary: 新增
       tags:
-      - 物料托盘绑定记录
+      - 物料载具绑定记录
   /api/mom/material/materialtraybindingrecord/all:
     get:
       consumes:
@@ -8399,7 +13329,7 @@ paths:
             $ref: '#/definitions/proto.GetAllMaterialTrayBindingRecordResponse'
       summary: 查询所有
       tags:
-      - 物料托盘绑定记录
+      - 物料载具绑定记录
   /api/mom/material/materialtraybindingrecord/delete:
     delete:
       consumes:
@@ -8426,7 +13356,7 @@ paths:
             $ref: '#/definitions/proto.CommonResponse'
       summary: 删除
       tags:
-      - 物料托盘绑定记录
+      - 物料载具绑定记录
   /api/mom/material/materialtraybindingrecord/detail:
     get:
       consumes:
@@ -8452,7 +13382,7 @@ paths:
             $ref: '#/definitions/proto.GetMaterialTrayBindingRecordDetailResponse'
       summary: 查询明细
       tags:
-      - 物料托盘绑定记录
+      - 物料载具绑定记录
   /api/mom/material/materialtraybindingrecord/query:
     get:
       consumes:
@@ -8501,7 +13431,7 @@ paths:
             $ref: '#/definitions/proto.QueryMaterialTrayBindingRecordResponse'
       summary: 分页查询
       tags:
-      - 物料托盘绑定记录
+      - 物料载具绑定记录
   /api/mom/material/materialtraybindingrecord/update:
     put:
       consumes:
@@ -8528,7 +13458,184 @@ paths:
             $ref: '#/definitions/proto.CommonResponse'
       summary: 更新
       tags:
-      - 物料托盘绑定记录
+      - 物料载具绑定记录
+  /api/mom/material/wmsbillqueue/add:
+    post:
+      consumes:
+      - application/json
+      description: 新增
+      parameters:
+      - description: jwt token
+        in: header
+        name: authorization
+        required: true
+        type: string
+      - description: Add WMSBillQueue
+        in: body
+        name: account
+        required: true
+        schema:
+          $ref: '#/definitions/proto.WMSBillQueueInfo'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/proto.CommonResponse'
+      summary: 新增
+      tags:
+      - WMS过帐队列管理
+  /api/mom/material/wmsbillqueue/all:
+    get:
+      consumes:
+      - application/json
+      description: 查询所有
+      parameters:
+      - description: jwt token
+        in: header
+        name: authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/proto.GetAllWMSBillQueueResponse'
+      summary: 查询所有
+      tags:
+      - WMS过帐队列管理
+  /api/mom/material/wmsbillqueue/delete:
+    delete:
+      consumes:
+      - application/json
+      description: 删除
+      parameters:
+      - description: jwt token
+        in: header
+        name: authorization
+        required: true
+        type: string
+      - description: Delete WMSBillQueue
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/proto.DelRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/proto.CommonResponse'
+      summary: 删除
+      tags:
+      - WMS过帐队列管理
+  /api/mom/material/wmsbillqueue/detail:
+    get:
+      consumes:
+      - application/json
+      description: 查询明细
+      parameters:
+      - description: ID
+        in: query
+        name: id
+        required: true
+        type: string
+      - description: jwt token
+        in: header
+        name: authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/proto.GetWMSBillQueueDetailResponse'
+      summary: 查询明细
+      tags:
+      - WMS过帐队列管理
+  /api/mom/material/wmsbillqueue/query:
+    get:
+      consumes:
+      - application/json
+      description: 分页查询
+      parameters:
+      - description: jwt token
+        in: header
+        name: authorization
+        required: true
+        type: string
+      - description: 从1开始
+        in: query
+        name: pageIndex
+        type: integer
+      - description: 默认每页10条
+        in: query
+        name: pageSize
+        type: integer
+      - description: 排序字段
+        in: query
+        name: orderField
+        type: string
+      - description: 是否倒序排序
+        in: query
+        name: desc
+        type: boolean
+      - description: 创建时间开始
+        in: query
+        name: createTime0
+        type: string
+      - description: 创建时间结束
+        in: query
+        name: createTime1
+        type: string
+      - description: 物料仓库信息
+        in: query
+        name: materialStore
+        type: string
+      produces:
+      - application/octet-stream
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/proto.QueryWMSBillQueueResponse'
+      summary: 分页查询
+      tags:
+      - WMS过帐队列管理
+  /api/mom/material/wmsbillqueue/update:
+    put:
+      consumes:
+      - application/json
+      description: 更新
+      parameters:
+      - description: jwt token
+        in: header
+        name: authorization
+        required: true
+        type: string
+      - description: Update WMSBillQueue
+        in: body
+        name: account
+        required: true
+        schema:
+          $ref: '#/definitions/proto.WMSBillQueueInfo'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/proto.CommonResponse'
+      summary: 更新
+      tags:
+      - WMS过帐队列管理
   /api/mom/printserver/add:
     post:
       consumes:
@@ -8575,6 +13682,27 @@ paths:
           schema:
             $ref: '#/definitions/proto.GetAllPrintServerResponse'
       summary: 查询所有
+      tags:
+      - 打印服务器管理
+  /api/mom/printserver/all/printer:
+    get:
+      consumes:
+      - application/json
+      description: 查询所有打印机
+      parameters:
+      - description: jwt token
+        in: header
+        name: authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/proto.GetAllPrinterResponse'
+      summary: 查询所有打印机
       tags:
       - 打印服务器管理
   /api/mom/printserver/delete:
@@ -8867,6 +13995,59 @@ paths:
       summary: 更新
       tags:
       - 特性赋值规则
+  /api/mom/product/productfactoryreport/query:
+    get:
+      consumes:
+      - application/json
+      description: 分页查询
+      parameters:
+      - description: jwt token
+        in: header
+        name: authorization
+        required: true
+        type: string
+      - description: 从1开始
+        in: query
+        name: pageIndex
+        type: integer
+      - description: 默认每页10条
+        in: query
+        name: pageSize
+        type: integer
+      - description: 排序字段
+        in: query
+        name: orderField
+        type: string
+      - description: 是否倒序排序
+        in: query
+        name: desc
+        type: boolean
+      - description: 生产工单号
+        in: query
+        name: productOrderNo
+        type: string
+      - description: 产品序列号
+        in: query
+        name: productSerialNo
+        type: string
+      - description: 下线时间开始
+        in: query
+        name: finishedTime0
+        type: string
+      - description: 下线时间结束
+        in: query
+        name: finishedTime1
+        type: string
+      produces:
+      - application/octet-stream
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/proto.QueryProductInfoResponse'
+      summary: 分页查询
+      tags:
+      - 产品出厂报告管理
   /api/mom/product/productinfo/add:
     post:
       consumes:
@@ -13039,6 +18220,179 @@ paths:
       summary: 更新
       tags:
       - 产品返工原因管理
+  /api/mom/product/productreworkprocess/add:
+    post:
+      consumes:
+      - application/json
+      description: 新增
+      parameters:
+      - description: jwt token
+        in: header
+        name: authorization
+        required: true
+        type: string
+      - description: Add ProductReworkProcess
+        in: body
+        name: account
+        required: true
+        schema:
+          $ref: '#/definitions/proto.ProductReworkProcessInfo'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/proto.CommonResponse'
+      summary: 新增
+      tags:
+      - 返工工序管理
+  /api/mom/product/productreworkprocess/all:
+    get:
+      consumes:
+      - application/json
+      description: 查询所有
+      parameters:
+      - description: jwt token
+        in: header
+        name: authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/proto.GetAllProductReworkProcessResponse'
+      summary: 查询所有
+      tags:
+      - 返工工序管理
+  /api/mom/product/productreworkprocess/delete:
+    delete:
+      consumes:
+      - application/json
+      description: 删除
+      parameters:
+      - description: jwt token
+        in: header
+        name: authorization
+        required: true
+        type: string
+      - description: Delete ProductReworkProcess
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/proto.DelRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/proto.CommonResponse'
+      summary: 删除
+      tags:
+      - 返工工序管理
+  /api/mom/product/productreworkprocess/detail:
+    get:
+      consumes:
+      - application/json
+      description: 查询明细
+      parameters:
+      - description: ID
+        in: query
+        name: id
+        required: true
+        type: string
+      - description: jwt token
+        in: header
+        name: authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/proto.GetProductReworkProcessDetailResponse'
+      summary: 查询明细
+      tags:
+      - 返工工序管理
+  /api/mom/product/productreworkprocess/query:
+    get:
+      consumes:
+      - application/json
+      description: 分页查询
+      parameters:
+      - description: jwt token
+        in: header
+        name: authorization
+        required: true
+        type: string
+      - description: 从1开始
+        in: query
+        name: pageIndex
+        type: integer
+      - description: 默认每页10条
+        in: query
+        name: pageSize
+        type: integer
+      - description: 排序字段
+        in: query
+        name: orderField
+        type: string
+      - description: 是否倒序排序
+        in: query
+        name: desc
+        type: boolean
+      - description: 生产产线ID
+        in: query
+        name: productionLineID
+        type: string
+      - description: 代号或描述
+        in: query
+        name: code
+        type: string
+      produces:
+      - application/octet-stream
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/proto.QueryProductReworkProcessResponse'
+      summary: 分页查询
+      tags:
+      - 返工工序管理
+  /api/mom/product/productreworkprocess/update:
+    put:
+      consumes:
+      - application/json
+      description: 更新
+      parameters:
+      - description: jwt token
+        in: header
+        name: authorization
+        required: true
+        type: string
+      - description: Update ProductReworkProcess
+        in: body
+        name: account
+        required: true
+        schema:
+          $ref: '#/definitions/proto.ProductReworkProcessInfo'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/proto.CommonResponse'
+      summary: 更新
+      tags:
+      - 返工工序管理
   /api/mom/product/productreworkrecord/add:
     post:
       consumes:
@@ -13228,6 +18582,179 @@ paths:
       summary: 更新
       tags:
       - 返工记录管理
+  /api/mom/product/productreworkroute/add:
+    post:
+      consumes:
+      - application/json
+      description: 新增
+      parameters:
+      - description: jwt token
+        in: header
+        name: authorization
+        required: true
+        type: string
+      - description: Add ProductReworkRoute
+        in: body
+        name: account
+        required: true
+        schema:
+          $ref: '#/definitions/proto.ProductReworkRouteInfo'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/proto.CommonResponse'
+      summary: 新增
+      tags:
+      - 返工路线管理
+  /api/mom/product/productreworkroute/all:
+    get:
+      consumes:
+      - application/json
+      description: 查询所有
+      parameters:
+      - description: jwt token
+        in: header
+        name: authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/proto.GetAllProductReworkRouteResponse'
+      summary: 查询所有
+      tags:
+      - 返工路线管理
+  /api/mom/product/productreworkroute/delete:
+    delete:
+      consumes:
+      - application/json
+      description: 删除
+      parameters:
+      - description: jwt token
+        in: header
+        name: authorization
+        required: true
+        type: string
+      - description: Delete ProductReworkRoute
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/proto.DelRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/proto.CommonResponse'
+      summary: 删除
+      tags:
+      - 返工路线管理
+  /api/mom/product/productreworkroute/detail:
+    get:
+      consumes:
+      - application/json
+      description: 查询明细
+      parameters:
+      - description: ID
+        in: query
+        name: id
+        required: true
+        type: string
+      - description: jwt token
+        in: header
+        name: authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/proto.GetProductReworkRouteDetailResponse'
+      summary: 查询明细
+      tags:
+      - 返工路线管理
+  /api/mom/product/productreworkroute/query:
+    get:
+      consumes:
+      - application/json
+      description: 分页查询
+      parameters:
+      - description: jwt token
+        in: header
+        name: authorization
+        required: true
+        type: string
+      - description: 从1开始
+        in: query
+        name: pageIndex
+        type: integer
+      - description: 默认每页10条
+        in: query
+        name: pageSize
+        type: integer
+      - description: 排序字段
+        in: query
+        name: orderField
+        type: string
+      - description: 是否倒序排序
+        in: query
+        name: desc
+        type: boolean
+      - description: 生产产线ID
+        in: query
+        name: productionLineID
+        type: string
+      - description: 代号或描述
+        in: query
+        name: code
+        type: string
+      produces:
+      - application/octet-stream
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/proto.QueryProductReworkRouteResponse'
+      summary: 分页查询
+      tags:
+      - 返工路线管理
+  /api/mom/product/productreworkroute/update:
+    put:
+      consumes:
+      - application/json
+      description: 更新
+      parameters:
+      - description: jwt token
+        in: header
+        name: authorization
+        required: true
+        type: string
+      - description: Update ProductReworkRoute
+        in: body
+        name: account
+        required: true
+        schema:
+          $ref: '#/definitions/proto.ProductReworkRouteInfo'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/proto.CommonResponse'
+      summary: 更新
+      tags:
+      - 返工路线管理
   /api/mom/product/productreworksolution/add:
     post:
       consumes:
@@ -15182,6 +20709,352 @@ paths:
       summary: 更新
       tags:
       - 产品型号Bom管理
+  /api/mom/production/personnelqualification/add:
+    post:
+      consumes:
+      - application/json
+      description: 新增
+      parameters:
+      - description: jwt token
+        in: header
+        name: authorization
+        required: true
+        type: string
+      - description: Add PersonnelQualification
+        in: body
+        name: account
+        required: true
+        schema:
+          $ref: '#/definitions/proto.PersonnelQualificationInfo'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/proto.CommonResponse'
+      summary: 新增
+      tags:
+      - 人员资质管理
+  /api/mom/production/personnelqualification/all:
+    get:
+      consumes:
+      - application/json
+      description: 查询所有
+      parameters:
+      - description: jwt token
+        in: header
+        name: authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/proto.GetAllPersonnelQualificationResponse'
+      summary: 查询所有
+      tags:
+      - 人员资质管理
+  /api/mom/production/personnelqualification/delete:
+    delete:
+      consumes:
+      - application/json
+      description: 删除
+      parameters:
+      - description: jwt token
+        in: header
+        name: authorization
+        required: true
+        type: string
+      - description: Delete PersonnelQualification
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/proto.DelRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/proto.CommonResponse'
+      summary: 删除
+      tags:
+      - 人员资质管理
+  /api/mom/production/personnelqualification/detail:
+    get:
+      consumes:
+      - application/json
+      description: 查询明细
+      parameters:
+      - description: ID
+        in: query
+        name: id
+        required: true
+        type: string
+      - description: jwt token
+        in: header
+        name: authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/proto.GetPersonnelQualificationDetailResponse'
+      summary: 查询明细
+      tags:
+      - 人员资质管理
+  /api/mom/production/personnelqualification/query:
+    get:
+      consumes:
+      - application/json
+      description: 分页查询
+      parameters:
+      - description: jwt token
+        in: header
+        name: authorization
+        required: true
+        type: string
+      - description: 从1开始
+        in: query
+        name: pageIndex
+        type: integer
+      - description: 默认每页10条
+        in: query
+        name: pageSize
+        type: integer
+      - description: 排序字段
+        in: query
+        name: orderField
+        type: string
+      - description: 是否倒序排序
+        in: query
+        name: desc
+        type: boolean
+      - description: 生产产线ID
+        in: query
+        name: productionLineID
+        type: string
+      - description: 认证人员信息
+        in: query
+        name: name
+        type: string
+      produces:
+      - application/octet-stream
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/proto.QueryPersonnelQualificationResponse'
+      summary: 分页查询
+      tags:
+      - 人员资质管理
+  /api/mom/production/personnelqualification/update:
+    put:
+      consumes:
+      - application/json
+      description: 更新
+      parameters:
+      - description: jwt token
+        in: header
+        name: authorization
+        required: true
+        type: string
+      - description: Update PersonnelQualification
+        in: body
+        name: account
+        required: true
+        schema:
+          $ref: '#/definitions/proto.PersonnelQualificationInfo'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/proto.CommonResponse'
+      summary: 更新
+      tags:
+      - 人员资质管理
+  /api/mom/production/personnelqualificationtype/add:
+    post:
+      consumes:
+      - application/json
+      description: 新增
+      parameters:
+      - description: jwt token
+        in: header
+        name: authorization
+        required: true
+        type: string
+      - description: Add PersonnelQualificationType
+        in: body
+        name: account
+        required: true
+        schema:
+          $ref: '#/definitions/proto.PersonnelQualificationTypeInfo'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/proto.CommonResponse'
+      summary: 新增
+      tags:
+      - 人员资质类型
+  /api/mom/production/personnelqualificationtype/all:
+    get:
+      consumes:
+      - application/json
+      description: 查询所有
+      parameters:
+      - description: jwt token
+        in: header
+        name: authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/proto.GetAllPersonnelQualificationTypeResponse'
+      summary: 查询所有
+      tags:
+      - 人员资质类型
+  /api/mom/production/personnelqualificationtype/delete:
+    delete:
+      consumes:
+      - application/json
+      description: 删除
+      parameters:
+      - description: jwt token
+        in: header
+        name: authorization
+        required: true
+        type: string
+      - description: Delete PersonnelQualificationType
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/proto.DelRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/proto.CommonResponse'
+      summary: 删除
+      tags:
+      - 人员资质类型
+  /api/mom/production/personnelqualificationtype/detail:
+    get:
+      consumes:
+      - application/json
+      description: 查询明细
+      parameters:
+      - description: ID
+        in: query
+        name: id
+        required: true
+        type: string
+      - description: jwt token
+        in: header
+        name: authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/proto.GetPersonnelQualificationTypeDetailResponse'
+      summary: 查询明细
+      tags:
+      - 人员资质类型
+  /api/mom/production/personnelqualificationtype/query:
+    get:
+      consumes:
+      - application/json
+      description: 分页查询
+      parameters:
+      - description: jwt token
+        in: header
+        name: authorization
+        required: true
+        type: string
+      - description: 从1开始
+        in: query
+        name: pageIndex
+        type: integer
+      - description: 默认每页10条
+        in: query
+        name: pageSize
+        type: integer
+      - description: 排序字段
+        in: query
+        name: orderField
+        type: string
+      - description: 是否倒序排序
+        in: query
+        name: desc
+        type: boolean
+      - description: 生产产线ID
+        in: query
+        name: productionLineID
+        type: string
+      - description: 认证人员信息
+        in: query
+        name: name
+        type: string
+      produces:
+      - application/octet-stream
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/proto.QueryPersonnelQualificationTypeResponse'
+      summary: 分页查询
+      tags:
+      - 人员资质类型
+  /api/mom/production/personnelqualificationtype/update:
+    put:
+      consumes:
+      - application/json
+      description: 更新
+      parameters:
+      - description: jwt token
+        in: header
+        name: authorization
+        required: true
+        type: string
+      - description: Update PersonnelQualificationType
+        in: body
+        name: account
+        required: true
+        schema:
+          $ref: '#/definitions/proto.PersonnelQualificationTypeInfo'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/proto.CommonResponse'
+      summary: 更新
+      tags:
+      - 人员资质类型
   /api/mom/production/processstepparameter/add:
     post:
       consumes:
@@ -20253,352 +26126,6 @@ paths:
       summary: 更新
       tags:
       - 后台操作日志管理
-  /api/mom/user/personnelqualification/add:
-    post:
-      consumes:
-      - application/json
-      description: 新增
-      parameters:
-      - description: jwt token
-        in: header
-        name: authorization
-        required: true
-        type: string
-      - description: Add PersonnelQualification
-        in: body
-        name: account
-        required: true
-        schema:
-          $ref: '#/definitions/proto.PersonnelQualificationInfo'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/proto.CommonResponse'
-      summary: 新增
-      tags:
-      - 人员资质管理
-  /api/mom/user/personnelqualification/all:
-    get:
-      consumes:
-      - application/json
-      description: 查询所有
-      parameters:
-      - description: jwt token
-        in: header
-        name: authorization
-        required: true
-        type: string
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/proto.GetAllPersonnelQualificationResponse'
-      summary: 查询所有
-      tags:
-      - 人员资质管理
-  /api/mom/user/personnelqualification/delete:
-    delete:
-      consumes:
-      - application/json
-      description: 删除
-      parameters:
-      - description: jwt token
-        in: header
-        name: authorization
-        required: true
-        type: string
-      - description: Delete PersonnelQualification
-        in: body
-        name: data
-        required: true
-        schema:
-          $ref: '#/definitions/proto.DelRequest'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/proto.CommonResponse'
-      summary: 删除
-      tags:
-      - 人员资质管理
-  /api/mom/user/personnelqualification/detail:
-    get:
-      consumes:
-      - application/json
-      description: 查询明细
-      parameters:
-      - description: ID
-        in: query
-        name: id
-        required: true
-        type: string
-      - description: jwt token
-        in: header
-        name: authorization
-        required: true
-        type: string
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/proto.GetPersonnelQualificationDetailResponse'
-      summary: 查询明细
-      tags:
-      - 人员资质管理
-  /api/mom/user/personnelqualification/query:
-    get:
-      consumes:
-      - application/json
-      description: 分页查询
-      parameters:
-      - description: jwt token
-        in: header
-        name: authorization
-        required: true
-        type: string
-      - description: 从1开始
-        in: query
-        name: pageIndex
-        type: integer
-      - description: 默认每页10条
-        in: query
-        name: pageSize
-        type: integer
-      - description: 排序字段
-        in: query
-        name: orderField
-        type: string
-      - description: 是否倒序排序
-        in: query
-        name: desc
-        type: boolean
-      - description: 生产产线ID
-        in: query
-        name: productionLineID
-        type: string
-      - description: 认证人员信息
-        in: query
-        name: name
-        type: string
-      produces:
-      - application/octet-stream
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/proto.QueryPersonnelQualificationResponse'
-      summary: 分页查询
-      tags:
-      - 人员资质管理
-  /api/mom/user/personnelqualification/update:
-    put:
-      consumes:
-      - application/json
-      description: 更新
-      parameters:
-      - description: jwt token
-        in: header
-        name: authorization
-        required: true
-        type: string
-      - description: Update PersonnelQualification
-        in: body
-        name: account
-        required: true
-        schema:
-          $ref: '#/definitions/proto.PersonnelQualificationInfo'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/proto.CommonResponse'
-      summary: 更新
-      tags:
-      - 人员资质管理
-  /api/mom/user/personnelqualificationtype/add:
-    post:
-      consumes:
-      - application/json
-      description: 新增
-      parameters:
-      - description: jwt token
-        in: header
-        name: authorization
-        required: true
-        type: string
-      - description: Add PersonnelQualificationType
-        in: body
-        name: account
-        required: true
-        schema:
-          $ref: '#/definitions/proto.PersonnelQualificationTypeInfo'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/proto.CommonResponse'
-      summary: 新增
-      tags:
-      - 人员资质类型
-  /api/mom/user/personnelqualificationtype/all:
-    get:
-      consumes:
-      - application/json
-      description: 查询所有
-      parameters:
-      - description: jwt token
-        in: header
-        name: authorization
-        required: true
-        type: string
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/proto.GetAllPersonnelQualificationTypeResponse'
-      summary: 查询所有
-      tags:
-      - 人员资质类型
-  /api/mom/user/personnelqualificationtype/delete:
-    delete:
-      consumes:
-      - application/json
-      description: 删除
-      parameters:
-      - description: jwt token
-        in: header
-        name: authorization
-        required: true
-        type: string
-      - description: Delete PersonnelQualificationType
-        in: body
-        name: data
-        required: true
-        schema:
-          $ref: '#/definitions/proto.DelRequest'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/proto.CommonResponse'
-      summary: 删除
-      tags:
-      - 人员资质类型
-  /api/mom/user/personnelqualificationtype/detail:
-    get:
-      consumes:
-      - application/json
-      description: 查询明细
-      parameters:
-      - description: ID
-        in: query
-        name: id
-        required: true
-        type: string
-      - description: jwt token
-        in: header
-        name: authorization
-        required: true
-        type: string
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/proto.GetPersonnelQualificationTypeDetailResponse'
-      summary: 查询明细
-      tags:
-      - 人员资质类型
-  /api/mom/user/personnelqualificationtype/query:
-    get:
-      consumes:
-      - application/json
-      description: 分页查询
-      parameters:
-      - description: jwt token
-        in: header
-        name: authorization
-        required: true
-        type: string
-      - description: 从1开始
-        in: query
-        name: pageIndex
-        type: integer
-      - description: 默认每页10条
-        in: query
-        name: pageSize
-        type: integer
-      - description: 排序字段
-        in: query
-        name: orderField
-        type: string
-      - description: 是否倒序排序
-        in: query
-        name: desc
-        type: boolean
-      - description: 生产产线ID
-        in: query
-        name: productionLineID
-        type: string
-      - description: 认证人员信息
-        in: query
-        name: name
-        type: string
-      produces:
-      - application/octet-stream
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/proto.QueryPersonnelQualificationTypeResponse'
-      summary: 分页查询
-      tags:
-      - 人员资质类型
-  /api/mom/user/personnelqualificationtype/update:
-    put:
-      consumes:
-      - application/json
-      description: 更新
-      parameters:
-      - description: jwt token
-        in: header
-        name: authorization
-        required: true
-        type: string
-      - description: Update PersonnelQualificationType
-        in: body
-        name: account
-        required: true
-        schema:
-          $ref: '#/definitions/proto.PersonnelQualificationTypeInfo'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/proto.CommonResponse'
-      summary: 更新
-      tags:
-      - 人员资质类型
   /api/mom/webapi/admin/login:
     post:
       consumes:
@@ -20749,7 +26276,7 @@ paths:
     post:
       consumes:
       - application/json
-      description: 绑定物料托盘
+      description: 绑定物料载具
       parameters:
       - description: jwt token
         in: header
@@ -20769,7 +26296,7 @@ paths:
           description: OK
           schema:
             $ref: '#/definitions/proto.CommonResponse'
-      summary: 绑定物料托盘
+      summary: 绑定物料载具
       tags:
       - WebAPI
   /api/mom/webapi/production/checkproductprocessroutefailure:
@@ -21013,6 +26540,60 @@ paths:
           schema:
             $ref: '#/definitions/proto.CommonResponse'
       summary: 更新产品返工记录
+      tags:
+      - WebAPI
+  /api/mom/webapi/statistic/getproductionstationefficiency:
+    post:
+      consumes:
+      - application/json
+      description: 获取工位效率统计
+      parameters:
+      - description: jwt token
+        in: header
+        name: authorization
+        required: true
+        type: string
+      - description: GetProductionStationEfficiencyRequest
+        in: body
+        name: account
+        required: true
+        schema:
+          $ref: '#/definitions/proto.GetProductionStationEfficiencyRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/proto.CommonResponse'
+      summary: 获取工位效率统计
+      tags:
+      - WebAPI
+  /api/mom/webapi/statistic/updateproductionstationefficiency:
+    post:
+      consumes:
+      - application/json
+      description: 更新工位效率统计
+      parameters:
+      - description: jwt token
+        in: header
+        name: authorization
+        required: true
+        type: string
+      - description: UpdateProductionStationEfficiencyRequest
+        in: body
+        name: account
+        required: true
+        schema:
+          $ref: '#/definitions/proto.UpdateProductionStationEfficiencyRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/proto.CommonResponse'
+      summary: 更新工位效率统计
       tags:
       - WebAPI
 swagger: "2.0"

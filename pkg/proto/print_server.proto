@@ -27,6 +27,7 @@ message PrinterInfo {
     bool enable=4;
 	//打印服务器ID 
  	string printServerID=5;
+ 	PrintServerInfo printServer=6;
 }
 
 message QueryPrintServerRequest{
@@ -51,6 +52,12 @@ message GetAllPrintServerResponse{
     Code code=1;
     string message=2;
     repeated PrintServerInfo data=3;
+}
+
+message GetAllPrinterResponse{
+    Code code=1;
+    string message=2;
+    repeated PrinterInfo data=3;
 }
 
 message GetPrintServerDetailResponse{

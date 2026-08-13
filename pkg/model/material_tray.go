@@ -7,13 +7,13 @@ import (
 	"github.com/CloudSilk/pkg/utils"
 )
 
-// 物料托盘
+// 物料载具
 type MaterialTray struct {
 	ModelID
 	Code             string          `json:"code" gorm:"size:50;uniqueIndex;comment:代号"`
 	Description      string          `json:"description" gorm:"size:500;comment:描述"`
 	Identifier       string          `json:"identifier" gorm:"size:50;comment:识别码"`
-	TrayType         string          `json:"trayType" gorm:"size:50;comment:托盘类型"`
+	TrayType         string          `json:"trayType" gorm:"size:50;comment:载具类型"`
 	Enable           bool            `json:"enable" gorm:"comment:是否启用"`
 	CurrentState     string          `json:"currentState" gorm:"comment:当前状态"`
 	LastUpdateTime   time.Time       `json:"lastUpdateTime" gorm:"autoUpdateTime:nano;comment:状态变更时间"`

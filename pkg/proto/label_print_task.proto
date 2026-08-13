@@ -1,0 +1,76 @@
+syntax="proto3";
+
+package proto;
+option go_package = "./;proto";
+
+import "mom_common.proto";
+import "production_line.proto";
+import "product_category.proto";
+import "label_type.proto";
+import "print_server.proto";
+import "remote_service_task.proto";
+
+message LabelPrintTaskInfo {
+    string id=1;
+	//代号
+	string code=2;
+	//描述
+	string description=3;
+	//是否启用
+	bool enable=4;
+	//打印份数
+	int32 printCopies=5;
+	//生产产线ID
+	string productionLineID=6;
+	ProductionLineInfo productionLine=7;
+	//产品类别ID
+	string productCategoryID=8;
+	ProductCategoryInfo productCategory=9;
+	//标签类型ID
+	string labelTypeID=10;
+	LabelTypeInfo labelType=11;
+	//打印机ID
+	string printerID=12;
+	PrinterInfo printer=13;
+	//远程任务ID
+	string remoteServiceTaskID=14;
+	RemoteServiceTaskInfo remoteServiceTask=15;
+	//备注
+	string remark=16;
+}
+
+message QueryLabelPrintTaskRequest{
+    // @inject_tag: uri:"pageIndex" form:"pageIndex"
+    int64 pageIndex=1;
+    // @inject_tag: uri:"pageSize" form:"pageSize"
+    int64 pageSize=2;
+    // @inject_tag: uri:"sortConfig" form:"sortConfig"
+    string sortConfig=3;
+    // 生产产线ID
+    // @inject_tag: uri:"productionLineID" form:"productionLineID"
+ 	string productionLineID=4;
+    // 代号或描述
+    // @inject_tag: uri:"code" form:"code"
+ 	string code=5;
+}
+
+message QueryLabelPrintTaskResponse{
+    Code code=1;
+    string message=2;
+    repeated LabelPrintTaskInfo data=3;
+    int64 pages=4;
+    int64 records=5;
+    int64 total=6;
+}
+
+message GetAllLabelPrintTaskResponse{
+    Code code=1;
+    string message=2;
+    repeated LabelPrintTaskInfo data=3;
+}
+
+message GetLabelPrintTaskDetailResponse{
+    Code code=1;
+    string message=2;
+    LabelPrintTaskInfo data=3;
+}

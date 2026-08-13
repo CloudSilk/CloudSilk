@@ -14,9 +14,10 @@ type PrintServer struct {
 
 type Printer struct {
 	ModelID
-	PrintServerID string `json:"printServerID" gorm:"index;size:36;comment:打印服务器ID"`
-	Name          string `json:"name" gorm:"size:200;comment:名称"`
-	Enable        bool   `json:"enable" gorm:"comment:是否启用"`
+	PrintServerID string       `json:"printServerID" gorm:"index;size:36;comment:打印服务器ID"`
+	PrintServer   *PrintServer `gorm:"constraint:OnDelete:CASCADE"`
+	Name          string       `json:"name" gorm:"size:200;comment:名称"`
+	Enable        bool         `json:"enable" gorm:"comment:是否启用"`
 }
 
 func PBToPrintServers(in []*apipb.PrintServerInfo) []*PrintServer {
@@ -99,6 +100,7 @@ func PrinterToPB(in *Printer) *apipb.PrinterInfo {
 		Name:          in.Name,
 		Enable:        in.Enable,
 		PrintServerID: in.PrintServerID,
+		PrintServer:   PrintServerToPB(in.PrintServer),
 	}
 	return m
 }

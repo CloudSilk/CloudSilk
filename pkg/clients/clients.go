@@ -10,7 +10,6 @@ import (
 	ptpp "github.com/CloudSilk/CloudSilk/pkg/servers/production/provider"
 	ptbpp "github.com/CloudSilk/CloudSilk/pkg/servers/production_base/provider"
 	spp "github.com/CloudSilk/CloudSilk/pkg/servers/system/provider"
-	upp "github.com/CloudSilk/CloudSilk/pkg/servers/user/provider"
 	ucprovider "github.com/CloudSilk/usercenter/provider"
 )
 
@@ -93,7 +92,7 @@ func Init(serviceMode string) {
 		productModelProvider := new(pbpp.ProductModelProvider)
 		ProductModelClient.GetDetail = productModelProvider.GetDetail
 
-		personnelQualificationProvider := new(upp.PersonnelQualificationProvider)
+		personnelQualificationProvider := new(ptpp.PersonnelQualificationProvider)
 		PersonnelQualificationClient.Query = personnelQualificationProvider.Query
 		PersonnelQualificationClient.Get = personnelQualificationProvider.Get
 
@@ -139,7 +138,7 @@ func Init(serviceMode string) {
 		productWorkRecordProvider := new(ppp.ProductWorkRecordProvider)
 		ProductWorkRecordClient.Query = productWorkRecordProvider.Query
 	} else {
-		if os.Getenv("MES_DISABLE_AUTH") != "true" {
+		if os.Getenv("MOM_DISABLE_AUTH") != "true" {
 			config.SetConsumerService(UserClient)
 		}
 		config.SetConsumerService(ProductionStationClient)
@@ -171,5 +170,6 @@ func Init(serviceMode string) {
 		config.SetConsumerService(ProductionProcessStepClient)
 		config.SetConsumerService(ProductTestRecordClient)
 		config.SetConsumerService(ProductWorkRecordClient)
+		config.SetConsumerService(ProductOrderBomClient)
 	}
 }

@@ -42,6 +42,11 @@ func GetAllPrintServers() (list []*model.PrintServer, err error) {
 	return
 }
 
+func GetAllPrinters() (list []*model.Printer, err error) {
+	err = model.DB.DB().Find(&list).Error
+	return
+}
+
 func GetPrintServerByID(id string) (*model.PrintServer, error) {
 	m := &model.PrintServer{}
 	err := model.DB.DB().Preload(clause.Associations).Where("`id` = ?", id).First(m).Error

@@ -35,7 +35,7 @@ func UpdateProductInfo(m *model.ProductInfo) error {
 func QueryProductInfo(req *proto.QueryProductInfoRequest, resp *proto.QueryProductInfoResponse, preload bool) {
 	db := model.DB.DB().Model(&model.ProductInfo{}).Preload("ProductOrder").Preload("ProductOrder.ProductModel").Preload(clause.Associations)
 	if req.ProductOrderNo != "" {
-		db = db.Joins("JOIN product_orders ON product_infos.product_order_id = product_order.id").
+		db = db.Joins("JOIN product_orders ON product_infos.product_order_id = product_orders.id").
 			Where("product_orders.product_order_no LIKE ?", "%"+req.ProductOrderNo+"%")
 	}
 	if req.ProductSerialNo != "" {
@@ -103,4 +103,35 @@ func GetProductInfoByIDs(ids []string) ([]*model.ProductInfo, error) {
 
 func DeleteProductInfo(id string) (err error) {
 	return model.DB.DB().Delete(&model.ProductInfo{}, "`id` = ?", id).Error
+}
+
+func QueryProductFactoryReport(req *proto.QueryProductInfoRequest, resp *proto.QueryProductInfoResponse, preload bool) {
+	db := model.DB.DB().Model(&model.ProductInfo{}).Preload("ProductOrder").Preload("ProductOrder.ProductModel").Preload(clause.Associations).Where("product_infos.finished_time IS NOT NULL")
+	if req.ProductOrderNo != "" {
+		db = db.Joins("JOIN product_orders ON product_infos.product_order_id = product_orders.id").
+			Where("product_orders.product_order_no LIKE ?", "%"+req.ProductOrderNo+"%")
+	}
+	if req.ProductSerialNo != "" {
+		db = db.Where("product_infos.product_serial_no LIKE ?", "%"+req.ProductSerialNo+"%")
+	}
+	if req.FinishedTime0 != "" && req.FinishedTime1 != "" {
+		db = db.Where("product_infos.finished_time BETWEEN ? AND ?", req.FinishedTime0, req.FinishedTime1)
+	}
+
+	orderStr, err := utils.GenerateOrderString(req.SortConfig, "finished_time desc")
+	if err != nil {
+		resp.Code = proto.Code_BadRequest
+		resp.Message = err.Error()
+		return
+	}
+
+	var list []*model.ProductInfo
+	resp.Records, resp.Pages, err = model.DB.PageQuery(db, req.PageSize, req.PageIndex, orderStr, &list)
+	if err != nil {
+		resp.Code = proto.Code_InternalServerError
+		resp.Message = err.Error()
+	} else {
+		resp.Data = model.ProductInfosToPB(list)
+	}
+	resp.Total = resp.Records
 }

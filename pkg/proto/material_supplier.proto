@@ -4,6 +4,7 @@ package proto;
 option go_package="./;proto";
 
 import "mom_common.proto";
+import "material_info.proto";
 
 message MaterialSupplierInfo{
     string id=1;
@@ -23,6 +24,7 @@ message AvailableMaterialInfo{
     string materialSupplierID=2;
     //物料信息ID
     string materialInfoID=3;
+    MaterialInfoInfo materialInfo=4;
 }
 
 message QueryMaterialSupplierRequest{

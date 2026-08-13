@@ -1,0 +1,102 @@
+syntax="proto3";
+
+package proto;
+option go_package = "./;proto";
+
+import "mom_common.proto";
+import "print_server.proto";
+import "remote_service_task.proto";
+
+message LabelPrintQueueInfo {
+    string id=1;
+    //任务编号
+    string taskNo=2;
+    //打印次数
+    int32 printTimes=3;
+    //模板文件
+    string filePath=4;
+    //打印份数
+    int32 printCopies=5;
+    //创建时间
+    string createTime=6;
+    //创建人员
+    string createUserID=7;
+    string createUserName=16;
+    //打印机ID
+    string printerID=8;
+    PrinterInfo printer=9;
+    //当前状态
+    string currentState=10;
+    //状态变更时间
+    string lastUpdateTime=11;
+    //远程任务ID
+    string remoteServiceTaskID=12;
+    RemoteServiceTaskInfo remoteServiceTask=13;
+    //标签打印队列参数
+    repeated LabelPrintQueueParameterInfo labelParameters=14;
+    //标签打印队列执行
+    repeated LabelPrintQueueExecutionInfo printExecutions=15;
+}
+
+message LabelPrintQueueParameterInfo{
+    string id=1;
+    //打印队列ID
+    string labelPrintQueueID=2;
+    //名称
+    string name=3;
+    //设定值
+    string fixedValue=4;
+    //备注
+    string remark=5;
+}
+
+message LabelPrintQueueExecutionInfo{
+    string id=1;
+    //打印队列ID
+    string labelPrintQueueID=2;
+    //是否成功
+    bool success=3;
+    //失败原因
+    string failureReason=4;
+    //创建时间
+    string createTime=5;
+}
+
+message QueryLabelPrintQueueRequest{
+    // @inject_tag: uri:"pageIndex" form:"pageIndex"
+    int64 pageIndex=1;
+    // @inject_tag: uri:"pageSize" form:"pageSize"
+    int64 pageSize=2;
+    // @inject_tag: uri:"sortConfig" form:"sortConfig"
+    string sortConfig=3;
+    // 任务编号
+    // @inject_tag: uri:"taskNo" form:"taskNo"
+ 	string taskNo=4;
+    // 创建时间开始
+    // @inject_tag: uri:"createTime0" form:"createTime0"
+ 	string createTime0=5;
+    // 创建时间结束
+    // @inject_tag: uri:"createTime1" form:"createTime1"
+ 	string createTime1=6;
+}
+
+message QueryLabelPrintQueueResponse{
+    Code code=1;
+    string message=2;
+    repeated LabelPrintQueueInfo data=3;
+    int64 pages=4;
+    int64 records=5;
+    int64 total=6;
+}
+
+message GetAllLabelPrintQueueResponse{
+    Code code=1;
+    string message=2;
+    repeated LabelPrintQueueInfo data=3;
+}
+
+message GetLabelPrintQueueDetailResponse{
+    Code code=1;
+    string message=2;
+    LabelPrintQueueInfo data=3;
+}

@@ -219,19 +219,25 @@ message QueryProductInfoRequest{
     string sortConfig=3;
 	//产品序列号 
     // @inject_tag: uri:"productSerialNo" form:"productSerialNo"
-    string productSerialNo=5;
+    string productSerialNo=4;
 	//创建时间开始
     // @inject_tag: uri:"createTime0" form:"createTime0"
-    string createTime0=8;
+    string createTime0=5;
 	//创建时间结束
     // @inject_tag: uri:"createTime1" form:"createTime1"
-    string createTime1=9;
+    string createTime1=6;
 	//生产工单号
     // @inject_tag: uri:"productOrderNo" form:"productOrderNo"
-    string productOrderNo=10;
+    string productOrderNo=7;
 	//当前状态 
     // @inject_tag: uri:"currentState" form:"currentState"
-    string currentState=17;
+    string currentState=8;
+	//下线时间开始
+    // @inject_tag: uri:"finishedTime0" form:"finishedTime0"
+    string finishedTime0=9;
+	//下线时间结束
+    // @inject_tag: uri:"finishedTime1" form:"finishedTime1"
+    string finishedTime1=10;
 }
 
 message QueryProductInfoResponse{

@@ -91,7 +91,7 @@ type MaterialTrayBindingRecordInfo struct {
 	LastUpdateTime string `protobuf:"bytes,5,opt,name=lastUpdateTime,proto3" json:"lastUpdateTime"`
 	// 备注
 	Remark string `protobuf:"bytes,6,opt,name=remark,proto3" json:"remark"`
-	// 使用托盘ID
+	// 使用载具ID
 	MaterialTrayID string `protobuf:"bytes,7,opt,name=materialTrayID,proto3" json:"materialTrayID"`
 	// 状态变更时间
 	MaterialTray *MaterialTrayInfo `protobuf:"bytes,8,opt,name=materialTray,proto3" json:"materialTray"`

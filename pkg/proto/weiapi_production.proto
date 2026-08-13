@@ -15,14 +15,14 @@ message OnlineProductInfoRequest{
     string productOrderNo=2;
     //产品序列号
     string productSerialNo=4;
-    //托盘号
+    //载具号
     string trayNo=5;
 }
 
 message EnterProductionStationRequest{
     //工位代号
     string productionStation=1;
-    //托盘号
+    //载具号
     string trayNo=2;
     //产品序列号
     string productSerialNo=3;
@@ -63,7 +63,7 @@ message EnterProductionStationInfo{
 message ExitProductionStationRequest{
     //工位代号
     string productionStation=1;
-    //托盘号
+    //载具号
     string trayNo=2;
     //产品序列号
     string productSerialNo=3;
@@ -77,7 +77,7 @@ message ExitProductionStationRequest{
     string reworkReason=7;
     //等待时长
     int32 waitTime=8;
-    //是否解除托盘
+    //是否解除载具
     bool unbindTray=9;
 }
 

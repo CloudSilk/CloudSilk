@@ -7,4 +7,7 @@ import (
 func RegisterRouter(r *gin.Engine) {
 	RegisterLabelTemplateRouter(r)
 	RegisterLabelTypeRouter(r)
+	RegisterLabelPrintQueueRouter(r)
+	RegisterLabelPrintTaskRouter(r)
+	RegisterLabelAdaptationRuleRouter(r)
 }

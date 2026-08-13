@@ -35,4 +35,7 @@ func RegisterRouter(r *gin.Engine) {
 	RegisterProductWorkRecordRouter(r)
 	RegisterProductReleaseRecordRouter(r)
 	RegisterProductOrderPalletRouter(r)
+	RegisterProductFactoryReportRouter(r)
+	RegisterProductReworkRouteRouter(r)
+	RegisterProductReworkProcessRouter(r)
 }

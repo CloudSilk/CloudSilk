@@ -1,0 +1,34 @@
+syntax="proto3";
+
+package proto;
+option go_package = "./;proto";
+
+message GetProductionStationEfficiencyRequest{
+    string productionStation=1;
+    string outputDate=2;
+}
+
+message UpdateProductionStationEfficiencyRequest{
+    string productionStation=1;
+    int32 outputOfThisDay=2;
+    int32 numberOfWork=3;
+    int32 numberOfPass=4;
+    int32 numberOfFail=5;
+    float fPY=6;
+    float estimateRhythm=7;
+    float averageRhythm=8;
+    float startupDuration=9;
+    float plannedShutdownDuration=10;
+    float estimateAvailableDuration=11;
+    int32 numberOfBreakdown=12;
+    float breakdownDuration=13;
+    int32 numberOfShutdown=14;
+    float unplannedShutdownDuration=15;
+    float oEF=16;
+    float actualAvailableDuration=17;
+    float actualEffectiveDuration=18;
+    float oEU=19;
+    float oEP=20;
+    float oEE=21;
+    string outputDate=22;
+}
