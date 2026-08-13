@@ -25,10 +25,13 @@ docker build -t cloudsilk/mom:latest .
 docker run -d \
   --name cloudsilk \
   -p 20000:20000 \
-  -v $(pwd)/data:/workspace/data \
-  -v $(pwd)/config.yaml:/workspace/config.yaml \
+  -v $(pwd)/data/CloudSilk.s3db:/workspace/CloudSilk.s3db \
   cloudsilk/mom:latest
 ```
+
+> 容器内服务以 `--port=20000 --service_mode=ALL --single_db=true` 启动，使用 SQLite（`/workspace/CloudSilk.s3db`）。
+> 如需覆盖配置，可额外挂载 `-v $(pwd)/config.yaml:/workspace/config.yaml`。
+> 打开 `http://localhost:20000/web` 访问管理界面。
 
 #### 3. 查看日志
 
@@ -61,22 +64,25 @@ go mod download
 #### 3. 编译
 
 ```bash
-# Linux/macOS
-go build -o CloudSilk main.go
+# 编译前端（需要 Node.js >= 18；仓库不含构建产物 web/dist）
+cd web && WEB_BASE=/web yarn install && WEB_BASE=/web yarn build && cd ..
 
-# Windows
-go build -o CloudSilk.exe main.go
+# 编译后端
+go build -o CloudSilk main.go
 ```
 
 #### 4. 运行
 
 ```bash
-# Linux/macOS
-./CloudSilk
+# Linux/macOS（默认监听 48900 端口，可用 --port 调整）
+./CloudSilk --ui ./web/dist --service_mode=ALL --single_db=true
 
 # Windows
-CloudSilk.exe
+CloudSilk.exe --ui ./web/dist --service_mode=ALL --single_db=true
 ```
+
+> 单机模式（`--service_mode=ALL --single_db=true`）使用 SQLite，开箱即用；
+> 生产环境建议 `--service_mode=One` 配合 MySQL 与 Nacos，详见下文配置说明。
 
 ### 方式三：Windows 快速启动
 
@@ -151,7 +157,8 @@ miniApp:
 
 | 端口 | 用途 |
 |------|------|
-| 20000 | HTTP API 服务端口 |
+| 48900 | 源码/二进制运行的默认 HTTP 端口（`--port` 可修改） |
+| 20000 | Docker 容器内固定监听端口（映射 `-p 20000:20000`） |
 
 ## 常见问题
 
@@ -175,10 +182,10 @@ miniApp:
 
 ### 3. 端口被占用
 
-**问题：** 20000 端口被占用
+**问题：** 服务端口被占用（Docker 内为 20000，源码运行默认 48900）
 
 **解决方案：**
-1. 修改 `config.yaml` 中的端口配置
+1. 源码运行时通过启动参数 `--port=<新端口>` 修改；Docker 部署时修改端口映射，如 `-p 20001:20000`
 2. 或者停止占用端口的服务
 
 ## 开发环境
