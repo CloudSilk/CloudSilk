@@ -54,12 +54,9 @@
 - **位置**：`pkg/servers/product_base/logic/product_model.go`
 - **完成内容**：`regexp.MustCompile` 改为 `regexp.Compile` + 明确错误返回（指出 RE2 不支持 .NET 环视/反向引用语法），保留 `(?<` → `(?P<` 具名分组转换。遇不兼容表达式时返回可读错误而非 panic。
 
-### TASK-005 更新接口空值覆盖外键（数据丢失风险）
-- **位置**：
-  - `pkg/servers/product/logic/product_package_type.go:25-31`：`LabelTypeID`/`SystemEventID` 的 omit 逻辑被注释，更新时空值会覆盖这两个外键；
-  - `pkg/servers/product_base/logic/product_model_bom.go:30-33`：`ProductModelID` omit 逻辑被注释，更新型号 BOM 时型号 ID 可能被误清。
-- **验收标准**：恢复 omit 判断逻辑，更新时空字段不覆盖原值。
-- **工作量**：小
+### TASK-005 ✅ 更新接口空值覆盖外键已修复
+- **位置**：`pkg/servers/product/logic/product_package_type.go`、`pkg/servers/product_base/logic/product_model_bom.go`
+- **完成内容**：恢复条件 omit 逻辑——`LabelTypeID`/`SystemEventID`（`*string` 判 nil 及空串）与 `ProductModelID` 为空时加入 GORM Omit 列表，更新不再误清外键。
 
 ---
 

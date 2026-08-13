@@ -27,11 +27,12 @@ func UpdateProductModelBom(m *model.ProductModelBom) error {
 		if err := tx.Preload(clause.Associations).Where("`id` = ?", m.ID).First(oldProductModelBom).Error; err != nil {
 			return err
 		}
-		// omits := []string{}
-		// if m.ProductModelID == "" {
-		// 	omits = append(omits, "ProductModelID")
-		// }
-		duplication, err := model.DB.UpdateWithCheckDuplicationAndOmit(tx, m, true, []string{"created_at"}, "`id` <> ?  and  `material_no`  = ? ", m.ID, m.MaterialNo)
+		// 空值不覆盖已有外键，避免更新时误清所属产品型号
+		omits := []string{"created_at"}
+		if m.ProductModelID == "" {
+			omits = append(omits, "ProductModelID")
+		}
+		duplication, err := model.DB.UpdateWithCheckDuplicationAndOmit(tx, m, true, omits, "`id` <> ?  and  `material_no`  = ? ", m.ID, m.MaterialNo)
 		if err != nil {
 			return err
 		}

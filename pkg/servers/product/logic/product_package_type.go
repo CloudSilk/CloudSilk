@@ -22,14 +22,15 @@ func CreateProductPackageType(m *model.ProductPackageType) (string, error) {
 }
 
 func UpdateProductPackageType(m *model.ProductPackageType) error {
-	// omits := []string{"created_at"}
-	// if m.LabelTypeID == "" {
-	// 	omits = append(omits, "LabelTypeID")
-	// }
-	// if m.SystemEventID == "" {
-	// 	omits = append(omits, "SystemEventID")
-	// }
-	duplication, err := model.DB.UpdateWithCheckDuplicationAndOmit(model.DB.DB(), m, false, []string{"created_at"}, "`id` != ? and  `code`  = ? ", m.ID, m.Code)
+	// 空值不覆盖已有外键，避免更新时误清 LabelType/SystemEvent 关联
+	omits := []string{"created_at"}
+	if m.LabelTypeID == nil || *m.LabelTypeID == "" {
+		omits = append(omits, "LabelTypeID")
+	}
+	if m.SystemEventID == nil || *m.SystemEventID == "" {
+		omits = append(omits, "SystemEventID")
+	}
+	duplication, err := model.DB.UpdateWithCheckDuplicationAndOmit(model.DB.DB(), m, false, omits, "`id` != ? and  `code`  = ? ", m.ID, m.Code)
 	if err != nil {
 		return err
 	}
