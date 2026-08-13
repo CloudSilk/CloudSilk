@@ -371,15 +371,15 @@ func EnterProductionStation(req *proto.EnterProductionStationRequest) (data *pro
 			return err
 		}
 
-		//获取产品节拍
+		//获取产品节拍（重复进站复用首次未结束的节拍记录，不重复报工，以第一次进站时间为准）
 		productRhythmRecord := &model.ProductRhythmRecord{}
-		if err := tx.Where("`production_process_id` = ? AND `product_info_id` = ? AND `production_station_id` = ? AND work_end_time IS NULL", productInfo.ProductionProcessID, productionStation.ID, productionStation.ID).First(productRhythmRecord).Error; err != nil && err != gorm.ErrRecordNotFound {
+		if err := tx.Where("`production_process_id` = ? AND `product_info_id` = ? AND `production_station_id` = ? AND work_end_time IS NULL", productInfo.ProductionProcessID, productInfo.ID, productionStation.ID).First(productRhythmRecord).Error; err != nil && err != gorm.ErrRecordNotFound {
 			code = 1
 			return err
 		}
 
 		if productRhythmRecord.ID == "" {
-			//重复进站不重复报工，以第一次进站时间为准
+			//首次进站才创建节拍记录；重复进站时上方查询已命中未结束记录，直接复用其 WorkStartTime
 			if err := tx.Create(&model.ProductRhythmRecord{
 				WorkUserID:          *productionStation.CurrentUserID,
 				ProductionStationID: productionStation.ID,
