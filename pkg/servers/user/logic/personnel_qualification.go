@@ -23,8 +23,8 @@ func QueryPersonnelQualification(req *proto.QueryPersonnelQualificationRequest, 
 			Joins("JOIN production_processes ON personnel_qualification_types.production_process_id=production_processes.id").
 			Where("production_processes.production_line_id = ?", req.ProductionLineID)
 	}
-	if req.Name != "" {
-		db = db.Where("`name` like ? or `card_no` like ? or `staff_no` like ?", "%"+req.Name+"%", "%"+req.Name+"%", "%"+req.Name+"%")
+	if req.CertifiedUserID != "" {
+		db = db.Where("`certified_user_id` = ?", req.CertifiedUserID)
 	}
 
 	orderStr, err := utils.GenerateOrderString(req.SortConfig, "created_at desc")
