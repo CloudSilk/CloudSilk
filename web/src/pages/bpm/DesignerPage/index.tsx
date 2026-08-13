@@ -209,7 +209,7 @@ export default class BPMDesignerPage extends React.Component<any, BPMDesignerPag
             createMenu={(graph) => {
                 return menu
             }}
-            fileUrlPrefix='http://101.132.37.232'
+            fileUrlPrefix={window.location.origin}
             system='BPM'
             data={this.state.process}
             graphFormID='3f2c8c66-c963-4c89-8152-be2de58655a2'

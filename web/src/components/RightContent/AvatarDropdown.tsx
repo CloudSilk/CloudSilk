@@ -55,6 +55,10 @@ const AvatarDropdown: React.FC<GlobalHeaderRightProps> = ({ menu }) => {
         loginOut();
         return;
       }
+      if (key === 'center') {
+        history.push('/home');
+        return;
+      }
       if (key === "changepwd") {
         showModal()
       }
@@ -94,7 +98,7 @@ const AvatarDropdown: React.FC<GlobalHeaderRightProps> = ({ menu }) => {
     }
 
     if (values.newConfirmPwd !== values.newPwd) {
-      message.success('新密码和确认密码不一样!')
+      message.error('新密码和确认密码不一样!')
       return
     }
 
@@ -103,7 +107,7 @@ const AvatarDropdown: React.FC<GlobalHeaderRightProps> = ({ menu }) => {
         handleCancel()
         message.success('密码修改成功!')
       } else {
-        message.success('密码修改失败!')
+        message.error('密码修改失败!')
       }
     })
   };

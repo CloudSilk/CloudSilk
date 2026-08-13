@@ -54,7 +54,8 @@ export default defineConfig({
       name: 'Block',
       path: '/block',
       component: './block',
-      layout: false
+      layout: false,
+      access: 'canSeeAdmin',
     },
     {
       name: '首页',
@@ -83,6 +84,7 @@ export default defineConfig({
       path:'/demo/resizable/panel',
       component:"ResizablePanel",
       menuRender: false,
+      access: 'canSeeAdmin',
     },
     {
       path: '/form',

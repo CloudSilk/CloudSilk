@@ -164,7 +164,6 @@ export const layout = ({
     },
     iconfontUrl: "//at.alicdn.com/t/font_2590742_729agyh0ndx.js",
     menuItemRender: (item, dom, props) => {
-      // TODO 如何在这边点击的时候更新tab
       let path = item.path;
       if (item.parentID == "") {
         path = getDefaultMenuPath(initialState?.currentUser?.menus, item.id, item.path)
@@ -173,16 +172,11 @@ export const layout = ({
         if (item.parentID && item.path) {
           const exist = tabs.some((tab) => tab.id === item.id);
           if (!exist) {
-            tabs.push({
-              ...item,
-              path: path,
-            });
-            setTabs(tabs);
+            // 用新数组引用触发重渲染（原地 push 不会刷新已打开的页签）
+            setTabs([...tabs, { ...item, path }]);
           }
-
         } else {
-          tabs.length = 0;
-          setTabs(tabs);
+          setTabs([]);
         }
       }
 

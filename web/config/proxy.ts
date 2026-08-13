@@ -9,7 +9,7 @@
 export default {
   prod:{
     "/api/":{
-      target: 'http://101.132.37.232:48089',
+      target: process.env.PROXY_TARGET || 'http://127.0.0.1:48089',
       changeOrigin: true,
       pathRewrite: { '^': '' },
     },
