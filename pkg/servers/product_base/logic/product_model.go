@@ -178,9 +178,13 @@ func ParamProductModelByID(id string) (err error) {
 		return fmt.Errorf("缺少此产品类别的特性表达式配置，无法解析")
 	}
 
-	//TODO 原正则在go语言报错，需替换字符
+	// .NET 风格具名分组 (?<name>) 转 Go RE2 语法 (?P<name>)。
+	// RE2 不支持环视/反向引用等 .NET 特性，编译失败时返回明确错误而非 panic
 	attributeExpression = strings.ReplaceAll(attributeExpression, "(?<", "(?P<")
-	pattern := regexp.MustCompile(attributeExpression)
+	pattern, err := regexp.Compile(attributeExpression)
+	if err != nil {
+		return fmt.Errorf("产品类别的特性表达式无法编译（Go RE2 不支持部分 .NET 正则语法，如环视、反向引用）：%w", err)
+	}
 
 	//正则匹配
 	if flag := pattern.MatchString(materialDescription); !flag {

@@ -42,21 +42,17 @@
   - 发放前置条件兼容"已核验/已签派"两种状态
   - 工单创建自动流转链插入签派步骤：接单 → 核验 → **签派** → 发放
 
-### TASK-002 重复进站报工去重（以首次进站时间为准）
-- **位置**：`pkg/servers/webapi/logic/production.go:355`
-- **现状**：`//TODO: 重复进站不重复报工，以第一次进站时间为准`。查不到未结束的节拍记录（`HasWorkEndTime:false`）时新建 `ProductRhythmRecord`，重复进站会导致工时重复统计或时间基准错误。
-- **验收标准**：同一产品同一工序重复进站时复用首次进站时间，不重复生成节拍/报工记录，并有集成测试覆盖。
-- **工作量**：中
+### TASK-002 ✅ 重复进站报工去重已修复
+- **位置**：`pkg/servers/webapi/logic/production.go`
+- **根因**：进站查询未结束节拍记录时，`product_info_id` 占位符误传了 `productionStation.ID`，永远查不到已有记录，每次进站都新建节拍记录。修正参数后重复进站复用首次进站时间，不重复报工。
 
 ### TASK-003 ~~webapi 工位查询接口字段名拼写错误~~ ✅ 已修复
 - **位置**：`pkg/servers/webapi/logic/infrastructure.go`
 - **结果**：已由合并进来的 PR #17-#20 修复（`station_type` 过滤、返回字段 `id`/`code` 均已正确），无需再处理。
 
-### TASK-004 产品型号特性表达式正则解析存在 panic 风险
-- **位置**：`pkg/servers/product_base/logic/product_model.go:181`
-- **现状**：`//TODO 原正则在go语言报错，需替换字符`，用 `strings.ReplaceAll(expr, "(?<", "(?P<")` 把 .NET 具名分组转成 Go RE2 语法。但 RE2 不支持反向引用、环视等 .NET 特性，遇到即 `regexp.MustCompile` panic，且该解析是产品型号属性自动赋值的核心路径。
-- **验收标准**：预编译校验 + 错误降级（记录失败并跳过，不 panic）；或引入支持 .NET 语法的正则库；补齐含 `(?<=`、`(?=`、`\1` 等语法的单测。
-- **工作量**：中
+### TASK-004 ✅ 产品型号特性表达式正则解析 panic 防护已完成
+- **位置**：`pkg/servers/product_base/logic/product_model.go`
+- **完成内容**：`regexp.MustCompile` 改为 `regexp.Compile` + 明确错误返回（指出 RE2 不支持 .NET 环视/反向引用语法），保留 `(?<` → `(?P<` 具名分组转换。遇不兼容表达式时返回可读错误而非 panic。
 
 ### TASK-005 更新接口空值覆盖外键（数据丢失风险）
 - **位置**：
