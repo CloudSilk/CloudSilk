@@ -1,0 +1,247 @@
+syntax="proto3";
+
+package proto;
+option go_package = "./;proto";
+
+import "mom_common.proto";
+
+// 设备台账
+message EquipmentInfo {
+	//ID
+	string id=1;
+	//代号
+	string code=2;
+	//名称
+	string name=3;
+	//型号规格
+	string model=4;
+	//生产厂家
+	string manufacturer=5;
+	//出厂编号
+	string serialNo=6;
+	//安装位置
+	string location=7;
+	//责任班组
+	string team=8;
+	//设备状态（在用/停用/维修中/报废）
+	string currentState=9;
+	//投运日期
+	string commissionDate=10;
+	//关联生产工站ID
+	string productionStationID=11;
+	string productionStationCode=12;
+	//是否启用
+	bool enable=13;
+	//备注
+	string remark=14;
+}
+
+message QueryEquipmentRequest{
+    // @inject_tag: uri:"pageIndex" form:"pageIndex"
+    int64 pageIndex=1;
+    // @inject_tag: uri:"pageSize" form:"pageSize"
+    int64 pageSize=2;
+    // @inject_tag: uri:"sortConfig" form:"sortConfig"
+    string sortConfig=3;
+	//代号或名称
+    // @inject_tag: uri:"code" form:"code"
+    string code=5;
+	//设备状态
+    // @inject_tag: uri:"currentState" form:"currentState"
+    string currentState=6;
+}
+
+message QueryEquipmentResponse{
+    Code code=1;
+    string message=2;
+    repeated EquipmentInfo data=3;
+    int64 pages=4;
+    int64 records=5;
+    int64 total=6;
+}
+
+message GetAllEquipmentResponse{
+    Code code=1;
+    string message=2;
+    repeated EquipmentInfo data=3;
+}
+
+message GetEquipmentDetailResponse{
+    Code code=1;
+    string message=2;
+    EquipmentInfo data=3;
+}
+
+// 设备维保计划
+message EquipmentMaintenancePlanInfo {
+	//ID
+	string id=1;
+	//设备ID
+	string equipmentID=2;
+	string equipmentCode=3;
+	//维保类型（保养/点检/大修）
+	string maintenanceType=4;
+	//周期（天）
+	int32 cycleDays=5;
+	//上次执行日期
+	string lastExecutionDate=6;
+	//下次执行日期
+	string nextExecutionDate=7;
+	//提前提醒天数
+	int32 remindDays=8;
+	//是否启用
+	bool enable=9;
+	//维保内容
+	string content=10;
+	//备注
+	string remark=11;
+}
+
+message QueryEquipmentMaintenancePlanRequest{
+    // @inject_tag: uri:"pageIndex" form:"pageIndex"
+    int64 pageIndex=1;
+    // @inject_tag: uri:"pageSize" form:"pageSize"
+    int64 pageSize=2;
+    // @inject_tag: uri:"sortConfig" form:"sortConfig"
+    string sortConfig=3;
+	//设备ID
+    // @inject_tag: uri:"equipmentID" form:"equipmentID"
+    string equipmentID=4;
+	//是否到期
+    // @inject_tag: uri:"dueOnly" form:"dueOnly"
+    bool dueOnly=5;
+}
+
+message QueryEquipmentMaintenancePlanResponse{
+    Code code=1;
+    string message=2;
+    repeated EquipmentMaintenancePlanInfo data=3;
+    int64 pages=4;
+    int64 records=5;
+    int64 total=6;
+}
+
+message GetAllEquipmentMaintenancePlanResponse{
+    Code code=1;
+    string message=2;
+    repeated EquipmentMaintenancePlanInfo data=3;
+}
+
+message GetEquipmentMaintenancePlanDetailResponse{
+    Code code=1;
+    string message=2;
+    EquipmentMaintenancePlanInfo data=3;
+}
+
+// 设备维保记录
+message EquipmentMaintenanceRecordInfo {
+	//ID
+	string id=1;
+	//维保计划ID
+	string equipmentMaintenancePlanID=2;
+	//设备ID
+	string equipmentID=3;
+	string equipmentCode=4;
+	//维保类型
+	string maintenanceType=5;
+	//执行日期
+	string executionDate=6;
+	//执行人
+	string executorID=7;
+	//执行内容
+	string content=8;
+	//耗时（分钟）
+	int32 durationMinutes=9;
+	//结果（正常/异常）
+	string result=10;
+	//异常说明
+	string abnormalDescription=11;
+	//备注
+	string remark=12;
+}
+
+message QueryEquipmentMaintenanceRecordRequest{
+    // @inject_tag: uri:"pageIndex" form:"pageIndex"
+    int64 pageIndex=1;
+    // @inject_tag: uri:"pageSize" form:"pageSize"
+    int64 pageSize=2;
+    // @inject_tag: uri:"sortConfig" form:"sortConfig"
+    string sortConfig=3;
+	//设备ID
+    // @inject_tag: uri:"equipmentID" form:"equipmentID"
+    string equipmentID=4;
+	//开始日期（yyyy-MM-dd）
+    // @inject_tag: uri:"startDate" form:"startDate"
+    string startDate=5;
+	//结束日期（yyyy-MM-dd）
+    // @inject_tag: uri:"endDate" form:"endDate"
+    string endDate=6;
+}
+
+message QueryEquipmentMaintenanceRecordResponse{
+    Code code=1;
+    string message=2;
+    repeated EquipmentMaintenanceRecordInfo data=3;
+    int64 pages=4;
+    int64 records=5;
+    int64 total=6;
+}
+
+message GetEquipmentMaintenanceRecordDetailResponse{
+    Code code=1;
+    string message=2;
+    EquipmentMaintenanceRecordInfo data=3;
+}
+
+// 执行维保（生成记录并滚动下次执行日期）
+message ExecuteEquipmentMaintenanceRequest{
+	//维保计划ID
+	string equipmentMaintenancePlanID=1;
+	//执行人
+	string executorID=2;
+	//执行内容
+	string content=3;
+	//耗时（分钟）
+	int32 durationMinutes=4;
+	//结果（正常/异常）
+	string result=5;
+	//异常说明
+	string abnormalDescription=6;
+}
+
+// OEE 计算
+message EquipmentOeeRequest{
+	//生产工站ID（与设备二选一）
+	string productionStationID=1;
+	//设备ID
+	string equipmentID=2;
+	//开始时间（yyyy-MM-dd HH:mm:ss）
+	string startTime=3;
+	//结束时间（yyyy-MM-dd HH:mm:ss）
+	string endTime=4;
+	//计划生产时间（分钟，缺省按时间范围计算）
+	int32 plannedMinutes=5;
+}
+
+message EquipmentOeeResponse{
+    Code code=1;
+    string message=2;
+	//计划时间（分钟）
+	double plannedMinutes=3;
+	//停机时间（分钟，来自故障记录）
+	double downtimeMinutes=4;
+	//实际运行时间（分钟）
+	double runMinutes=5;
+	//时间稼动率
+	double availability=6;
+	//性能稼动率
+	double performance=7;
+	//良品率
+	double quality=8;
+	//OEE
+	double oee=9;
+	//加工数量
+	int64 totalCount=10;
+	//合格数量
+	int64 qualifiedCount=11;
+}

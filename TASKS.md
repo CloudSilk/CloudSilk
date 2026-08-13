@@ -102,15 +102,15 @@
   - 路由：`/api/mom/quality/{qualityinspectiontype|qualityinspectionstandard|qualityinspectionorder|spc}` 
 - **后续增强**（不阻塞）：让步接收工作流、质量看板实时推送、检验标准版本管理
 
-### TASK-013 设备管理系统（EM）— 从零开发
-- **现状**：无设备台账/状态机/维护模型。仅 `production_station_breakdown.go` 中有 `EquipmentID`、故障类型/原因/方案等**故障记录**字段。
-- **缺失清单**：
-  - [ ] 设备台账（主数据、资产、位置、责任班组）
-  - [ ] 设备状态实时跟踪（与工站 `CurrentState` 联动）
-  - [ ] 预防性维护计划与点检保养
-  - [ ] 维修工单流程（复用故障记录数据）
-  - [ ] 设备绩效分析（OEE：时间稼动率×性能稼动率×良品率）
-- **工作量**：特大
+### TASK-013 ✅ 设备管理系统（EM）基础版已实现
+- **新增模块**：`pkg/servers/equipment/` + `pkg/model/equipment.go` + `pkg/proto/equipment.proto`
+- **完成内容**：
+  - 设备台账 CRUD：代号/型号/厂家/位置/责任班组/投运日期/关联生产工站，空值不覆盖工站外键
+  - 设备状态机：在用/停用/维修中/报废 流转接口
+  - 预防性维保计划：周期滚动（下次执行日期自动计算）、到期筛选（dueOnly）、执行维保生成记录并滚动周期，异常联动设备状态为维修中
+  - 维保记录：按设备/日期区间查询
+  - **OEE 计算**：时间稼动率（故障记录停机时长）× 性能稼动率（数量×平均标准节拍/运行时间）× 良品率（测试记录合格率，无测试数据时按返工折算）
+- **后续增强**（不阻塞）：点检任务自动生成、备件库存联动
 
 ### TASK-014 WMS 仓库管理系统 — 基础已有，作业流程待补齐
 - **现状**（2026-08-14 更新）：PR #20 已带来 MSS 物料/仓储基础：`material_store`（仓库）、`material_shelf`/`material_shelf_bin`（货架/库位）、`material_inventory`（库存）、`material_container`（容器）、`agv_task_queue`（AGV 任务）、`wms_bill_queue`（单据队列）、退料单系列（`material_return_*`），模型与 CRUD logic 齐全。
