@@ -1,0 +1,113 @@
+syntax="proto3";
+
+package proto;
+option go_package = "./;proto";
+
+import "mom_common.proto";
+
+// 排程计划（一个产线一个批次）
+message ProductionSchedulePlanInfo {
+	//ID
+	string id=1;
+	//计划批次号
+	string planNo=2;
+	//产线ID
+	string productionLineID=3;
+	string productionLineCode=4;
+	//计划开始时间
+	string startTime=5;
+	//计划结束时间
+	string endTime=6;
+	//纳入排程工单数
+	int32 orderCount=7;
+	//状态（已生成/已下发/已作废）
+	string currentState=8;
+	//备注
+	string remark=9;
+	//明细
+	repeated ProductionScheduleItemInfo items=10;
+}
+
+// 排程明细
+message ProductionScheduleItemInfo {
+	//ID
+	string id=1;
+	//排程计划ID
+	string productionSchedulePlanID=2;
+	//工单ID
+	string productOrderID=3;
+	string productOrderNo=4;
+	//顺序号
+	int32 sequence=5;
+	//计划开工时间
+	string plannedStartTime=6;
+	//计划完工时间
+	string plannedEndTime=7;
+	//工时（秒）
+	int64 durationSeconds=8;
+	//优先级
+	int32 priorityLevel=9;
+	//交货期限
+	string deliveryDate=10;
+}
+
+message QueryProductionSchedulePlanRequest{
+    // @inject_tag: uri:"pageIndex" form:"pageIndex"
+    int64 pageIndex=1;
+    // @inject_tag: uri:"pageSize" form:"pageSize"
+    int64 pageSize=2;
+    // @inject_tag: uri:"sortConfig" form:"sortConfig"
+    string sortConfig=3;
+	//产线ID
+    // @inject_tag: uri:"productionLineID" form:"productionLineID"
+    string productionLineID=4;
+	//状态
+    // @inject_tag: uri:"currentState" form:"currentState"
+    string currentState=5;
+}
+
+message QueryProductionSchedulePlanResponse{
+    Code code=1;
+    string message=2;
+    repeated ProductionSchedulePlanInfo data=3;
+    int64 pages=4;
+    int64 records=5;
+    int64 total=6;
+}
+
+message GetProductionSchedulePlanDetailResponse{
+    Code code=1;
+    string message=2;
+    ProductionSchedulePlanInfo data=3;
+}
+
+// 生成排程请求
+message GenerateScheduleRequest{
+	//产线ID（为空则报错，当前按单产线排程）
+	string productionLineID=1;
+	//排程起始时间（yyyy-MM-dd HH:mm:ss，为空取当前时间）
+	string startTime=2;
+	//每日工作分钟数（<=0 表示连续排程不跨天中断）
+	int32 dailyWorkMinutes=3;
+	//仅纳入这些工单（为空则自动取该产线全部已发放/已签派工单）
+	repeated string productOrderIDs=4;
+}
+
+message GenerateScheduleResponse{
+    Code code=1;
+    string message=2;
+	//排程计划ID
+	string planID=3;
+	//计划批次号
+	string planNo=4;
+	//纳入工单数
+	int32 orderCount=5;
+	//计划结束时间
+	string endTime=6;
+}
+
+// 下发排程请求（回写工单预计开完工时间）
+message ReleaseScheduleRequest{
+	//排程计划ID
+	string planID=1;
+}

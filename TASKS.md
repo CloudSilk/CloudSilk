@@ -123,16 +123,16 @@
   - 拣货单状态机：待拣货 → 已完成/已取消
 - **后续增强**（不阻塞）：库位级上架指引、AGV 任务自动生成联动、波次拣货
 
-### TASK-015 APS 高级计划与排程 — 从零开发
-- **现状**：全库搜索 `schedule/scheduling/排程/APS` 零命中。仅有静态的 `product_order_priority_rule.go`（优先级规则）和 `product_order_release_rule.go`（发放规则），非排程算法。
-- **缺失清单**：
-  - [ ] 资源与产能建模（产线、工位、班组、日历）
-  - [ ] 排程引擎（约束满足或启发式算法：交期/优先级/换型时间）
-  - [ ] 甘特图展示与人工干预调整
-  - [ ] 排程结果下发生成/调整生产工单
-  - [ ] 与 MES 实际进度回滚重排（插单、缺料响应）
-- **建议**：可作为独立服务开发，复用现有 `SmartFlow` 规则引擎做规则编排
-- **工作量**：特大
+### TASK-015 ✅ APS 排程引擎基础版已实现
+- **新增模块**：`pkg/servers/aps/` + `pkg/model/production_schedule.go` + `pkg/proto/production_schedule.proto`
+- **完成内容**：
+  - **前向贪心排程算法**（纯函数 `ForwardSchedule`，5 组单测覆盖）：优先级降序 → 交期升序 → 稳定原始顺序；工时=数量×标准节拍；支持按日工作窗口跨天顺延
+  - 生成排程：按产线取已发放/已签派/生产中（按剩余量）工单，产出计划+明细时段（流水批次号）
+  - **下发排程**：回写各工单预计开工/完工时间（EstimateStartTime/FinishTime，甘特基准）
+  - 计划状态机：已生成 → 已下发 / 已作废
+  - 查询接口含明细时段，可直接渲染甘特图
+  - 路由：`/api/mom/aps/schedule/{generate|release|void|query|detail|delete}`
+- **后续增强**（不阻塞）：约束求解器（换型时间/物料齐套约束）、人工拖拽调整、插单重排
 
 ### TASK-016 SCADA 网关（设备数据采集）— 从零开发
 - **现状**：全仓库（Go/C#/TS）搜索 `modbus/opcua/plc/s7/采集/scada` 零业务命中。`csharp/PrintService` 的 MQTT 仅用于接收打印任务。

@@ -133,6 +133,9 @@ func AutoMigrate() {
 		&EquipmentMaintenanceRecord{},
 
 		&MaterialInventoryTransaction{},
+
+		&ProductionSchedulePlan{},
+		&ProductionScheduleItem{},
 		&ProductReworkRecord{},
 		&ProductPackageRecord{},
 		&ProcessStepParameter{},
