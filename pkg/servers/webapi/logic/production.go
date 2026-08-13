@@ -764,23 +764,9 @@ func GetProductionProcessStepWithParameter(req *proto.GetProductionProcessStepWi
 
 	productionProcessSteps := []map[string]interface{}{}
 	for _, v := range _productionProcessSteps {
-		match := v.InitialValue
-		for _, attributeExpression := range v.AttributeExpressions {
-			match = false
-			for _, productOrderAttribute := range productOrder.ProductOrderAttributes {
-				if productOrderAttribute.ProductAttributeID == attributeExpression.ProductAttributeID {
-					fmt.Println(productOrderAttribute.Value, attributeExpression.MathOperator, attributeExpression.AttributeValue)
-					if b, err := tool.MathOperator(productOrderAttribute.Value, attributeExpression.MathOperator, attributeExpression.AttributeValue); b {
-						match = true
-						break
-					} else if err != nil {
-						return nil, err
-					}
-				}
-			}
-			if match {
-				break
-			}
+		match, err := model.MatchAnyAttributeExpressions(v.InitialValue, v.AttributeExpressions, productOrder.ProductOrderAttributes)
+		if err != nil {
+			return nil, err
 		}
 		if match {
 			processStepTypeParameters := make([]map[string]interface{}, len(v.ProcessStepType.ProcessStepTypeParameters))

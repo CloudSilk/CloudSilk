@@ -82,11 +82,9 @@
 - **位置**：`pkg/servers/webapi/logic/production.go`
 - **完成内容**：抽取 `resolveProductProcessRoute(tx, productInfo, afterRouteIndex, lastProcessID, order)` 统一策略函数，上线装配与工序流转两处复用；兼容"直接创建模式"（预建路线直接返回）与"工单工艺动态创建模式"（按 ProductOrderProcess 顺序生成）。新增 `production_test.go` 覆盖两种模式（内存 SQLite）。
 
-### TASK-011 工序步骤匹配算法存在裸 TODO
-- **位置**：`pkg/servers/webapi/logic/production.go:842`（`//TODO` 无说明）
-- **现状**：按工单特性（`AttributeExpressions`）匹配 `ProductionProcessStep` 的算法（`InitialValue` 初值 + 嵌套 break）较脆弱。
-- **验收标准**：确认原意后重构匹配逻辑并补充边界用例，或删除裸 TODO。
-- **工作量**：中
+### TASK-011 ✅ 工序步骤匹配算法已重构
+- **位置**：`pkg/model/attribute_expression_match.go`（新增）
+- **完成内容**：抽取 `MatchAnyAttributeExpressions` 统一匹配函数（表达式间 OR、同表达式内特性值满足比较运算符即命中、空表达式集返回 InitialValue），四处重复嵌套循环全部替换（作业步骤匹配、测试步骤匹配、发放规则/节拍/工序匹配），并移除残留的 `fmt.Println` 调试输出。新增 9 组边界用例单测。
 
 ---
 

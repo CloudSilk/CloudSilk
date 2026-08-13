@@ -8,7 +8,6 @@ import (
 
 	"github.com/CloudSilk/CloudSilk/pkg/model"
 	"github.com/CloudSilk/CloudSilk/pkg/proto"
-	"github.com/CloudSilk/CloudSilk/pkg/tool"
 	"gorm.io/gorm"
 )
 
@@ -82,22 +81,9 @@ func GetTestProjectWithParameter(req *proto.GetTestProjectWithParameterRequest) 
 	//按工单特性表达式匹配测试步骤
 	matchedProcessSteps := []*model.ProductionProcessStep{}
 	for _, v := range _productionProcessSteps {
-		match := v.InitialValue
-		for _, attributeExpression := range v.AttributeExpressions {
-			match = false
-			for _, productOrderAttribute := range productOrder.ProductOrderAttributes {
-				if productOrderAttribute.ProductAttributeID == attributeExpression.ProductAttributeID {
-					if b, err := tool.MathOperator(productOrderAttribute.Value, attributeExpression.MathOperator, attributeExpression.AttributeValue); b {
-						match = true
-						break
-					} else if err != nil {
-						return nil, err
-					}
-				}
-			}
-			if !match {
-				break
-			}
+		match, err := model.MatchAnyAttributeExpressions(v.InitialValue, v.AttributeExpressions, productOrder.ProductOrderAttributes)
+		if err != nil {
+			return nil, err
 		}
 		if match {
 			matchedProcessSteps = append(matchedProcessSteps, v)

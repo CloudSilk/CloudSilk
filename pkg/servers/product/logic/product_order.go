@@ -11,7 +11,6 @@ import (
 	"github.com/CloudSilk/CloudSilk/pkg/model"
 	"github.com/CloudSilk/CloudSilk/pkg/proto"
 	system "github.com/CloudSilk/CloudSilk/pkg/servers/system/logic"
-	"github.com/CloudSilk/CloudSilk/pkg/tool"
 	"github.com/CloudSilk/CloudSilk/pkg/types"
 	"github.com/CloudSilk/pkg/utils"
 	"gorm.io/gorm"
@@ -307,26 +306,13 @@ func ReceiveProductOrder(tx *gorm.DB, id string) (err error) {
 
 	var productOrderReleaseRule *model.ProductOrderReleaseRule
 	for _, _productOrderReleaseRule := range productOrderReleaseRules {
-		match := _productOrderReleaseRule.InitialValue
 		var attributeExpressions []*model.AttributeExpression
 		if err = tx.Find(&attributeExpressions, "`rule_id` = ? AND `rule_type` = ?", _productOrderReleaseRule.ID, "ProductOrderReleaseRule").Error; err != nil {
 			return
 		}
-		for _, attributeExpression := range attributeExpressions {
-			match = false
-			for _, productOrderAttribute := range productOrder.ProductOrderAttributes {
-				if productOrderAttribute.ProductAttributeID == attributeExpression.ProductAttributeID {
-					if b, err := tool.MathOperator(productOrderAttribute.Value, attributeExpression.MathOperator, attributeExpression.AttributeValue); b {
-						match = true
-						break
-					} else if err != nil {
-						return err
-					}
-				}
-			}
-			if match {
-				break
-			}
+		match, err := model.MatchAnyAttributeExpressions(_productOrderReleaseRule.InitialValue, attributeExpressions, productOrder.ProductOrderAttributes)
+		if err != nil {
+			return err
 		}
 		if match {
 			productOrderReleaseRule = _productOrderReleaseRule
@@ -444,26 +430,13 @@ func ReleaseProductOrder(tx *gorm.DB, id string) (err error) {
 
 	var productionRhythm *model.ProductionRhythm
 	for _, _productionRhythm := range productionRhythms {
-		match := _productionRhythm.InitialValue
 		var attributeExpressions []*model.AttributeExpression
 		if err = tx.Find(&attributeExpressions, "`rule_id` = ? AND `rule_type` = ?", _productionRhythm.ID, "ProductionRhythm").Error; err != nil {
 			return
 		}
-		for _, attributeExpression := range attributeExpressions {
-			match = false
-			for _, productOrderAttribute := range productOrder.ProductOrderAttributes {
-				if productOrderAttribute.ProductAttributeID == attributeExpression.ProductAttributeID {
-					if b, err := tool.MathOperator(productOrderAttribute.Value, attributeExpression.MathOperator, attributeExpression.AttributeValue); b {
-						match = true
-						break
-					} else if err != nil {
-						return err
-					}
-				}
-			}
-			if match {
-				break
-			}
+		match, err := model.MatchAnyAttributeExpressions(_productionRhythm.InitialValue, attributeExpressions, productOrder.ProductOrderAttributes)
+		if err != nil {
+			return err
 		}
 		if match {
 			productionRhythm = _productionRhythm
@@ -479,26 +452,13 @@ func ReleaseProductOrder(tx *gorm.DB, id string) (err error) {
 	}
 	var productionProcesses []*model.ProductionProcess
 	for _, _productionProcess := range _productionProcesses {
-		match := _productionProcess.InitialValue
 		var attributeExpressions []*model.AttributeExpression
 		if err = tx.Find(&attributeExpressions, "`rule_id` = ? AND `rule_type` = ?", _productionProcess.ID, "ProductionProcess").Error; err != nil {
 			return
 		}
-		for _, attributeExpression := range attributeExpressions {
-			match = false
-			for _, productOrderAttribute := range productOrder.ProductOrderAttributes {
-				if productOrderAttribute.ProductAttributeID == attributeExpression.ProductAttributeID {
-					if b, err := tool.MathOperator(productOrderAttribute.Value, attributeExpression.MathOperator, attributeExpression.AttributeValue); b {
-						match = true
-						break
-					} else if err != nil {
-						return err
-					}
-				}
-			}
-			if match {
-				break
-			}
+		match, err := model.MatchAnyAttributeExpressions(_productionProcess.InitialValue, attributeExpressions, productOrder.ProductOrderAttributes)
+		if err != nil {
+			return err
 		}
 		if match {
 			productionProcesses = append(productionProcesses, _productionProcess)
