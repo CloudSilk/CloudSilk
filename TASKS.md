@@ -205,14 +205,12 @@
 
 # 五、P4 — 代码质量、死代码与国际化
 
-### TASK-029 清理后端陈旧 TODO 标记（5 处）
-- **位置**：`pkg/servers/webapi/logic/production.go` 行 106、130、167、201、1660 — TODO 注释下方代码已实现所描述动作，属标记未清理。
-- **工作量**：小
+### TASK-029 ✅ 后端陈旧 TODO 标记已清理
+- **位置**：`pkg/servers/webapi/logic/production.go`
+- **完成**：删除"触发事件"与"计算预计下线时间"两处陈旧 TODO（下方代码均已实现相应功能）。全后端已无 TODO 标记。
 
-### TASK-030 恢复被注释的必填校验与状态分支
-- `pkg/servers/product_base/logic/product_model.go:82`：`ProductCategoryID` 非空校验被注释（创建型号时类别可不填）；
-- `pkg/servers/product/logic/product_order.go:114-116`：`if false {...}` 死代码，工单状态固定为 `Uploaded`，确认原意后恢复或删除。
-- **工作量**：小
+### TASK-030 ✅ 必填校验与状态分支已恢复
+- **完成**：`product_model.go` 创建型号恢复"产品类别不能为空"校验、更新时空类别不覆盖外键（omit）；`product_order.go` 移除 `if false` 死代码并注释说明状态起点。
 
 ### TASK-031 前端死代码清理
 - **清单**：

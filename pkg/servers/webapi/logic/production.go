@@ -210,7 +210,6 @@ func OnlineProductInfo(req *proto.OnlineProductInfoRequest) (code int32, err err
 				}
 			}
 
-			//TODO: 触发事件
 			systemEvent2 := &model.SystemEvent{}
 			if err := tx.Preload("SystemEventParameters").First(systemEvent2, "`code` = ?", types.SystemEventProductInfoOnlined).Error; err != nil && err != gorm.ErrRecordNotFound {
 				code = 50000
@@ -1604,7 +1603,6 @@ func CheckProductProcessRouteFailure(req *proto.CheckProductProcessRouteFailureR
 				}
 				productInfo.ProductionProcessID = &nextProductProcessRoute.CurrentProcessID
 
-				//TODO: 计算预计下线时间
 				var remainingRoutes int64
 				if err := tx.Model(model.ProductProcessRoute{}).Where("`product_info_id` = ? AND `current_state` = ?", productInfo.ID, types.ProductProcessRouteStateWaitProcess).Count(&remainingRoutes).Error; err != nil {
 					return err

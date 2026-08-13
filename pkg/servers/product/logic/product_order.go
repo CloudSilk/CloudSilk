@@ -109,10 +109,8 @@ func CreateProductOrder(m *model.ProductOrder) (string, error) {
 	}
 	m.ProductInfos = productInfos
 
+	//新建工单从"已上传"状态进入生命周期：接单→核验→签派→发放
 	m.CurrentState = types.ProductOrderStateUploaded
-	// if false {
-	// 	m.CurrentState = types.ProductOrderStateReceipted
-	// }
 	m.OrderTime = sql.NullTime{Time: time.Now(), Valid: true}
 
 	source := ""

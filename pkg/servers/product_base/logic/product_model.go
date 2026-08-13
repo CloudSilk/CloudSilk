@@ -14,6 +14,9 @@ import (
 )
 
 func CreateProductModel(m *model.ProductModel) (string, error) {
+	if m.ProductCategoryID == "" {
+		return "", errors.New("产品类别不能为空")
+	}
 	var count int64
 	err := model.DB.DB().Model(m).Where(" material_no  = ? ", m.MaterialNo).Count(&count).Error
 	if err != nil {
@@ -78,11 +81,12 @@ func UpdateProductModel(m *model.ProductModel) error {
 			return err
 		}
 
-		// omits := []string{"created_at"}
-		// if m.ProductCategoryID == "" {
-		// 	omits = append(omits, "ProductCategoryID")
-		// }
-		duplication, err := model.DB.UpdateWithCheckDuplicationAndOmit(tx, m, true, []string{"created_at"}, "id <> ?  AND  material_no  = ? ", m.ID, m.MaterialNo)
+		// 类别为空时不覆盖已有外键
+		omits := []string{"created_at"}
+		if m.ProductCategoryID == "" {
+			omits = append(omits, "ProductCategoryID")
+		}
+		duplication, err := model.DB.UpdateWithCheckDuplicationAndOmit(tx, m, true, omits, "id <> ?  AND  material_no  = ? ", m.ID, m.MaterialNo)
 		if err != nil {
 			return err
 		}
