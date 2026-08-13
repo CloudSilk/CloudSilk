@@ -272,7 +272,16 @@
 
 ---
 
-# 六、任务统计与建议实施顺序
+# 六、社区需求跟踪（对应 GitHub Issues）
+
+| Issue | 需求 | 状态 | 对应任务/说明 |
+|-------|------|------|---------------|
+| [#12](https://github.com/CloudSilk/CloudSilk/issues/12) | 产品类别支持添加多个产品特性 | 🔄 PR #23 review 中 | 模型层关联字段已有，缺 proto/接口/前端配置入口 |
+| [#8](https://github.com/CloudSilk/CloudSilk/issues/8) | 产品特性新建 = 基础信息 + 映射关系组合 | 📋 待排期 | 特性维护页拆分页签，映射对接上层服务描述 |
+| [#6](https://github.com/CloudSilk/CloudSilk/issues/6) | 特性配置增加 Group 概念（or/and 嵌套分组） | 📋 待排期 | 需扩展特性表达式解析器与前端配置器 |
+| [#5](https://github.com/CloudSilk/CloudSilk/issues/5) | MQTT 推送生产过程数据给 BI/质量等系统 | 📋 待排期 | 与 TASK-017 生产监控/事件推送合并考虑 |
+
+# 七、任务统计与建议实施顺序
 
 | 优先级 | 任务数 | 说明 |
 |--------|--------|------|
