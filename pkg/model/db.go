@@ -136,6 +136,11 @@ func AutoMigrate() {
 
 		&ProductionSchedulePlan{},
 		&ProductionScheduleItem{},
+
+		&ScadaDevice{},
+		&ScadaTag{},
+		&ScadaTagValue{},
+		&ScadaTagHistory{},
 		&ProductReworkRecord{},
 		&ProductPackageRecord{},
 		&ProcessStepParameter{},

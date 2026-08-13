@@ -1,0 +1,201 @@
+syntax="proto3";
+
+package proto;
+option go_package = "./;proto";
+
+import "mom_common.proto";
+
+// 采集设备（SCADA 网关连接的 PLC/仪表）
+message ScadaDeviceInfo {
+	//ID
+	string id=1;
+	//代号
+	string code=2;
+	//名称
+	string name=3;
+	//协议（modbus-tcp）
+	string protocol=4;
+	//地址（host:port）
+	string address=5;
+	//从站号
+	int32 slaveID=6;
+	//采集间隔（秒）
+	int32 intervalSeconds=7;
+	//连接状态（正常/异常/未连接）
+	string connectionState=8;
+	//最近一次采集时间
+	string lastCollectTime=9;
+	//最近错误信息
+	string lastError=10;
+	//是否启用
+	bool enable=11;
+	//备注
+	string remark=12;
+}
+
+message QueryScadaDeviceRequest{
+    // @inject_tag: uri:"pageIndex" form:"pageIndex"
+    int64 pageIndex=1;
+    // @inject_tag: uri:"pageSize" form:"pageSize"
+    int64 pageSize=2;
+    // @inject_tag: uri:"sortConfig" form:"sortConfig"
+    string sortConfig=3;
+	//代号或名称
+    // @inject_tag: uri:"code" form:"code"
+    string code=5;
+}
+
+message QueryScadaDeviceResponse{
+    Code code=1;
+    string message=2;
+    repeated ScadaDeviceInfo data=3;
+    int64 pages=4;
+    int64 records=5;
+    int64 total=6;
+}
+
+message GetAllScadaDeviceResponse{
+    Code code=1;
+    string message=2;
+    repeated ScadaDeviceInfo data=3;
+}
+
+message GetScadaDeviceDetailResponse{
+    Code code=1;
+    string message=2;
+    ScadaDeviceInfo data=3;
+}
+
+// 采集点位
+message ScadaTagInfo {
+	//ID
+	string id=1;
+	//设备ID
+	string scadaDeviceID=2;
+	string scadaDeviceCode=3;
+	//点位名称
+	string name=4;
+	//寄存器地址（十进制）
+	int32 address=5;
+	//功能码（0-线圈 1-离散输入 3-保持寄存器 4-输入寄存器）
+	int32 functionCode=6;
+	//数据类型（bool/uint16/int16/float32）
+	string dataType=7;
+	//缩放系数
+	double scale=8;
+	//单位
+	string unit=9;
+	//是否存历史
+	bool saveHistory=10;
+	//是否启用
+	bool enable=11;
+	//备注
+	string remark=12;
+}
+
+message QueryScadaTagRequest{
+    // @inject_tag: uri:"pageIndex" form:"pageIndex"
+    int64 pageIndex=1;
+    // @inject_tag: uri:"pageSize" form:"pageSize"
+    int64 pageSize=2;
+    // @inject_tag: uri:"sortConfig" form:"sortConfig"
+    string sortConfig=3;
+	//设备ID
+    // @inject_tag: uri:"scadaDeviceID" form:"scadaDeviceID"
+    string scadaDeviceID=4;
+	//名称
+    // @inject_tag: uri:"name" form:"name"
+    string name=5;
+}
+
+message QueryScadaTagResponse{
+    Code code=1;
+    string message=2;
+    repeated ScadaTagInfo data=3;
+    int64 pages=4;
+    int64 records=5;
+    int64 total=6;
+}
+
+message GetAllScadaTagResponse{
+    Code code=1;
+    string message=2;
+    repeated ScadaTagInfo data=3;
+}
+
+message GetScadaTagDetailResponse{
+    Code code=1;
+    string message=2;
+    ScadaTagInfo data=3;
+}
+
+// 点位实时值
+message ScadaTagValueInfo {
+	//点位ID
+	string scadaTagID=1;
+	string tagName=2;
+	string unit=3;
+	//值（字符串表示）
+	string value=4;
+	//采集时间
+	string collectTime=5;
+	//质量（Good/Bad）
+	string quality=6;
+}
+
+message QueryScadaTagValueRequest{
+	//设备ID（可选）
+    // @inject_tag: uri:"scadaDeviceID" form:"scadaDeviceID"
+    string scadaDeviceID=1;
+}
+
+message QueryScadaTagValueResponse{
+    Code code=1;
+    string message=2;
+    repeated ScadaTagValueInfo data=3;
+}
+
+// 点位历史值
+message ScadaTagHistoryInfo {
+	//ID
+	string id=1;
+	//点位ID
+	string scadaTagID=2;
+	string value=3;
+	string collectTime=4;
+}
+
+message QueryScadaTagHistoryRequest{
+    // @inject_tag: uri:"pageIndex" form:"pageIndex"
+    int64 pageIndex=1;
+    // @inject_tag: uri:"pageSize" form:"pageSize"
+    int64 pageSize=2;
+    // @inject_tag: uri:"sortConfig" form:"sortConfig"
+    string sortConfig=3;
+	//点位ID
+    // @inject_tag: uri:"scadaTagID" form:"scadaTagID"
+    string scadaTagID=4;
+	//开始时间
+    // @inject_tag: uri:"startTime" form:"startTime"
+    string startTime=5;
+	//结束时间
+    // @inject_tag: uri:"endTime" form:"endTime"
+    string endTime=6;
+}
+
+message QueryScadaTagHistoryResponse{
+    Code code=1;
+    string message=2;
+    repeated ScadaTagHistoryInfo data=3;
+    int64 pages=4;
+    int64 records=5;
+    int64 total=6;
+}
+
+// 测试设备连接
+message TestScadaDeviceRequest{
+	//地址 host:port
+	string address=1;
+	//从站号
+	int32 slaveID=2;
+}

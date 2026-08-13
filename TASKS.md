@@ -134,15 +134,16 @@
   - 路由：`/api/mom/aps/schedule/{generate|release|void|query|detail|delete}`
 - **后续增强**（不阻塞）：约束求解器（换型时间/物料齐套约束）、人工拖拽调整、插单重排
 
-### TASK-016 SCADA 网关（设备数据采集）— 从零开发
-- **现状**：全仓库（Go/C#/TS）搜索 `modbus/opcua/plc/s7/采集/scada` 零业务命中。`csharp/PrintService` 的 MQTT 仅用于接收打印任务。
-- **缺失清单**：
-  - [ ] 工业协议驱动（建议优先 Modbus，社区库已有 `github.com/CloudSilk/pkg/modbus` 基础；再扩展 OPC UA）
-  - [ ] 点位（Tag）配置管理与采集任务调度
-  - [ ] 设备连接管理（断线重连、状态上报，对接 TASK-013 设备管理）
-  - [ ] 采集数据清洗后进入规则引擎（可复用 `SmartFlow`/RuleGo）与 MES 报工流程
-  - [ ] 边缘网关部署形态（Agent 模式 + 中心配置下发）
-- **工作量**：特大
+### TASK-016 ✅ SCADA 网关（Modbus TCP）基础版已实现
+- **新增模块**：`pkg/servers/scada/` + `pkg/model/scada.go` + `pkg/proto/scada.proto`
+- **完成内容**：
+  - 采集设备管理：协议/地址/从站号/采集间隔/连接状态/最近错误，连通性测试接口（读保持寄存器探测）
+  - 点位（Tag）管理：功能码（线圈/离散输入/保持/输入寄存器）、数据类型（bool/uint16/int16/float32）、缩放系数、单位、历史开关
+  - **后台采集器**：随服务启动（sync.Once 保护），每设备独立 goroutine 按配置间隔轮询，实时值 upsert + 历史落库 + 连接状态回写（全部失败置异常并记录首错）
+  - 复用 `github.com/CloudSilk/pkg/modbus` 驱动
+  - 查询接口：点位实时值（按设备过滤）、点位历史值（时间区间分页）
+  - 路由：`/api/mom/scada/{device|tag}/*`
+- **后续增强**（不阻塞）：OPC UA 驱动、采集数据转发 MQTT/规则引擎、断线告警事件
 
 ### TASK-017 生产监控大屏后端聚合接口
 - **现状**：MES 无实时监控数据聚合接口（工位看板接口已在 TASK-007 恢复，但厂级/产线级大屏无数据源）。
