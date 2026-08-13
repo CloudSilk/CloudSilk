@@ -122,6 +122,11 @@ func AutoMigrate() {
 		&ProductRhythmRecord{},
 		&ProductWorkRecord{},
 		&ProductTestRecord{},
+
+		&QualityInspectionType{},
+		&QualityInspectionStandard{},
+		&QualityInspectionOrder{},
+		&QualityInspectionOrderItem{},
 		&ProductReworkRecord{},
 		&ProductPackageRecord{},
 		&ProcessStepParameter{},

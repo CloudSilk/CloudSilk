@@ -1,0 +1,258 @@
+syntax="proto3";
+
+package proto;
+option go_package = "./;proto";
+
+import "mom_common.proto";
+
+// 检验类型（来料检验/过程检验/成品检验等）
+message QualityInspectionTypeInfo {
+	//ID
+	string id=1;
+	//代号
+	string code=2;
+	//描述
+	string description=3;
+	//备注
+	string remark=4;
+	//是否启用
+	bool enable=5;
+}
+
+message QueryQualityInspectionTypeRequest{
+    // @inject_tag: uri:"pageIndex" form:"pageIndex"
+    int64 pageIndex=1;
+    // @inject_tag: uri:"pageSize" form:"pageSize"
+    int64 pageSize=2;
+    // @inject_tag: uri:"sortConfig" form:"sortConfig"
+    string sortConfig=3;
+	//代号或描述
+    // @inject_tag: uri:"code" form:"code"
+    string code=5;
+}
+
+message QueryQualityInspectionTypeResponse{
+    Code code=1;
+    string message=2;
+    repeated QualityInspectionTypeInfo data=3;
+    int64 pages=4;
+    int64 records=5;
+    int64 total=6;
+}
+
+message GetAllQualityInspectionTypeResponse{
+    Code code=1;
+    string message=2;
+    repeated QualityInspectionTypeInfo data=3;
+}
+
+message GetQualityInspectionTypeDetailResponse{
+    Code code=1;
+    string message=2;
+    QualityInspectionTypeInfo data=3;
+}
+
+// 检验标准（检验项主数据：规格限/单位/AQL）
+message QualityInspectionStandardInfo {
+	//ID
+	string id=1;
+	//代号
+	string code=2;
+	//描述
+	string description=3;
+	//单位
+	string unit=4;
+	//标准值
+	string standardValue=5;
+	//规格下限
+	string lowerLimit=6;
+	//规格上限
+	string upperLimit=7;
+	//比较方式（等于/范围内/大于/小于）
+	string criterionMethod=8;
+	//AQL接收质量限（0表示不启用抽样判定）
+	double aql=9;
+	//样本量字码（GB/T 2828 一般检验水平，默认II）
+	string sampleLevel=10;
+	//检验类型ID
+	string qualityInspectionTypeID=11;
+	string qualityInspectionTypeCode=12;
+	//是否启用
+	bool enable=13;
+	//备注
+	string remark=14;
+}
+
+message QueryQualityInspectionStandardRequest{
+    // @inject_tag: uri:"pageIndex" form:"pageIndex"
+    int64 pageIndex=1;
+    // @inject_tag: uri:"pageSize" form:"pageSize"
+    int64 pageSize=2;
+    // @inject_tag: uri:"sortConfig" form:"sortConfig"
+    string sortConfig=3;
+	//代号或描述
+    // @inject_tag: uri:"code" form:"code"
+    string code=5;
+	//检验类型ID
+    // @inject_tag: uri:"qualityInspectionTypeID" form:"qualityInspectionTypeID"
+    string qualityInspectionTypeID=6;
+}
+
+message QueryQualityInspectionStandardResponse{
+    Code code=1;
+    string message=2;
+    repeated QualityInspectionStandardInfo data=3;
+    int64 pages=4;
+    int64 records=5;
+    int64 total=6;
+}
+
+message GetAllQualityInspectionStandardResponse{
+    Code code=1;
+    string message=2;
+    repeated QualityInspectionStandardInfo data=3;
+}
+
+message GetQualityInspectionStandardDetailResponse{
+    Code code=1;
+    string message=2;
+    QualityInspectionStandardInfo data=3;
+}
+
+// 检验单明细
+message QualityInspectionOrderItemInfo {
+	//ID
+	string id=1;
+	//检验单ID
+	string qualityInspectionOrderID=2;
+	//检验标准ID
+	string qualityInspectionStandardID=3;
+	string qualityInspectionStandardCode=4;
+	string qualityInspectionStandardDescription=5;
+	//实测值
+	string measuredValue=6;
+	//是否合格
+	bool isQualified=7;
+	//备注
+	string remark=8;
+}
+
+// 检验单
+message QualityInspectionOrderInfo {
+	//ID
+	string id=1;
+	//检验单号
+	string inspectionOrderNo=2;
+	//检验类型ID
+	string qualityInspectionTypeID=3;
+	string qualityInspectionTypeCode=4;
+	//关联生产工单ID
+	string productOrderID=5;
+	string productOrderNo=6;
+	//关联产品序列号
+	string productSerialNo=7;
+	//批次数量
+	int32 lotQTY=8;
+	//抽样数量
+	int32 sampleQTY=9;
+	//当前状态（待检验/检验中/已完成）
+	string currentState=10;
+	//计划检验时间
+	string planInspectionTime=11;
+	//实际检验时间
+	string actualInspectionTime=12;
+	//检验人
+	string inspectionUserID=13;
+	//整单结论（合格/不合格/让步接收）
+	string conclusion=14;
+	//不合格处理说明
+	string disposition=15;
+	//是否已生成返工记录
+	bool reworkCreated=16;
+	//备注
+	string remark=17;
+	//明细
+	repeated QualityInspectionOrderItemInfo qualityInspectionOrderItems=18;
+}
+
+message QueryQualityInspectionOrderRequest{
+    // @inject_tag: uri:"pageIndex" form:"pageIndex"
+    int64 pageIndex=1;
+    // @inject_tag: uri:"pageSize" form:"pageSize"
+    int64 pageSize=2;
+    // @inject_tag: uri:"sortConfig" form:"sortConfig"
+    string sortConfig=3;
+	//检验单号或产品序列号
+    // @inject_tag: uri:"code" form:"code"
+    string code=5;
+	//当前状态
+    // @inject_tag: uri:"currentState" form:"currentState"
+    string currentState=6;
+	//检验类型ID
+    // @inject_tag: uri:"qualityInspectionTypeID" form:"qualityInspectionTypeID"
+    string qualityInspectionTypeID=7;
+}
+
+message QueryQualityInspectionOrderResponse{
+    Code code=1;
+    string message=2;
+    repeated QualityInspectionOrderInfo data=3;
+    int64 pages=4;
+    int64 records=5;
+    int64 total=6;
+}
+
+message GetQualityInspectionOrderDetailResponse{
+    Code code=1;
+    string message=2;
+    QualityInspectionOrderInfo data=3;
+}
+
+// 完成检验（录入检测结果并判定）
+message CompleteQualityInspectionOrderRequest{
+	//检验单ID
+	string id=1;
+	//检验人
+	string inspectionUserID=2;
+	//明细检测结果
+	repeated QualityInspectionOrderItemInfo items=3;
+	//不合格处理说明
+	string disposition=4;
+	//不合格时是否生成返工记录
+	bool createRework=5;
+}
+
+// SPC 计算请求/响应
+message SpcCalcRequest{
+	//检验标准ID（取规格限）
+	string qualityInspectionStandardID=1;
+	//样本数据（字符串数值数组）
+	repeated string values=2;
+	//规格下限（覆盖标准中的配置）
+	string lowerSpec=3;
+	//规格上限（覆盖标准中的配置）
+	string upperSpec=4;
+}
+
+message SpcCalcResponse{
+    Code code=1;
+    string message=2;
+    //样本数
+    int32 n=3;
+    //均值
+    double mean=4;
+    //标准差
+    double stdDev=5;
+    //上限规格指数
+    double cpu=6;
+    //下限规格指数
+    double cpl=7;
+    //过程能力指数
+    double cpk=8;
+    //控制上限
+    double ucl=9;
+    //控制中心线
+    double cl=10;
+    //控制下限
+    double lcl=11;
+}

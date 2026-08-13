@@ -92,16 +92,15 @@
 
 > 以下模块经全量代码搜索（模型/逻辑/proto/前端）确认无实现，按业务依赖建议排序。
 
-### TASK-012 质量管理系统（QM）— 从模型到逻辑整体补齐
-- **现状**：仅有被动记录表 `pkg/model/product_test_record.go`（测试时间、JSON 数据、是否合格）；quality API 全注释、路由未注册。
-- **缺失清单**：
-  - [ ] 检验单/检验项/检验标准主数据管理
-  - [ ] 抽样规则与 AQL 判定
-  - [ ] SPC 统计过程控制（控制图、CPK 计算）
-  - [ ] 不合格品处理流程（与现有返工模块 `product_rework_*` 打通）
-  - [ ] 质量看板与质量指标实时监控
-- **前置依赖**：TASK-006、TASK-008
-- **工作量**：特大（建议拆分为独立子项目分期实施）
+### TASK-012 ✅ 质量管理系统（QM）基础版已实现
+- **新增模块**：`pkg/servers/quality/`（logic/http/start）+ `pkg/model/quality_inspection_*.go` + `pkg/proto/quality_inspection.proto`（protoc 正规生成）
+- **完成内容**：
+  - 检验类型/检验标准（规格限/单位/比较方式/AQL/检验水平）主数据 CRUD
+  - 检验单：按检验类型自动生成明细、GB/T 2828 一般检验水平II 简化抽样表确定样本量、单号自动流水
+  - 完成检验：实测值按标准判定（复用 MathOperator，支持范围内/等于/大于等）、AQL 接收数判定整单结论、不合格可选生成返工记录并联动产品状态为检查中
+  - SPC：均值/标准差/Cpu/Cpl/Cpk/休哈特控制限计算接口 + 单测（抽样表、接收数、Cpk 均有用例）
+  - 路由：`/api/mom/quality/{qualityinspectiontype|qualityinspectionstandard|qualityinspectionorder|spc}` 
+- **后续增强**（不阻塞）：让步接收工作流、质量看板实时推送、检验标准版本管理
 
 ### TASK-013 设备管理系统（EM）— 从零开发
 - **现状**：无设备台账/状态机/维护模型。仅 `production_station_breakdown.go` 中有 `EquipmentID`、故障类型/原因/方案等**故障记录**字段。
