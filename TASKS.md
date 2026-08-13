@@ -74,11 +74,9 @@
 - **位置**：`pkg/servers/webapi/logic/quality.go`、`pkg/servers/webapi/http/production.go`
 - **完成内容**：`CreateProductTestRecord` 编排层实现——序列号定位产品、工位代号定位工站与测试工序、兼容两种时间格式并计算耗时，落库 `ProductTestRecord`。路由 `POST /api/mom/webapi/production/createproducttestrecord` 已恢复。
 
-### TASK-009 工单核验失败时任务队列执行记录未写入
-- **位置**：`pkg/servers/product/logic/product_order.go:366-372`（`TaskQueueExecution` 创建逻辑被注释）
-- **影响**：核验失败无执行轨迹，排错信息丢失。
-- **验收标准**：恢复失败记录写入，或明确说明移除原因后删除死代码。
-- **工作量**：小
+### TASK-009 ✅ 工单核验失败轨迹记录已恢复
+- **位置**：`pkg/servers/product/logic/product_order.go`
+- **完成内容**：核验失败时用独立连接写入 `TaskQueueExecution`（Success=false、失败原因、数据跟踪索引），不随事务回滚丢失。
 
 ### TASK-010 产线工艺路线两种创建模式的兼容仍是临时方案
 - **位置**：`pkg/servers/webapi/logic/production.go:62`

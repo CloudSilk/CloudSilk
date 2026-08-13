@@ -355,6 +355,14 @@ func VerifyProductOrder(tx *gorm.DB, id string) (err error) {
 	}
 
 	if err = tx.Model(productOrder).Where("`id` = ?", id).Update("current_state", types.ProductOrderStateVerified).Error; err != nil {
+		// 核验失败时用独立连接记录任务队列执行轨迹（不随事务回滚丢失），便于排错
+		if e := model.DB.DB().Create(&model.TaskQueueExecution{
+			Success:       false,
+			FailureReason: fmt.Sprintf("%v", err),
+			DataTrace:     fmt.Sprintf("数据表: ProductOrder, 索引: %s", productOrder.ProductOrderNo),
+		}).Error; e != nil {
+			return
+		}
 		return
 	}
 
