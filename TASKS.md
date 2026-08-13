@@ -112,15 +112,16 @@
   - **OEE 计算**：时间稼动率（故障记录停机时长）× 性能稼动率（数量×平均标准节拍/运行时间）× 良品率（测试记录合格率，无测试数据时按返工折算）
 - **后续增强**（不阻塞）：点检任务自动生成、备件库存联动
 
-### TASK-014 WMS 仓库管理系统 — 基础已有，作业流程待补齐
-- **现状**（2026-08-14 更新）：PR #20 已带来 MSS 物料/仓储基础：`material_store`（仓库）、`material_shelf`/`material_shelf_bin`（货架/库位）、`material_inventory`（库存）、`material_container`（容器）、`agv_task_queue`（AGV 任务）、`wms_bill_queue`（单据队列）、退料单系列（`material_return_*`），模型与 CRUD logic 齐全。
-- **仍缺失清单**：
-  - [ ] 收货/上架/拣货/补料作业流程（状态机驱动，目前主要是主数据 CRUD）
-  - [ ] 出入库单据与工单领料联动（对接 `product_order_bom`、`material_store_feed_rule`）
-  - [ ] 盘点与库存调整流程
-  - [ ] 库存周转/预警看板
-  - [ ] AGV 任务下发的实际对接（驱动接口）
-- **工作量**：大（基础比原评估好很多，从"从零开发"降级为"补作业流程"）
+### TASK-014 ✅ WMS 作业流程已实现
+- **新增**：`pkg/servers/material/logic/material_operation.go`、`pkg/servers/material/http/material_operation.go`、`pkg/model/material_inventory_transaction.go`、`pkg/proto/material_operation.proto`
+- **完成内容**：
+  - **收货入库** `POST /wms/receive`：增加账面库存（自动建账）+ 事务流水
+  - **工单拣货** `POST /wms/pickbill`：按工单 BOM（需求数量×工单量）逐行锁定库存生成拣货单，缺料行跳过并提示；完成 `PUT /wms/pickbill/complete` 扣减库存、解除锁定、**联动工单发料数量与最新发料时间**；取消解锁回滚
+  - **库存盘点** `PUT /wms/stocktake`：实盘调整账面、记录盘盈盘亏差异流水
+  - **库存事务流水** `GET /wms/transaction/query`：入库/出库/锁定/解锁/盘点调整全量追溯（含变更前后数量）
+  - **库存预警** `GET /wms/alert`：可用量低于补料规则最低库存量或已为负
+  - 拣货单状态机：待拣货 → 已完成/已取消
+- **后续增强**（不阻塞）：库位级上架指引、AGV 任务自动生成联动、波次拣货
 
 ### TASK-015 APS 高级计划与排程 — 从零开发
 - **现状**：全库搜索 `schedule/scheduling/排程/APS` 零命中。仅有静态的 `product_order_priority_rule.go`（优先级规则）和 `product_order_release_rule.go`（发放规则），非排程算法。

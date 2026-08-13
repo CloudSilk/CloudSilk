@@ -25,4 +25,14 @@ func RegisterRouter(r *gin.Engine) {
 	RegisterMaterialReturnSolutionRouter(r)
 	RegisterMaterialReturnTypeRouter(r)
 	RegisterMaterialChannelLayerRouter(r)
+
+	// WMS作业流程
+	w := r.Group("/api/mom/material/wms")
+	w.POST("receive", ReceiveMaterial)
+	w.POST("pickbill", CreatePickBill)
+	w.PUT("pickbill/complete", CompletePickBill)
+	w.PUT("pickbill/cancel", CancelPickBill)
+	w.PUT("stocktake", StocktakeInventory)
+	w.GET("transaction/query", QueryInventoryTransaction)
+	w.GET("alert", GetInventoryAlerts)
 }

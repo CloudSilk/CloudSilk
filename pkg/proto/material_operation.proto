@@ -1,0 +1,168 @@
+syntax="proto3";
+
+package proto;
+option go_package = "./;proto";
+
+import "mom_common.proto";
+
+// 收货入库
+message ReceiveMaterialRequest{
+	//物料ID
+	string materialInfoID=1;
+	//仓库ID
+	string materialStoreID=2;
+	//数量
+	int64 qty=3;
+	//批次号
+	string batchNo=4;
+	//库位ID（上架目标，可选）
+	string shelfBinID=5;
+	//备注
+	string remark=6;
+}
+
+message ReceiveMaterialResponse{
+    Code code=1;
+    string message=2;
+	//库存记录ID
+	string materialInventoryID=3;
+	//入库后库存数量
+	int64 storedQTY=4;
+}
+
+// 按工单生成拣货单（锁定库存）
+message CreatePickBillRequest{
+	//生产工单ID
+	string productOrderID=1;
+	//发货仓库ID（可选，缺省用工单BOM上的仓库）
+	string materialStoreID=2;
+	//完成后是否生成AGV搬运任务
+	bool createAGVTask=3;
+}
+
+message CreatePickBillResponse{
+    Code code=1;
+    string message=2;
+	//拣货单ID
+	string billID=3;
+	//拣货单号
+	string billNo=4;
+	//锁定明细数
+	int32 lockedLines=5;
+	//锁定总量
+	int64 lockedQTY=6;
+}
+
+// 完成拣货（出库扣减并联动工单发料）
+message CompletePickBillRequest{
+	//拣货单ID
+	string billID=1;
+}
+
+// 取消拣货单（解除库存锁定）
+message CancelPickBillRequest{
+	//拣货单ID
+	string billID=1;
+}
+
+// 库存盘点
+message StocktakeInventoryRequest{
+	//库存记录ID
+	string materialInventoryID=1;
+	//实盘数量
+	int64 countedQTY=2;
+	//备注
+	string remark=3;
+}
+
+message StocktakeInventoryResponse{
+    Code code=1;
+    string message=2;
+	//盘盈盘亏（实盘-账面）
+	int64 difference=3;
+}
+
+// 库存事务流水
+message MaterialInventoryTransactionInfo {
+	//ID
+	string id=1;
+	//物料ID
+	string materialInfoID=2;
+	string materialNo=3;
+	//仓库ID
+	string materialStoreID=4;
+	string materialStoreCode=5;
+	//事务类型（入库/出库/锁定/解锁/盘点调整）
+	string transactionType=6;
+	//数量（带符号）
+	int64 qty=7;
+	//变更前库存
+	int64 beforeQTY=8;
+	//变更后库存
+	int64 afterQTY=9;
+	//关联单号
+	string refBillNo=10;
+	//操作人
+	string createUserID=11;
+	//操作时间
+	string createTime=12;
+	//备注
+	string remark=13;
+}
+
+message QueryMaterialInventoryTransactionRequest{
+    // @inject_tag: uri:"pageIndex" form:"pageIndex"
+    int64 pageIndex=1;
+    // @inject_tag: uri:"pageSize" form:"pageSize"
+    int64 pageSize=2;
+    // @inject_tag: uri:"sortConfig" form:"sortConfig"
+    string sortConfig=3;
+	//物料ID
+    // @inject_tag: uri:"materialInfoID" form:"materialInfoID"
+    string materialInfoID=4;
+	//仓库ID
+    // @inject_tag: uri:"materialStoreID" form:"materialStoreID"
+    string materialStoreID=5;
+	//事务类型
+    // @inject_tag: uri:"transactionType" form:"transactionType"
+    string transactionType=6;
+	//关联单号
+    // @inject_tag: uri:"refBillNo" form:"refBillNo"
+    string refBillNo=7;
+}
+
+message QueryMaterialInventoryTransactionResponse{
+    Code code=1;
+    string message=2;
+    repeated MaterialInventoryTransactionInfo data=3;
+    int64 pages=4;
+    int64 records=5;
+    int64 total=6;
+}
+
+// 库存预警项
+message MaterialInventoryAlertInfo {
+	//库存记录ID
+	string materialInventoryID=1;
+	//物料ID
+	string materialInfoID=2;
+	string materialNo=3;
+	string materialDescription=4;
+	//仓库ID
+	string materialStoreID=5;
+	string materialStoreCode=6;
+	//账面库存
+	int64 storedQTY=7;
+	//锁定数量
+	int64 issuedQTY=8;
+	//可用数量
+	int64 availableQTY=9;
+	//预警阈值（补料规则最低库存量，无规则时为0）
+	int64 minimumQTY=10;
+}
+
+message MaterialInventoryAlertResponse{
+    Code code=1;
+    string message=2;
+    repeated MaterialInventoryAlertInfo data=3;
+}
