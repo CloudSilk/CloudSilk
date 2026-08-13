@@ -371,6 +371,46 @@ func ResumeProductOrder(c *gin.Context) {
 	c.JSON(http.StatusOK, resp)
 }
 
+// DispatchProductOrder godoc
+// @Summary 签派
+// @Description 将已核验的工单签派给生产班组（核验 → 签派 → 发放）
+// @Tags 生产工单管理
+// @Accept  json
+// @Produce  json
+// @Param authorization header string true "jwt token"
+// @Param productionTeam query string false "生产班组"
+// @Param data body proto.GetByIDsRequest true "Dispatch ProductOrder"
+// @Success 200 {object} proto.CommonResponse
+// @Router /api/mom/product/productorder/dispatch [put]
+func DispatchProductOrder(c *gin.Context) {
+	transID := middleware.GetTransID(c)
+	req := &proto.GetByIDsRequest{}
+	resp := &proto.CommonResponse{
+		Code: proto.Code_Success,
+	}
+	err := c.BindJSON(req)
+	if err != nil {
+		resp.Code = proto.Code_BadRequest
+		resp.Message = err.Error()
+		c.JSON(http.StatusOK, resp)
+		log.Warnf(context.Background(), "TransID:%s,签派生产工单请求参数无效:%v", transID, err)
+		return
+	}
+	err = middleware.Validate.Struct(req)
+	if err != nil {
+		resp.Code = proto.Code_BadRequest
+		resp.Message = err.Error()
+		c.JSON(http.StatusOK, resp)
+		return
+	}
+	err = logic.BatchDispatchProductOrder(req.Ids, ucmiddleware.GetUserID(c), c.Query("productionTeam"))
+	if err != nil {
+		resp.Code = proto.Code_InternalServerError
+		resp.Message = err.Error()
+	}
+	c.JSON(http.StatusOK, resp)
+}
+
 func RegisterProductOrderRouter(r *gin.Engine) {
 	g := r.Group("/api/mom/product/productorder")
 
@@ -380,6 +420,7 @@ func RegisterProductOrderRouter(r *gin.Engine) {
 	g.DELETE("delete", DeleteProductOrder)
 	g.GET("all", GetAllProductOrder)
 	g.GET("detail", GetProductOrderDetail)
+	g.PUT("dispatch", DispatchProductOrder)
 	g.PUT("cancel", CancelProductOrder)
 	g.PUT("suspend", SuspendProductOrder)
 	g.PUT("resume", ResumeProductOrder)

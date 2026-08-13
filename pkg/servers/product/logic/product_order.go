@@ -136,6 +136,12 @@ func CreateProductOrder(m *model.ProductOrder) (string, error) {
 			return err
 		}
 
+		//工单签派
+		if err := DispatchProductOrder(tx, m.ID, m.CreateUserID, m.ProductionTeam); err != nil {
+			source = "工单签派"
+			return err
+		}
+
 		//工单发放
 		if err := ReleaseProductOrder(tx, m.ID); err != nil {
 			source = "工单发放"
@@ -355,7 +361,62 @@ func VerifyProductOrder(tx *gorm.DB, id string) (err error) {
 	return
 }
 
-// TODO 签派
+// 签派（工单生命周期：核验 → 签派 → 发放）
+// 将工单指派给生产班组，并记录签派轨迹
+func DispatchProductOrder(tx *gorm.DB, id, dispatchUserID, productionTeam string) (err error) {
+	productOrder := &model.ProductOrder{}
+	if err = tx.First(productOrder, "`id` = ?", id).Error; err != nil {
+		return
+	}
+
+	if productOrder.CurrentState != types.ProductOrderStateVerified {
+		return fmt.Errorf("工单的状态错误，只能签派状态为%s的工单。", types.ProductOrderStateVerified)
+	}
+
+	updates := map[string]interface{}{
+		"current_state": types.ProductOrderStateDispatched,
+	}
+	if productionTeam != "" {
+		updates["production_team"] = productionTeam
+	}
+	if err = tx.Model(productOrder).Where("`id` = ?", id).Updates(updates).Error; err != nil {
+		return
+	}
+
+	return tx.Create(&model.OperationTrace{
+		OperateUserID:  dispatchUserID,
+		ControllerName: "生产工单",
+		ActionName:     "签派",
+		RequestContent: fmt.Sprintf("工单号:%s,生产班组:%s", productOrder.ProductOrderNo, productionTeam),
+	}).Error
+}
+
+// 批量签派
+func BatchDispatchProductOrder(ids []string, dispatchUserID, productionTeam string) (err error) {
+	var productOrders []*model.ProductOrder
+	if err = model.DB.DB().Find(&productOrders, "`id` in (?)", ids).Error; err != nil {
+		return err
+	}
+
+	productOrderNoArray := []string{}
+	for _, v := range productOrders {
+		if v.CurrentState != types.ProductOrderStateVerified {
+			productOrderNoArray = append(productOrderNoArray, v.ProductOrderNo)
+		}
+	}
+	if len(productOrderNoArray) != 0 {
+		return fmt.Errorf("下列工单的状态错误，只能签派状态为%s的工单。%s", types.ProductOrderStateVerified, strings.Join(productOrderNoArray, ","))
+	}
+
+	return model.DB.DB().Transaction(func(tx *gorm.DB) error {
+		for _, v := range productOrders {
+			if err := DispatchProductOrder(tx, v.ID, dispatchUserID, productionTeam); err != nil {
+				return err
+			}
+		}
+		return nil
+	})
+}
 
 // 发放
 func ReleaseProductOrder(tx *gorm.DB, id string) (err error) {
@@ -364,8 +425,8 @@ func ReleaseProductOrder(tx *gorm.DB, id string) (err error) {
 		return
 	}
 
-	if productOrder.CurrentState != types.ProductOrderStateVerified {
-		return fmt.Errorf("工单的状态错误，只能发放状态为%s的工单", types.ProductOrderStateVerified)
+	if productOrder.CurrentState != types.ProductOrderStateVerified && productOrder.CurrentState != types.ProductOrderStateDispatched {
+		return fmt.Errorf("工单的状态错误，只能发放状态为%s或%s的工单", types.ProductOrderStateVerified, types.ProductOrderStateDispatched)
 	}
 
 	var productionRhythms []*model.ProductionRhythm

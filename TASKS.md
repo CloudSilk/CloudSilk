@@ -33,12 +33,14 @@
 
 # 一、P0 — 核心流程缺失与线上 Bug（后端）
 
-### TASK-001 工单"签派"环节完全未实现
-- **位置**：`pkg/servers/product/logic/product_order.go:379`（`// TODO 签派`，此处无函数体）
-- **现状**：工单生命周期为 接单(ReceiveProductOrder) → 核验(VerifyProductOrder) → **签派【缺失】** → 发放(ReleaseProductOrder)，创建后直接跳过签派。
-- **应实现**：将工单/工序分配到具体产线、班组或人员的派工调度逻辑。
-- **验收标准**：新增 DispatchProductOrder 逻辑函数 + HTTP 接口 + 前端操作入口；工单状态机包含"已签派"状态；签派记录可追溯。
-- **工作量**：大
+### TASK-001 ✅ 工单"签派"环节已实现
+- **位置**：`pkg/servers/product/logic/product_order.go`、`pkg/servers/product/http/product_order.go`
+- **完成内容**：
+  - `DispatchProductOrder(tx, id, dispatchUserID, productionTeam)`：已核验 → 已签派，指派生产班组并写入 OperationTrace 签派轨迹
+  - `BatchDispatchProductOrder(ids, ...)`：批量签派，事务包裹
+  - HTTP `PUT /api/mom/product/productorder/dispatch?productionTeam=xxx`
+  - 发放前置条件兼容"已核验/已签派"两种状态
+  - 工单创建自动流转链插入签派步骤：接单 → 核验 → **签派** → 发放
 
 ### TASK-002 重复进站报工去重（以首次进站时间为准）
 - **位置**：`pkg/servers/webapi/logic/production.go:355`
