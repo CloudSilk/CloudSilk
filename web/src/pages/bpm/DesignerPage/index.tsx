@@ -4,8 +4,6 @@ import '@antv/x6-react-shape'
 import './index.less'
 import { CellCache, CollapseGroup, Process, ProcessCell } from '@swiftease/atali-graph'
 import { Menu, message } from 'antd'
-import SubMenu from 'antd/lib/menu/SubMenu'
-import { AppstoreOutlined, MailOutlined, SettingOutlined } from '@ant-design/icons'
 import { Code, CommonService } from '@swiftease/atali-pkg'
 import { createSchemaField } from '@/pages/form/field'
 import { newService } from '@swiftease/atali-form'
@@ -21,34 +19,39 @@ interface BPMDesignerPageState {
     processID: string
 }
 
-const menu = (
-    <Menu onClick={(e: any) => {
-        console.log('menu click ', e)
-    }} style={{ width: 256 }} mode="vertical">
-        <SubMenu key="sub1" icon={<MailOutlined />} title="Navigation One">
-            <Menu.ItemGroup title="Item 1">
-                <Menu.Item key="1">Option 1</Menu.Item>
-                <Menu.Item key="2">Option 2</Menu.Item>
-            </Menu.ItemGroup>
-            <Menu.ItemGroup title="Item 2">
-                <Menu.Item key="3">Option 3</Menu.Item>
-                <Menu.Item key="4">Option 4</Menu.Item>
-            </Menu.ItemGroup>
-        </SubMenu>
-        <SubMenu key="sub2" icon={<AppstoreOutlined />} title="Navigation Two">
-            <Menu.Item key="5">Option 5</Menu.Item>
-            <Menu.Item key="6">Option 6</Menu.Item>
-            <SubMenu key="sub3" title="Submenu">
-                <Menu.Item key="7">Option 7</Menu.Item>
-                <Menu.Item key="8">Option 8</Menu.Item>
-            </SubMenu>
-        </SubMenu>
-        <SubMenu key="sub4" icon={<SettingOutlined />} title="Navigation Three">
-            <Menu.Item key="9">Option 9</Menu.Item>
-            <Menu.Item key="10">Option 10</Menu.Item>
-            <Menu.Item key="11">Option 11</Menu.Item>
-            <Menu.Item key="12">Option 12</Menu.Item>
-        </SubMenu>
+// 画布操作菜单（撤销/重做/缩放/适应画布/清空）
+const createCanvasMenu = (graph: Graph) => (
+    <Menu onClick={(e) => {
+        switch (e.key) {
+            case 'undo':
+                (graph as any).history?.undo()
+                break
+            case 'redo':
+                (graph as any).history?.redo()
+                break
+            case 'zoomIn':
+                graph.zoom(0.1)
+                break
+            case 'zoomOut':
+                graph.zoom(-0.1)
+                break
+            case 'fit':
+                graph.zoomToFit({ padding: 40 })
+                break
+            case 'clear':
+                graph.clearCells()
+                message.success('画布已清空')
+                break
+        }
+    }} style={{ width: 200, height: '100%' }} mode="vertical">
+        <Menu.Item key="undo">撤销</Menu.Item>
+        <Menu.Item key="redo">重做</Menu.Item>
+        <Menu.Divider />
+        <Menu.Item key="zoomIn">放大</Menu.Item>
+        <Menu.Item key="zoomOut">缩小</Menu.Item>
+        <Menu.Item key="fit">适应画布</Menu.Item>
+        <Menu.Divider />
+        <Menu.Item key="clear" danger>清空画布</Menu.Item>
     </Menu>
 )
 
@@ -207,7 +210,7 @@ export default class BPMDesignerPage extends React.Component<any, BPMDesignerPag
     render() {
         return <DesignerPage
             createMenu={(graph) => {
-                return menu
+                return createCanvasMenu(graph)
             }}
             fileUrlPrefix={window.location.origin}
             system='BPM'

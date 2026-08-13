@@ -11,7 +11,7 @@ import { defaultService } from '@swiftease/atali-form'
 const Login: React.FC = () => {
   const { initialState, setInitialState } = useModel('@@initialState');
 
-  // const intl = useIntl();
+  const intl = useIntl();
 
   const fetchUserInfo = async () => {
     const userInfo = await initialState?.fetchUserInfo?.();
@@ -25,8 +25,7 @@ const Login: React.FC = () => {
   return <LoginComponent showLogo={true} logo={(process.env.WEB_BASE!==undefined && process.env.WEB_BASE!=="" ? process.env.WEB_BASE : "") +'/logo-v.svg'} name={"智能工厂"} login={(params) => {
     return defaultService.login(params)
   }} formatMessage={(id: string, defaultMessage: string) => {
-    return defaultMessage
-    // return intl.formatMessage({ id: id, defaultMessage: defaultMessage })
+    return intl.formatMessage({ id: id, defaultMessage: defaultMessage })
   }}
     formattedMessage={(id: string, defaultMessage: string) => {
       return <FormattedMessage

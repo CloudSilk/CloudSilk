@@ -41,7 +41,11 @@ export default defineConfig({
   layout: {
     title: '炘智科技'
   },
-  define: { 'process.env.WEB_BASE': process.env.WEB_BASE },
+  define: {
+    'process.env.WEB_BASE': process.env.WEB_BASE,
+    // 工作台默认表单ID（dashboard 未携带 formID 参数时的兜底，可用环境变量覆盖）
+    'process.env.DEFAULT_FORM_ID': process.env.DEFAULT_FORM_ID || '7877b188-2593-4c1c-bb1e-7ca7eb9dc0f5',
+  },
   proxy: proxy['test'],
   alias: {
   },

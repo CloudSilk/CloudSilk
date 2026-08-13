@@ -25,8 +25,24 @@ export default (props: any) => {
                                 '欢迎使用 ProChat ，我是你的专属机器人，这是我们的 Github：[ProChat](https://github.com/ant-design/pro-chat)'
                             }
                             request={async (messages) => {
-                                const mockedData: string = `这是一段模拟的对话数据。本次会话传入了${messages.length}条消息`;
-                                return new Response(mockedData);
+                                // 对接 OpenAI 兼容接口（usercenter AI 网关 /v1/chat/completions）
+                                const resp = await fetch((process.env.WEB_BASE ?? '') + '/v1/chat/completions', {
+                                    method: 'POST',
+                                    headers: {
+                                        'Content-Type': 'application/json',
+                                        'Authorization': `Bearer ${localStorage.getItem('token') ?? ''}`,
+                                    },
+                                    body: JSON.stringify({
+                                        model: 'default',
+                                        messages: messages.map((m: any) => ({ role: m.role, content: m.content })),
+                                        stream: false,
+                                    }),
+                                })
+                                if (!resp.ok) {
+                                    return new Response(`AI 服务请求失败（${resp.status}），请确认已部署 usercenter AI 网关。`)
+                                }
+                                const data = await resp.json()
+                                return new Response(data?.choices?.[0]?.message?.content ?? '（空响应）')
                             }}
                         /></div>
                 </Panel>

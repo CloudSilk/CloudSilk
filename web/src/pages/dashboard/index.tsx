@@ -10,7 +10,7 @@ export function Dashboard(props: any) {
     const query = queryString.parse(location.search);
     const formID = query?.formID;
     return (
-        <FormPreviewPage showPageContainer={false} title={''} showButton={false} createSchemaField={createSchemaField} formID={formID ?? "7877b188-2593-4c1c-bb1e-7ca7eb9dc0f5"}></FormPreviewPage>
+        <FormPreviewPage showPageContainer={false} title={''} showButton={false} createSchemaField={createSchemaField} formID={String(formID ?? process.env.DEFAULT_FORM_ID ?? '')}></FormPreviewPage>
     )
 }
 

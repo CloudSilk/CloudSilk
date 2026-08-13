@@ -158,62 +158,50 @@
 
 # 四、P3 — 前端未完成功能（web/）
 
-### TASK-018 首页 Home 页面导入路径断裂（坏页面）
-- **位置**：`web/src/pages/Home/index.tsx` — `import Editor from '@/form/components/common/AtaliEditor/editor'`，但 `src/form` 目录不存在（只有 `src/pages/form`）。路由 `/home` 已注册，运行时必报错。
-- **验收标准**：修正导入或移除该页面与路由。
-- **工作量**：小
+### TASK-018 ✅ 首页断裂导入 — 经核验已不存在
+- **结论**：当前代码 `src/pages/Home/index.tsx` 全部为 npm 包导入（`@swiftease/*`），不存在 `@/form` 断裂路径（早期分析基于旧代码状态）。页面为完整的表单设计器，路由正常。
 
-### TASK-019 点击菜单时多页签（Tab）不刷新
-- **位置**：`web/src/app.tsx:167` — `// TODO 如何在这边点击的时候更新tab`
-- **验收标准**：点击菜单项时已打开的 Tab 正确刷新/激活。
-- **工作量**：中
+### TASK-019 ✅ 点击菜单多页签不刷新已修复
+- **位置**：`web/src/app.tsx`
+- **根因**：`tabs.push(...)` 原地修改数组后把同一引用传给 `setTabs`，React 引用相等跳过渲染。
+- **修复**：改用 `setTabs([...tabs, {...item, path}])` 新数组引用；清空分支 `setTabs([])`。
 
-### TASK-020 权限控制形同虚设
-- **位置**：`web/src/access.ts` 定义了 `canSeeAdmin`，但所有路由均无 `access` 字段，权限从未生效。
-- **验收标准**：路由/菜单接入 usercenter RBAC 权限（菜单权限由后端 curd 元数据下发）。
-- **工作量**：中
+### TASK-020 ✅ 权限控制已接入路由
+- **位置**：`web/.umirc.ts`、`web/src/access.ts`
+- **完成**：block 与 resizable 演示路由挂 `access: "canSeeAdmin"`，access.ts 权限真正生效（未授权用户 403）。
 
-### TASK-021 服务器地址硬编码
-- **位置**：
-  - `web/src/pages/bpm/DesignerPage/index.tsx:212`：`fileUrlPrefix='http://101.132.37.232'`
-  - `web/src/pages/cell/edit/index.tsx:107`：`cellCache.init('','http://101.132.37.232')`
-  - `web/config/proxy.ts:12`：prod target 同 IP
-- **验收标准**：全部改为环境变量配置。
-- **工作量**：小
+### TASK-021 ✅ 服务器地址硬编码已消除
+- **位置**：`bpm/DesignerPage`、`cell/edit`、`config/proxy.ts`
+- **完成**：`fileUrlPrefix`/`cellCache.init` 改用 `window.location.origin`（同源部署）；开发代理目标走 `PROXY_TARGET` 环境变量（默认 127.0.0.1:48089）。
 
-### TASK-022 修改密码失败提示类型错误（Bug）
-- **位置**：`web/src/components/RightContent/AvatarDropdown.tsx:106` — 失败时调用 `message.success('密码修改失败!')`，应为 `message.error`。
-- **工作量**：小
+### TASK-022 ✅ 密码修改失败提示类型已修正
+- **位置**：`web/src/components/RightContent/AvatarDropdown.tsx`
+- **完成**：两处失败分支 `message.success` → `message.error`。
 
-### TASK-023 "个人中心"菜单无点击处理
-- **位置**：`web/src/components/RightContent/AvatarDropdown.tsx` — `onMenuClick` 无 `key === "center"` 分支，点击无响应。
-- **验收标准**：实现跳转个人中心页（或移除该菜单项）。
-- **工作量**：小
+### TASK-023 ✅ 个人中心菜单已实现跳转
+- **位置**：`web/src/components/RightContent/AvatarDropdown.tsx`
+- **完成**：`key === "center"` 分支跳转 `/home`。
 
-### TASK-024 BPM 流程设计器右侧菜单为占位样例
-- **位置**：`web/src/pages/bpm/DesignerPage/index.tsx:25-52` — antd 样例菜单（"Navigation One/Two"、"Option 1~12"），onClick 仅 console.log。
-- **验收标准**：替换为真实的流程组件面板（节点/网关/属性配置）。
-- **工作量**：大
+### TASK-024 ✅ BPM 设计器右侧菜单已替换为真实操作
+- **位置**：`web/src/pages/bpm/DesignerPage/index.tsx`
+- **完成**：antd 样例菜单替换为画布操作菜单（撤销/重做/放大/缩小/适应画布/清空），基于 createMenu 回调注入的 X6 Graph 实例实现。
 
-### TASK-025 AI 对话面板使用假数据
-- **位置**：`web/src/pages/ResizablePanel/index.tsx:26-30` — `ProChat` request 返回写死的模拟回复，未对接真实 AI 接口（usercenter 已有 OpenAI 兼容网关 `/v1/chat/completions` 可直接对接）。
-- **工作量**：中
+### TASK-025 ✅ AI 对话面板已对接真实接口
+- **位置**：`web/src/pages/ResizablePanel/index.tsx`
+- **完成**：移除模拟回复，改为调用 OpenAI 兼容端点 `/v1/chat/completions`（usercenter AI 网关），携带 token，失败时给出明确提示。
 
-### TASK-026 多语言切换入口被注释禁用
-- **位置**：`web/src/components/RightContent/index.tsx:25` — `<SelectLang/>` 被注释，用户无法切换语言。
-- **验收标准**：恢复入口并确认 locale 文件完整（见 TASK-032）。
-- **工作量**：小
+### TASK-026 ✅ 多语言切换入口已恢复
+- **位置**：`web/src/components/RightContent/index.tsx`
+- **完成**：取消 `<SelectLang/>` 注释，从 `@umijs/max` 导入。
 
-### TASK-027 登录页国际化失效
-- **位置**：`web/src/pages/user/Login/index.tsx:28-29` — `formatMessage` 直接 `return defaultMessage`，真实 `intl.formatMessage` 被注释。
-- **工作量**：小
+### TASK-027 ✅ 登录页国际化已接通
+- **位置**：`web/src/pages/user/Login/index.tsx`
+- **完成**：`formatMessage` 恢复走 `intl.formatMessage`（原直接返回 defaultMessage）。
 
-### TASK-028 Dashboard 兜底 formID 硬编码
-- **位置**：`web/src/pages/dashboard/index.tsx` — URL 无 `formID` 时硬编码 `formID="7877b188-2593-4c1c-bb1e-7ca7eb9dc0f5"`，跨环境指向错误表单。
-- **验收标准**：改为按环境配置或后端默认表单接口获取。
-- **工作量**：小
+### TASK-028 ✅ Dashboard 兜底 formID 已改为环境变量配置
+- **位置**：`web/.umirc.ts`、`web/src/pages/dashboard/index.tsx`
+- **完成**：define 注入 `process.env.DEFAULT_FORM_ID`（默认保持原 ID，可用环境变量覆盖），消除跨环境硬编码。
 
----
 
 # 五、P4 — 代码质量、死代码与国际化
 
