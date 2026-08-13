@@ -135,7 +135,6 @@ export default class BPMDesignerPage extends React.Component<any, BPMDesignerPag
         list?.cells.forEach((cell) => {
             const c = graph?.getCellById(cell.id ?? '')
             if (cell.name === "CollapseGroup") {
-                console.log(c)
             }
             steps.push(self.cellToStep(self, cell, c))
         })

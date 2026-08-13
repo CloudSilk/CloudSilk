@@ -55,13 +55,6 @@ export default defineConfig({
       redirect: '/dashboard',
     },
     {
-      name: 'Block',
-      path: '/block',
-      component: './block',
-      layout: false,
-      access: 'canSeeAdmin',
-    },
-    {
       name: '首页',
       path: '/home',
       component: './Home',

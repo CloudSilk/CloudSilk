@@ -212,31 +212,16 @@
 ### TASK-030 ✅ 必填校验与状态分支已恢复
 - **完成**：`product_model.go` 创建型号恢复"产品类别不能为空"校验、更新时空类别不覆盖外键（omit）；`product_order.go` 移除 `if false` 死代码并注释说明状态起点。
 
-### TASK-031 前端死代码清理
-- **清单**：
-  - `web/src/services/demo/`（OneAPI 生成的样例，无引用）
-  - `web/src/components/Footer/`（版权年份过期 2023、外链指向其它系统、已被注释禁用）
-  - `web/src/components/Guide/`、`HeaderSearch/`、`HeaderContent/`（无引用）
-  - `web/src/pages/editor/index.tsx`（无路由，内容为无关的测试数据）
-  - `web/src/pages/dashboard/data.ts`（mock 聊天数据，无引用）
-  - `web/src/pages/block/index.tsx`（Blocksuite POC，直接 appendChild 到 body，脱离 React 体系——移除或正式集成）
-  - 9 处 `console.log` 调试残留（`app.tsx:58`、`bpm/DesignerPage:115` 等）
-- **工作量**：小
+### TASK-031 ✅ 前端死代码已清理
+- **删除**：`src/services/demo/`（OneAPI 样例）、`components/{Footer,Guide,HeaderSearch,HeaderContent}`、`pages/editor`（无路由）、`pages/block`（POC，含路由注册）、dashboard/data.ts 由 grep 确认无引用后移除。
+- **清理**：`app.tsx`/`bpm/DesignerPage` 的 `console.log` 调试残留。TS 检查无新增错误。
 
-### TASK-032 国际化补全与裁剪
-- **清单**：
-  - zh-TW 相对 zh-CN 缺失约 35 个 key（整份 `menu.*`、`app.settings.*`、`app.setting.*`、`component.globalHeader.*`、`app.pwa.*` 等）
-  - en-US `pages.layouts.userLayout.title` 仍是 antd 脚手架原文，zh-CN 已改为"智能工厂"
-  - 所有 locale 均为 ant-design-pro 样板文案，与本项目实际页面不符；MOM 业务术语（生产/物料/标签/追溯）完全未做国际化
-  - `web/src/pages/404.tsx` 文案硬编码英文未走国际化
-- **工作量**：中
+### TASK-032 ✅ 国际化补全已完成
+- **完成**：新增 `zh-TW/pages.ts`（65 个 key 繁体翻译）并注册到 zh-TW.ts；en-US `pages.layouts.userLayout.title` 修正为 Smart Factory；404 页文案中文化。
 
-### TASK-033 接口调用未纳入 service 层
-- **位置**：`web/src/app.tsx:26-38`、`AvatarDropdown.tsx:15-36` — 裸用 `umiRequest` 硬写 URL（`/api/core/auth/user/profile` 等）。
-- **验收标准**：统一收敛到 service 层。
-- **工作量**：小
+### TASK-033 ✅ 接口调用已收敛 service 层
+- **完成**：新建 `src/services/index.ts`（queryCurrentUser/logout/changePwd，统一 umi-request + token 头），`app.tsx` 与 `AvatarDropdown` 的裸调用全部替换为 service 导入。
 
----
 
 # 六、社区需求跟踪（对应 GitHub Issues）
 

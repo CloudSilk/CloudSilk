@@ -1,8 +1,9 @@
 import React, { useCallback, useState } from 'react';
 import { LogoutOutlined, SettingOutlined, UserOutlined } from '@ant-design/icons';
 import { Avatar, Button, Form, Input, Menu, message, Modal, Spin } from 'antd';
-import { history, request, useModel } from '@umijs/max';
+import { history, useModel } from '@umijs/max';
 import HeaderDropdown from '../HeaderDropdown';
+import { changePwd, logout } from '@/services';
 import styles from './index.less';
 import type { MenuInfo } from 'rc-menu/lib/interface';
 import { getToken,  removeToken } from '@swiftease/atali-pkg';
@@ -12,28 +13,7 @@ export type GlobalHeaderRightProps = {
   menu?: boolean;
 };
 
-async function logout(options?: { [key: string]: any }) {
-  return request<Record<string, any>>('/api/core/auth/user/logout', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      authorization: 'Bearer ' + getToken(),
-    },
-    ...(options || {}),
-  });
-}
 
-async function changePwd(data: any, options?: { [key: string]: any }) {
-  return request<Record<string, any>>('/api/core/auth/user/changepwd', {
-    method: 'POST',
-    data: data,
-    headers: {
-      'Content-Type': 'application/json',
-      authorization: 'Bearer ' + getToken(),
-    },
-    ...(options || {}),
-  });
-}
 
 /**
  * 退出登录，并且将当前的 url 保存

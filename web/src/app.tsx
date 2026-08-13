@@ -5,6 +5,7 @@ import { history, Link, useModel } from '@umijs/max';
 import RightContent from '@/components/RightContent';
 import { GetDetailResponse, User, newResponseInterceptor, getToken, replaceTakeRedirect, Menu as AtaliMenu, RecursiveCall } from '@swiftease/atali-pkg';
 import umiRequest from 'umi-request';
+import { queryCurrentUser } from './services';
 import { MyIcon } from '@swiftease/atali-form';
 import { notification } from 'antd';
 import './app.less'
@@ -23,19 +24,7 @@ umiRequest.interceptors.response.use(newResponseInterceptor(() => {
     })
   }))
 
-async function queryCurrentUser(options?: { [key: string]: any }) {
-  return umiRequest<GetDetailResponse<User.UserProfile>>(
-    '/api/core/auth/user/profile',
-    {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-        authorization: 'Bearer ' + getToken(),
-      },
-      ...(options || {}),
-    },
-  );
-}
+
 
 /** 获取用户信息比较慢的时候会展示一个 loading */
 // export const initialStateConfig = {
@@ -55,7 +44,6 @@ export async function getInitialState(): Promise<AppState> {
   const fetchUserInfo = async () => {
     try {
       const currentUser = await queryCurrentUser();
-      console.log('currentUser: ', currentUser);
       return currentUser.data;
     } catch (error) {
       replaceTakeRedirect(history, loginPath, loginPath);
