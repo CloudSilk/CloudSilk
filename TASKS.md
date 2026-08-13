@@ -145,14 +145,14 @@
   - 路由：`/api/mom/scada/{device|tag}/*`
 - **后续增强**（不阻塞）：OPC UA 驱动、采集数据转发 MQTT/规则引擎、断线告警事件
 
-### TASK-017 生产监控大屏后端聚合接口
-- **现状**：MES 无实时监控数据聚合接口（工位看板接口已在 TASK-007 恢复，但厂级/产线级大屏无数据源）。
-- **缺失清单**：
-  - [ ] 产线级 OEE/节拍/产量达成率聚合接口
-  - [ ] 厂级生产进度、异常告警（复用 `production_station_alarm`）汇总接口
-  - [ ] WebSocket/SSE 实时推送
-- **前置依赖**：TASK-007
-- **工作量**：大
+### TASK-017 ✅ 生产监控大屏后端聚合接口已实现
+- **新增模块**：`pkg/servers/monitoring/` + `pkg/proto/monitoring.proto`
+- **完成内容**：
+  - **厂级总览** `GET /monitoring/overview`：产线/工站规模、进行中工单与数量进度（下单/开工/完工合计）、未处理与今日告警数、工站状态分布（待机/作业/故障）
+  - **产线监控** `GET /monitoring/line`：OEE 四指标（复用设备模块计算）、周期产量（节拍记录数）、工单达成率、在制数、未处理告警
+  - **告警列表** `GET /monitoring/alarms`：按状态过滤、时间倒序、限量
+  - **SSE 实时推送** `GET /monitoring/stream`：每 5 秒推送 overview 事件（text/event-stream，EventSource 兼容）
+- **后续增强**（不阻塞）：WebSocket 双向推送、产线级 OEE 加权平均、前端大屏页面
 
 ---
 

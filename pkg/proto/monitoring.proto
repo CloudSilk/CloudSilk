@@ -1,0 +1,96 @@
+syntax="proto3";
+
+package proto;
+option go_package = "./;proto";
+
+import "mom_common.proto";
+
+// 厂级总览
+message MonitoringOverviewResponse{
+    Code code=1;
+    string message=2;
+	//产线数
+	int32 productionLineCount=3;
+	//工站数
+	int32 productionStationCount=4;
+	//生产中工单数
+	int32 producingOrderCount=5;
+	//工单总数量合计
+	int64 totalOrderQTY=6;
+	//已完工数量合计
+	int64 totalFinishedQTY=7;
+	//已开工数量合计
+	int64 totalStartedQTY=8;
+	//未处理告警数
+	int32 unhandledAlarmCount=9;
+	//今日新增告警数
+	int32 todayAlarmCount=10;
+	//正常工站数
+	int32 idleStationCount=11;
+	//生产中工站数
+	int32 producingStationCount=12;
+	//故障工站数
+	int32 breakdownStationCount=13;
+}
+
+// 产线监控项
+message MonitoringLineResponse{
+    Code code=1;
+    string message=2;
+	//产线ID
+	string productionLineID=3;
+	string productionLineCode=4;
+	string productionLineDescription=5;
+	//工站数
+	int32 stationCount=6;
+	//OEE
+	double oee=7;
+	//时间稼动率
+	double availability=8;
+	//性能稼动率
+	double performance=9;
+	//良品率
+	double quality=10;
+	//周期产量（节拍记录数）
+	int64 outputCount=11;
+	//工单达成率（完工/下单）
+	double achievementRate=12;
+	//当前在制数
+	int64 wipCount=13;
+	//未处理告警数
+	int32 unhandledAlarmCount=14;
+}
+
+// 告警项
+message MonitoringAlarmInfo{
+	//ID
+	string id=1;
+	//报警编号
+	string alarmNo=2;
+	//报警信息
+	string alarmMessage=3;
+	//工站代号
+	string productionStationCode=4;
+	//状态
+	string currentState=5;
+	//报警时间
+	string createTime=6;
+	//处理方式
+	string handleMethod=7;
+}
+
+message QueryMonitoringAlarmRequest{
+	//状态（为空取全部）
+    // @inject_tag: uri:"currentState" form:"currentState"
+    string currentState=1;
+	//数量上限
+    // @inject_tag: uri:"limit" form:"limit"
+    int32 limit=2;
+}
+
+message QueryMonitoringAlarmResponse{
+    Code code=1;
+    string message=2;
+    repeated MonitoringAlarmInfo data=3;
+    int64 total=4;
+}

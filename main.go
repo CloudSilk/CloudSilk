@@ -16,6 +16,7 @@ import (
 	"github.com/CloudSilk/CloudSilk/pkg/servers/aps"
 	"github.com/CloudSilk/CloudSilk/pkg/servers/equipment"
 	"github.com/CloudSilk/CloudSilk/pkg/servers/product"
+	"github.com/CloudSilk/CloudSilk/pkg/servers/monitoring"
 	"github.com/CloudSilk/CloudSilk/pkg/servers/quality"
 	"github.com/CloudSilk/CloudSilk/pkg/servers/scada"
 	"github.com/CloudSilk/CloudSilk/pkg/servers/product_base"
@@ -123,6 +124,7 @@ func startMom(r *gin.Engine) {
 		&equipment.Server{},
 		&aps.Server{},
 		&scada.Server{},
+		&monitoring.Server{},
 		&system.Server{},
 		&material.Server{},
 		&trace.Server{},
