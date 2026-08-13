@@ -66,20 +66,13 @@
 - **位置**：`pkg/servers/webapi/logic/quality.go`（重写）、`pkg/servers/webapi/http/quality.go`（新增）
 - **完成内容**：`GetTestProjectWithParameter` 按当前直连 DB 风格重写——托盘号/序列号定位产品 → 定位测试工序（工位代号）→ 加载工单特性 → 按特性表达式匹配测试步骤 → 汇总测试项目与输入/输出参数。路由 `POST /api/mom/webapi/quality/gettestprojectwithparameter` 已注册。
 
-### TASK-007 工位生产看板接口整链路被注释
-- **位置**：
-  - 逻辑层：`pkg/servers/webapi/logic/production.go:591-723`（`GetProductionStationExhibition` 整段注释）
-  - HTTP 层：`pkg/servers/webapi/http/production.go:93-113`（handler 注释）
-  - 路由层：`pkg/servers/webapi/http/production.go:440`（`getproductionstationexhibition` 路由注释）
-- **应实现**：给工位看板返回当前工单号、销售单号、产品型号、开工/完工数量、当前工序、SOP 链接、在制/已制数量、工单 BOM 等聚合数据。
-- **验收标准**：三处恢复并保证数据正确，前端看板可展示。
-- **工作量**：中
+### TASK-007 ✅ 工位生产看板接口已恢复
+- **位置**：`pkg/servers/webapi/logic/production.go`、`pkg/servers/webapi/http/production.go`
+- **完成内容**：`GetProductionStationExhibition` 按当前直连 DB 风格重写——工站 → 归属工序 → 产线当前型号的在制工艺路线 → 工单（含型号/类别/BOM）→ SOP 链接 → 在制/已制统计 → 返回聚合 map。路由 `GET /api/mom/webapi/production/getproductionstationexhibition` 已恢复。
 
-### TASK-008 测试记录上报接口被注释
-- **位置**：`pkg/servers/webapi/http/production.go:164-193`（handler）、`:442`（`createproducttestrecord` 路由）
-- **现状**：底层 `ProductTestRecordClient.Add` provider 已存在，仅缺 webapi 编排层。
-- **验收标准**：恢复 handler + 路由，测试设备上报数据可落库。
-- **工作量**：小
+### TASK-008 ✅ 测试记录上报接口已恢复
+- **位置**：`pkg/servers/webapi/logic/quality.go`、`pkg/servers/webapi/http/production.go`
+- **完成内容**：`CreateProductTestRecord` 编排层实现——序列号定位产品、工位代号定位工站与测试工序、兼容两种时间格式并计算耗时，落库 `ProductTestRecord`。路由 `POST /api/mom/webapi/production/createproducttestrecord` 已恢复。
 
 ### TASK-009 工单核验失败时任务队列执行记录未写入
 - **位置**：`pkg/servers/product/logic/product_order.go:366-372`（`TaskQueueExecution` 创建逻辑被注释）

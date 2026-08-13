@@ -1,8 +1,10 @@
 package logic
 
 import (
+	"database/sql"
 	"fmt"
 	"strings"
+	"time"
 
 	"github.com/CloudSilk/CloudSilk/pkg/model"
 	"github.com/CloudSilk/CloudSilk/pkg/proto"
@@ -141,4 +143,74 @@ func GetTestProjectWithParameter(req *proto.GetTestProjectWithParameterRequest) 
 	}
 
 	return response, nil
+}
+
+// CreateProductTestRecord 创建产品测试记录（测试设备上报）
+func CreateProductTestRecord(req *proto.CreateProductTestRecordRequest) error {
+	if req.ProductSerialNo == "" {
+		return fmt.Errorf("ProductSerialNo不能为空")
+	}
+	if req.ProductionStation == "" {
+		return fmt.Errorf("ProductionStation不能为空")
+	}
+
+	productInfo := &model.ProductInfo{}
+	if err := model.DB.DB().First(productInfo, "`product_serial_no` = ?", req.ProductSerialNo).Error; err == gorm.ErrRecordNotFound {
+		return fmt.Errorf("无效的产品序列号")
+	} else if err != nil {
+		return err
+	}
+
+	productionStation := &model.ProductionStation{}
+	if err := model.DB.DB().First(productionStation, "`code` = ?", req.ProductionStation).Error; err == gorm.ErrRecordNotFound {
+		return fmt.Errorf("无效的测试工站代号")
+	} else if err != nil {
+		return err
+	}
+
+	//测试工序以测试工位代号作为工序代号（与 GetTestProjectWithParameter 保持一致）
+	productionProcess := &model.ProductionProcess{}
+	if err := model.DB.DB().First(productionProcess, "`code` = ?", req.ProductionStation).Error; err == gorm.ErrRecordNotFound {
+		return fmt.Errorf("未能找到对应的测试工序")
+	} else if err != nil {
+		return err
+	}
+
+	testStartTime, err := parseTestTime(req.TestStartTime)
+	if err != nil {
+		return fmt.Errorf("TestStartTime格式无效：%w", err)
+	}
+	testEndTime, err := parseTestTime(req.TestEndTime)
+	if err != nil {
+		return fmt.Errorf("TestEndTime格式无效：%w", err)
+	}
+	var duration int32
+	if testEndTime.After(testStartTime) {
+		duration = int32(testEndTime.Sub(testStartTime).Seconds())
+	}
+
+	return model.DB.DB().Create(&model.ProductTestRecord{
+		ProductionStationID: productionStation.ID,
+		ProductionProcessID: productionProcess.ID,
+		ProductInfoID:       productInfo.ID,
+		TestStartTime:       sql.NullTime{Time: testStartTime, Valid: true},
+		TestEndTime:         sql.NullTime{Time: testEndTime, Valid: true},
+		Duration:            duration,
+		TestData:            req.TestData,
+		IsQualified:         req.IsQualified,
+	}).Error
+}
+
+// parseTestTime 兼容 RFC3339 与 "2006-01-02 15:04:05" 两种格式
+func parseTestTime(value string) (time.Time, error) {
+	if value == "" {
+		return time.Time{}, nil
+	}
+	if t, err := time.Parse(time.RFC3339, value); err == nil {
+		return t, nil
+	}
+	if t, err := time.Parse("2006-01-02 15:04:05", value); err == nil {
+		return t, nil
+	}
+	return time.Time{}, fmt.Errorf("无法解析时间字符串：%s", value)
 }

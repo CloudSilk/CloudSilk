@@ -886,6 +886,147 @@ func GetProductionProcessStepWithParameter(req *proto.GetProductionProcessStepWi
 	}, nil
 }
 
+// GetProductionStationExhibition 获取工站的当前生产工单工序展示信息（工位看板）
+func GetProductionStationExhibition(productionStationCode string) (map[string]interface{}, error) {
+	if productionStationCode == "" {
+		return nil, fmt.Errorf("ProductionStation不能为空")
+	}
+
+	productionStation := &model.ProductionStation{}
+	if err := model.DB.DB().Preload("ProductionLine").First(productionStation, "`code` = ?", productionStationCode).Error; err == gorm.ErrRecordNotFound {
+		return nil, fmt.Errorf("无效的工站代号")
+	} else if err != nil {
+		return nil, err
+	}
+
+	if productionStation.ProductionLine == nil {
+		return nil, fmt.Errorf("读取工站所属产线失败")
+	}
+	if productionStation.ProductionLine.ProductModelID == "" {
+		return nil, fmt.Errorf("读取失败，工站所属的产线未设置当前产品型号")
+	}
+
+	//读取工位的归属工序（工站可用工序中排序最前的一道）
+	productionProcess := &model.ProductionProcess{}
+	if err := model.DB.DB().
+		Joins("JOIN production_process_available_stations ON production_processes.id=production_process_available_stations.production_process_id").
+		Where("production_process_available_stations.production_station_id = ? AND production_processes.production_line_id = ? AND production_processes.enable = ?",
+			productionStation.ID, productionStation.ProductionLineID, true).
+		Order("production_processes.sort_index").First(productionProcess).Error; err == gorm.ErrRecordNotFound {
+		return nil, fmt.Errorf("读取工位的归属工序失败")
+	} else if err != nil {
+		return nil, err
+	}
+
+	//读取该工序最新的工艺路线，取产线当前型号、仍在制的产品
+	targetStates := []string{types.ProductProcessRouteStateWaitProcess, types.ProductProcessRouteStateProcessing, types.ProductProcessRouteStateReworking, types.ProductProcessRouteStateChecking}
+	productProcessRoutes := []*model.ProductProcessRoute{}
+	if err := model.DB.DB().Preload("ProductInfo").Preload("ProductInfo.ProductOrder").
+		Where("`current_process_id` = ? AND `current_state` in ?", productionProcess.ID, targetStates).
+		Order("create_time desc").Find(&productProcessRoutes).Error; err != nil {
+		return nil, err
+	}
+
+	var productProcessRoute *model.ProductProcessRoute
+	for _, v := range productProcessRoutes {
+		if v.ProductInfo != nil && v.ProductInfo.ProductOrder != nil && v.ProductInfo.ProductOrder.ProductModelID != nil &&
+			*v.ProductInfo.ProductOrder.ProductModelID == productionStation.ProductionLine.ProductModelID {
+			productProcessRoute = v
+			break
+		}
+	}
+	if productProcessRoute == nil {
+		return nil, fmt.Errorf("读取工序最后的工艺路线失败")
+	}
+
+	productOrder := &model.ProductOrder{}
+	if err := model.DB.DB().Preload("ProductModel").Preload("ProductModel.ProductCategory").Preload("ProductOrderBoms").
+		First(productOrder, "`id` = ?", productProcessRoute.ProductInfo.ProductOrderID).Error; err == gorm.ErrRecordNotFound {
+		return nil, fmt.Errorf("读取当前工单数据失败")
+	} else if err != nil {
+		return nil, err
+	}
+
+	//工序SOP（可选）
+	sopLink := ""
+	productionProcessSop := &model.ProductionProcessSop{}
+	if err := model.DB.DB().Where("`production_process_id` = ? AND `product_model_id` = ?", productionProcess.ID, productOrder.ProductModelID).First(productionProcessSop).Error; err == nil {
+		sopLink = productionProcessSop.FileLink
+	}
+
+	//该工单在此工序的在制/已制数量（同一产品取最新一条路线）
+	orderRoutes := []*model.ProductProcessRoute{}
+	if err := model.DB.DB().Preload("ProductInfo").
+		Where("`current_process_id` = ? AND `product_info_id` in (?)",
+			productionProcess.ID,
+			model.DB.DB().Model(&model.ProductInfo{}).Select("id").Where("`product_order_id` = ?", productOrder.ID)).Find(&orderRoutes).Error; err != nil {
+		return nil, err
+	}
+	productProcessRoutesMap := map[string]*model.ProductProcessRoute{}
+	for _, v := range orderRoutes {
+		if _, ok := productProcessRoutesMap[v.ProductInfoID]; !ok {
+			productProcessRoutesMap[v.ProductInfoID] = v
+		} else if v.CreateTime.After(productProcessRoutesMap[v.ProductInfoID].CreateTime) {
+			productProcessRoutesMap[v.ProductInfoID] = v
+		}
+	}
+	var countOfProcessing, countOfProcessed int32
+	for _, v := range productProcessRoutesMap {
+		switch v.CurrentState {
+		case types.ProductProcessRouteStateWaitProcess, types.ProductProcessRouteStateProcessing, types.ProductProcessRouteStateReworking, types.ProductProcessRouteStateChecking:
+			countOfProcessing++
+		case types.ProductProcessRouteStateProcessed:
+			countOfProcessed++
+		}
+	}
+
+	//工单BOM（本工序相关）
+	productOrderBoms := []map[string]interface{}{}
+	for _, v := range productOrder.ProductOrderBoms {
+		if v.ProductionProcess == "" || v.ProductionProcess == productionProcess.Code || v.ProductionProcess == productionProcess.Identifier {
+			productOrderBoms = append(productOrderBoms, map[string]interface{}{
+				"itemNo":              v.ItemNo,
+				"materialNo":          v.MaterialNo,
+				"materialDescription": v.MaterialDescription,
+				"pieceQTY":            v.PieceQTY,
+				"requireQTY":          v.RequireQTY,
+				"unit":                v.Unit,
+				"remark":              v.Remark,
+			})
+		}
+	}
+
+	productCategoryCode := ""
+	if productOrder.ProductModel != nil && productOrder.ProductModel.ProductCategory != nil {
+		productCategoryCode = productOrder.ProductModel.ProductCategory.Code
+	}
+
+	return map[string]interface{}{
+		"productOrderNo":      productOrder.ProductOrderNo,
+		"salesOrderNo":        productOrder.SalesOrderNo,
+		"itemNo":              productOrder.ItemNo,
+		"orderTime":           productOrder.OrderTime,
+		"orderQTY":            productOrder.OrderQTY,
+		"productCategory":     productCategoryCode,
+		"productModel":        productOrder.ProductModel.Code,
+		"materialNo":          productOrder.ProductModel.MaterialNo,
+		"materialDescription": productOrder.ProductModel.MaterialDescription,
+		"currentState":        productOrder.CurrentState,
+		"propertyBrief":       productOrder.PropertyBrief,
+		"startedQTY":          productOrder.StartedQTY,
+		"finishedQTY":         productOrder.FinishedQTY,
+		"remark":              productOrder.Remark,
+		"productOrderBoms":    productOrderBoms,
+		"productionProcess": map[string]interface{}{
+			"code":              productionProcess.Code,
+			"description":       productionProcess.Description,
+			"sopLink":           sopLink,
+			"countOfProcessing": countOfProcessing,
+			"countOfProcessed":  countOfProcessed,
+		},
+	}, nil
+}
+
 // 创建产品过程记录
 func CreateProductProcessRecord(req *proto.CreateProductProcessRecordRequest) error {
 	if req.ProductionStation == "" {

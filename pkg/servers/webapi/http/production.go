@@ -94,35 +94,36 @@ func EnterProductionStation(c *gin.Context) {
 
 // GetProductionStationExhibition godoc
 // @Summary 获取工站的当前生产工单工序信息
-// @Description 获取工站的当前生产工单工序信息
+// @Description 获取工站的当前生产工单工序信息（工位看板）
 // @Tags WebAPI
 // @Accept  json
 // @Produce  json
 // @Param productionStation query string true "生产工站代号"
 // @Param authorization header string true "jwt token"
-// @Success 200 {object} proto.GetProductAttributeValuateRuleDetailResponse
+// @Success 200 {object} map[string]interface{}
 // @Router /api/mom/webapi/production/getproductionstationexhibition [get]
-// func GetProductionStationExhibition(c *gin.Context) {
-// 	resp := &proto.GetProductionStationExhibitionResponse{
-// 		Code: types.ServiceResponseCodeSuccess,
-// 	}
-// 	productionStationCode := c.Query("productionStation")
-// 	if productionStationCode == "" {
-// 		resp.Code = types.ServiceResponseCodeFailure
-// 		c.JSON(http.StatusOK, resp)
-// 		return
-// 	}
-// 	var err error
+func GetProductionStationExhibition(c *gin.Context) {
+	transID := middleware.GetTransID(c)
+	resp := map[string]interface{}{"code": 0}
+	productionStationCode := c.Query("productionStation")
+	if productionStationCode == "" {
+		resp["code"] = 1
+		resp["message"] = "productionStation不能为空"
+		c.JSON(http.StatusOK, resp)
+		return
+	}
 
-// 	data, err := logic.GetProductionStationExhibition(productionStationCode)
-// 	if err != nil {
-// 		resp.Code = types.ServiceResponseCodeFailure
-// 		resp.Message = err.Error()
-// 	} else {
-// 		resp.Data = data
-// 	}
-// 	c.JSON(http.StatusOK, resp)
-// }
+	data, err := logic.GetProductionStationExhibition(productionStationCode)
+	if err != nil {
+		resp["code"] = 1
+		resp["message"] = err.Error()
+		log.Warnf(context.Background(), "TransID:%s,获取工站展示信息失败:%v", transID, err)
+	} else {
+		resp["data"] = data
+	}
+
+	c.JSON(http.StatusOK, resp)
+}
 
 // ExitProductionStation godoc
 // @Summary 请求出站接口
@@ -165,7 +166,7 @@ func ExitProductionStation(c *gin.Context) {
 
 // CreateProductTestRecord godoc
 // @Summary 创建产品测试记录
-// @Description 创建产品测试记录
+// @Description 创建产品测试记录（测试设备上报）
 // @Tags WebAPI
 // @Accept  json
 // @Produce  json
@@ -173,36 +174,33 @@ func ExitProductionStation(c *gin.Context) {
 // @Param account body proto.CreateProductTestRecordRequest true "CreateProductTestRecordRequest"
 // @Success 200 {object} proto.CommonResponse
 // @Router /api/mom/webapi/production/createproducttestrecord [post]
-// func CreateProductTestRecord(c *gin.Context) {
-// 	transID := middleware.GetTransID(c)
-// 	req := &proto.CreateProductTestRecordRequest{}
-// 	resp := &proto.CommonResponse{Code: 200}
+func CreateProductTestRecord(c *gin.Context) {
+	transID := middleware.GetTransID(c)
+	req := &proto.CreateProductTestRecordRequest{}
+	resp := &proto.CommonResponse{Code: types.ServiceResponseCodeSuccess}
 
-// 	if err := c.BindJSON(req); err != nil {
-// 		resp.Code = 400
-// 		resp.Message = err.Error()
-// 		c.JSON(http.StatusOK, resp)
-// 		log.Warnf(context.Background(), "TransID:%s,创建产品测试记录参数无效:%v", transID, err)
-// 		return
-// 	}
+	if err := c.BindJSON(req); err != nil {
+		resp.Code = types.ServiceResponseCodeFailure
+		resp.Message = err.Error()
+		c.JSON(http.StatusOK, resp)
+		log.Warnf(context.Background(), "TransID:%s,创建产品测试记录参数无效:%v", transID, err)
+		return
+	}
 
-// 	if err := middleware.Validate.Struct(req); err != nil {
-// 		resp.Code = 400
-// 		resp.Message = err.Error()
-// 		c.JSON(http.StatusOK, resp)
-// 		return
-// 	}
+	if err := middleware.Validate.Struct(req); err != nil {
+		resp.Code = types.ServiceResponseCodeFailure
+		resp.Message = err.Error()
+		c.JSON(http.StatusOK, resp)
+		return
+	}
 
-// 	resp, err := logic.CreateProductTestRecord(req)
-// 	if err != nil {
-// 		resp.Code = 400
-// 		resp.Message = err.Error()
-// 		c.JSON(http.StatusOK, resp)
-// 		return
-// 	}
+	if err := logic.CreateProductTestRecord(req); err != nil {
+		resp.Code = types.ServiceResponseCodeFailure
+		resp.Message = err.Error()
+	}
 
-// 	c.JSON(http.StatusOK, resp)
-// }
+	c.JSON(http.StatusOK, resp)
+}
 
 // CheckProductProcessRouteFailure godoc
 // @Summary 设置失败后续处理接口
@@ -449,9 +447,9 @@ func RegisterProductionRouter(r *gin.Engine) {
 
 	g.POST("onlineproductinfo", OnlineProductInfo)
 	g.POST("enterproductionstation", EnterProductionStation)
-	// g.GET("getproductionstationexhibition", GetProductionStationExhibition)
+	g.GET("getproductionstationexhibition", GetProductionStationExhibition)
 	g.POST("exitproductionstation", ExitProductionStation)
-	// g.POST("createproducttestrecord", CreateProductTestRecord)
+	g.POST("createproducttestrecord", CreateProductTestRecord)
 	g.POST("checkproductprocessroutefailure", CheckProductProcessRouteFailure)
 	g.POST("getproductionprocessstepwithparameter", GetProductionProcessStepWithParameter)
 	g.POST("createproductprocessrecord", CreateProductProcessRecord)
