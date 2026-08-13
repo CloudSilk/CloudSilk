@@ -17,6 +17,46 @@ import (
 )
 
 // 设定产品信息状态为上线装配
+// resolveProductProcessRoute 统一的工艺路线解析策略，兼容两种产线模式：
+//  1. 直接创建模式：产线为产品预先建立 ProductProcessRoute，直接返回待加工路线；
+//  2. 工单工艺动态创建模式：取不到待加工路线时，按 ProductOrderProcess 的顺序动态生成下一条路线。
+//
+// afterRouteIndex 为 -1 时表示从头解析，否则解析该路线索引之后的下一条；
+// lastProcessID 用于动态创建时记录上一道工序，order 为待加工路线的排序字段。
+func resolveProductProcessRoute(tx *gorm.DB, productInfo *model.ProductInfo, afterRouteIndex int32, lastProcessID *string, order string) (*model.ProductProcessRoute, error) {
+	productProcessRoute := &model.ProductProcessRoute{}
+	if err := tx.Preload("CurrentProcess").
+		Where("`product_info_id` = ? AND `route_index` > ? AND `current_state` = ?", productInfo.ID, afterRouteIndex, types.ProductProcessRouteStateWaitProcess).
+		Order(order).First(productProcessRoute).Error; err != nil && err != gorm.ErrRecordNotFound {
+		return nil, err
+	}
+
+	if productProcessRoute.ID == "" {
+		productOrderProcess := &model.ProductOrderProcess{}
+		if err := tx.Preload("ProductionProcess").
+			Where("`product_order_id` = ? AND `enable` = ? AND `sort_index` > ?", productInfo.ProductOrderID, true, afterRouteIndex).
+			Order("sort_index").First(productOrderProcess).Error; err != nil && err != gorm.ErrRecordNotFound {
+			return nil, err
+		}
+
+		if productOrderProcess.ID != "" {
+			productProcessRoute = &model.ProductProcessRoute{
+				LastProcessID:    lastProcessID,
+				CurrentProcessID: productOrderProcess.ProductionProcessID,
+				CurrentProcess:   productOrderProcess.ProductionProcess,
+				CurrentState:     types.ProductProcessRouteStateWaitProcess,
+				RouteIndex:       productOrderProcess.SortIndex,
+				ProductInfoID:    productInfo.ID,
+			}
+			if err := tx.Create(productProcessRoute).Error; err != nil {
+				return nil, err
+			}
+		}
+	}
+
+	return productProcessRoute, nil
+}
+
 func OnlineProductInfo(req *proto.OnlineProductInfoRequest) (code int32, err error) {
 	if req.ProductionLine == "" {
 		return 40000, fmt.Errorf("ProductionLine不能为空")
@@ -64,36 +104,15 @@ func OnlineProductInfo(req *proto.OnlineProductInfoRequest) (code int32, err err
 			return fmt.Errorf("此产品的隶属工单与当前工单不匹配")
 		}
 
-		//TODO: 兼容，部分产线是直接创建产品工艺路线，部分是根据工单工艺动态创建
-		productProcessRoute := &model.ProductProcessRoute{}
-		if err := tx.Preload("CurrentProcess").Where(model.ProductProcessRoute{ProductInfoID: productInfo.ID, CurrentState: types.ProductProcessRouteStateWaitProcess}).Order("route_index").First(productProcessRoute).Error; err != nil && err != gorm.ErrRecordNotFound {
+		//统一的工艺路线解析策略（兼容两种产线模式，见 resolveProductProcessRoute）
+		productProcessRoute, err := resolveProductProcessRoute(tx, productInfo, -1, nil, "route_index")
+		if err != nil {
 			code = 50000
 			return err
 		}
-
 		if productProcessRoute.ID == "" {
-			productOrderProcess := &model.ProductOrderProcess{}
-			if err := tx.Preload("ProductionProcess").Where(model.ProductOrderProcess{ProductOrderID: productInfo.ProductOrderID, Enable: true}).Order("sort_index").First(productOrderProcess).Error; err == gorm.ErrRecordNotFound {
-				code = 10004
-				return fmt.Errorf("上线失败，此工单缺少工艺路线")
-			} else if err != nil {
-				code = 50000
-				return err
-			}
-
-			productProcessRoute = &model.ProductProcessRoute{
-				LastProcessID:    nil,
-				CurrentProcessID: productOrderProcess.ProductionProcessID,
-				CurrentProcess:   productOrderProcess.ProductionProcess,
-				CurrentState:     types.ProductProcessRouteStateWaitProcess,
-				RouteIndex:       productOrderProcess.SortIndex,
-				ProductInfoID:    productInfo.ID,
-			}
-
-			if err := tx.Create(productProcessRoute).Error; err != nil {
-				code = 50000
-				return err
-			}
+			code = 10004
+			return fmt.Errorf("上线失败，此工单缺少工艺路线")
 		}
 
 		productProcessRoute.WorkIndex = 1
@@ -1288,32 +1307,10 @@ func ExitProductionStation(req *proto.ExitProductionStationRequest) error {
 		} else {
 			lastProductProcessRoute.CurrentState = types.ProductProcessRouteStateProcessed
 
-			//切换到下个工艺
-			nextProductProcessRoute := &model.ProductProcessRoute{}
-			if err := tx.Preload("CurrentProcess").Where("`product_info_id` = ? AND `route_index` > ? AND `current_state` = ?", productInfo.ID, lastProductProcessRoute.RouteIndex, types.ProductProcessRouteStateWaitProcess).Order("work_index").First(nextProductProcessRoute).Error; err != nil && err != gorm.ErrRecordNotFound {
+			//切换到下个工艺（统一解析策略，兼容直接创建/动态创建两种产线模式）
+			nextProductProcessRoute, err := resolveProductProcessRoute(tx, productInfo, lastProductProcessRoute.RouteIndex, &lastProductProcessRoute.CurrentProcessID, "work_index")
+			if err != nil {
 				return err
-			}
-
-			//兼容，部分产线是直接创建产品工艺路线，部分是根据工单工艺动态创建
-			if nextProductProcessRoute.ID == "" {
-				productOrderProcess := &model.ProductOrderProcess{}
-				if err := tx.Preload("ProductionProcess").Where("`product_order_id` = ? AND `enable` = ? AND `sort_index` > ?", productInfo.ProductOrderID, true, lastProductProcessRoute.RouteIndex).Order("sort_index").First(productOrderProcess).Error; err != nil && err != gorm.ErrRecordNotFound {
-					return err
-				}
-
-				if productOrderProcess.ID != "" {
-					nextProductProcessRoute = &model.ProductProcessRoute{
-						LastProcessID:    &lastProductProcessRoute.CurrentProcessID,
-						CurrentProcessID: productOrderProcess.ProductionProcessID,
-						CurrentProcess:   productOrderProcess.ProductionProcess,
-						CurrentState:     types.ProductProcessRouteStateWaitProcess,
-						RouteIndex:       productOrderProcess.SortIndex,
-						ProductInfoID:    productInfo.ID,
-					}
-					if err := tx.Create(nextProductProcessRoute).Error; err != nil {
-						return err
-					}
-				}
 			}
 
 			if nextProductProcessRoute.ID != "" {

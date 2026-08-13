@@ -78,11 +78,9 @@
 - **位置**：`pkg/servers/product/logic/product_order.go`
 - **完成内容**：核验失败时用独立连接写入 `TaskQueueExecution`（Success=false、失败原因、数据跟踪索引），不随事务回滚丢失。
 
-### TASK-010 产线工艺路线两种创建模式的兼容仍是临时方案
-- **位置**：`pkg/servers/webapi/logic/production.go:62`
-- **现状**：`//TODO: 兼容，部分产线是直接创建产品工艺路线，部分是根据工单工艺动态创建`。当前先查 `ProductProcessRoute`，查不到再从 `ProductOrderProcess` 动态创建首道工序路线。
-- **验收标准**：抽象统一的工艺路线解析策略（按产线配置选择模式），补充两种模式的单测。
-- **工作量**：中
+### TASK-010 ✅ 工艺路线统一解析策略已完成
+- **位置**：`pkg/servers/webapi/logic/production.go`
+- **完成内容**：抽取 `resolveProductProcessRoute(tx, productInfo, afterRouteIndex, lastProcessID, order)` 统一策略函数，上线装配与工序流转两处复用；兼容"直接创建模式"（预建路线直接返回）与"工单工艺动态创建模式"（按 ProductOrderProcess 顺序生成）。新增 `production_test.go` 覆盖两种模式（内存 SQLite）。
 
 ### TASK-011 工序步骤匹配算法存在裸 TODO
 - **位置**：`pkg/servers/webapi/logic/production.go:842`（`//TODO` 无说明）
