@@ -6,7 +6,7 @@ RUN yarn install --frozen-lockfile --network-timeout 600000
 COPY web/ .
 RUN WEB_BASE=/web yarn build
 
-FROM registry.cn-shanghai.aliyuncs.com/swtsoft/golang-build:1.20.0-alpine3.17 as builder
+FROM golang:1.23-alpine AS builder
 
 ENV GO111MODULE=on
 ENV GOPROXY=https://goproxy.cn,direct
@@ -20,6 +20,9 @@ FROM registry.cn-shanghai.aliyuncs.com/swtsoft/golang-run:alpine-3.16.0
 LABEL MAINTAINER="guoxf@swtsoft.com"
 
 ENV DUBBO_GO_CONFIG_PATH="./dubbogo.yaml"
+# dubbogo v3.1 的 dubbo3 描述符注册与既有 pb 存在同名文件重复注册（内容一致，无实际冲突），
+# 按 protobuf 官方 FAQ 降级为警告（https://protobuf.dev/reference/go/faq#namespace-conflict）
+ENV GOLANG_PROTOBUF_REGISTRATION_CONFLICT=warn
 
 WORKDIR /workspace
 COPY --from=builder /workspace/CloudSilk ./
