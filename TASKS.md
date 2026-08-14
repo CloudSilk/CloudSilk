@@ -255,3 +255,18 @@
 | P4（TASK-029~033） | 5 | ✅ 全部完成（清理/国际化/service 收敛） |
 
 **质量证据**：`go build ./...` 通过；4 个测试包全绿（模型匹配、SPC/AQL、排程算法、工艺路线策略）；前端 tsc 无新增错误；全部提交已推送至 GitHub main（每个任务独立提交）。
+
+---
+
+# 八、v0.2.0 后续提升五步（2026-08-14 全部完成）
+
+| 步骤 | 内容 | 提交 |
+|------|------|------|
+| ① Swagger + CI + TS 清零 | 文档重生成（710 路径/70 新端点）；GitHub Actions 双 job（Go build+test / tsc）；前端存量 TS 错误 32→0；部署文档补 token.key 安全提示 | 3f3ff26 |
+| ② 新模块前端页面 | /monitoring 监控大屏（指标卡+告警实时表）、/aps 排程页（生成表单+甘特图+下发）；docs/NEW_MODULES.md 低代码接入指南 | 7f1c839 |
+| ③ 核心流程集成测试 | 新增 12 用例（签派状态机 4 / WMS 拣货全链路 4 / 检验完成判定 4），共享 testutil 内存库基建；**暴露并修复 2 个生产缺陷**（拣货完成/取消的库存定位错误、事务内跨连接写死锁） | e76a8ee |
+| ④ Release v0.2.0 | tag + Release Notes（六大新模块、前端、MES 补全、质量保障全记录） | [v0.2.0](https://github.com/CloudSilk/CloudSilk/releases/tag/v0.2.0) |
+| ⑤ 依赖安全升级 | protobuf 1.33（CVE-2024-24786）、golang/protobuf 1.5.4、uuid 1.6、swaggo 套件、copier 0.4；构建+6 测试包全绿 | 71eeb61 |
+| 补 | CI 环境类型检查修复（排除 .umi 生成目录等 3 处），流水线转绿 | e40dbd1 |
+
+**遗留**（下一版本）：dubbogo v3.0.5 依赖链漏洞需大版本升级专项；APS 人工拖拽调整（需前端画布交互）；SCADA→SmartFlow 规则引擎转发。
