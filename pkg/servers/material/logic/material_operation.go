@@ -8,6 +8,7 @@ import (
 
 	"github.com/CloudSilk/CloudSilk/pkg/model"
 	"github.com/CloudSilk/CloudSilk/pkg/proto"
+	product "github.com/CloudSilk/CloudSilk/pkg/servers/product/logic"
 	system "github.com/CloudSilk/CloudSilk/pkg/servers/system/logic"
 	"github.com/CloudSilk/CloudSilk/pkg/types"
 	"github.com/CloudSilk/pkg/utils"
@@ -86,9 +87,9 @@ func CreatePickBillFromOrder(req *proto.CreatePickBillRequest, userID string) (*
 		return nil, err
 	}
 	err = model.DB.DB().Transaction(func(tx *gorm.DB) error {
-		order := &model.ProductOrder{}
-		if err := tx.Preload("ProductOrderBoms").First(order, "`id` = ?", req.ProductOrderID).Error; err != nil {
-			return errors.New("读取生产工单失败")
+		order, err := product.GetProductOrderForPick(tx, req.ProductOrderID)
+		if err != nil {
+			return err
 		}
 		if len(order.ProductOrderBoms) == 0 {
 			return errors.New("此工单没有BOM明细，无法生成拣货单")
@@ -247,14 +248,9 @@ func CompletePickBill(req *proto.CompletePickBillRequest, userID string) error {
 			totalIssued += lock.Qty
 		}
 
-		//联动工单发料信息
+		//联动工单发料信息（product 域出口）
 		if bill.ProductOrderID != "" {
-			now := time.Now()
-			if err := tx.Model(&model.ProductOrder{}).Where("`id` = ?", bill.ProductOrderID).
-				Updates(map[string]interface{}{
-					"issued_qty":      gorm.Expr("issued_qty + ?", totalIssued),
-					"last_issue_time": now,
-				}).Error; err != nil {
+			if err := product.AddProductOrderIssued(tx, bill.ProductOrderID, totalIssued, time.Now()); err != nil {
 				return err
 			}
 		}

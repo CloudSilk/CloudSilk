@@ -85,7 +85,7 @@ func GenerateSchedule(req *proto.GenerateScheduleRequest, userID string) (*proto
 		schedOrders = append(schedOrders, so)
 	}
 
-	slots := ConstrainedSchedule(schedOrders, startTime, SchedOptions{
+	slots := CurrentScheduler().Schedule(schedOrders, startTime, SchedOptions{
 		DailyWorkMinutes: req.DailyWorkMinutes,
 		ChangeoverSec:    req.ChangeoverSeconds,
 	})

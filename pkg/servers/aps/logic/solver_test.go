@@ -124,3 +124,29 @@ func TestInsertOrder_TopPriority(t *testing.T) {
 		t.Fatalf("原工单应顺延2分钟")
 	}
 }
+
+// 调度器注册：自定义算法可替换内置贪心，编排层无感
+func TestSchedulerRegistry(t *testing.T) {
+	original := CurrentScheduler()
+	defer SetScheduler(original)
+
+	calls := 0
+	stub := &schedulerStub{calls: &calls}
+	SetScheduler(stub)
+
+	base := testBase()
+	CurrentScheduler().Schedule([]SchedOrderEx{{SchedOrder: SchedOrder{OrderID: "a", QTY: 1, StdWorkTimeSec: 60}}}, base, SchedOptions{})
+	if calls != 1 {
+		t.Fatalf("自定义调度器应被调用，实际%d次", calls)
+	}
+	if CurrentScheduler() != Scheduler(stub) {
+		t.Fatalf("注册后应返回新调度器")
+	}
+}
+
+type schedulerStub struct{ calls *int }
+
+func (s *schedulerStub) Schedule(orders []SchedOrderEx, startTime time.Time, opts SchedOptions) []SchedSlot {
+	*s.calls++
+	return ConstrainedSchedule(orders, startTime, opts)
+}

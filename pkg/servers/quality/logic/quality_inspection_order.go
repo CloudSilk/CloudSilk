@@ -7,9 +7,9 @@ import (
 
 	"github.com/CloudSilk/CloudSilk/pkg/model"
 	"github.com/CloudSilk/CloudSilk/pkg/proto"
+	product "github.com/CloudSilk/CloudSilk/pkg/servers/product/logic"
 	system "github.com/CloudSilk/CloudSilk/pkg/servers/system/logic"
 	"github.com/CloudSilk/CloudSilk/pkg/tool"
-	"github.com/CloudSilk/CloudSilk/pkg/types"
 	"github.com/CloudSilk/pkg/utils"
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
@@ -47,10 +47,10 @@ func CreateQualityInspectionOrder(m *model.QualityInspectionOrder) (string, erro
 		return "", errors.New("此检验类型下没有启用的检验标准，无法生成检验单")
 	}
 
-	//关联对象（可选）：按序列号绑定产品
+	//关联对象（可选）：按ID绑定产品（product 域出口）
 	if m.ProductInfoID != nil && *m.ProductInfoID != "" {
-		productInfo := &model.ProductInfo{}
-		if err := model.DB.DB().First(productInfo, "`id` = ?", *m.ProductInfoID).Error; err != nil {
+		productInfo, err := product.GetProductInfoByIDTx(model.DB.DB(), *m.ProductInfoID)
+		if err != nil {
 			return "", errors.New("无效的产品ID")
 		}
 		if productInfo.ProductOrderID != "" {
@@ -217,16 +217,15 @@ func CompleteQualityInspectionOrder(req *proto.CompleteQualityInspectionOrderReq
 				ReworkTime:    tool.Time2NullTime(now),
 				ReworkReason:  fmt.Sprintf("检验单%s判定不合格：%s", order.InspectionOrderNo, req.Disposition),
 			}
-			if err := tx.Create(rework).Error; err != nil {
+			if err := product.CreateProductReworkRecordTx(tx, rework); err != nil {
 				return err
 			}
 			order.ReworkCreated = true
 		}
 
-		//不合格时联动产品状态为检查中，与产线出站判定行为保持一致
+		//不合格时联动产品状态为检查中（product 域出口；让步接收不改产品状态）
 		if order.Conclusion == QualityConclusionUnqualified && order.ProductInfoID != nil && *order.ProductInfoID != "" {
-			if err := tx.Model(&model.ProductInfo{}).Where("`id` = ?", *order.ProductInfoID).
-				Update("current_state", types.ProductStateChecking).Error; err != nil {
+			if err := product.MarkProductChecking(tx, *order.ProductInfoID); err != nil {
 				return err
 			}
 		}
