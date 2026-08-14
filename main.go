@@ -42,7 +42,7 @@ import (
 	ucmiddleware "github.com/CloudSilk/usercenter/utils/middleware"
 	"github.com/gin-gonic/gin"
 	ginSwagger "github.com/swaggo/gin-swagger"
-	"github.com/swaggo/gin-swagger/swaggerFiles"
+	swaggerFiles "github.com/swaggo/files"
 )
 
 type IServer interface {
