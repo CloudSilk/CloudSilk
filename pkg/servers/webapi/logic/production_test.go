@@ -4,21 +4,18 @@ import (
 	"testing"
 
 	"github.com/CloudSilk/CloudSilk/pkg/model"
+	"github.com/CloudSilk/CloudSilk/pkg/testutil"
 	"github.com/CloudSilk/CloudSilk/pkg/types"
-	"github.com/CloudSilk/pkg/db"
-	"github.com/glebarez/sqlite"
 	"gorm.io/gorm"
 )
 
 // setupRouteTestDB 初始化内存 SQLite 并建表
 func setupRouteTestDB(t *testing.T) *gorm.DB {
 	t.Helper()
-	gdb, err := gorm.Open(sqlite.Open(":memory:"), &gorm.Config{})
+	gdb, err := testutil.SetupTestDB()
 	if err != nil {
 		t.Fatalf("打开内存数据库失败: %v", err)
 	}
-	model.InitDB(&testDBClient{DBClientInterface: &db.DBClient{}, gdb: gdb}, false)
-	model.AutoMigrate()
 	return gdb
 }
 
@@ -117,11 +114,3 @@ func TestResolveRoute_DynamicMode(t *testing.T) {
 	}
 }
 
-// testDBClient 仅用于测试的 DBClient（复用分页/查重逻辑，仅替换底层连接）
-type testDBClient struct {
-	db.DBClientInterface
-	gdb *gorm.DB
-}
-
-func (c *testDBClient) DB() *gorm.DB { return c.gdb }
-func (c *testDBClient) Close()       {}

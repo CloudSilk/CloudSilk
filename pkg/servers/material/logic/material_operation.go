@@ -75,18 +75,18 @@ func CreatePickBillFromOrder(req *proto.CreatePickBillRequest, userID string) (*
 	}
 
 	resp := &proto.CreatePickBillResponse{}
-	err := model.DB.DB().Transaction(func(tx *gorm.DB) error {
+	//流水号在事务外生成（避免事务内跨连接写引发 SQLite 表锁互等）
+	billNo, err := system.GenerateSerialNumber("拣货单号", "WMS拣货单流水号", fmt.Sprintf("PK%s", time.Now().Format("20060102")), 4, 1)
+	if err != nil {
+		return nil, err
+	}
+	err = model.DB.DB().Transaction(func(tx *gorm.DB) error {
 		order := &model.ProductOrder{}
 		if err := tx.Preload("ProductOrderBoms").First(order, "`id` = ?", req.ProductOrderID).Error; err != nil {
 			return errors.New("读取生产工单失败")
 		}
 		if len(order.ProductOrderBoms) == 0 {
 			return errors.New("此工单没有BOM明细，无法生成拣货单")
-		}
-
-		billNo, err := system.GenerateSerialNumber("拣货单号", "WMS拣货单流水号", fmt.Sprintf("PK%s", time.Now().Format("20060102")), 4, 1)
-		if err != nil {
-			return err
 		}
 
 		bill := &model.WMSBillQueue{
@@ -196,6 +196,16 @@ func CompletePickBill(req *proto.CompletePickBillRequest, userID string) error {
 		return errors.New("billID不能为空")
 	}
 
+	//AGV任务号在事务外生成（同上，避免事务内跨连接写）
+	agvTaskNo := ""
+	if req.CreateAGVTask {
+		taskNo, err := system.GenerateSerialNumber("AGV任务号", "拣货AGV搬运任务流水号", fmt.Sprintf("AG%s", time.Now().Format("20060102")), 4, 1)
+		if err != nil {
+			return err
+		}
+		agvTaskNo = taskNo
+	}
+
 	return model.DB.DB().Transaction(func(tx *gorm.DB) error {
 		bill := &model.WMSBillQueue{}
 		if err := tx.First(bill, "`id` = ?", req.BillID).Error; err != nil {
@@ -214,7 +224,8 @@ func CompletePickBill(req *proto.CompletePickBillRequest, userID string) error {
 		var totalIssued int64
 		for _, lock := range locks {
 			inventory := &model.MaterialInventory{}
-			if err := tx.First(inventory, "`id` = ?", lock.MaterialInfoID).Error; err != nil {
+			//流水记录的是物料+仓库，据此定位库存记录（而非主键）
+			if err := tx.Where("`material_info_id` = ? AND `material_store_id` = ?", lock.MaterialInfoID, lock.MaterialStoreID).First(inventory).Error; err != nil {
 				return fmt.Errorf("读取库存记录失败：%w", err)
 			}
 			before := inventory.StoredQTY
@@ -245,12 +256,8 @@ func CompletePickBill(req *proto.CompletePickBillRequest, userID string) error {
 
 		//可选：生成AGV搬运任务（待签派状态），复用AGV任务队列
 		if req.CreateAGVTask {
-			taskNo, err := system.GenerateSerialNumber("AGV任务号", "拣货AGV搬运任务流水号", fmt.Sprintf("AG%s", time.Now().Format("20060102")), 4, 1)
-			if err != nil {
-				return err
-			}
 			if err := tx.Create(&model.AGVTaskQueue{
-				TaskNo:       taskNo,
+				TaskNo:       agvTaskNo,
 				CreateUserID: userID,
 				CurrentState: types.AGVTaskQueueStateWaitDispatch,
 				Remark:       fmt.Sprintf("拣货单%s出库搬运", bill.BillNo),
@@ -289,11 +296,12 @@ func CancelPickBill(req *proto.CancelPickBillRequest, userID string) error {
 
 		for _, lock := range locks {
 			inventory := &model.MaterialInventory{}
-			if err := tx.First(inventory, "`id` = ?", lock.MaterialInfoID).Error; err != nil {
+			//流水记录的是物料+仓库，据此定位库存记录（而非主键）
+			if err := tx.Where("`material_info_id` = ? AND `material_store_id` = ?", lock.MaterialInfoID, lock.MaterialStoreID).First(inventory).Error; err != nil {
 				return fmt.Errorf("读取库存记录失败：%w", err)
 			}
 			before := inventory.StoredQTY
-			if err := tx.Model(&model.MaterialInventory{}).Where("`id` = ?", lock.MaterialInfoID).
+			if err := tx.Model(&model.MaterialInventory{}).Where("`id` = ?", inventory.ID).
 				Update("issued_qty", gorm.Expr("issued_qty - ?", lock.Qty)).Error; err != nil {
 				return err
 			}
