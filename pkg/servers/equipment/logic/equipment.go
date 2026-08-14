@@ -267,6 +267,15 @@ func ExecuteEquipmentMaintenance(req *proto.ExecuteEquipmentMaintenanceRequest) 
 			return err
 		}
 
+		if err := tx.Create(&model.OperationTrace{
+			OperateUserID:  req.ExecutorID,
+			ControllerName: "设备管理",
+			ActionName:     "执行维保",
+			RequestContent: fmt.Sprintf("计划:%s,设备:%s,类型:%s,结果:%s,耗时:%d分钟", plan.ID, derefEquipmentID(plan.EquipmentID), plan.MaintenanceType, record.Result, req.DurationMinutes),
+		}).Error; err != nil {
+			return err
+		}
+
 		//异常时联动设备状态为维修中
 		if req.Result == "异常" && plan.EquipmentID != nil {
 			if err := tx.Model(&model.Equipment{}).Where("`id` = ?", *plan.EquipmentID).
@@ -276,4 +285,11 @@ func ExecuteEquipmentMaintenance(req *proto.ExecuteEquipmentMaintenanceRequest) 
 		}
 		return nil
 	})
+}
+
+func derefEquipmentID(s *string) string {
+	if s == nil {
+		return ""
+	}
+	return *s
 }

@@ -1,6 +1,7 @@
 package http
 
 import (
+	mw "github.com/CloudSilk/CloudSilk/pkg/middleware"
 	"github.com/gin-gonic/gin"
 )
 
@@ -29,7 +30,8 @@ func RegisterRouter(r *gin.Engine) {
 	o.GET("query", QueryQualityInspectionOrder)
 	o.GET("detail", GetQualityInspectionOrderDetail)
 	o.DELETE("delete", DeleteQualityInspectionOrder)
-	o.PUT("complete", CompleteQualityInspectionOrder)
+	// 判定/让步/返工联动属于质量裁决动作，需授权角色
+	o.PUT("complete", CompleteQualityInspectionOrder, mw.RequirePermissionParam("quality.judge"))
 
 	g.POST("spc/calc", CalcSpc)
 }

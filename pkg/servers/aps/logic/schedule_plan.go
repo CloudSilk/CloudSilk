@@ -132,7 +132,7 @@ func GenerateSchedule(req *proto.GenerateScheduleRequest, userID string) (*proto
 }
 
 // ReleaseSchedule 下发排程：回写各工单的预计开工/完工时间（甘特基准）
-func ReleaseSchedule(req *proto.ReleaseScheduleRequest) error {
+func ReleaseSchedule(req *proto.ReleaseScheduleRequest, userID string) error {
 	if req.PlanID == "" {
 		return errors.New("planID不能为空")
 	}
@@ -156,8 +156,16 @@ func ReleaseSchedule(req *proto.ReleaseScheduleRequest) error {
 			}
 		}
 
-		return tx.Model(&model.ProductionSchedulePlan{}).Where("`id` = ?", plan.ID).
-			Update("current_state", ScheduleStateReleased).Error
+		if err := tx.Model(&model.ProductionSchedulePlan{}).Where("`id` = ?", plan.ID).
+			Update("current_state", ScheduleStateReleased).Error; err != nil {
+			return err
+		}
+		return tx.Create(&model.OperationTrace{
+			OperateUserID:  userID,
+			ControllerName: "APS排程",
+			ActionName:     "下发排程",
+			RequestContent: fmt.Sprintf("批次:%s,工单数:%d,计划区间:%s→%s", plan.PlanNo, plan.OrderCount, plan.StartTime.Format("01-02 15:04"), plan.EndTime.Format("01-02 15:04")),
+		}).Error
 	})
 }
 

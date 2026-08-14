@@ -59,7 +59,12 @@ func ReceiveMaterial(req *proto.ReceiveMaterialRequest, userID string) (*proto.R
 
 		resp.MaterialInventoryID = inventory.ID
 		resp.StoredQTY = inventory.StoredQTY
-		return nil
+		return tx.Create(&model.OperationTrace{
+			OperateUserID:  userID,
+			ControllerName: "WMS作业",
+			ActionName:     "收货入库",
+			RequestContent: fmt.Sprintf("物料:%s,仓库:%s,数量:%d,入库后:%d", req.MaterialInfoID, req.MaterialStoreID, req.Qty, inventory.StoredQTY),
+		}).Error
 	})
 	if err != nil {
 		return nil, err
@@ -270,7 +275,12 @@ func CompletePickBill(req *proto.CompletePickBillRequest, userID string) error {
 			Update("current_state", WMSBillStateCompleted).Error; err != nil {
 			return err
 		}
-		return nil
+		return tx.Create(&model.OperationTrace{
+			OperateUserID:  userID,
+			ControllerName: "WMS作业",
+			ActionName:     "完成拣货",
+			RequestContent: fmt.Sprintf("拣货单:%s,出库总量:%d,工单:%s,AGV:%v", bill.BillNo, totalIssued, bill.ProductOrderID, req.CreateAGVTask),
+		}).Error
 	})
 }
 
@@ -310,8 +320,16 @@ func CancelPickBill(req *proto.CancelPickBillRequest, userID string) error {
 			}
 		}
 
-		return tx.Model(&model.WMSBillQueue{}).Where("`id` = ?", bill.ID).
-			Update("current_state", WMSBillStateCancelled).Error
+		if err := tx.Model(&model.WMSBillQueue{}).Where("`id` = ?", bill.ID).
+			Update("current_state", WMSBillStateCancelled).Error; err != nil {
+			return err
+		}
+		return tx.Create(&model.OperationTrace{
+			OperateUserID:  userID,
+			ControllerName: "WMS作业",
+			ActionName:     "取消拣货",
+			RequestContent: fmt.Sprintf("拣货单:%s,解除锁定", bill.BillNo),
+		}).Error
 	})
 }
 
@@ -344,7 +362,12 @@ func StocktakeInventory(req *proto.StocktakeInventoryRequest, userID string) (*p
 		}
 
 		resp.Difference = difference
-		return nil
+		return tx.Create(&model.OperationTrace{
+			OperateUserID:  userID,
+			ControllerName: "WMS作业",
+			ActionName:     "库存盘点",
+			RequestContent: fmt.Sprintf("库存:%s,账面:%d,实盘:%d,差异:%d", req.MaterialInventoryID, before, req.CountedQTY, difference),
+		}).Error
 	})
 	if err != nil {
 		return nil, err

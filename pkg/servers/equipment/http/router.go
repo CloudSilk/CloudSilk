@@ -1,6 +1,7 @@
 package http
 
 import (
+	mw "github.com/CloudSilk/CloudSilk/pkg/middleware"
 	"github.com/gin-gonic/gin"
 )
 
@@ -14,7 +15,7 @@ func RegisterRouter(r *gin.Engine) {
 	e.GET("all", GetAllEquipment)
 	e.GET("detail", GetEquipmentDetail)
 	e.DELETE("delete", DeleteEquipment)
-	e.PUT("changestate", ChangeEquipmentState)
+	e.PUT("changestate", ChangeEquipmentState, mw.RequirePermissionParam("equipment.manage"))
 	e.POST("oee", CalcEquipmentOee)
 
 	p := g.Group("maintenplan")
@@ -24,7 +25,7 @@ func RegisterRouter(r *gin.Engine) {
 	p.GET("all", GetAllEquipmentMaintenancePlan)
 	p.GET("detail", GetEquipmentMaintenancePlanDetail)
 	p.DELETE("delete", DeleteEquipmentMaintenancePlan)
-	p.PUT("execute", ExecuteEquipmentMaintenance)
+	p.PUT("execute", ExecuteEquipmentMaintenance, mw.RequirePermissionParam("equipment.manage"))
 
 	m := g.Group("maintenrecord")
 	m.GET("query", QueryEquipmentMaintenanceRecord)

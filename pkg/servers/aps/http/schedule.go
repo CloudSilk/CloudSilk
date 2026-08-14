@@ -4,6 +4,7 @@ import (
 	"context"
 	"net/http"
 
+	mw "github.com/CloudSilk/CloudSilk/pkg/middleware"
 	"github.com/CloudSilk/CloudSilk/pkg/model"
 	"github.com/CloudSilk/CloudSilk/pkg/proto"
 	"github.com/CloudSilk/CloudSilk/pkg/servers/aps/logic"
@@ -66,7 +67,7 @@ func ReleaseSchedule(c *gin.Context) {
 		log.Warnf(context.Background(), "TransID:%s,下发排程请求参数无效:%v", transID, err)
 		return
 	}
-	if err := logic.ReleaseSchedule(req); err != nil {
+	if err := logic.ReleaseSchedule(req, middleware.GetUserID(c)); err != nil {
 		resp.Code = proto.Code_InternalServerError
 		resp.Message = err.Error()
 	}
@@ -224,11 +225,14 @@ func InsertSchedule(c *gin.Context) {
 func RegisterRouter(r *gin.Engine) {
 	g := r.Group("/api/mom/aps/schedule")
 
-	g.POST("generate", GenerateSchedule)
-	g.POST("insert", InsertSchedule)
-	g.PUT("release", ReleaseSchedule)
-	g.PUT("void", VoidSchedule)
+	// 排程变更类操作需授权角色（超管始终放行；角色白名单见系统参数 permission/aps.manage）
+	write := g.Group("", mw.RequirePermissionParam("aps.manage"))
+	write.POST("generate", GenerateSchedule)
+	write.POST("insert", InsertSchedule)
+	write.PUT("release", ReleaseSchedule)
+	write.PUT("void", VoidSchedule)
+	write.DELETE("delete", DeleteSchedulePlan)
+
 	g.GET("query", QuerySchedulePlan)
 	g.GET("detail", GetSchedulePlanDetail)
-	g.DELETE("delete", DeleteSchedulePlan)
 }

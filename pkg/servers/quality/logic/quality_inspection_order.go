@@ -231,7 +231,15 @@ func CompleteQualityInspectionOrder(req *proto.CompleteQualityInspectionOrderReq
 			}
 		}
 
-		return tx.Omit("created_at", "quality_inspection_order_items").Save(order).Error
+		if err := tx.Omit("created_at", "quality_inspection_order_items").Save(order).Error; err != nil {
+			return err
+		}
+		return tx.Create(&model.OperationTrace{
+			OperateUserID:  req.InspectionUserID,
+			ControllerName: "质量管理",
+			ActionName:     "完成检验",
+			RequestContent: fmt.Sprintf("检验单:%s,结论:%s,不合格数:%d,让步:%v", order.InspectionOrderNo, order.Conclusion, defectives, req.Concession),
+		}).Error
 	})
 }
 
