@@ -132,7 +132,10 @@
   - 计划状态机：已生成 → 已下发 / 已作废
   - 查询接口含明细时段，可直接渲染甘特图
   - 路由：`/api/mom/aps/schedule/{generate|release|void|query|detail|delete}`
-- **后续增强**（不阻塞）：约束求解器（换型时间/物料齐套约束）、人工拖拽调整、插单重排
+- **增强迭代（2026-08-14 已落地）**：
+  - ✅ 约束求解器 `ConstrainedSchedule`：换型时间约束（相邻工单型号切换插入换型间隔）+ 同优先级型号聚簇减少换型 + 物料齐套约束（齐套时间取自最近已完成拣货单）+ 7 组新单测
+  - ✅ 插单重排 `POST /aps/schedule/insert`：保持既有工单顺序，插入到严格更高优先级之后，重排落库
+  - 待迭代：人工拖拽调整（需前端）
 
 ### TASK-016 ✅ SCADA 网关（Modbus TCP）基础版已实现
 - **新增模块**：`pkg/servers/scada/` + `pkg/model/scada.go` + `pkg/proto/scada.proto`

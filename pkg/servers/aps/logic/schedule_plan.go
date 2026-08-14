@@ -39,7 +39,7 @@ func GenerateSchedule(req *proto.GenerateScheduleRequest, userID string) (*proto
 
 	//取待排产工单：已发放/已签派（生产中的按剩余数量顺延排入）
 	orders := []*model.ProductOrder{}
-	query := model.DB.DB().Where("`production_line_id` = ? AND `current_state` in ?",
+	query := model.DB.DB().Preload("ProductModel").Where("`production_line_id` = ? AND `current_state` in ?",
 		req.ProductionLineID,
 		[]string{types.ProductOrderStateReleased, types.ProductOrderStateDispatched, types.ProductOrderStateProducting})
 	if len(req.ProductOrderIDs) > 0 {
@@ -52,7 +52,7 @@ func GenerateSchedule(req *proto.GenerateScheduleRequest, userID string) (*proto
 		return nil, errors.New("此产线下没有可排程的工单（需为已发放/已签派状态）")
 	}
 
-	schedOrders := make([]SchedOrder, 0, len(orders))
+	schedOrders := make([]SchedOrderEx, 0, len(orders))
 	for _, o := range orders {
 		std := o.StandardWorkTime
 		if std <= 0 {
@@ -65,21 +65,30 @@ func GenerateSchedule(req *proto.GenerateScheduleRequest, userID string) (*proto
 				continue
 			}
 		}
-		so := SchedOrder{
-			OrderID:        o.ID,
-			OrderNo:        o.ProductOrderNo,
-			QTY:            qty,
-			StdWorkTimeSec: std,
-			PriorityLevel:  o.PriorityLevel,
+		so := SchedOrderEx{
+			ProductModel: orderProductModel(o),
 		}
+		so.OrderID = o.ID
+		so.OrderNo = o.ProductOrderNo
+		so.QTY = qty
+		so.StdWorkTimeSec = std
+		so.PriorityLevel = o.PriorityLevel
 		if o.DeliveryDate.Valid {
 			so.DeliveryDate = o.DeliveryDate.Time
 			so.HasDelivery = true
 		}
+		//物料齐套时间：取该工单最近一张已完成拣货单的时间（未领料视为未齐套，不限制开工时间）
+		if ready, ok := orderMaterialReadyTime(o.ID); ok {
+			so.ReadyTime = ready
+			so.HasReady = true
+		}
 		schedOrders = append(schedOrders, so)
 	}
 
-	slots := ForwardSchedule(schedOrders, startTime, req.DailyWorkMinutes)
+	slots := ConstrainedSchedule(schedOrders, startTime, SchedOptions{
+		DailyWorkMinutes: req.DailyWorkMinutes,
+		ChangeoverSec:    req.ChangeoverSeconds,
+	})
 	if len(slots) == 0 {
 		return nil, errors.New("排程结果为空")
 	}
@@ -219,4 +228,142 @@ func findPriority(orders []*model.ProductOrder, orderID string) int32 {
 		}
 	}
 	return 0
+}
+
+// orderProductModel 读取工单的产品型号代号（用于换型约束）
+func orderProductModel(o *model.ProductOrder) string {
+	if o.ProductModel != nil {
+		return o.ProductModel.Code
+	}
+	return ""
+}
+
+// orderMaterialReadyTime 物料齐套时间：最近一张已完成拣货单的完成时间
+func orderMaterialReadyTime(orderID string) (time.Time, bool) {
+	bill := &model.WMSBillQueue{}
+	err := model.DB.DB().Where("`product_order_id` = ? AND `current_state` = ?", orderID, "已完成").
+		Order("last_update_time desc").First(bill).Error
+	if err != nil {
+		return time.Time{}, false
+	}
+	return bill.LastUpdateTime, true
+}
+
+// InsertSchedule 插单重排：在既有计划中插入新工单（保持既有顺序），重排后落库
+func InsertSchedule(req *proto.InsertScheduleRequest) (*proto.InsertScheduleResponse, error) {
+	if req.PlanID == "" || req.ProductOrderID == "" {
+		return nil, errors.New("planID与productOrderID不能为空")
+	}
+
+	plan := &model.ProductionSchedulePlan{}
+	if err := model.DB.DB().Preload("Items").Preload("Items.ProductOrder").First(plan, "`id` = ?", req.PlanID).Error; err != nil {
+		return nil, errors.New("读取排程计划失败")
+	}
+	if plan.CurrentState != ScheduleStateGenerated {
+		return nil, fmt.Errorf("排程计划状态为%s，只有%s状态可以插单重排", plan.CurrentState, ScheduleStateGenerated)
+	}
+
+	//读取新工单
+	newOrder := &model.ProductOrder{}
+	if err := model.DB.DB().Preload("ProductModel").First(newOrder, "`id` = ?", req.ProductOrderID).Error; err != nil {
+		return nil, errors.New("读取新工单失败")
+	}
+	if newOrder.StandardWorkTime <= 0 {
+		return nil, fmt.Errorf("工单%s缺少标准节拍，无法排程", newOrder.ProductOrderNo)
+	}
+
+	//重建既有工单的约束信息
+	orders := make([]SchedOrderEx, 0, len(plan.Items))
+	existing := make([]SchedSlot, 0, len(plan.Items))
+	for _, item := range plan.Items {
+		if item.ProductOrder == nil {
+			continue
+		}
+		o := item.ProductOrder
+		so := SchedOrderEx{ProductModel: orderProductModel(o)}
+		so.OrderID = o.ID
+		so.OrderNo = o.ProductOrderNo
+		so.QTY = o.OrderQTY
+		so.StdWorkTimeSec = o.StandardWorkTime
+		so.PriorityLevel = item.PriorityLevel
+		if o.DeliveryDate.Valid {
+			so.DeliveryDate = o.DeliveryDate.Time
+			so.HasDelivery = true
+		}
+		orders = append(orders, so)
+		existing = append(existing, SchedSlot{
+			OrderID: o.ID,
+			OrderNo: o.ProductOrderNo,
+			Start:   item.PlannedStartTime,
+			End:     item.PlannedEndTime,
+			Seconds: item.DurationSeconds,
+		})
+	}
+
+	newSo := SchedOrderEx{ProductModel: orderProductModel(newOrder)}
+	newSo.OrderID = newOrder.ID
+	newSo.OrderNo = newOrder.ProductOrderNo
+	newSo.QTY = newOrder.OrderQTY
+	newSo.StdWorkTimeSec = newOrder.StandardWorkTime
+	newSo.PriorityLevel = newOrder.PriorityLevel
+	if newOrder.DeliveryDate.Valid {
+		newSo.DeliveryDate = newOrder.DeliveryDate.Time
+		newSo.HasDelivery = true
+	}
+	if ready, ok := orderMaterialReadyTime(newOrder.ID); ok {
+		newSo.ReadyTime = ready
+		newSo.HasReady = true
+	}
+
+	slots, idx := InsertOrder(existing, orders, newSo, plan.StartTime, SchedOptions{
+		ChangeoverSec: req.ChangeoverSeconds,
+	})
+	if idx < 0 {
+		return nil, errors.New("插单失败，未能确定插入位置")
+	}
+
+	resp := &proto.InsertScheduleResponse{
+		Code:     proto.Code_Success,
+		Sequence: int32(idx + 1),
+		EndTime:  slots[len(slots)-1].End.Format("2006-01-02 15:04:05"),
+	}
+
+	//重建明细
+	return resp, model.DB.DB().Transaction(func(tx *gorm.DB) error {
+		if err := tx.Where("`production_schedule_plan_id` = ?", plan.ID).
+			Delete(&model.ProductionScheduleItem{}).Error; err != nil {
+			return err
+		}
+		priorityOf := func(orderID string) int32 {
+			for _, o := range orders {
+				if o.OrderID == orderID {
+					return o.PriorityLevel
+				}
+			}
+			if newSo.OrderID == orderID {
+				return newSo.PriorityLevel
+			}
+			return 0
+		}
+		items := make([]*model.ProductionScheduleItem, 0, len(slots))
+		for i, slot := range slots {
+			items = append(items, &model.ProductionScheduleItem{
+				ProductionSchedulePlanID: plan.ID,
+				ProductOrderID:           slot.OrderID,
+				Sequence:                 int32(i + 1),
+				PlannedStartTime:         slot.Start,
+				PlannedEndTime:           slot.End,
+				DurationSeconds:          slot.Seconds,
+				PriorityLevel:            priorityOf(slot.OrderID),
+			})
+		}
+		if err := tx.Create(&items).Error; err != nil {
+			return err
+		}
+		return tx.Model(&model.ProductionSchedulePlan{}).Where("`id` = ?", plan.ID).
+			Updates(map[string]interface{}{
+				"end_time":    slots[len(slots)-1].End,
+				"order_count": int32(len(slots)),
+			}).Error
+	})
 }

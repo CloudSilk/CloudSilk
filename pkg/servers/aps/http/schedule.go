@@ -189,10 +189,43 @@ func DeleteSchedulePlan(c *gin.Context) {
 	c.JSON(http.StatusOK, resp)
 }
 
+// InsertSchedule godoc
+// @Summary 插单重排
+// @Description 在既有排程计划中插入新工单（保持既有工单顺序与约束），重排后落库
+// @Tags APS排程
+// @Accept  json
+// @Produce  json
+// @Param authorization header string true "jwt token"
+// @Param account body proto.InsertScheduleRequest true "InsertScheduleRequest"
+// @Success 200 {object} proto.InsertScheduleResponse
+// @Router /api/mom/aps/schedule/insert [post]
+func InsertSchedule(c *gin.Context) {
+	transID := middleware.GetTransID(c)
+	req := &proto.InsertScheduleRequest{}
+	resp := &proto.InsertScheduleResponse{}
+	err := c.BindJSON(req)
+	if err != nil {
+		resp.Code = proto.Code_BadRequest
+		resp.Message = err.Error()
+		c.JSON(http.StatusOK, resp)
+		log.Warnf(context.Background(), "TransID:%s,插单重排请求参数无效:%v", transID, err)
+		return
+	}
+	data, err := logic.InsertSchedule(req)
+	if err != nil {
+		resp.Code = proto.Code_InternalServerError
+		resp.Message = err.Error()
+	} else {
+		resp = data
+	}
+	c.JSON(http.StatusOK, resp)
+}
+
 func RegisterRouter(r *gin.Engine) {
 	g := r.Group("/api/mom/aps/schedule")
 
 	g.POST("generate", GenerateSchedule)
+	g.POST("insert", InsertSchedule)
 	g.PUT("release", ReleaseSchedule)
 	g.PUT("void", VoidSchedule)
 	g.GET("query", QuerySchedulePlan)

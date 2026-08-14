@@ -91,6 +91,8 @@ message GenerateScheduleRequest{
 	int32 dailyWorkMinutes=3;
 	//仅纳入这些工单（为空则自动取该产线全部已发放/已签派工单）
 	repeated string productOrderIDs=4;
+	//换型时间（秒）：相邻工单产品型号不同时插入的换型间隔
+	int32 changeoverSeconds=5;
 }
 
 message GenerateScheduleResponse{
@@ -110,4 +112,23 @@ message GenerateScheduleResponse{
 message ReleaseScheduleRequest{
 	//排程计划ID
 	string planID=1;
+}
+
+// 插单重排请求
+message InsertScheduleRequest{
+	//排程计划ID
+	string planID=1;
+	//新插入的工单ID
+	string productOrderID=2;
+	//换型时间（秒）
+	int32 changeoverSeconds=3;
+}
+
+message InsertScheduleResponse{
+    Code code=1;
+    string message=2;
+	//新工单所在顺序号（从1开始）
+	int32 sequence=3;
+	//重排后的计划结束时间
+	string endTime=4;
 }
