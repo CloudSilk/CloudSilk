@@ -9,6 +9,7 @@ import (
 	"github.com/CloudSilk/CloudSilk/pkg/model"
 	"github.com/CloudSilk/CloudSilk/pkg/proto"
 	system "github.com/CloudSilk/CloudSilk/pkg/servers/system/logic"
+	"github.com/CloudSilk/CloudSilk/pkg/types"
 	"github.com/CloudSilk/pkg/utils"
 	"gorm.io/gorm"
 )
@@ -238,6 +239,22 @@ func CompletePickBill(req *proto.CompletePickBillRequest, userID string) error {
 					"issued_qty":      gorm.Expr("issued_qty + ?", totalIssued),
 					"last_issue_time": now,
 				}).Error; err != nil {
+				return err
+			}
+		}
+
+		//可选：生成AGV搬运任务（待签派状态），复用AGV任务队列
+		if req.CreateAGVTask {
+			taskNo, err := system.GenerateSerialNumber("AGV任务号", "拣货AGV搬运任务流水号", fmt.Sprintf("AG%s", time.Now().Format("20060102")), 4, 1)
+			if err != nil {
+				return err
+			}
+			if err := tx.Create(&model.AGVTaskQueue{
+				TaskNo:       taskNo,
+				CreateUserID: userID,
+				CurrentState: types.AGVTaskQueueStateWaitDispatch,
+				Remark:       fmt.Sprintf("拣货单%s出库搬运", bill.BillNo),
+			}).Error; err != nil {
 				return err
 			}
 		}

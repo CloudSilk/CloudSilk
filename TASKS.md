@@ -100,7 +100,9 @@
   - 完成检验：实测值按标准判定（复用 MathOperator，支持范围内/等于/大于等）、AQL 接收数判定整单结论、不合格可选生成返工记录并联动产品状态为检查中
   - SPC：均值/标准差/Cpu/Cpl/Cpk/休哈特控制限计算接口 + 单测（抽样表、接收数、Cpk 均有用例）
   - 路由：`/api/mom/quality/{qualityinspectiontype|qualityinspectionstandard|qualityinspectionorder|spc}` 
-- **后续增强**（不阻塞）：让步接收工作流、质量看板实时推送、检验标准版本管理
+- **增强迭代（2026-08-14 已落地）**：
+  - ✅ 让步接收：CompleteQualityInspectionOrderRequest.concession，判定不合格时可特采放行（结论"让步接收"，不生成返工、不改产品状态）
+  - 待迭代：质量看板实时推送（可复用监控 SSE）、检验标准版本管理
 
 ### TASK-013 ✅ 设备管理系统（EM）基础版已实现
 - **新增模块**：`pkg/servers/equipment/` + `pkg/model/equipment.go` + `pkg/proto/equipment.proto`
@@ -121,7 +123,9 @@
   - **库存事务流水** `GET /wms/transaction/query`：入库/出库/锁定/解锁/盘点调整全量追溯（含变更前后数量）
   - **库存预警** `GET /wms/alert`：可用量低于补料规则最低库存量或已为负
   - 拣货单状态机：待拣货 → 已完成/已取消
-- **后续增强**（不阻塞）：库位级上架指引、AGV 任务自动生成联动、波次拣货
+- **增强迭代（2026-08-14 已落地）**：
+  - ✅ AGV 任务联动：完成拣货勾选 createAGVTask 时自动生成待签派 AGV 搬运任务（复用 AGV 任务队列与流水号）
+  - 待迭代：库位级上架指引、波次拣货
 
 ### TASK-015 ✅ APS 排程引擎基础版已实现
 - **新增模块**：`pkg/servers/aps/` + `pkg/model/production_schedule.go` + `pkg/proto/production_schedule.proto`
@@ -158,7 +162,9 @@
   - **产线监控** `GET /monitoring/line`：OEE 四指标（复用设备模块计算）、周期产量（节拍记录数）、工单达成率、在制数、未处理告警
   - **告警列表** `GET /monitoring/alarms`：按状态过滤、时间倒序、限量
   - **SSE 实时推送** `GET /monitoring/stream`：每 5 秒推送 overview 事件（text/event-stream，EventSource 兼容）
-- **后续增强**（不阻塞）：WebSocket 双向推送、产线级 OEE 加权平均、前端大屏页面
+- **增强迭代（2026-08-14 已落地）**：
+  - ✅ 产线级 OEE 加权平均：遍历产线全部工站按周期产量加权（无产量工站等权退化）
+  - 待迭代：WebSocket 双向推送、前端大屏页面
 
 ---
 

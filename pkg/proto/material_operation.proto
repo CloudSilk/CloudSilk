@@ -57,6 +57,8 @@ message CreatePickBillResponse{
 message CompletePickBillRequest{
 	//拣货单ID
 	string billID=1;
+	//完成后是否生成AGV搬运任务（待签派状态）
+	bool createAGVTask=2;
 }
 
 // 取消拣货单（解除库存锁定）

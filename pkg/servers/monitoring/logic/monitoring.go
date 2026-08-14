@@ -146,19 +146,37 @@ func GetLineMonitoring(productionLineID, startTime, endTime string) (*proto.Moni
 		Count(&wipCount)
 	resp.WipCount = wipCount
 
-	//OEE：取产线首个工站计算（产线级 OEE 汇总为其工站加权平均的增强项）
-	var firstStation model.ProductionStation
-	if err := model.DB.DB().Where("`production_line_id` = ?", line.ID).Order("sort_index").First(&firstStation).Error; err == nil {
-		oee, err := equipment.CalcOee(&proto.EquipmentOeeRequest{
-			ProductionStationID: firstStation.ID,
-			StartTime:           st.Format(layout),
-			EndTime:             et.Format(layout),
-		})
-		if err == nil {
-			resp.Oee = oee.Oee
-			resp.Availability = oee.Availability
-			resp.Performance = oee.Performance
-			resp.Quality = oee.Quality
+	//OEE：产线全部工站按产量加权平均（无产量数据时退化为等权平均）
+	stations := []*model.ProductionStation{}
+	if err := model.DB.DB().Where("`production_line_id` = ?", line.ID).Find(&stations).Error; err == nil && len(stations) > 0 {
+		var sumOee, sumAvailability, sumPerformance, sumQuality, totalWeight float64
+		var stationCount int
+		for _, station := range stations {
+			oee, err := equipment.CalcOee(&proto.EquipmentOeeRequest{
+				ProductionStationID: station.ID,
+				StartTime:           st.Format(layout),
+				EndTime:             et.Format(layout),
+			})
+			if err != nil {
+				continue
+			}
+			//以该工站周期产量为权重；无产量时权重为1（等权退化）
+			weight := float64(oee.TotalCount)
+			if weight <= 0 {
+				weight = 1
+			}
+			sumOee += oee.Oee * weight
+			sumAvailability += oee.Availability * weight
+			sumPerformance += oee.Performance * weight
+			sumQuality += oee.Quality * weight
+			totalWeight += weight
+			stationCount++
+		}
+		if stationCount > 0 && totalWeight > 0 {
+			resp.Oee = sumOee / totalWeight
+			resp.Availability = sumAvailability / totalWeight
+			resp.Performance = sumPerformance / totalWeight
+			resp.Quality = sumQuality / totalWeight
 		}
 	}
 

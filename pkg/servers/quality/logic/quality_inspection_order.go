@@ -23,6 +23,7 @@ const (
 	// 检验结论
 	QualityConclusionQualified   = "合格"
 	QualityConclusionUnqualified = "不合格"
+	QualityConclusionConcession  = "让步接收"
 	// 默认比较方式（规格上下限之间的范围内判定）
 	CriterionWithinRange = "范围内"
 )
@@ -199,9 +200,13 @@ func CompleteQualityInspectionOrder(req *proto.CompleteQualityInspectionOrderReq
 		order.InspectionUserID = req.InspectionUserID
 		order.Disposition = req.Disposition
 		order.CurrentState = QualityInspectionStateFinished
-		if accepted {
+		switch {
+		case accepted:
 			order.Conclusion = QualityConclusionQualified
-		} else {
+		case req.Concession:
+			//让步接收：判定不合格但特采放行
+			order.Conclusion = QualityConclusionConcession
+		default:
 			order.Conclusion = QualityConclusionUnqualified
 		}
 

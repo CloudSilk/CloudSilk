@@ -220,6 +220,8 @@ message CompleteQualityInspectionOrderRequest{
 	string disposition=4;
 	//不合格时是否生成返工记录
 	bool createRework=5;
+	//让步接收：判定不合格但特采放行（结论记为让步接收，不改产品状态）
+	bool concession=6;
 }
 
 // SPC 计算请求/响应
