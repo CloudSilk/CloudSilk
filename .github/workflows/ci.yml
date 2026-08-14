@@ -41,5 +41,10 @@ jobs:
       - name: Install dependencies
         run: yarn install --frozen-lockfile --network-timeout 600000
 
+      # umi 生成的 Layout.tsx 含本机绝对路径的 /// <reference types>，
+      # CI 环境下无法解析且 @ts-nocheck 不能抑制该解析错误，剔除后再检查
+      - name: Strip absolute-path type reference in generated layout
+        run: sed -i '/reference types=.*pro-components/d' src/.umi/plugin-layout/Layout.tsx
+
       - name: Typecheck
         run: npx tsc --noEmit -p tsconfig.json
