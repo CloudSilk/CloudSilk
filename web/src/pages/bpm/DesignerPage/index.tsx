@@ -66,7 +66,7 @@ export default class BPMDesignerPage extends React.Component<any, BPMDesignerPag
         const params  = match?.params;
         this.state = {
             processService: newService<Process>('bpm/process'),
-            processID: params?.processID
+            processID: params?.processID ?? ''
         }
     }
 
