@@ -269,4 +269,23 @@
 | ⑤ 依赖安全升级 | protobuf 1.33（CVE-2024-24786）、golang/protobuf 1.5.4、uuid 1.6、swaggo 套件、copier 0.4；构建+6 测试包全绿 | 71eeb61 |
 | 补 | CI 环境类型检查修复（排除 .umi 生成目录等 3 处），流水线转绿 | e40dbd1 |
 
-**遗留**（下一版本）：dubbogo v3.0.5 依赖链漏洞需大版本升级专项；APS 人工拖拽调整（需前端画布交互）；SCADA→SmartFlow 规则引擎转发。
+**遗留**（下一版本）：dubbogo v3.0.5 依赖链漏洞需大版本升级专项；APS 人工拖拽调整（需前端画布交互）。
+
+---
+
+# 九、架构演进与产品完整度（2026-08-14 完成）
+
+## 架构演进
+
+| 项 | 内容 | 提交 |
+|----|------|------|
+| A1 跨域访问收敛 | product/material 域新增 crossdomain.go 出口；WMS/质量/APS 的跨域直连表访问全部改为出口函数（事务内组合保持）；monitoring/statistic 定为 CQRS 只读例外；ARCHITECTURE.md 固化域划分/访问规则/微服务拆分路径 | 18904dc |
+| A2 排程算法插件化 | Scheduler 接口 + GreedyScheduler + SetScheduler 注册（CP-SAT/OR-Tools 可插拔，编排层零改动）+ 注册替换单测 | 18904dc |
+| A3 SCADA→MQTT 转发 | paho 集成，系统参数 scada/mqtt.broker 启用；主题 {prefix}/{设备}/{点位}；缓冲防阻塞、断线重连；Modbus/OPC UA 双路径接入 —— SmartFlow 订阅即联动 | 0c4412d |
+
+## 产品完整度
+
+| 项 | 内容 | 提交 |
+|----|------|------|
+| P1 追溯链 | 收货入库/完成拣货/取消拣货/库存盘点/完成检验/下发排程/执行维保 补写 OperationTrace，经 trace 模块可查 | 6973818 |
+| P2 权限粒度 | pkg/middleware 权限守卫：超管放行 + 系统参数 permission/<key> 角色白名单 + 未配置默认拒绝；覆盖 APS 变更/质量判定/WMS 库存/设备状态维保/SCADA 配置五类敏感操作 | 6973818 |
