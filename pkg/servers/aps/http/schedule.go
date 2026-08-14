@@ -222,6 +222,35 @@ func InsertSchedule(c *gin.Context) {
 	c.JSON(http.StatusOK, resp)
 }
 
+// AdjustScheduleItem godoc
+// @Summary 人工调整排程明细
+// @Description 甘特拖拽落库：平移指定明细到新开工时间，可选顺延后续工单
+// @Tags APS排程
+// @Accept  json
+// @Produce  json
+// @Param authorization header string true "jwt token"
+// @Param account body proto.AdjustScheduleItemRequest true "AdjustScheduleItemRequest"
+// @Success 200 {object} proto.CommonResponse
+// @Router /api/mom/aps/schedule/adjust [put]
+func AdjustScheduleItem(c *gin.Context) {
+	transID := middleware.GetTransID(c)
+	req := &proto.AdjustScheduleItemRequest{}
+	resp := &proto.CommonResponse{Code: proto.Code_Success}
+	err := c.BindJSON(req)
+	if err != nil {
+		resp.Code = proto.Code_BadRequest
+		resp.Message = err.Error()
+		c.JSON(http.StatusOK, resp)
+		log.Warnf(context.Background(), "TransID:%s,人工调整排程请求参数无效:%v", transID, err)
+		return
+	}
+	if err := logic.AdjustScheduleItem(req, middleware.GetUserID(c)); err != nil {
+		resp.Code = proto.Code_InternalServerError
+		resp.Message = err.Error()
+	}
+	c.JSON(http.StatusOK, resp)
+}
+
 func RegisterRouter(r *gin.Engine) {
 	g := r.Group("/api/mom/aps/schedule")
 
@@ -230,6 +259,7 @@ func RegisterRouter(r *gin.Engine) {
 	write.POST("generate", GenerateSchedule)
 	write.POST("insert", InsertSchedule)
 	write.PUT("release", ReleaseSchedule)
+	write.PUT("adjust", AdjustScheduleItem)
 	write.PUT("void", VoidSchedule)
 	write.DELETE("delete", DeleteSchedulePlan)
 

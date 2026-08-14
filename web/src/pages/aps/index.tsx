@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { Alert, Button, Card, DatePicker, Form, InputNumber, message, Select, Space, Table, Tooltip, Typography } from 'antd';
 import dayjs, { Dayjs } from 'dayjs';
 import umiRequest from 'umi-request';
@@ -46,8 +46,15 @@ const api = async <T,>(url: string, options: Record<string, any> = {}): Promise<
   return resp as T;
 };
 
-/** 甘特条：按整体时间轴比例渲染 */
-const GanttBar: React.FC<{ items: ScheduleItem[] }> = ({ items }) => {
+/**
+ * 甘特条：按整体时间轴比例渲染；条可水平拖拽，松手调用 onAdjust 落库
+ * （像素位移按容器宽度换算为时间偏移，拖拽中乐观平移视觉反馈）
+ */
+const GanttBar: React.FC<{
+  items: ScheduleItem[];
+  onAdjust?: (itemID: string, newStartMs: number) => void;
+  adjustable?: boolean;
+}> = ({ items, onAdjust, adjustable }) => {
   const range = useMemo(() => {
     if (!items?.length) return null;
     const starts = items.map((i) => new Date(i.plannedStartTime).getTime()).filter((t) => !isNaN(t));
@@ -58,32 +65,77 @@ const GanttBar: React.FC<{ items: ScheduleItem[] }> = ({ items }) => {
     return { min, span: Math.max(max - min, 1) };
   }, [items]);
 
+  const trackRefs = useRef<Record<string, HTMLDivElement | null>>({});
+  const [dragging, setDragging] = useState<{ id: string; x0: number; dx: number; start: number } | null>(null);
+
+  // 拖拽中：全局监听移动/抬起
+  useEffect(() => {
+    if (!dragging) return;
+    const onMove = (e: MouseEvent) => {
+      setDragging((d) => (d ? { ...d, dx: e.clientX - d.x0 } : d));
+    };
+    const onUp = (e: MouseEvent) => {
+      const d = dragging;
+      setDragging(null);
+      if (d && onAdjust && range) {
+        const track = trackRefs.current[d.id];
+        if (track && track.clientWidth > 0) {
+          const px = e.clientX - d.x0;
+          const ms = (px / track.clientWidth) * range.span;
+          onAdjust(d.id, d.start + ms);
+        }
+      }
+    };
+    window.addEventListener('mousemove', onMove);
+    window.addEventListener('mouseup', onUp);
+    return () => {
+      window.removeEventListener('mousemove', onMove);
+      window.removeEventListener('mouseup', onUp);
+    };
+  }, [dragging, onAdjust, range]);
+
   if (!range) return <Text type="secondary">暂无排程明细</Text>;
 
   const colors = ['#1677ff', '#52c41a', '#fa8c16', '#722ed1', '#13c2c2', '#eb2f96'];
   return (
     <div>
+      <div style={dragging ? { userSelect: 'none' } : undefined}>
       {items.map((item, idx) => {
         const start = new Date(item.plannedStartTime).getTime();
         const end = new Date(item.plannedEndTime).getTime();
         if (isNaN(start) || isNaN(end)) return null;
+        const itemKey = item.id ?? String(idx);
+        const isDragging = dragging?.id === itemKey;
+        const offsetPx = isDragging ? dragging!.dx : 0;
         const left = ((start - range.min) / range.span) * 100;
         const width = Math.max(((end - start) / range.span) * 100, 0.5);
         const color = colors[item.sequence % colors.length];
         return (
-          <div key={item.id ?? idx} style={{ display: 'flex', alignItems: 'center', marginBottom: 4, gap: 8 }}>
+          <div key={itemKey} style={{ display: 'flex', alignItems: 'center', marginBottom: 4, gap: 8 }}>
             <Text style={{ width: 130, fontSize: 12 }} ellipsis>{`${item.sequence}. ${item.productOrderNo}`}</Text>
-            <div style={{ flex: 1, position: 'relative', height: 22, background: '#f0f0f0', borderRadius: 4 }}>
-              <Tooltip title={`${item.plannedStartTime} → ${item.plannedEndTime}（${Math.round(item.durationSeconds / 60)} 分钟）`}>
-                <div style={{
-                  position: 'absolute', left: `${left}%`, width: `${width}%`, top: 3, bottom: 3,
-                  background: color, borderRadius: 3, minWidth: 6, cursor: 'pointer',
-                }} />
+            <div ref={(el) => { trackRefs.current[itemKey] = el; }}
+                 style={{ flex: 1, position: 'relative', height: 22, background: '#f0f0f0', borderRadius: 4 }}>
+              <Tooltip title={`${item.plannedStartTime} → ${item.plannedEndTime}（${Math.round(item.durationSeconds / 60)} 分钟）${adjustable ? '，可拖拽调整' : ''}`}>
+                <div
+                  onMouseDown={(e) => {
+                    if (!adjustable || !onAdjust) return;
+                    setDragging({ id: itemKey, x0: e.clientX, dx: 0, start });
+                  }}
+                  style={{
+                    position: 'absolute',
+                    left: `calc(${left}% + ${offsetPx}px)`,
+                    width: `${width}%`, top: 3, bottom: 3,
+                    background: color, borderRadius: 3, minWidth: 6,
+                    cursor: adjustable ? 'ew-resize' : 'pointer',
+                    opacity: isDragging ? 0.75 : 1,
+                    boxShadow: isDragging ? '0 0 0 2px rgba(22,119,255,.35)' : undefined,
+                  }} />
               </Tooltip>
             </div>
           </div>
         );
       })}
+      </div>
       <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: 4 }}>
         <Text type="secondary" style={{ fontSize: 12 }}>{dayjs(range.min).format('MM-DD HH:mm')}</Text>
         <Text type="secondary" style={{ fontSize: 12 }}>{dayjs(range.min + range.span).format('MM-DD HH:mm')}</Text>
@@ -151,6 +203,27 @@ const ApsPage: React.FC = () => {
     }
   };
 
+  const onAdjustItem = async (itemID: string, newStartMs: number) => {
+    if (!selectedPlan) return;
+    try {
+      await api('/api/mom/aps/schedule/adjust', {
+        method: 'PUT',
+        body: JSON.stringify({
+          planID: selectedPlan.id,
+          itemID,
+          newStartTime: dayjs(newStartMs).format('YYYY-MM-DD HH:mm:ss'),
+          cascade: true,
+        }),
+      });
+      message.success('已调整并顺延后续工单');
+      await loadPlanDetail(selectedPlan.id);
+      await loadPlans();
+    } catch (e) {
+      message.error(String(e));
+      await loadPlanDetail(selectedPlan.id);
+    }
+  };
+
   const onRelease = async (planID: string) => {
     try {
       await api('/api/mom/aps/schedule/release', { method: 'PUT', body: JSON.stringify({ planID }) });
@@ -212,9 +285,10 @@ const ApsPage: React.FC = () => {
       </Card>
 
       {selectedPlan && (
-        <Card size="small" title={`甘特图 — ${selectedPlan.planNo}（${selectedPlan.productionLineCode}，${selectedPlan.orderCount} 个工单）`} style={{ marginTop: 12 }}>
+        <Card size="small" title={`甘特图 — ${selectedPlan.planNo}（${selectedPlan.productionLineCode}，${selectedPlan.orderCount} 个工单）`} style={{ marginTop: 12 }}
+          extra={selectedPlan.currentState === '已生成' ? <Text type="secondary" style={{ fontSize: 12 }}>拖拽条形调整开工时间，后续工单自动顺延</Text> : undefined}>
           {selectedPlan.items?.length
-            ? <GanttBar items={selectedPlan.items} />
+            ? <GanttBar items={selectedPlan.items} onAdjust={onAdjustItem} adjustable={selectedPlan.currentState === '已生成'} />
             : <Alert type="info" message="该计划无明细" showIcon />}
         </Card>
       )}

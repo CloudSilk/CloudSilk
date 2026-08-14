@@ -375,3 +375,84 @@ func InsertSchedule(req *proto.InsertScheduleRequest) (*proto.InsertScheduleResp
 			}).Error
 	})
 }
+
+// AdjustScheduleItem 人工调整排程明细（甘特拖拽落库）：
+// 将指定明细平移到新开工时间；cascade 为 true 时，该明细及其后全部明细
+// 按相同偏移整体平移（保持既有时序与间隔），否则仅平移该明细（由调用方负责重叠）。
+func AdjustScheduleItem(req *proto.AdjustScheduleItemRequest, userID string) error {
+	if req.PlanID == "" || req.ItemID == "" || req.NewStartTime == "" {
+		return errors.New("planID、itemID与newStartTime不能为空")
+	}
+	newStart, err := time.ParseInLocation("2006-01-02 15:04:05", req.NewStartTime, time.Local)
+	if err != nil {
+		return errors.New("newStartTime格式无效，应为yyyy-MM-dd HH:mm:ss")
+	}
+
+	return model.DB.DB().Transaction(func(tx *gorm.DB) error {
+		plan := &model.ProductionSchedulePlan{}
+		if err := tx.First(plan, "`id` = ?", req.PlanID).Error; err != nil {
+			return errors.New("读取排程计划失败")
+		}
+		if plan.CurrentState != ScheduleStateGenerated {
+			return fmt.Errorf("排程计划状态为%s，只有%s状态可人工调整", plan.CurrentState, ScheduleStateGenerated)
+		}
+
+		items := []*model.ProductionScheduleItem{}
+		if err := tx.Where("`production_schedule_plan_id` = ?", plan.ID).Order("sequence").Find(&items).Error; err != nil {
+			return err
+		}
+
+		targetIdx := -1
+		for i, item := range items {
+			if item.ID == req.ItemID {
+				targetIdx = i
+				break
+			}
+		}
+		if targetIdx < 0 {
+			return errors.New("排程明细不存在")
+		}
+
+		delta := newStart.Sub(items[targetIdx].PlannedStartTime)
+		if delta == 0 {
+			return nil
+		}
+
+		for i := targetIdx; i < len(items); i++ {
+			if i > targetIdx && !req.Cascade {
+				break
+			}
+			items[i].PlannedStartTime = items[i].PlannedStartTime.Add(delta)
+			items[i].PlannedEndTime = items[i].PlannedEndTime.Add(delta)
+			if err := tx.Model(&model.ProductionScheduleItem{}).Where("`id` = ?", items[i].ID).
+				Updates(map[string]interface{}{
+					"planned_start_time": items[i].PlannedStartTime,
+					"planned_end_time":   items[i].PlannedEndTime,
+				}).Error; err != nil {
+				return err
+			}
+		}
+
+		//刷新计划区间
+		start, end := items[0].PlannedStartTime, items[0].PlannedEndTime
+		for _, item := range items {
+			if item.PlannedStartTime.Before(start) {
+				start = item.PlannedStartTime
+			}
+			if item.PlannedEndTime.After(end) {
+				end = item.PlannedEndTime
+			}
+		}
+		if err := tx.Model(&model.ProductionSchedulePlan{}).Where("`id` = ?", plan.ID).
+			Updates(map[string]interface{}{"start_time": start, "end_time": end}).Error; err != nil {
+			return err
+		}
+
+		return tx.Create(&model.OperationTrace{
+			OperateUserID:  userID,
+			ControllerName: "APS排程",
+			ActionName:     "人工调整",
+			RequestContent: fmt.Sprintf("批次:%s,工单明细:%s,平移:%s,顺延:%v", plan.PlanNo, req.ItemID, delta.Truncate(time.Second), req.Cascade),
+		}).Error
+	})
+}

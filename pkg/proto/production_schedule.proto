@@ -114,6 +114,18 @@ message ReleaseScheduleRequest{
 	string planID=1;
 }
 
+// 人工调整排程明细（甘特拖拽）
+message AdjustScheduleItemRequest{
+	//排程计划ID
+	string planID=1;
+	//排程明细ID
+	string itemID=2;
+	//新的计划开工时间（yyyy-MM-dd HH:mm:ss）
+	string newStartTime=3;
+	//是否顺延后续工单（保持相对间隔整体平移）
+	bool cascade=4;
+}
+
 // 插单重排请求
 message InsertScheduleRequest{
 	//排程计划ID

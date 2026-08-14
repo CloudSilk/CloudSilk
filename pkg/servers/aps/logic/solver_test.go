@@ -3,6 +3,10 @@ package logic
 import (
 	"testing"
 	"time"
+
+	"github.com/CloudSilk/CloudSilk/pkg/model"
+	"github.com/CloudSilk/CloudSilk/pkg/proto"
+	"github.com/CloudSilk/CloudSilk/pkg/testutil"
 )
 
 // 换型约束：相邻工单型号不同时插入换型间隔，相同时不插入
@@ -149,4 +153,102 @@ type schedulerStub struct{ calls *int }
 func (s *schedulerStub) Schedule(orders []SchedOrderEx, startTime time.Time, opts SchedOptions) []SchedSlot {
 	*s.calls++
 	return ConstrainedSchedule(orders, startTime, opts)
+}
+
+// 人工调整：级联顺延保持间隔，前置明细不受影响，计划区间刷新
+func TestAdjustScheduleItem_Cascade(t *testing.T) {
+	gdb, err := testutil.SetupTestDB()
+	if err != nil {
+		t.Fatalf("初始化测试数据库失败: %v", err)
+	}
+	base := testBase()
+
+	plan := &model.ProductionSchedulePlan{
+		PlanNo: "SC-001", ProductionLineID: "line-1",
+		StartTime: base, EndTime: base.Add(30 * time.Minute),
+		OrderCount: 3, CurrentState: ScheduleStateGenerated,
+	}
+	if err := gdb.Create(plan).Error; err != nil {
+		t.Fatalf("造数失败: %v", err)
+	}
+	items := []*model.ProductionScheduleItem{
+		{ProductionSchedulePlanID: plan.ID, ProductOrderID: "o1", Sequence: 1, PlannedStartTime: base, PlannedEndTime: base.Add(10 * time.Minute), DurationSeconds: 600},
+		{ProductionSchedulePlanID: plan.ID, ProductOrderID: "o2", Sequence: 2, PlannedStartTime: base.Add(10 * time.Minute), PlannedEndTime: base.Add(20 * time.Minute), DurationSeconds: 600},
+		{ProductionSchedulePlanID: plan.ID, ProductOrderID: "o3", Sequence: 3, PlannedStartTime: base.Add(20 * time.Minute), PlannedEndTime: base.Add(30 * time.Minute), DurationSeconds: 600},
+	}
+	for _, it := range items {
+		if err := gdb.Create(it).Error; err != nil {
+			t.Fatalf("造数失败: %v", err)
+		}
+	}
+
+	// 把第2条推迟5分钟并顺延
+	newStart := base.Add(15 * time.Minute)
+	if err := AdjustScheduleItem(&proto.AdjustScheduleItemRequest{
+		PlanID: plan.ID, ItemID: items[1].ID,
+		NewStartTime: newStart.Format("2006-01-02 15:04:05"), Cascade: true,
+	}, "user-9"); err != nil {
+		t.Fatalf("调整失败: %v", err)
+	}
+
+	var after []*model.ProductionScheduleItem
+	gdb.Where("`production_schedule_plan_id` = ?", plan.ID).Order("sequence").Find(&after)
+	if !after[0].PlannedStartTime.Equal(base) {
+		t.Fatalf("前置明细不应移动")
+	}
+	if !after[1].PlannedStartTime.Equal(newStart) {
+		t.Fatalf("目标明细应移动到新开工时间")
+	}
+	if !after[2].PlannedStartTime.Equal(base.Add(25 * time.Minute)) {
+		t.Fatalf("后续明细应顺延5分钟，实际%v", after[2].PlannedStartTime)
+	}
+
+	p := &model.ProductionSchedulePlan{}
+	gdb.First(p, "`id` = ?", plan.ID)
+	if !p.EndTime.Equal(base.Add(35 * time.Minute)) {
+		t.Fatalf("计划结束时间应刷新为+35分钟，实际%v", p.EndTime)
+	}
+
+	var traces int64
+	gdb.Model(&model.OperationTrace{}).Where("`action_name` = ?", "人工调整").Count(&traces)
+	if traces != 1 {
+		t.Fatalf("应记录1条人工调整轨迹")
+	}
+}
+
+// 非级联模式仅移动目标明细；已下发计划拒绝调整
+func TestAdjustScheduleItem_NoCascadeAndStateGuard(t *testing.T) {
+	gdb, _ := testutil.SetupTestDB()
+	base := testBase()
+
+	plan := &model.ProductionSchedulePlan{PlanNo: "SC-002", StartTime: base, EndTime: base.Add(20 * time.Minute), OrderCount: 2, CurrentState: ScheduleStateGenerated}
+	gdb.Create(plan)
+	itemA := &model.ProductionScheduleItem{ProductionSchedulePlanID: plan.ID, Sequence: 1, PlannedStartTime: base, PlannedEndTime: base.Add(10 * time.Minute)}
+	itemB := &model.ProductionScheduleItem{ProductionSchedulePlanID: plan.ID, Sequence: 2, PlannedStartTime: base.Add(10 * time.Minute), PlannedEndTime: base.Add(20 * time.Minute)}
+	gdb.Create([]*model.ProductionScheduleItem{itemA, itemB})
+
+	// 非级联：仅A移动
+	if err := AdjustScheduleItem(&proto.AdjustScheduleItemRequest{
+		PlanID: plan.ID, ItemID: itemA.ID,
+		NewStartTime: base.Add(5 * time.Minute).Format("2006-01-02 15:04:05"), Cascade: false,
+	}, "u"); err != nil {
+		t.Fatalf("调整失败: %v", err)
+	}
+	var after []*model.ProductionScheduleItem
+	gdb.Where("`production_schedule_plan_id` = ?", plan.ID).Order("sequence").Find(&after)
+	if !after[0].PlannedStartTime.Equal(base.Add(5 * time.Minute)) {
+		t.Fatalf("目标明细应移动")
+	}
+	if !after[1].PlannedStartTime.Equal(base.Add(10 * time.Minute)) {
+		t.Fatalf("非级联模式后续明细不应移动")
+	}
+
+	// 已下发拒绝
+	gdb.Model(&model.ProductionSchedulePlan{}).Where("`id` = ?", plan.ID).Update("current_state", ScheduleStateReleased)
+	if err := AdjustScheduleItem(&proto.AdjustScheduleItemRequest{
+		PlanID: plan.ID, ItemID: itemA.ID,
+		NewStartTime: base.Add(6 * time.Minute).Format("2006-01-02 15:04:05"),
+	}, "u"); err == nil {
+		t.Fatalf("已下发计划应拒绝人工调整")
+	}
 }
