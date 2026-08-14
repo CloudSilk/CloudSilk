@@ -269,7 +269,12 @@
 | ⑤ 依赖安全升级 | protobuf 1.33（CVE-2024-24786）、golang/protobuf 1.5.4、uuid 1.6、swaggo 套件、copier 0.4；构建+6 测试包全绿 | 71eeb61 |
 | 补 | CI 环境类型检查修复（排除 .umi 生成目录等 3 处），流水线转绿 | e40dbd1 |
 
-**遗留**（下一版本）：dubbogo v3.0.5 依赖链漏洞需大版本升级专项；APS 人工拖拽调整（需前端画布交互）。
+~~遗留~~ **两项已于 2026-08-14 完成**：
+
+| 项 | 内容 | 提交 |
+|----|------|------|
+| dubbogo 升级专项 | v3.0.5→v3.1.1（v3.0线终点，triple 生成代码零改动；v3.3 因移除 config 包弃用）；nacos-sdk v1.1.4→**v2.2.5**、gost 1.14.3、grpc 1.64、protobuf 1.34；go directive 1.23；Dockerfile/CI 同步 golang 1.23；运行时 pb 重复注册按官方 FAQ 以 warn 缓解并固化到启动入口；单进程模式冒烟通过（HTTP 200） | b64caff |
+| APS 人工拖拽 | 后端 AdjustScheduleItem（平移+级联顺延+区间刷新+轨迹，仅已生成状态）+ adjust 端点（aps.manage 权限）+ 3 组单测；前端甘特条指针拖拽（像素→时间换算、乐观位移、松手落库刷新，已下发只读） | 583bbad |
 
 ---
 
