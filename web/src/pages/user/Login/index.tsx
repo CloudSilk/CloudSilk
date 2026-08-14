@@ -22,8 +22,8 @@ const Login: React.FC = () => {
       });
     }
   };
-  return <LoginComponent showLogo={true} logo={(process.env.WEB_BASE!==undefined && process.env.WEB_BASE!=="" ? process.env.WEB_BASE : "") +'/logo-v.svg'} name={"智能工厂"} login={(params) => {
-    return defaultService.login(params)
+  return <LoginComponent showLogo={true} logo={(process.env.WEB_BASE!==undefined && process.env.WEB_BASE!=="" ? process.env.WEB_BASE : "") +'/logo-v.svg'} name={"智能工厂"} login={async (params) => {
+    return (await defaultService.login(params)) as any
   }} formatMessage={(id: string, defaultMessage: string) => {
     return intl.formatMessage({ id: id, defaultMessage: defaultMessage })
   }}

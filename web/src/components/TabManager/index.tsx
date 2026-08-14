@@ -38,7 +38,7 @@ const TabManager = ({ children }: any) => {
         setActiveKey(selectedTab[0].id);
       }
     } else {
-      const tab = tabs.find(tab => tab.path === (location.pathname + location.search));
+      const tab = tabs.find((tab: any) => tab.path === (location.pathname + location.search));
       if(tab) {
         setActiveKey(tab.id);
       }
@@ -61,7 +61,7 @@ const TabManager = ({ children }: any) => {
         setActiveKey(tabs[tabs.length - 2].key);
         goTopage(tabs[tabs.length - 2].path);
       }
-      setTabs(tabs.filter(pane => pane.id !== targetKey));
+      setTabs(tabs.filter((pane: any) => pane.id !== targetKey));
       
     }
   };
@@ -81,7 +81,7 @@ const TabManager = ({ children }: any) => {
       <div className='t-m-container'>
         <Tabs
         type="editable-card"
-        items={tabs.map(tab => ({
+        items={tabs.map((tab: any) => ({
           label: tab.name,
           key: tab.id,
           
@@ -92,7 +92,7 @@ const TabManager = ({ children }: any) => {
         activeKey={activeKey}
         onChange={(tabId) => {
           setActiveKey(tabId);
-          const tab = tabs.find(item => item.id === tabId);
+          const tab = tabs.find((item: any) => item.id === tabId);
           if(tab) {
             goTopage(tab.path);
           }

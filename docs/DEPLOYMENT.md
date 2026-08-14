@@ -210,7 +210,7 @@ go test ./...
 
 ## 生产环境建议
 
-1. **修改默认密码** - 部署后立即修改 `defaultPwd`
+1. **修改默认密码与密钥** - 部署后立即修改 `defaultPwd` 与 `token.key`（默认值 `CloudSilk` 仅用于快速体验，公网部署必须更换为强随机值）
 2. **关闭调试模式** - 设置 `debug: false`
 3. **使用 MySQL** - 生产环境建议使用 MySQL 而非 SQLite
 4. **配置 Redis** - 启用 Redis 缓存提升性能

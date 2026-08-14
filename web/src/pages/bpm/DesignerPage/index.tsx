@@ -76,7 +76,7 @@ export default class BPMDesignerPage extends React.Component<any, BPMDesignerPag
             name = c.getLabelAt(0)?.attrs?.label?.text?.toString() ?? ''
         }
 
-        const processCell: ProcessCell = {
+        const processCell = {
           name: name,
           id: cell.id,
           shape: cell.shape,
@@ -102,7 +102,7 @@ export default class BPMDesignerPage extends React.Component<any, BPMDesignerPag
           visible: cell.visible ?? true,
           markup: JSON.stringify(cell.markup),
           attrs: JSON.stringify(cell.attrs)
-        }
+        } as any as ProcessCell
 
         if (c instanceof CollapseGroup) {
             processCell.collapsed = c.isCollapsed()
@@ -120,11 +120,11 @@ export default class BPMDesignerPage extends React.Component<any, BPMDesignerPag
         if (!processCell.data) {
             processCell.data = {
                 id: processCell.id
-            }
+            } as any
         } else if (processCell.data && processCell.data.id === "") {
             processCell.data.id = processCell.id
         }
-        return processCell
+        return processCell as any as ProcessCell
     }
 
     save(self: BPMDesignerPage, graph: Graph, cellCache: CellCache) {

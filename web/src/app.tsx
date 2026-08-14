@@ -51,7 +51,7 @@ export async function getInitialState(): Promise<AppState> {
     return undefined;
   };
   // 如果是登录页面，不执行
-  if (history.location.pathname !== loginPath) {
+  if (window.location.pathname !== loginPath) {
     const currentUser = await fetchUserInfo();
     return {
       fetchUserInfo,
@@ -96,7 +96,7 @@ export const layout = ({
     fixSiderbar: true,
     splitMenus: true,
     rightContentRender: () => <RightContent />,
-    menuFooterRender: (props) => {
+    menuFooterRender: (props: any) => {
       if (props?.collapsed) return undefined;
       return (
         <div
@@ -123,9 +123,8 @@ export const layout = ({
     ] */ false,
     onPageChange: () => {
       const { currentUser } = initialState;
-      const { location } = history;
       // 如果没有登录，重定向到 login
-      if (!currentUser && location.pathname !== loginPath) {
+      if (!currentUser && window.location.pathname !== loginPath) {
         history.push(loginPath);
       }
     },
@@ -151,14 +150,14 @@ export const layout = ({
       }
     },
     iconfontUrl: "//at.alicdn.com/t/font_2590742_729agyh0ndx.js",
-    menuItemRender: (item, dom, props) => {
+    menuItemRender: (item: any, dom: any, props: any) => {
       let path = item.path;
       if (item.parentID == "") {
         path = getDefaultMenuPath(initialState?.currentUser?.menus, item.id, item.path)
       }
       const handleClick = (item: any) => {
         if (item.parentID && item.path) {
-          const exist = tabs.some((tab) => tab.id === item.id);
+          const exist = tabs.some((tab: any) => tab.id === item.id);
           if (!exist) {
             // 用新数组引用触发重渲染（原地 push 不会刷新已打开的页签）
             setTabs([...tabs, { ...item, path }]);
@@ -177,7 +176,7 @@ export const layout = ({
         </div>
       </Link>
     },
-    subMenuItemRender: (item, dom, props) => {
+    subMenuItemRender: (item: any, dom: any, props: any) => {
       var iconEl = (props.collapsed && item.level <= 1) ? <div className={dom.props.className}>
         <span onClick={item.onClick} className={props.className}>
           {<MyIcon type={(item.icon as string) || 'icon-daima'} />}
@@ -193,13 +192,13 @@ export const layout = ({
     menu: {
       locale: false,
       params: { currentMenus: initialState?.currentUser?.menus },
-      request: (params, defaultMenuData) => {
+      request: (params: any, defaultMenuData: any) => {
         return params.currentMenus
       },
     },
     className: "my-app-layout",
     headerRender: (props: any) => {
-      const menuData = []
+      const menuData: any[] = []
       props.menuData?.forEach((value: any) => {
         menuData.push({ ...value, children: [] })
       })

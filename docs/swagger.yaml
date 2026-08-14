@@ -137,6 +137,12 @@ definitions:
       productSerialNo:
         type: string
     type: object
+  proto.CancelPickBillRequest:
+    properties:
+      billID:
+        description: 拣货单ID
+        type: string
+    type: object
   proto.CheckProductProcessRouteFailureRequest:
     properties:
       handleMethod:
@@ -298,6 +304,69 @@ definitions:
       message:
         type: string
     type: object
+  proto.CompletePickBillRequest:
+    properties:
+      billID:
+        description: 拣货单ID
+        type: string
+      createAGVTask:
+        description: 完成后是否生成AGV搬运任务（待签派状态）
+        type: boolean
+    type: object
+  proto.CompleteQualityInspectionOrderRequest:
+    properties:
+      concession:
+        description: 让步接收：判定不合格但特采放行（结论记为让步接收，不改产品状态）
+        type: boolean
+      createRework:
+        description: 不合格时是否生成返工记录
+        type: boolean
+      disposition:
+        description: 不合格处理说明
+        type: string
+      id:
+        description: 检验单ID
+        type: string
+      inspectionUserID:
+        description: 检验人
+        type: string
+      items:
+        description: 明细检测结果
+        items:
+          $ref: '#/definitions/proto.QualityInspectionOrderItemInfo'
+        type: array
+    type: object
+  proto.CreatePickBillRequest:
+    properties:
+      createAGVTask:
+        description: 完成后是否生成AGV搬运任务
+        type: boolean
+      materialStoreID:
+        description: 发货仓库ID（可选，缺省用工单BOM上的仓库）
+        type: string
+      productOrderID:
+        description: 生产工单ID
+        type: string
+    type: object
+  proto.CreatePickBillResponse:
+    properties:
+      billID:
+        description: 拣货单ID
+        type: string
+      billNo:
+        description: 拣货单号
+        type: string
+      code:
+        $ref: '#/definitions/proto.Code'
+      lockedLines:
+        description: 锁定明细数
+        type: integer
+      lockedQTY:
+        description: 锁定总量
+        type: integer
+      message:
+        type: string
+    type: object
   proto.CreateProductProcessRecordRequest:
     properties:
       processStepType:
@@ -317,6 +386,23 @@ definitions:
         type: string
       workResult:
         description: 作业结果
+        type: string
+    type: object
+  proto.CreateProductTestRecordRequest:
+    properties:
+      isQualified:
+        type: boolean
+      productSerialNo:
+        type: string
+      productionStation:
+        type: string
+      testData:
+        type: string
+      testEndTime:
+        type: string
+      testProject:
+        type: string
+      testStartTime:
         type: string
     type: object
   proto.CreateProductWorkRecordRequest:
@@ -449,6 +535,175 @@ definitions:
       message:
         type: string
     type: object
+  proto.EquipmentInfo:
+    properties:
+      code:
+        description: 代号
+        type: string
+      commissionDate:
+        description: 投运日期
+        type: string
+      currentState:
+        description: 设备状态（在用/停用/维修中/报废）
+        type: string
+      enable:
+        description: 是否启用
+        type: boolean
+      id:
+        description: ID
+        type: string
+      location:
+        description: 安装位置
+        type: string
+      manufacturer:
+        description: 生产厂家
+        type: string
+      model:
+        description: 型号规格
+        type: string
+      name:
+        description: 名称
+        type: string
+      productionStationCode:
+        type: string
+      productionStationID:
+        description: 关联生产工站ID
+        type: string
+      remark:
+        description: 备注
+        type: string
+      serialNo:
+        description: 出厂编号
+        type: string
+      team:
+        description: 责任班组
+        type: string
+    type: object
+  proto.EquipmentMaintenancePlanInfo:
+    properties:
+      content:
+        description: 维保内容
+        type: string
+      cycleDays:
+        description: 周期（天）
+        type: integer
+      enable:
+        description: 是否启用
+        type: boolean
+      equipmentCode:
+        type: string
+      equipmentID:
+        description: 设备ID
+        type: string
+      id:
+        description: ID
+        type: string
+      lastExecutionDate:
+        description: 上次执行日期
+        type: string
+      maintenanceType:
+        description: 维保类型（保养/点检/大修）
+        type: string
+      nextExecutionDate:
+        description: 下次执行日期
+        type: string
+      remark:
+        description: 备注
+        type: string
+      remindDays:
+        description: 提前提醒天数
+        type: integer
+    type: object
+  proto.EquipmentMaintenanceRecordInfo:
+    properties:
+      abnormalDescription:
+        description: 异常说明
+        type: string
+      content:
+        description: 执行内容
+        type: string
+      durationMinutes:
+        description: 耗时（分钟）
+        type: integer
+      equipmentCode:
+        type: string
+      equipmentID:
+        description: 设备ID
+        type: string
+      equipmentMaintenancePlanID:
+        description: 维保计划ID
+        type: string
+      executionDate:
+        description: 执行日期
+        type: string
+      executorID:
+        description: 执行人
+        type: string
+      id:
+        description: ID
+        type: string
+      maintenanceType:
+        description: 维保类型
+        type: string
+      remark:
+        description: 备注
+        type: string
+      result:
+        description: 结果（正常/异常）
+        type: string
+    type: object
+  proto.EquipmentOeeRequest:
+    properties:
+      endTime:
+        description: 结束时间（yyyy-MM-dd HH:mm:ss）
+        type: string
+      equipmentID:
+        description: 设备ID
+        type: string
+      plannedMinutes:
+        description: 计划生产时间（分钟，缺省按时间范围计算）
+        type: integer
+      productionStationID:
+        description: 生产工站ID（与设备二选一）
+        type: string
+      startTime:
+        description: 开始时间（yyyy-MM-dd HH:mm:ss）
+        type: string
+    type: object
+  proto.EquipmentOeeResponse:
+    properties:
+      availability:
+        description: 时间稼动率
+        type: number
+      code:
+        $ref: '#/definitions/proto.Code'
+      downtimeMinutes:
+        description: 停机时间（分钟，来自故障记录）
+        type: number
+      message:
+        type: string
+      oee:
+        description: OEE
+        type: number
+      performance:
+        description: 性能稼动率
+        type: number
+      plannedMinutes:
+        description: 计划时间（分钟）
+        type: number
+      qualifiedCount:
+        description: 合格数量
+        type: integer
+      quality:
+        description: 良品率
+        type: number
+      runMinutes:
+        description: 实际运行时间（分钟）
+        type: number
+      totalCount:
+        description: 加工数量
+        type: integer
+    type: object
   proto.ExceptionTraceInfo:
     properties:
       host:
@@ -481,6 +736,27 @@ definitions:
         description: 上报时间
         type: string
     type: object
+  proto.ExecuteEquipmentMaintenanceRequest:
+    properties:
+      abnormalDescription:
+        description: 异常说明
+        type: string
+      content:
+        description: 执行内容
+        type: string
+      durationMinutes:
+        description: 耗时（分钟）
+        type: integer
+      equipmentMaintenancePlanID:
+        description: 维保计划ID
+        type: string
+      executorID:
+        description: 执行人
+        type: string
+      result:
+        description: 结果（正常/异常）
+        type: string
+    type: object
   proto.ExitProductionStationRequest:
     properties:
       isFail:
@@ -510,6 +786,45 @@ definitions:
       waitTime:
         description: 等待时长
         type: integer
+    type: object
+  proto.GenerateScheduleRequest:
+    properties:
+      changeoverSeconds:
+        description: 换型时间（秒）：相邻工单产品型号不同时插入的换型间隔
+        type: integer
+      dailyWorkMinutes:
+        description: 每日工作分钟数（<=0 表示连续排程不跨天中断）
+        type: integer
+      productOrderIDs:
+        description: 仅纳入这些工单（为空则自动取该产线全部已发放/已签派工单）
+        items:
+          type: string
+        type: array
+      productionLineID:
+        description: 产线ID（为空则报错，当前按单产线排程）
+        type: string
+      startTime:
+        description: 排程起始时间（yyyy-MM-dd HH:mm:ss，为空取当前时间）
+        type: string
+    type: object
+  proto.GenerateScheduleResponse:
+    properties:
+      code:
+        $ref: '#/definitions/proto.Code'
+      endTime:
+        description: 计划结束时间
+        type: string
+      message:
+        type: string
+      orderCount:
+        description: 纳入工单数
+        type: integer
+      planID:
+        description: 排程计划ID
+        type: string
+      planNo:
+        description: 计划批次号
+        type: string
     type: object
   proto.GetAGVTaskQueueDetailResponse:
     properties:
@@ -591,6 +906,28 @@ definitions:
       data:
         items:
           $ref: '#/definitions/proto.DataMappingInfo'
+        type: array
+      message:
+        type: string
+    type: object
+  proto.GetAllEquipmentMaintenancePlanResponse:
+    properties:
+      code:
+        $ref: '#/definitions/proto.Code'
+      data:
+        items:
+          $ref: '#/definitions/proto.EquipmentMaintenancePlanInfo'
+        type: array
+      message:
+        type: string
+    type: object
+  proto.GetAllEquipmentResponse:
+    properties:
+      code:
+        $ref: '#/definitions/proto.Code'
+      data:
+        items:
+          $ref: '#/definitions/proto.EquipmentInfo'
         type: array
       message:
         type: string
@@ -1530,6 +1867,28 @@ definitions:
       message:
         type: string
     type: object
+  proto.GetAllQualityInspectionStandardResponse:
+    properties:
+      code:
+        $ref: '#/definitions/proto.Code'
+      data:
+        items:
+          $ref: '#/definitions/proto.QualityInspectionStandardInfo'
+        type: array
+      message:
+        type: string
+    type: object
+  proto.GetAllQualityInspectionTypeResponse:
+    properties:
+      code:
+        $ref: '#/definitions/proto.Code'
+      data:
+        items:
+          $ref: '#/definitions/proto.QualityInspectionTypeInfo'
+        type: array
+      message:
+        type: string
+    type: object
   proto.GetAllRemoteServiceResponse:
     properties:
       code:
@@ -1559,6 +1918,28 @@ definitions:
       data:
         items:
           $ref: '#/definitions/proto.RemoteServiceTaskInfo'
+        type: array
+      message:
+        type: string
+    type: object
+  proto.GetAllScadaDeviceResponse:
+    properties:
+      code:
+        $ref: '#/definitions/proto.Code'
+      data:
+        items:
+          $ref: '#/definitions/proto.ScadaDeviceInfo'
+        type: array
+      message:
+        type: string
+    type: object
+  proto.GetAllScadaTagResponse:
+    properties:
+      code:
+        $ref: '#/definitions/proto.Code'
+      data:
+        items:
+          $ref: '#/definitions/proto.ScadaTagInfo'
         type: array
       message:
         type: string
@@ -1680,6 +2061,33 @@ definitions:
         $ref: '#/definitions/proto.Code'
       data:
         $ref: '#/definitions/proto.DataMappingInfo'
+      message:
+        type: string
+    type: object
+  proto.GetEquipmentDetailResponse:
+    properties:
+      code:
+        $ref: '#/definitions/proto.Code'
+      data:
+        $ref: '#/definitions/proto.EquipmentInfo'
+      message:
+        type: string
+    type: object
+  proto.GetEquipmentMaintenancePlanDetailResponse:
+    properties:
+      code:
+        $ref: '#/definitions/proto.Code'
+      data:
+        $ref: '#/definitions/proto.EquipmentMaintenancePlanInfo'
+      message:
+        type: string
+    type: object
+  proto.GetEquipmentMaintenanceRecordDetailResponse:
+    properties:
+      code:
+        $ref: '#/definitions/proto.Code'
+      data:
+        $ref: '#/definitions/proto.EquipmentMaintenanceRecordInfo'
       message:
         type: string
     type: object
@@ -2388,6 +2796,15 @@ definitions:
       message:
         type: string
     type: object
+  proto.GetProductionSchedulePlanDetailResponse:
+    properties:
+      code:
+        $ref: '#/definitions/proto.Code'
+      data:
+        $ref: '#/definitions/proto.ProductionSchedulePlanInfo'
+      message:
+        type: string
+    type: object
   proto.GetProductionStationAlarmDetailResponse:
     properties:
       code:
@@ -2458,6 +2875,33 @@ definitions:
       message:
         type: string
     type: object
+  proto.GetQualityInspectionOrderDetailResponse:
+    properties:
+      code:
+        $ref: '#/definitions/proto.Code'
+      data:
+        $ref: '#/definitions/proto.QualityInspectionOrderInfo'
+      message:
+        type: string
+    type: object
+  proto.GetQualityInspectionStandardDetailResponse:
+    properties:
+      code:
+        $ref: '#/definitions/proto.Code'
+      data:
+        $ref: '#/definitions/proto.QualityInspectionStandardInfo'
+      message:
+        type: string
+    type: object
+  proto.GetQualityInspectionTypeDetailResponse:
+    properties:
+      code:
+        $ref: '#/definitions/proto.Code'
+      data:
+        $ref: '#/definitions/proto.QualityInspectionTypeInfo'
+      message:
+        type: string
+    type: object
   proto.GetRemoteServiceDetailResponse:
     properties:
       code:
@@ -2482,6 +2926,24 @@ definitions:
         $ref: '#/definitions/proto.Code'
       data:
         $ref: '#/definitions/proto.RemoteServiceTaskQueueInfo'
+      message:
+        type: string
+    type: object
+  proto.GetScadaDeviceDetailResponse:
+    properties:
+      code:
+        $ref: '#/definitions/proto.Code'
+      data:
+        $ref: '#/definitions/proto.ScadaDeviceInfo'
+      message:
+        type: string
+    type: object
+  proto.GetScadaTagDetailResponse:
+    properties:
+      code:
+        $ref: '#/definitions/proto.Code'
+      data:
+        $ref: '#/definitions/proto.ScadaTagInfo'
       message:
         type: string
     type: object
@@ -2539,6 +3001,27 @@ definitions:
       message:
         type: string
     type: object
+  proto.GetTestProjectWithParameterRequest:
+    properties:
+      productSerialNo:
+        description: 产品序列号
+        type: string
+      productionStation:
+        description: 工位代号
+        type: string
+      trayNo:
+        description: 载具号
+        type: string
+    type: object
+  proto.GetTestProjectWithParameterResponse:
+    properties:
+      code:
+        type: integer
+      data:
+        $ref: '#/definitions/proto.TestProjectWithParameterInfo'
+      message:
+        type: string
+    type: object
   proto.GetWMSBillQueueDetailResponse:
     properties:
       code:
@@ -2547,6 +3030,31 @@ definitions:
         $ref: '#/definitions/proto.WMSBillQueueInfo'
       message:
         type: string
+    type: object
+  proto.InsertScheduleRequest:
+    properties:
+      changeoverSeconds:
+        description: 换型时间（秒）
+        type: integer
+      planID:
+        description: 排程计划ID
+        type: string
+      productOrderID:
+        description: 新插入的工单ID
+        type: string
+    type: object
+  proto.InsertScheduleResponse:
+    properties:
+      code:
+        $ref: '#/definitions/proto.Code'
+      endTime:
+        description: 重排后的计划结束时间
+        type: string
+      message:
+        type: string
+      sequence:
+        description: 新工单所在顺序号（从1开始）
+        type: integer
     type: object
   proto.InvocationAuthenticationInfo:
     properties:
@@ -3023,6 +3531,47 @@ definitions:
         description: 物料仓库
         type: string
     type: object
+  proto.MaterialInventoryAlertInfo:
+    properties:
+      availableQTY:
+        description: 可用数量
+        type: integer
+      issuedQTY:
+        description: 锁定数量
+        type: integer
+      materialDescription:
+        type: string
+      materialInfoID:
+        description: 物料ID
+        type: string
+      materialInventoryID:
+        description: 库存记录ID
+        type: string
+      materialNo:
+        type: string
+      materialStoreCode:
+        type: string
+      materialStoreID:
+        description: 仓库ID
+        type: string
+      minimumQTY:
+        description: 预警阈值（补料规则最低库存量，无规则时为0）
+        type: integer
+      storedQTY:
+        description: 账面库存
+        type: integer
+    type: object
+  proto.MaterialInventoryAlertResponse:
+    properties:
+      code:
+        $ref: '#/definitions/proto.Code'
+      data:
+        items:
+          $ref: '#/definitions/proto.MaterialInventoryAlertInfo'
+        type: array
+      message:
+        type: string
+    type: object
   proto.MaterialInventoryInfo:
     properties:
       createTime:
@@ -3066,6 +3615,46 @@ definitions:
       storedQTY:
         description: 库存数量
         type: integer
+    type: object
+  proto.MaterialInventoryTransactionInfo:
+    properties:
+      afterQTY:
+        description: 变更后库存
+        type: integer
+      beforeQTY:
+        description: 变更前库存
+        type: integer
+      createTime:
+        description: 操作时间
+        type: string
+      createUserID:
+        description: 操作人
+        type: string
+      id:
+        description: ID
+        type: string
+      materialInfoID:
+        description: 物料ID
+        type: string
+      materialNo:
+        type: string
+      materialStoreCode:
+        type: string
+      materialStoreID:
+        description: 仓库ID
+        type: string
+      qty:
+        description: 数量（带符号）
+        type: integer
+      refBillNo:
+        description: 关联单号
+        type: string
+      remark:
+        description: 备注
+        type: string
+      transactionType:
+        description: 事务类型（入库/出库/锁定/解锁/盘点调整）
+        type: string
     type: object
   proto.MaterialRecordInfo:
     properties:
@@ -3492,6 +4081,111 @@ definitions:
         description: 载具类型
         type: string
     type: object
+  proto.MonitoringAlarmInfo:
+    properties:
+      alarmMessage:
+        description: 报警信息
+        type: string
+      alarmNo:
+        description: 报警编号
+        type: string
+      createTime:
+        description: 报警时间
+        type: string
+      currentState:
+        description: 状态
+        type: string
+      handleMethod:
+        description: 处理方式
+        type: string
+      id:
+        description: ID
+        type: string
+      productionStationCode:
+        description: 工站代号
+        type: string
+    type: object
+  proto.MonitoringLineResponse:
+    properties:
+      achievementRate:
+        description: 工单达成率（完工/下单）
+        type: number
+      availability:
+        description: 时间稼动率
+        type: number
+      code:
+        $ref: '#/definitions/proto.Code'
+      message:
+        type: string
+      oee:
+        description: OEE
+        type: number
+      outputCount:
+        description: 周期产量（节拍记录数）
+        type: integer
+      performance:
+        description: 性能稼动率
+        type: number
+      productionLineCode:
+        type: string
+      productionLineDescription:
+        type: string
+      productionLineID:
+        description: 产线ID
+        type: string
+      quality:
+        description: 良品率
+        type: number
+      stationCount:
+        description: 工站数
+        type: integer
+      unhandledAlarmCount:
+        description: 未处理告警数
+        type: integer
+      wipCount:
+        description: 当前在制数
+        type: integer
+    type: object
+  proto.MonitoringOverviewResponse:
+    properties:
+      breakdownStationCount:
+        description: 故障工站数
+        type: integer
+      code:
+        $ref: '#/definitions/proto.Code'
+      idleStationCount:
+        description: 正常工站数
+        type: integer
+      message:
+        type: string
+      producingOrderCount:
+        description: 生产中工单数
+        type: integer
+      producingStationCount:
+        description: 生产中工站数
+        type: integer
+      productionLineCount:
+        description: 产线数
+        type: integer
+      productionStationCount:
+        description: 工站数
+        type: integer
+      todayAlarmCount:
+        description: 今日新增告警数
+        type: integer
+      totalFinishedQTY:
+        description: 已完工数量合计
+        type: integer
+      totalOrderQTY:
+        description: 工单总数量合计
+        type: integer
+      totalStartedQTY:
+        description: 已开工数量合计
+        type: integer
+      unhandledAlarmCount:
+        description: 未处理告警数
+        type: integer
+    type: object
   proto.OnlineProductInfoRequest:
     properties:
       productOrderNo:
@@ -3534,6 +4228,25 @@ definitions:
         type: string
       requestContent:
         description: 提交内容
+        type: string
+    type: object
+  proto.ParameterInfo:
+    properties:
+      code:
+        type: string
+      description:
+        type: string
+      groupCode:
+        type: string
+      maximumValue:
+        type: string
+      minimumValue:
+        type: string
+      projectCode:
+        type: string
+      standardValue:
+        type: string
+      unit:
         type: string
     type: object
   proto.PersonnelQualificationInfo:
@@ -5905,6 +6618,72 @@ definitions:
         description: 标准时长(秒)
         type: integer
     type: object
+  proto.ProductionScheduleItemInfo:
+    properties:
+      deliveryDate:
+        description: 交货期限
+        type: string
+      durationSeconds:
+        description: 工时（秒）
+        type: integer
+      id:
+        description: ID
+        type: string
+      plannedEndTime:
+        description: 计划完工时间
+        type: string
+      plannedStartTime:
+        description: 计划开工时间
+        type: string
+      priorityLevel:
+        description: 优先级
+        type: integer
+      productOrderID:
+        description: 工单ID
+        type: string
+      productOrderNo:
+        type: string
+      productionSchedulePlanID:
+        description: 排程计划ID
+        type: string
+      sequence:
+        description: 顺序号
+        type: integer
+    type: object
+  proto.ProductionSchedulePlanInfo:
+    properties:
+      currentState:
+        description: 状态（已生成/已下发/已作废）
+        type: string
+      endTime:
+        description: 计划结束时间
+        type: string
+      id:
+        description: ID
+        type: string
+      items:
+        description: 明细
+        items:
+          $ref: '#/definitions/proto.ProductionScheduleItemInfo'
+        type: array
+      orderCount:
+        description: 纳入排程工单数
+        type: integer
+      planNo:
+        description: 计划批次号
+        type: string
+      productionLineCode:
+        type: string
+      productionLineID:
+        description: 产线ID
+        type: string
+      remark:
+        description: 备注
+        type: string
+      startTime:
+        description: 计划开始时间
+        type: string
+    type: object
   proto.ProductionStationAlarmInfo:
     properties:
       alarmMessage:
@@ -6235,6 +7014,150 @@ definitions:
         description: 顺序
         type: integer
     type: object
+  proto.QualityInspectionOrderInfo:
+    properties:
+      actualInspectionTime:
+        description: 实际检验时间
+        type: string
+      conclusion:
+        description: 整单结论（合格/不合格/让步接收）
+        type: string
+      currentState:
+        description: 当前状态（待检验/检验中/已完成）
+        type: string
+      disposition:
+        description: 不合格处理说明
+        type: string
+      id:
+        description: ID
+        type: string
+      inspectionOrderNo:
+        description: 检验单号
+        type: string
+      inspectionUserID:
+        description: 检验人
+        type: string
+      lotQTY:
+        description: 批次数量
+        type: integer
+      planInspectionTime:
+        description: 计划检验时间
+        type: string
+      productOrderID:
+        description: 关联生产工单ID
+        type: string
+      productOrderNo:
+        type: string
+      productSerialNo:
+        description: 关联产品序列号
+        type: string
+      qualityInspectionOrderItems:
+        description: 明细
+        items:
+          $ref: '#/definitions/proto.QualityInspectionOrderItemInfo'
+        type: array
+      qualityInspectionTypeCode:
+        type: string
+      qualityInspectionTypeID:
+        description: 检验类型ID
+        type: string
+      remark:
+        description: 备注
+        type: string
+      reworkCreated:
+        description: 是否已生成返工记录
+        type: boolean
+      sampleQTY:
+        description: 抽样数量
+        type: integer
+    type: object
+  proto.QualityInspectionOrderItemInfo:
+    properties:
+      id:
+        description: ID
+        type: string
+      isQualified:
+        description: 是否合格
+        type: boolean
+      measuredValue:
+        description: 实测值
+        type: string
+      qualityInspectionOrderID:
+        description: 检验单ID
+        type: string
+      qualityInspectionStandardCode:
+        type: string
+      qualityInspectionStandardDescription:
+        type: string
+      qualityInspectionStandardID:
+        description: 检验标准ID
+        type: string
+      remark:
+        description: 备注
+        type: string
+    type: object
+  proto.QualityInspectionStandardInfo:
+    properties:
+      aql:
+        description: AQL接收质量限（0表示不启用抽样判定）
+        type: number
+      code:
+        description: 代号
+        type: string
+      criterionMethod:
+        description: 比较方式（等于/范围内/大于/小于）
+        type: string
+      description:
+        description: 描述
+        type: string
+      enable:
+        description: 是否启用
+        type: boolean
+      id:
+        description: ID
+        type: string
+      lowerLimit:
+        description: 规格下限
+        type: string
+      qualityInspectionTypeCode:
+        type: string
+      qualityInspectionTypeID:
+        description: 检验类型ID
+        type: string
+      remark:
+        description: 备注
+        type: string
+      sampleLevel:
+        description: 样本量字码（GB/T 2828 一般检验水平，默认II）
+        type: string
+      standardValue:
+        description: 标准值
+        type: string
+      unit:
+        description: 单位
+        type: string
+      upperLimit:
+        description: 规格上限
+        type: string
+    type: object
+  proto.QualityInspectionTypeInfo:
+    properties:
+      code:
+        description: 代号
+        type: string
+      description:
+        description: 描述
+        type: string
+      enable:
+        description: 是否启用
+        type: boolean
+      id:
+        description: ID
+        type: string
+      remark:
+        description: 备注
+        type: string
+    type: object
   proto.QueryAGVTaskQueueResponse:
     properties:
       code:
@@ -6327,6 +7250,57 @@ definitions:
       data:
         items:
           $ref: '#/definitions/proto.DataMappingInfo'
+        type: array
+      message:
+        type: string
+      pages:
+        type: integer
+      records:
+        type: integer
+      total:
+        type: integer
+    type: object
+  proto.QueryEquipmentMaintenancePlanResponse:
+    properties:
+      code:
+        $ref: '#/definitions/proto.Code'
+      data:
+        items:
+          $ref: '#/definitions/proto.EquipmentMaintenancePlanInfo'
+        type: array
+      message:
+        type: string
+      pages:
+        type: integer
+      records:
+        type: integer
+      total:
+        type: integer
+    type: object
+  proto.QueryEquipmentMaintenanceRecordResponse:
+    properties:
+      code:
+        $ref: '#/definitions/proto.Code'
+      data:
+        items:
+          $ref: '#/definitions/proto.EquipmentMaintenanceRecordInfo'
+        type: array
+      message:
+        type: string
+      pages:
+        type: integer
+      records:
+        type: integer
+      total:
+        type: integer
+    type: object
+  proto.QueryEquipmentResponse:
+    properties:
+      code:
+        $ref: '#/definitions/proto.Code'
+      data:
+        items:
+          $ref: '#/definitions/proto.EquipmentInfo'
         type: array
       message:
         type: string
@@ -6575,6 +7549,23 @@ definitions:
       total:
         type: integer
     type: object
+  proto.QueryMaterialInventoryTransactionResponse:
+    properties:
+      code:
+        $ref: '#/definitions/proto.Code'
+      data:
+        items:
+          $ref: '#/definitions/proto.MaterialInventoryTransactionInfo'
+        type: array
+      message:
+        type: string
+      pages:
+        type: integer
+      records:
+        type: integer
+      total:
+        type: integer
+    type: object
   proto.QueryMaterialReturnCauseResponse:
     properties:
       code:
@@ -6759,6 +7750,19 @@ definitions:
         type: integer
       records:
         type: integer
+      total:
+        type: integer
+    type: object
+  proto.QueryMonitoringAlarmResponse:
+    properties:
+      code:
+        $ref: '#/definitions/proto.Code'
+      data:
+        items:
+          $ref: '#/definitions/proto.MonitoringAlarmInfo'
+        type: array
+      message:
+        type: string
       total:
         type: integer
     type: object
@@ -7646,6 +8650,23 @@ definitions:
       total:
         type: integer
     type: object
+  proto.QueryProductionSchedulePlanResponse:
+    properties:
+      code:
+        $ref: '#/definitions/proto.Code'
+      data:
+        items:
+          $ref: '#/definitions/proto.ProductionSchedulePlanInfo'
+        type: array
+      message:
+        type: string
+      pages:
+        type: integer
+      records:
+        type: integer
+      total:
+        type: integer
+    type: object
   proto.QueryProductionStationAlarmResponse:
     properties:
       code:
@@ -7765,6 +8786,57 @@ definitions:
       total:
         type: integer
     type: object
+  proto.QueryQualityInspectionOrderResponse:
+    properties:
+      code:
+        $ref: '#/definitions/proto.Code'
+      data:
+        items:
+          $ref: '#/definitions/proto.QualityInspectionOrderInfo'
+        type: array
+      message:
+        type: string
+      pages:
+        type: integer
+      records:
+        type: integer
+      total:
+        type: integer
+    type: object
+  proto.QueryQualityInspectionStandardResponse:
+    properties:
+      code:
+        $ref: '#/definitions/proto.Code'
+      data:
+        items:
+          $ref: '#/definitions/proto.QualityInspectionStandardInfo'
+        type: array
+      message:
+        type: string
+      pages:
+        type: integer
+      records:
+        type: integer
+      total:
+        type: integer
+    type: object
+  proto.QueryQualityInspectionTypeResponse:
+    properties:
+      code:
+        $ref: '#/definitions/proto.Code'
+      data:
+        items:
+          $ref: '#/definitions/proto.QualityInspectionTypeInfo'
+        type: array
+      message:
+        type: string
+      pages:
+        type: integer
+      records:
+        type: integer
+      total:
+        type: integer
+    type: object
   proto.QueryRemoteServiceResponse:
     properties:
       code:
@@ -7815,6 +8887,68 @@ definitions:
         type: integer
       total:
         type: integer
+    type: object
+  proto.QueryScadaDeviceResponse:
+    properties:
+      code:
+        $ref: '#/definitions/proto.Code'
+      data:
+        items:
+          $ref: '#/definitions/proto.ScadaDeviceInfo'
+        type: array
+      message:
+        type: string
+      pages:
+        type: integer
+      records:
+        type: integer
+      total:
+        type: integer
+    type: object
+  proto.QueryScadaTagHistoryResponse:
+    properties:
+      code:
+        $ref: '#/definitions/proto.Code'
+      data:
+        items:
+          $ref: '#/definitions/proto.ScadaTagHistoryInfo'
+        type: array
+      message:
+        type: string
+      pages:
+        type: integer
+      records:
+        type: integer
+      total:
+        type: integer
+    type: object
+  proto.QueryScadaTagResponse:
+    properties:
+      code:
+        $ref: '#/definitions/proto.Code'
+      data:
+        items:
+          $ref: '#/definitions/proto.ScadaTagInfo'
+        type: array
+      message:
+        type: string
+      pages:
+        type: integer
+      records:
+        type: integer
+      total:
+        type: integer
+    type: object
+  proto.QueryScadaTagValueResponse:
+    properties:
+      code:
+        $ref: '#/definitions/proto.Code'
+      data:
+        items:
+          $ref: '#/definitions/proto.ScadaTagValueInfo'
+        type: array
+      message:
+        type: string
     type: object
   proto.QuerySerialNumberResponse:
     properties:
@@ -7934,6 +9068,46 @@ definitions:
         type: integer
       total:
         type: integer
+    type: object
+  proto.ReceiveMaterialRequest:
+    properties:
+      batchNo:
+        description: 批次号
+        type: string
+      materialInfoID:
+        description: 物料ID
+        type: string
+      materialStoreID:
+        description: 仓库ID
+        type: string
+      qty:
+        description: 数量
+        type: integer
+      remark:
+        description: 备注
+        type: string
+      shelfBinID:
+        description: 库位ID（上架目标，可选）
+        type: string
+    type: object
+  proto.ReceiveMaterialResponse:
+    properties:
+      code:
+        $ref: '#/definitions/proto.Code'
+      materialInventoryID:
+        description: 库存记录ID
+        type: string
+      message:
+        type: string
+      storedQTY:
+        description: 入库后库存数量
+        type: integer
+    type: object
+  proto.ReleaseScheduleRequest:
+    properties:
+      planID:
+        description: 排程计划ID
+        type: string
     type: object
   proto.RemoteServiceInfo:
     properties:
@@ -8137,6 +9311,118 @@ definitions:
       stationType:
         type: string
     type: object
+  proto.ScadaDeviceInfo:
+    properties:
+      address:
+        description: 地址（host:port）
+        type: string
+      code:
+        description: 代号
+        type: string
+      connectionState:
+        description: 连接状态（正常/异常/未连接）
+        type: string
+      enable:
+        description: 是否启用
+        type: boolean
+      id:
+        description: ID
+        type: string
+      intervalSeconds:
+        description: 采集间隔（秒）
+        type: integer
+      lastCollectTime:
+        description: 最近一次采集时间
+        type: string
+      lastError:
+        description: 最近错误信息
+        type: string
+      name:
+        description: 名称
+        type: string
+      protocol:
+        description: 协议（modbus-tcp）
+        type: string
+      remark:
+        description: 备注
+        type: string
+      slaveID:
+        description: 从站号
+        type: integer
+    type: object
+  proto.ScadaTagHistoryInfo:
+    properties:
+      collectTime:
+        type: string
+      id:
+        description: ID
+        type: string
+      scadaTagID:
+        description: 点位ID
+        type: string
+      value:
+        type: string
+    type: object
+  proto.ScadaTagInfo:
+    properties:
+      address:
+        description: 寄存器地址（十进制，Modbus用）
+        type: integer
+      dataType:
+        description: 数据类型（bool/uint16/int16/float32）
+        type: string
+      enable:
+        description: 是否启用
+        type: boolean
+      functionCode:
+        description: 功能码（0-线圈 1-离散输入 3-保持寄存器 4-输入寄存器）
+        type: integer
+      id:
+        description: ID
+        type: string
+      name:
+        description: 点位名称
+        type: string
+      opcUANodeID:
+        description: OPC UA节点ID（如 ns=2;s=Channel1.Device1.Tag1，OPC UA协议用）
+        type: string
+      remark:
+        description: 备注
+        type: string
+      saveHistory:
+        description: 是否存历史
+        type: boolean
+      scadaDeviceCode:
+        type: string
+      scadaDeviceID:
+        description: 设备ID
+        type: string
+      scale:
+        description: 缩放系数
+        type: number
+      unit:
+        description: 单位
+        type: string
+    type: object
+  proto.ScadaTagValueInfo:
+    properties:
+      collectTime:
+        description: 采集时间
+        type: string
+      quality:
+        description: 质量（Good/Bad）
+        type: string
+      scadaTagID:
+        description: 点位ID
+        type: string
+      tagName:
+        type: string
+      unit:
+        type: string
+      value:
+        description: 值（字符串表示）
+        type: string
+    type: object
   proto.SerialNumberInfo:
     properties:
       createTime:
@@ -8173,6 +9459,79 @@ definitions:
         type: integer
       data:
         $ref: '#/definitions/proto.Data'
+      message:
+        type: string
+    type: object
+  proto.SpcCalcRequest:
+    properties:
+      lowerSpec:
+        description: 规格下限（覆盖标准中的配置）
+        type: string
+      qualityInspectionStandardID:
+        description: 检验标准ID（取规格限）
+        type: string
+      upperSpec:
+        description: 规格上限（覆盖标准中的配置）
+        type: string
+      values:
+        description: 样本数据（字符串数值数组）
+        items:
+          type: string
+        type: array
+    type: object
+  proto.SpcCalcResponse:
+    properties:
+      cl:
+        description: 控制中心线
+        type: number
+      code:
+        $ref: '#/definitions/proto.Code'
+      cpk:
+        description: 过程能力指数
+        type: number
+      cpl:
+        description: 下限规格指数
+        type: number
+      cpu:
+        description: 上限规格指数
+        type: number
+      lcl:
+        description: 控制下限
+        type: number
+      mean:
+        description: 均值
+        type: number
+      message:
+        type: string
+      "n":
+        description: 样本数
+        type: integer
+      stdDev:
+        description: 标准差
+        type: number
+      ucl:
+        description: 控制上限
+        type: number
+    type: object
+  proto.StocktakeInventoryRequest:
+    properties:
+      countedQTY:
+        description: 实盘数量
+        type: integer
+      materialInventoryID:
+        description: 库存记录ID
+        type: string
+      remark:
+        description: 备注
+        type: string
+    type: object
+  proto.StocktakeInventoryResponse:
+    properties:
+      code:
+        $ref: '#/definitions/proto.Code'
+      difference:
+        description: 盘盈盘亏（实盘-账面）
+        type: integer
       message:
         type: string
     type: object
@@ -8374,6 +9733,42 @@ definitions:
         description: 值
         type: string
     type: object
+  proto.TestProjectInfo:
+    properties:
+      code:
+        type: string
+      description:
+        type: string
+      id:
+        type: string
+    type: object
+  proto.TestProjectWithParameterInfo:
+    properties:
+      inputParameters:
+        items:
+          $ref: '#/definitions/proto.ParameterInfo'
+        type: array
+      outputParameters:
+        items:
+          $ref: '#/definitions/proto.ParameterInfo'
+        type: array
+      testProjects:
+        items:
+          $ref: '#/definitions/proto.TestProjectInfo'
+        type: array
+    type: object
+  proto.TestScadaDeviceRequest:
+    properties:
+      address:
+        description: 地址 host:port（Modbus）或 opc.tcp://host:port（OPC UA）
+        type: string
+      protocol:
+        description: 协议（modbus-tcp/opcua，默认 modbus-tcp）
+        type: string
+      slaveID:
+        description: 从站号（Modbus）
+        type: integer
+    type: object
   proto.UpdateProductReworkRecordRequest:
     properties:
       materialRecords:
@@ -8498,6 +9893,187 @@ definitions:
 info:
   contact: {}
 paths:
+  /api/mom/aps/schedule/delete:
+    delete:
+      consumes:
+      - application/json
+      description: 删除未下发的排程计划
+      parameters:
+      - description: jwt token
+        in: header
+        name: authorization
+        required: true
+        type: string
+      - description: Delete SchedulePlan
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/proto.GetByIDsRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/proto.CommonResponse'
+      summary: 删除排程计划
+      tags:
+      - APS排程
+  /api/mom/aps/schedule/detail:
+    get:
+      consumes:
+      - application/json
+      description: 获取排程计划详情（含明细时段，甘特图数据源）
+      parameters:
+      - description: jwt token
+        in: header
+        name: authorization
+        required: true
+        type: string
+      - description: 排程计划ID
+        in: query
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/proto.GetProductionSchedulePlanDetailResponse'
+      summary: 排程计划详情
+      tags:
+      - APS排程
+  /api/mom/aps/schedule/generate:
+    post:
+      consumes:
+      - application/json
+      description: 按产线对已发放/已签派工单执行前向贪心排程（优先级→交期），生成计划与明细
+      parameters:
+      - description: jwt token
+        in: header
+        name: authorization
+        required: true
+        type: string
+      - description: GenerateScheduleRequest
+        in: body
+        name: account
+        required: true
+        schema:
+          $ref: '#/definitions/proto.GenerateScheduleRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/proto.GenerateScheduleResponse'
+      summary: 生成排程计划
+      tags:
+      - APS排程
+  /api/mom/aps/schedule/insert:
+    post:
+      consumes:
+      - application/json
+      description: 在既有排程计划中插入新工单（保持既有工单顺序与约束），重排后落库
+      parameters:
+      - description: jwt token
+        in: header
+        name: authorization
+        required: true
+        type: string
+      - description: InsertScheduleRequest
+        in: body
+        name: account
+        required: true
+        schema:
+          $ref: '#/definitions/proto.InsertScheduleRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/proto.InsertScheduleResponse'
+      summary: 插单重排
+      tags:
+      - APS排程
+  /api/mom/aps/schedule/query:
+    get:
+      consumes:
+      - application/json
+      description: 查询排程计划（含明细，可直接渲染甘特图）
+      parameters:
+      - description: jwt token
+        in: header
+        name: authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/proto.QueryProductionSchedulePlanResponse'
+      summary: 查询排程计划
+      tags:
+      - APS排程
+  /api/mom/aps/schedule/release:
+    put:
+      consumes:
+      - application/json
+      description: 回写各工单预计开工/完工时间
+      parameters:
+      - description: jwt token
+        in: header
+        name: authorization
+        required: true
+        type: string
+      - description: ReleaseScheduleRequest
+        in: body
+        name: account
+        required: true
+        schema:
+          $ref: '#/definitions/proto.ReleaseScheduleRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/proto.CommonResponse'
+      summary: 下发排程
+      tags:
+      - APS排程
+  /api/mom/aps/schedule/void:
+    put:
+      consumes:
+      - application/json
+      description: 作废未下发的排程计划
+      parameters:
+      - description: jwt token
+        in: header
+        name: authorization
+        required: true
+        type: string
+      - description: 排程计划ID
+        in: query
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/proto.CommonResponse'
+      summary: 作废排程计划
+      tags:
+      - APS排程
   /api/mom/codinggeneration/add:
     post:
       consumes:
@@ -9347,6 +10923,436 @@ paths:
       summary: 更新
       tags:
       - 工位效率统计
+  /api/mom/equipment/equipment/add:
+    post:
+      consumes:
+      - application/json
+      description: 新增
+      parameters:
+      - description: jwt token
+        in: header
+        name: authorization
+        required: true
+        type: string
+      - description: Add Equipment
+        in: body
+        name: account
+        required: true
+        schema:
+          $ref: '#/definitions/proto.EquipmentInfo'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/proto.CommonResponse'
+      summary: 新增
+      tags:
+      - 设备管理
+  /api/mom/equipment/equipment/all:
+    get:
+      consumes:
+      - application/json
+      description: 获取所有
+      parameters:
+      - description: jwt token
+        in: header
+        name: authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/proto.GetAllEquipmentResponse'
+      summary: 获取所有
+      tags:
+      - 设备管理
+  /api/mom/equipment/equipment/changestate:
+    put:
+      consumes:
+      - application/json
+      description: 设备状态流转（在用/停用/维修中/报废）
+      parameters:
+      - description: jwt token
+        in: header
+        name: authorization
+        required: true
+        type: string
+      - description: 设备ID
+        in: query
+        name: id
+        required: true
+        type: string
+      - description: 目标状态
+        in: query
+        name: state
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/proto.CommonResponse'
+      summary: 设备状态流转
+      tags:
+      - 设备管理
+  /api/mom/equipment/equipment/delete:
+    delete:
+      consumes:
+      - application/json
+      description: 删除
+      parameters:
+      - description: jwt token
+        in: header
+        name: authorization
+        required: true
+        type: string
+      - description: Delete Equipment
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/proto.GetByIDsRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/proto.CommonResponse'
+      summary: 删除
+      tags:
+      - 设备管理
+  /api/mom/equipment/equipment/detail:
+    get:
+      consumes:
+      - application/json
+      description: 获取详情
+      parameters:
+      - description: jwt token
+        in: header
+        name: authorization
+        required: true
+        type: string
+      - description: ID
+        in: query
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/proto.GetEquipmentDetailResponse'
+      summary: 获取详情
+      tags:
+      - 设备管理
+  /api/mom/equipment/equipment/oee:
+    post:
+      consumes:
+      - application/json
+      description: 按时间范围计算设备/工站的OEE（时间稼动率×性能稼动率×良品率）
+      parameters:
+      - description: jwt token
+        in: header
+        name: authorization
+        required: true
+        type: string
+      - description: EquipmentOeeRequest
+        in: body
+        name: account
+        required: true
+        schema:
+          $ref: '#/definitions/proto.EquipmentOeeRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/proto.EquipmentOeeResponse'
+      summary: OEE计算
+      tags:
+      - 设备管理
+  /api/mom/equipment/equipment/query:
+    get:
+      consumes:
+      - application/json
+      description: 查询
+      parameters:
+      - description: jwt token
+        in: header
+        name: authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/proto.QueryEquipmentResponse'
+      summary: 查询
+      tags:
+      - 设备管理
+  /api/mom/equipment/equipment/update:
+    put:
+      consumes:
+      - application/json
+      description: 更新
+      parameters:
+      - description: jwt token
+        in: header
+        name: authorization
+        required: true
+        type: string
+      - description: Update Equipment
+        in: body
+        name: account
+        required: true
+        schema:
+          $ref: '#/definitions/proto.EquipmentInfo'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/proto.CommonResponse'
+      summary: 更新
+      tags:
+      - 设备管理
+  /api/mom/equipment/maintenplan/add:
+    post:
+      consumes:
+      - application/json
+      description: 新增
+      parameters:
+      - description: jwt token
+        in: header
+        name: authorization
+        required: true
+        type: string
+      - description: Add EquipmentMaintenancePlan
+        in: body
+        name: account
+        required: true
+        schema:
+          $ref: '#/definitions/proto.EquipmentMaintenancePlanInfo'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/proto.CommonResponse'
+      summary: 新增
+      tags:
+      - 设备维保计划管理
+  /api/mom/equipment/maintenplan/all:
+    get:
+      consumes:
+      - application/json
+      description: 获取所有
+      parameters:
+      - description: jwt token
+        in: header
+        name: authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/proto.GetAllEquipmentMaintenancePlanResponse'
+      summary: 获取所有
+      tags:
+      - 设备维保计划管理
+  /api/mom/equipment/maintenplan/delete:
+    delete:
+      consumes:
+      - application/json
+      description: 删除
+      parameters:
+      - description: jwt token
+        in: header
+        name: authorization
+        required: true
+        type: string
+      - description: Delete EquipmentMaintenancePlan
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/proto.GetByIDsRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/proto.CommonResponse'
+      summary: 删除
+      tags:
+      - 设备维保计划管理
+  /api/mom/equipment/maintenplan/detail:
+    get:
+      consumes:
+      - application/json
+      description: 获取详情
+      parameters:
+      - description: jwt token
+        in: header
+        name: authorization
+        required: true
+        type: string
+      - description: ID
+        in: query
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/proto.GetEquipmentMaintenancePlanDetailResponse'
+      summary: 获取详情
+      tags:
+      - 设备维保计划管理
+  /api/mom/equipment/maintenplan/execute:
+    put:
+      consumes:
+      - application/json
+      description: 生成维保记录并滚动计划的下次执行日期，异常时联动设备状态
+      parameters:
+      - description: jwt token
+        in: header
+        name: authorization
+        required: true
+        type: string
+      - description: ExecuteEquipmentMaintenanceRequest
+        in: body
+        name: account
+        required: true
+        schema:
+          $ref: '#/definitions/proto.ExecuteEquipmentMaintenanceRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/proto.CommonResponse'
+      summary: 执行维保
+      tags:
+      - 设备维保计划管理
+  /api/mom/equipment/maintenplan/query:
+    get:
+      consumes:
+      - application/json
+      description: 查询
+      parameters:
+      - description: jwt token
+        in: header
+        name: authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/proto.QueryEquipmentMaintenancePlanResponse'
+      summary: 查询
+      tags:
+      - 设备维保计划管理
+  /api/mom/equipment/maintenplan/update:
+    put:
+      consumes:
+      - application/json
+      description: 更新
+      parameters:
+      - description: jwt token
+        in: header
+        name: authorization
+        required: true
+        type: string
+      - description: Update EquipmentMaintenancePlan
+        in: body
+        name: account
+        required: true
+        schema:
+          $ref: '#/definitions/proto.EquipmentMaintenancePlanInfo'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/proto.CommonResponse'
+      summary: 更新
+      tags:
+      - 设备维保计划管理
+  /api/mom/equipment/maintenrecord/detail:
+    get:
+      consumes:
+      - application/json
+      description: 获取详情
+      parameters:
+      - description: jwt token
+        in: header
+        name: authorization
+        required: true
+        type: string
+      - description: ID
+        in: query
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/proto.GetEquipmentMaintenanceRecordDetailResponse'
+      summary: 获取详情
+      tags:
+      - 设备维保记录管理
+  /api/mom/equipment/maintenrecord/query:
+    get:
+      consumes:
+      - application/json
+      description: 查询
+      parameters:
+      - description: jwt token
+        in: header
+        name: authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/proto.QueryEquipmentMaintenanceRecordResponse'
+      summary: 查询
+      tags:
+      - 设备维保记录管理
   /api/mom/label/labeladaptationrule/add:
     post:
       consumes:
@@ -13459,6 +15465,183 @@ paths:
       summary: 更新
       tags:
       - 物料载具绑定记录
+  /api/mom/material/wms/alert:
+    get:
+      consumes:
+      - application/json
+      description: 可用量低于补料规则最低库存量或已为负的记录
+      parameters:
+      - description: jwt token
+        in: header
+        name: authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/proto.MaterialInventoryAlertResponse'
+      summary: 库存预警
+      tags:
+      - WMS作业
+  /api/mom/material/wms/pickbill:
+    post:
+      consumes:
+      - application/json
+      description: 按工单BOM逐行锁定库存生成拣货单（缺料行跳过并提示）
+      parameters:
+      - description: jwt token
+        in: header
+        name: authorization
+        required: true
+        type: string
+      - description: CreatePickBillRequest
+        in: body
+        name: account
+        required: true
+        schema:
+          $ref: '#/definitions/proto.CreatePickBillRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/proto.CreatePickBillResponse'
+      summary: 按工单生成拣货单
+      tags:
+      - WMS作业
+  /api/mom/material/wms/pickbill/cancel:
+    put:
+      consumes:
+      - application/json
+      description: 解除库存锁定
+      parameters:
+      - description: jwt token
+        in: header
+        name: authorization
+        required: true
+        type: string
+      - description: CancelPickBillRequest
+        in: body
+        name: account
+        required: true
+        schema:
+          $ref: '#/definitions/proto.CancelPickBillRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/proto.CommonResponse'
+      summary: 取消拣货单
+      tags:
+      - WMS作业
+  /api/mom/material/wms/pickbill/complete:
+    put:
+      consumes:
+      - application/json
+      description: 扣减账面库存、解除锁定并联动工单发料数量
+      parameters:
+      - description: jwt token
+        in: header
+        name: authorization
+        required: true
+        type: string
+      - description: CompletePickBillRequest
+        in: body
+        name: account
+        required: true
+        schema:
+          $ref: '#/definitions/proto.CompletePickBillRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/proto.CommonResponse'
+      summary: 完成拣货
+      tags:
+      - WMS作业
+  /api/mom/material/wms/receive:
+    post:
+      consumes:
+      - application/json
+      description: 收货入库：增加账面库存并写入事务流水
+      parameters:
+      - description: jwt token
+        in: header
+        name: authorization
+        required: true
+        type: string
+      - description: ReceiveMaterialRequest
+        in: body
+        name: account
+        required: true
+        schema:
+          $ref: '#/definitions/proto.ReceiveMaterialRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/proto.ReceiveMaterialResponse'
+      summary: 收货入库
+      tags:
+      - WMS作业
+  /api/mom/material/wms/stocktake:
+    put:
+      consumes:
+      - application/json
+      description: 按实盘数量调整账面库存并记录差异流水
+      parameters:
+      - description: jwt token
+        in: header
+        name: authorization
+        required: true
+        type: string
+      - description: StocktakeInventoryRequest
+        in: body
+        name: account
+        required: true
+        schema:
+          $ref: '#/definitions/proto.StocktakeInventoryRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/proto.StocktakeInventoryResponse'
+      summary: 库存盘点
+      tags:
+      - WMS作业
+  /api/mom/material/wms/transaction/query:
+    get:
+      consumes:
+      - application/json
+      description: 查询库存事务流水（入库/出库/锁定/解锁/盘点调整）
+      parameters:
+      - description: jwt token
+        in: header
+        name: authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/proto.QueryMaterialInventoryTransactionResponse'
+      summary: 查询库存事务流水
+      tags:
+      - WMS作业
   /api/mom/material/wmsbillqueue/add:
     post:
       consumes:
@@ -13636,6 +15819,105 @@ paths:
       summary: 更新
       tags:
       - WMS过帐队列管理
+  /api/mom/monitoring/alarms:
+    get:
+      consumes:
+      - application/json
+      description: 大屏告警滚动列表（按时间倒序）
+      parameters:
+      - description: jwt token
+        in: header
+        name: authorization
+        required: true
+        type: string
+      - description: 状态（默认全部）
+        in: query
+        name: currentState
+        type: string
+      - description: 数量上限（默认50）
+        in: query
+        name: limit
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/proto.QueryMonitoringAlarmResponse'
+      summary: 告警列表
+      tags:
+      - 生产监控
+  /api/mom/monitoring/line:
+    get:
+      consumes:
+      - application/json
+      description: OEE、周期产量、工单达成率、在制数、未处理告警
+      parameters:
+      - description: jwt token
+        in: header
+        name: authorization
+        required: true
+        type: string
+      - description: 产线ID
+        in: query
+        name: productionLineID
+        required: true
+        type: string
+      - description: 开始时间 yyyy-MM-dd HH:mm:ss（默认近24小时）
+        in: query
+        name: startTime
+        type: string
+      - description: 结束时间 yyyy-MM-dd HH:mm:ss（默认当前）
+        in: query
+        name: endTime
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/proto.MonitoringLineResponse'
+      summary: 产线监控
+      tags:
+      - 生产监控
+  /api/mom/monitoring/overview:
+    get:
+      consumes:
+      - application/json
+      description: 产线/工站规模、工单进度、告警与工站状态分布
+      parameters:
+      - description: jwt token
+        in: header
+        name: authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/proto.MonitoringOverviewResponse'
+      summary: 厂级监控总览
+      tags:
+      - 生产监控
+  /api/mom/monitoring/stream:
+    get:
+      description: 每5秒推送一次厂级总览与未处理告警数（text/event-stream，EventSource 兼容）
+      parameters:
+      - description: jwt token
+        in: header
+        name: authorization
+        required: true
+        type: string
+      produces:
+      - text/event-stream
+      responses: {}
+      summary: 实时监控推送（SSE）
+      tags:
+      - 生产监控
   /api/mom/printserver/add:
     post:
       consumes:
@@ -14548,6 +16830,37 @@ paths:
           schema:
             $ref: '#/definitions/proto.GetProductOrderDetailResponse'
       summary: 查询明细
+      tags:
+      - 生产工单管理
+  /api/mom/product/productorder/dispatch:
+    put:
+      consumes:
+      - application/json
+      description: 将已核验的工单签派给生产班组（核验 → 签派 → 发放）
+      parameters:
+      - description: jwt token
+        in: header
+        name: authorization
+        required: true
+        type: string
+      - description: 生产班组
+        in: query
+        name: productionTeam
+        type: string
+      - description: Dispatch ProductOrder
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/proto.GetByIDsRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/proto.CommonResponse'
+      summary: 签派
       tags:
       - 生产工单管理
   /api/mom/product/productorder/query:
@@ -23696,6 +26009,853 @@ paths:
       summary: 更新
       tags:
       - 工站管理
+  /api/mom/quality/qualityinspectionorder/add:
+    post:
+      consumes:
+      - application/json
+      description: 按检验类型下的启用标准生成检验单（含GB/T 2828抽样数量）
+      parameters:
+      - description: jwt token
+        in: header
+        name: authorization
+        required: true
+        type: string
+      - description: Add QualityInspectionOrder
+        in: body
+        name: account
+        required: true
+        schema:
+          $ref: '#/definitions/proto.QualityInspectionOrderInfo'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/proto.CommonResponse'
+      summary: 新增检验单
+      tags:
+      - 检验单管理
+  /api/mom/quality/qualityinspectionorder/complete:
+    put:
+      consumes:
+      - application/json
+      description: 录入检测结果，按标准判定单项、按AQL判定整单，可选生成返工记录
+      parameters:
+      - description: jwt token
+        in: header
+        name: authorization
+        required: true
+        type: string
+      - description: Complete QualityInspectionOrder
+        in: body
+        name: account
+        required: true
+        schema:
+          $ref: '#/definitions/proto.CompleteQualityInspectionOrderRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/proto.CommonResponse'
+      summary: 完成检验
+      tags:
+      - 检验单管理
+  /api/mom/quality/qualityinspectionorder/delete:
+    delete:
+      consumes:
+      - application/json
+      description: 删除（已完成的检验单不可删除）
+      parameters:
+      - description: jwt token
+        in: header
+        name: authorization
+        required: true
+        type: string
+      - description: Delete QualityInspectionOrder
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/proto.GetByIDsRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/proto.CommonResponse'
+      summary: 删除
+      tags:
+      - 检验单管理
+  /api/mom/quality/qualityinspectionorder/detail:
+    get:
+      consumes:
+      - application/json
+      description: 获取详情（含明细）
+      parameters:
+      - description: jwt token
+        in: header
+        name: authorization
+        required: true
+        type: string
+      - description: ID
+        in: query
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/proto.GetQualityInspectionOrderDetailResponse'
+      summary: 获取详情
+      tags:
+      - 检验单管理
+  /api/mom/quality/qualityinspectionorder/query:
+    get:
+      consumes:
+      - application/json
+      description: 查询
+      parameters:
+      - description: jwt token
+        in: header
+        name: authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/proto.QueryQualityInspectionOrderResponse'
+      summary: 查询
+      tags:
+      - 检验单管理
+  /api/mom/quality/qualityinspectionorder/update:
+    put:
+      consumes:
+      - application/json
+      description: 更新（仅待检验状态）
+      parameters:
+      - description: jwt token
+        in: header
+        name: authorization
+        required: true
+        type: string
+      - description: Update QualityInspectionOrder
+        in: body
+        name: account
+        required: true
+        schema:
+          $ref: '#/definitions/proto.QualityInspectionOrderInfo'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/proto.CommonResponse'
+      summary: 更新
+      tags:
+      - 检验单管理
+  /api/mom/quality/qualityinspectionstandard/add:
+    post:
+      consumes:
+      - application/json
+      description: 新增
+      parameters:
+      - description: jwt token
+        in: header
+        name: authorization
+        required: true
+        type: string
+      - description: Add QualityInspectionStandard
+        in: body
+        name: account
+        required: true
+        schema:
+          $ref: '#/definitions/proto.QualityInspectionStandardInfo'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/proto.CommonResponse'
+      summary: 新增
+      tags:
+      - 检验标准管理
+  /api/mom/quality/qualityinspectionstandard/all:
+    get:
+      consumes:
+      - application/json
+      description: 获取所有
+      parameters:
+      - description: jwt token
+        in: header
+        name: authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/proto.GetAllQualityInspectionStandardResponse'
+      summary: 获取所有
+      tags:
+      - 检验标准管理
+  /api/mom/quality/qualityinspectionstandard/delete:
+    delete:
+      consumes:
+      - application/json
+      description: 删除
+      parameters:
+      - description: jwt token
+        in: header
+        name: authorization
+        required: true
+        type: string
+      - description: Delete QualityInspectionStandard
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/proto.GetByIDsRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/proto.CommonResponse'
+      summary: 删除
+      tags:
+      - 检验标准管理
+  /api/mom/quality/qualityinspectionstandard/detail:
+    get:
+      consumes:
+      - application/json
+      description: 获取详情
+      parameters:
+      - description: jwt token
+        in: header
+        name: authorization
+        required: true
+        type: string
+      - description: ID
+        in: query
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/proto.GetQualityInspectionStandardDetailResponse'
+      summary: 获取详情
+      tags:
+      - 检验标准管理
+  /api/mom/quality/qualityinspectionstandard/query:
+    get:
+      consumes:
+      - application/json
+      description: 查询
+      parameters:
+      - description: jwt token
+        in: header
+        name: authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/proto.QueryQualityInspectionStandardResponse'
+      summary: 查询
+      tags:
+      - 检验标准管理
+  /api/mom/quality/qualityinspectionstandard/update:
+    put:
+      consumes:
+      - application/json
+      description: 更新
+      parameters:
+      - description: jwt token
+        in: header
+        name: authorization
+        required: true
+        type: string
+      - description: Update QualityInspectionStandard
+        in: body
+        name: account
+        required: true
+        schema:
+          $ref: '#/definitions/proto.QualityInspectionStandardInfo'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/proto.CommonResponse'
+      summary: 更新
+      tags:
+      - 检验标准管理
+  /api/mom/quality/qualityinspectiontype/add:
+    post:
+      consumes:
+      - application/json
+      description: 新增
+      parameters:
+      - description: jwt token
+        in: header
+        name: authorization
+        required: true
+        type: string
+      - description: Add QualityInspectionType
+        in: body
+        name: account
+        required: true
+        schema:
+          $ref: '#/definitions/proto.QualityInspectionTypeInfo'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/proto.CommonResponse'
+      summary: 新增
+      tags:
+      - 检验类型管理
+  /api/mom/quality/qualityinspectiontype/all:
+    get:
+      consumes:
+      - application/json
+      description: 获取所有
+      parameters:
+      - description: jwt token
+        in: header
+        name: authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/proto.GetAllQualityInspectionTypeResponse'
+      summary: 获取所有
+      tags:
+      - 检验类型管理
+  /api/mom/quality/qualityinspectiontype/delete:
+    delete:
+      consumes:
+      - application/json
+      description: 删除
+      parameters:
+      - description: jwt token
+        in: header
+        name: authorization
+        required: true
+        type: string
+      - description: Delete QualityInspectionType
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/proto.GetByIDsRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/proto.CommonResponse'
+      summary: 删除
+      tags:
+      - 检验类型管理
+  /api/mom/quality/qualityinspectiontype/detail:
+    get:
+      consumes:
+      - application/json
+      description: 获取详情
+      parameters:
+      - description: jwt token
+        in: header
+        name: authorization
+        required: true
+        type: string
+      - description: ID
+        in: query
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/proto.GetQualityInspectionTypeDetailResponse'
+      summary: 获取详情
+      tags:
+      - 检验类型管理
+  /api/mom/quality/qualityinspectiontype/query:
+    get:
+      consumes:
+      - application/json
+      description: 查询
+      parameters:
+      - description: jwt token
+        in: header
+        name: authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/proto.QueryQualityInspectionTypeResponse'
+      summary: 查询
+      tags:
+      - 检验类型管理
+  /api/mom/quality/qualityinspectiontype/update:
+    put:
+      consumes:
+      - application/json
+      description: 更新
+      parameters:
+      - description: jwt token
+        in: header
+        name: authorization
+        required: true
+        type: string
+      - description: Update QualityInspectionType
+        in: body
+        name: account
+        required: true
+        schema:
+          $ref: '#/definitions/proto.QualityInspectionTypeInfo'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/proto.CommonResponse'
+      summary: 更新
+      tags:
+      - 检验类型管理
+  /api/mom/quality/spc/calc:
+    post:
+      consumes:
+      - application/json
+      description: 计算均值/标准差/CPK与休哈特控制图界限（可关联检验标准取规格限）
+      parameters:
+      - description: jwt token
+        in: header
+        name: authorization
+        required: true
+        type: string
+      - description: SpcCalcRequest
+        in: body
+        name: account
+        required: true
+        schema:
+          $ref: '#/definitions/proto.SpcCalcRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/proto.SpcCalcResponse'
+      summary: SPC过程能力计算
+      tags:
+      - 质量统计
+  /api/mom/scada/device/add:
+    post:
+      consumes:
+      - application/json
+      description: 新增
+      parameters:
+      - description: jwt token
+        in: header
+        name: authorization
+        required: true
+        type: string
+      - description: Add ScadaDevice
+        in: body
+        name: account
+        required: true
+        schema:
+          $ref: '#/definitions/proto.ScadaDeviceInfo'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/proto.CommonResponse'
+      summary: 新增
+      tags:
+      - 采集设备
+  /api/mom/scada/device/all:
+    get:
+      consumes:
+      - application/json
+      description: 获取所有
+      parameters:
+      - description: jwt token
+        in: header
+        name: authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/proto.GetAllScadaDeviceResponse'
+      summary: 获取所有
+      tags:
+      - 采集设备
+  /api/mom/scada/device/delete:
+    delete:
+      consumes:
+      - application/json
+      description: 删除
+      parameters:
+      - description: jwt token
+        in: header
+        name: authorization
+        required: true
+        type: string
+      - description: Delete ScadaDevice
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/proto.GetByIDsRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/proto.CommonResponse'
+      summary: 删除
+      tags:
+      - 采集设备
+  /api/mom/scada/device/detail:
+    get:
+      consumes:
+      - application/json
+      description: 获取详情
+      parameters:
+      - description: jwt token
+        in: header
+        name: authorization
+        required: true
+        type: string
+      - description: ID
+        in: query
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/proto.GetScadaDeviceDetailResponse'
+      summary: 获取详情
+      tags:
+      - 采集设备
+  /api/mom/scada/device/query:
+    get:
+      consumes:
+      - application/json
+      description: 查询
+      parameters:
+      - description: jwt token
+        in: header
+        name: authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/proto.QueryScadaDeviceResponse'
+      summary: 查询
+      tags:
+      - 采集设备
+  /api/mom/scada/device/test:
+    post:
+      consumes:
+      - application/json
+      description: 用给定地址与从站号测试 Modbus TCP 连通性
+      parameters:
+      - description: jwt token
+        in: header
+        name: authorization
+        required: true
+        type: string
+      - description: TestScadaDeviceRequest
+        in: body
+        name: account
+        required: true
+        schema:
+          $ref: '#/definitions/proto.TestScadaDeviceRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/proto.CommonResponse'
+      summary: 测试设备连接
+      tags:
+      - 采集设备
+  /api/mom/scada/device/update:
+    put:
+      consumes:
+      - application/json
+      description: 更新
+      parameters:
+      - description: jwt token
+        in: header
+        name: authorization
+        required: true
+        type: string
+      - description: Update ScadaDevice
+        in: body
+        name: account
+        required: true
+        schema:
+          $ref: '#/definitions/proto.ScadaDeviceInfo'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/proto.CommonResponse'
+      summary: 更新
+      tags:
+      - 采集设备
+  /api/mom/scada/tag/add:
+    post:
+      consumes:
+      - application/json
+      description: 新增
+      parameters:
+      - description: jwt token
+        in: header
+        name: authorization
+        required: true
+        type: string
+      - description: Add ScadaTag
+        in: body
+        name: account
+        required: true
+        schema:
+          $ref: '#/definitions/proto.ScadaTagInfo'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/proto.CommonResponse'
+      summary: 新增
+      tags:
+      - 采集点位
+  /api/mom/scada/tag/all:
+    get:
+      consumes:
+      - application/json
+      description: 获取所有
+      parameters:
+      - description: jwt token
+        in: header
+        name: authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/proto.GetAllScadaTagResponse'
+      summary: 获取所有
+      tags:
+      - 采集点位
+  /api/mom/scada/tag/delete:
+    delete:
+      consumes:
+      - application/json
+      description: 删除
+      parameters:
+      - description: jwt token
+        in: header
+        name: authorization
+        required: true
+        type: string
+      - description: Delete ScadaTag
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/proto.GetByIDsRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/proto.CommonResponse'
+      summary: 删除
+      tags:
+      - 采集点位
+  /api/mom/scada/tag/detail:
+    get:
+      consumes:
+      - application/json
+      description: 获取详情
+      parameters:
+      - description: jwt token
+        in: header
+        name: authorization
+        required: true
+        type: string
+      - description: ID
+        in: query
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/proto.GetScadaTagDetailResponse'
+      summary: 获取详情
+      tags:
+      - 采集点位
+  /api/mom/scada/tag/history:
+    get:
+      consumes:
+      - application/json
+      description: 按点位与时间区间查询历史值
+      parameters:
+      - description: jwt token
+        in: header
+        name: authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/proto.QueryScadaTagHistoryResponse'
+      summary: 点位历史值
+      tags:
+      - 采集点位
+  /api/mom/scada/tag/query:
+    get:
+      consumes:
+      - application/json
+      description: 查询
+      parameters:
+      - description: jwt token
+        in: header
+        name: authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/proto.QueryScadaTagResponse'
+      summary: 查询
+      tags:
+      - 采集点位
+  /api/mom/scada/tag/update:
+    put:
+      consumes:
+      - application/json
+      description: 更新
+      parameters:
+      - description: jwt token
+        in: header
+        name: authorization
+        required: true
+        type: string
+      - description: Update ScadaTag
+        in: body
+        name: account
+        required: true
+        schema:
+          $ref: '#/definitions/proto.ScadaTagInfo'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/proto.CommonResponse'
+      summary: 更新
+      tags:
+      - 采集点位
+  /api/mom/scada/tag/values:
+    get:
+      consumes:
+      - application/json
+      description: 全部（或指定设备的）点位实时值
+      parameters:
+      - description: jwt token
+        in: header
+        name: authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/proto.QueryScadaTagValueResponse'
+      summary: 点位实时值
+      tags:
+      - 采集点位
   /api/mom/system/datamapping/add:
     post:
       consumes:
@@ -26126,6 +29286,352 @@ paths:
       summary: 更新
       tags:
       - 后台操作日志管理
+  /api/mom/user/personnelqualification/add:
+    post:
+      consumes:
+      - application/json
+      description: 新增
+      parameters:
+      - description: jwt token
+        in: header
+        name: authorization
+        required: true
+        type: string
+      - description: Add PersonnelQualification
+        in: body
+        name: account
+        required: true
+        schema:
+          $ref: '#/definitions/proto.PersonnelQualificationInfo'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/proto.CommonResponse'
+      summary: 新增
+      tags:
+      - 人员资质管理
+  /api/mom/user/personnelqualification/all:
+    get:
+      consumes:
+      - application/json
+      description: 查询所有
+      parameters:
+      - description: jwt token
+        in: header
+        name: authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/proto.GetAllPersonnelQualificationResponse'
+      summary: 查询所有
+      tags:
+      - 人员资质管理
+  /api/mom/user/personnelqualification/delete:
+    delete:
+      consumes:
+      - application/json
+      description: 删除
+      parameters:
+      - description: jwt token
+        in: header
+        name: authorization
+        required: true
+        type: string
+      - description: Delete PersonnelQualification
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/proto.DelRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/proto.CommonResponse'
+      summary: 删除
+      tags:
+      - 人员资质管理
+  /api/mom/user/personnelqualification/detail:
+    get:
+      consumes:
+      - application/json
+      description: 查询明细
+      parameters:
+      - description: ID
+        in: query
+        name: id
+        required: true
+        type: string
+      - description: jwt token
+        in: header
+        name: authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/proto.GetPersonnelQualificationDetailResponse'
+      summary: 查询明细
+      tags:
+      - 人员资质管理
+  /api/mom/user/personnelqualification/query:
+    get:
+      consumes:
+      - application/json
+      description: 分页查询
+      parameters:
+      - description: jwt token
+        in: header
+        name: authorization
+        required: true
+        type: string
+      - description: 从1开始
+        in: query
+        name: pageIndex
+        type: integer
+      - description: 默认每页10条
+        in: query
+        name: pageSize
+        type: integer
+      - description: 排序字段
+        in: query
+        name: orderField
+        type: string
+      - description: 是否倒序排序
+        in: query
+        name: desc
+        type: boolean
+      - description: 生产产线ID
+        in: query
+        name: productionLineID
+        type: string
+      - description: 认证人员信息
+        in: query
+        name: name
+        type: string
+      produces:
+      - application/octet-stream
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/proto.QueryPersonnelQualificationResponse'
+      summary: 分页查询
+      tags:
+      - 人员资质管理
+  /api/mom/user/personnelqualification/update:
+    put:
+      consumes:
+      - application/json
+      description: 更新
+      parameters:
+      - description: jwt token
+        in: header
+        name: authorization
+        required: true
+        type: string
+      - description: Update PersonnelQualification
+        in: body
+        name: account
+        required: true
+        schema:
+          $ref: '#/definitions/proto.PersonnelQualificationInfo'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/proto.CommonResponse'
+      summary: 更新
+      tags:
+      - 人员资质管理
+  /api/mom/user/personnelqualificationtype/add:
+    post:
+      consumes:
+      - application/json
+      description: 新增
+      parameters:
+      - description: jwt token
+        in: header
+        name: authorization
+        required: true
+        type: string
+      - description: Add PersonnelQualificationType
+        in: body
+        name: account
+        required: true
+        schema:
+          $ref: '#/definitions/proto.PersonnelQualificationTypeInfo'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/proto.CommonResponse'
+      summary: 新增
+      tags:
+      - 人员资质类型
+  /api/mom/user/personnelqualificationtype/all:
+    get:
+      consumes:
+      - application/json
+      description: 查询所有
+      parameters:
+      - description: jwt token
+        in: header
+        name: authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/proto.GetAllPersonnelQualificationTypeResponse'
+      summary: 查询所有
+      tags:
+      - 人员资质类型
+  /api/mom/user/personnelqualificationtype/delete:
+    delete:
+      consumes:
+      - application/json
+      description: 删除
+      parameters:
+      - description: jwt token
+        in: header
+        name: authorization
+        required: true
+        type: string
+      - description: Delete PersonnelQualificationType
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/proto.DelRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/proto.CommonResponse'
+      summary: 删除
+      tags:
+      - 人员资质类型
+  /api/mom/user/personnelqualificationtype/detail:
+    get:
+      consumes:
+      - application/json
+      description: 查询明细
+      parameters:
+      - description: ID
+        in: query
+        name: id
+        required: true
+        type: string
+      - description: jwt token
+        in: header
+        name: authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/proto.GetPersonnelQualificationTypeDetailResponse'
+      summary: 查询明细
+      tags:
+      - 人员资质类型
+  /api/mom/user/personnelqualificationtype/query:
+    get:
+      consumes:
+      - application/json
+      description: 分页查询
+      parameters:
+      - description: jwt token
+        in: header
+        name: authorization
+        required: true
+        type: string
+      - description: 从1开始
+        in: query
+        name: pageIndex
+        type: integer
+      - description: 默认每页10条
+        in: query
+        name: pageSize
+        type: integer
+      - description: 排序字段
+        in: query
+        name: orderField
+        type: string
+      - description: 是否倒序排序
+        in: query
+        name: desc
+        type: boolean
+      - description: 生产产线ID
+        in: query
+        name: productionLineID
+        type: string
+      - description: 认证人员信息
+        in: query
+        name: name
+        type: string
+      produces:
+      - application/octet-stream
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/proto.QueryPersonnelQualificationTypeResponse'
+      summary: 分页查询
+      tags:
+      - 人员资质类型
+  /api/mom/user/personnelqualificationtype/update:
+    put:
+      consumes:
+      - application/json
+      description: 更新
+      parameters:
+      - description: jwt token
+        in: header
+        name: authorization
+        required: true
+        type: string
+      - description: Update PersonnelQualificationType
+        in: body
+        name: account
+        required: true
+        schema:
+          $ref: '#/definitions/proto.PersonnelQualificationTypeInfo'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/proto.CommonResponse'
+      summary: 更新
+      tags:
+      - 人员资质类型
   /api/mom/webapi/admin/login:
     post:
       consumes:
@@ -26353,6 +29859,33 @@ paths:
       summary: 创建产品过程记录
       tags:
       - WebAPI
+  /api/mom/webapi/production/createproducttestrecord:
+    post:
+      consumes:
+      - application/json
+      description: 创建产品测试记录（测试设备上报）
+      parameters:
+      - description: jwt token
+        in: header
+        name: authorization
+        required: true
+        type: string
+      - description: CreateProductTestRecordRequest
+        in: body
+        name: account
+        required: true
+        schema:
+          $ref: '#/definitions/proto.CreateProductTestRecordRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/proto.CommonResponse'
+      summary: 创建产品测试记录
+      tags:
+      - WebAPI
   /api/mom/webapi/production/createproductworkrecord:
     post:
       consumes:
@@ -26461,6 +29994,33 @@ paths:
       summary: 获取作业步骤和作业参数
       tags:
       - WebAPI
+  /api/mom/webapi/production/getproductionstationexhibition:
+    get:
+      consumes:
+      - application/json
+      description: 获取工站的当前生产工单工序信息（工位看板）
+      parameters:
+      - description: 生产工站代号
+        in: query
+        name: productionStation
+        required: true
+        type: string
+      - description: jwt token
+        in: header
+        name: authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+      summary: 获取工站的当前生产工单工序信息
+      tags:
+      - WebAPI
   /api/mom/webapi/production/onlineproductinfo:
     post:
       consumes:
@@ -26542,6 +30102,33 @@ paths:
       summary: 更新产品返工记录
       tags:
       - WebAPI
+  /api/mom/webapi/quality/gettestprojectwithparameter:
+    post:
+      consumes:
+      - application/json
+      description: 根据测试工位/托盘号/产品序列号匹配测试项及其输入输出参数
+      parameters:
+      - description: jwt token
+        in: header
+        name: authorization
+        required: true
+        type: string
+      - description: GetTestProjectWithParameterRequest
+        in: body
+        name: account
+        required: true
+        schema:
+          $ref: '#/definitions/proto.GetTestProjectWithParameterRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/proto.GetTestProjectWithParameterResponse'
+      summary: 获取测试项接口数据
+      tags:
+      - 测试项管理
   /api/mom/webapi/statistic/getproductionstationefficiency:
     post:
       consumes:

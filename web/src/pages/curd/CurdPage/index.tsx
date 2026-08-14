@@ -14,7 +14,7 @@ export default () => {
     const query = queryString.parse(location.search);
     const pageName = query?.pageName ?? '';
     const pageType = Number(query?.type ?? 1);
-    window["AtaliNoCache"]=true;
+    (window as any)["AtaliNoCache"]=true;
     // return (
     //     <>
     //         {pageType === 1 && <TableCurdPage createSchemaField={createSchemaField} pageName={pageName} actionRef={actionRef}></TableCurdPage>}

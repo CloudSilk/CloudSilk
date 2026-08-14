@@ -13,6 +13,6 @@ export default (props: any) => {
     const showPageContainer = query?.showPageContainer==='true';
     const title = query?.pageTitle;
     return (
-        <FormPreviewPage showPageContainer={showPageContainer} title={title??''} showButton={showButton} createSchemaField={createSchemaField} formID={params?.formID}></FormPreviewPage>
+        <FormPreviewPage showPageContainer={showPageContainer} title={String(title ?? '')} showButton={showButton} createSchemaField={createSchemaField} formID={String(params?.formID ?? '')}></FormPreviewPage>
     )
 }

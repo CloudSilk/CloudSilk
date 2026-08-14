@@ -10,4 +10,4 @@ export function createSchemaField(formSchema: any, funcs: any, horizontal: boole
     if (horizontal) return <SchemaField schema={formSchema} scope={funcs} />
     return <FormLayout labelCol={6} wrapperCol={16}><SchemaField schema={formSchema} scope={funcs} /></FormLayout>
 }
-window['createSchemaField']=createSchemaField
+(window as any)['createSchemaField']=createSchemaField

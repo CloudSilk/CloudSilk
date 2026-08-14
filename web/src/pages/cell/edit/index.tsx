@@ -23,7 +23,7 @@ export class EditCellComponent extends React.Component<EditCompomemtProps, EditC
 
     constructor(props: any) {
         super(props)
-        const locationState = history.location?.state
+        const locationState = (history as any).location?.state
         if (locationState) {
             this.state = {
                 ...locationState
@@ -81,7 +81,7 @@ export class EditCellComponent extends React.Component<EditCompomemtProps, EditC
     }
 
     async componentDidMount() {
-        const params = queryString.parse(history.location.search);
+        const params: Record<string, string> = queryString.parse((history as any).location.search) as Record<string, string>;
         const pageConfig = await defaultCache.getPageConfig(params['pageName']);
         if (pageConfig?.code !== 20000 || !pageConfig.data) return;
         let editFormSchema = {
@@ -182,7 +182,7 @@ export class EditCellComponent extends React.Component<EditCompomemtProps, EditC
     }
 
     onBack() {
-        history.back()
+        (history as any).back()
     }
 
     render() {
@@ -208,9 +208,7 @@ export class EditCellComponent extends React.Component<EditCompomemtProps, EditC
                     height: '800px'
                 }} ref={this.refContainer} id={"graph"} /></Col>
                 <Col span={16}><div style={{ "backgroundColor": "white", "padding": "10px" }}>
-                    {this.state?.editForm && <FormProvider labelCol={6} wrapperCol={12}
-                        form={this.state.editForm}
-                    >
+                    {this.state?.editForm && <FormProvider form={this.state.editForm}>
                         {createSchemaField(this.state?.editFormSchema, funcs, false)}
                         <FormConsumer>
                             {(form) => {

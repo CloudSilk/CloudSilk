@@ -15,6 +15,280 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
+        "/api/mom/aps/schedule/delete": {
+            "delete": {
+                "description": "删除未下发的排程计划",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "APS排程"
+                ],
+                "summary": "删除排程计划",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "jwt token",
+                        "name": "authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "description": "Delete SchedulePlan",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/proto.GetByIDsRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/proto.CommonResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/mom/aps/schedule/detail": {
+            "get": {
+                "description": "获取排程计划详情（含明细时段，甘特图数据源）",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "APS排程"
+                ],
+                "summary": "排程计划详情",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "jwt token",
+                        "name": "authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "排程计划ID",
+                        "name": "id",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/proto.GetProductionSchedulePlanDetailResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/mom/aps/schedule/generate": {
+            "post": {
+                "description": "按产线对已发放/已签派工单执行前向贪心排程（优先级→交期），生成计划与明细",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "APS排程"
+                ],
+                "summary": "生成排程计划",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "jwt token",
+                        "name": "authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "description": "GenerateScheduleRequest",
+                        "name": "account",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/proto.GenerateScheduleRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/proto.GenerateScheduleResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/mom/aps/schedule/insert": {
+            "post": {
+                "description": "在既有排程计划中插入新工单（保持既有工单顺序与约束），重排后落库",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "APS排程"
+                ],
+                "summary": "插单重排",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "jwt token",
+                        "name": "authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "description": "InsertScheduleRequest",
+                        "name": "account",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/proto.InsertScheduleRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/proto.InsertScheduleResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/mom/aps/schedule/query": {
+            "get": {
+                "description": "查询排程计划（含明细，可直接渲染甘特图）",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "APS排程"
+                ],
+                "summary": "查询排程计划",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "jwt token",
+                        "name": "authorization",
+                        "in": "header",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/proto.QueryProductionSchedulePlanResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/mom/aps/schedule/release": {
+            "put": {
+                "description": "回写各工单预计开工/完工时间",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "APS排程"
+                ],
+                "summary": "下发排程",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "jwt token",
+                        "name": "authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "description": "ReleaseScheduleRequest",
+                        "name": "account",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/proto.ReleaseScheduleRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/proto.CommonResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/mom/aps/schedule/void": {
+            "put": {
+                "description": "作废未下发的排程计划",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "APS排程"
+                ],
+                "summary": "作废排程计划",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "jwt token",
+                        "name": "authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "排程计划ID",
+                        "name": "id",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/proto.CommonResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/api/mom/codinggeneration/add": {
             "post": {
                 "description": "新增",
@@ -1296,6 +1570,657 @@ const docTemplate = `{
                         "description": "OK",
                         "schema": {
                             "$ref": "#/definitions/proto.CommonResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/mom/equipment/equipment/add": {
+            "post": {
+                "description": "新增",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "设备管理"
+                ],
+                "summary": "新增",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "jwt token",
+                        "name": "authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "description": "Add Equipment",
+                        "name": "account",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/proto.EquipmentInfo"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/proto.CommonResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/mom/equipment/equipment/all": {
+            "get": {
+                "description": "获取所有",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "设备管理"
+                ],
+                "summary": "获取所有",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "jwt token",
+                        "name": "authorization",
+                        "in": "header",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/proto.GetAllEquipmentResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/mom/equipment/equipment/changestate": {
+            "put": {
+                "description": "设备状态流转（在用/停用/维修中/报废）",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "设备管理"
+                ],
+                "summary": "设备状态流转",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "jwt token",
+                        "name": "authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "设备ID",
+                        "name": "id",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "目标状态",
+                        "name": "state",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/proto.CommonResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/mom/equipment/equipment/delete": {
+            "delete": {
+                "description": "删除",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "设备管理"
+                ],
+                "summary": "删除",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "jwt token",
+                        "name": "authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "description": "Delete Equipment",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/proto.GetByIDsRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/proto.CommonResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/mom/equipment/equipment/detail": {
+            "get": {
+                "description": "获取详情",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "设备管理"
+                ],
+                "summary": "获取详情",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "jwt token",
+                        "name": "authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "ID",
+                        "name": "id",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/proto.GetEquipmentDetailResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/mom/equipment/equipment/oee": {
+            "post": {
+                "description": "按时间范围计算设备/工站的OEE（时间稼动率×性能稼动率×良品率）",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "设备管理"
+                ],
+                "summary": "OEE计算",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "jwt token",
+                        "name": "authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "description": "EquipmentOeeRequest",
+                        "name": "account",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/proto.EquipmentOeeRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/proto.EquipmentOeeResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/mom/equipment/equipment/query": {
+            "get": {
+                "description": "查询",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "设备管理"
+                ],
+                "summary": "查询",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "jwt token",
+                        "name": "authorization",
+                        "in": "header",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/proto.QueryEquipmentResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/mom/equipment/equipment/update": {
+            "put": {
+                "description": "更新",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "设备管理"
+                ],
+                "summary": "更新",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "jwt token",
+                        "name": "authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "description": "Update Equipment",
+                        "name": "account",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/proto.EquipmentInfo"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/proto.CommonResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/mom/equipment/maintenplan/add": {
+            "post": {
+                "description": "新增",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "设备维保计划管理"
+                ],
+                "summary": "新增",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "jwt token",
+                        "name": "authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "description": "Add EquipmentMaintenancePlan",
+                        "name": "account",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/proto.EquipmentMaintenancePlanInfo"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/proto.CommonResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/mom/equipment/maintenplan/all": {
+            "get": {
+                "description": "获取所有",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "设备维保计划管理"
+                ],
+                "summary": "获取所有",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "jwt token",
+                        "name": "authorization",
+                        "in": "header",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/proto.GetAllEquipmentMaintenancePlanResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/mom/equipment/maintenplan/delete": {
+            "delete": {
+                "description": "删除",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "设备维保计划管理"
+                ],
+                "summary": "删除",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "jwt token",
+                        "name": "authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "description": "Delete EquipmentMaintenancePlan",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/proto.GetByIDsRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/proto.CommonResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/mom/equipment/maintenplan/detail": {
+            "get": {
+                "description": "获取详情",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "设备维保计划管理"
+                ],
+                "summary": "获取详情",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "jwt token",
+                        "name": "authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "ID",
+                        "name": "id",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/proto.GetEquipmentMaintenancePlanDetailResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/mom/equipment/maintenplan/execute": {
+            "put": {
+                "description": "生成维保记录并滚动计划的下次执行日期，异常时联动设备状态",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "设备维保计划管理"
+                ],
+                "summary": "执行维保",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "jwt token",
+                        "name": "authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "description": "ExecuteEquipmentMaintenanceRequest",
+                        "name": "account",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/proto.ExecuteEquipmentMaintenanceRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/proto.CommonResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/mom/equipment/maintenplan/query": {
+            "get": {
+                "description": "查询",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "设备维保计划管理"
+                ],
+                "summary": "查询",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "jwt token",
+                        "name": "authorization",
+                        "in": "header",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/proto.QueryEquipmentMaintenancePlanResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/mom/equipment/maintenplan/update": {
+            "put": {
+                "description": "更新",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "设备维保计划管理"
+                ],
+                "summary": "更新",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "jwt token",
+                        "name": "authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "description": "Update EquipmentMaintenancePlan",
+                        "name": "account",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/proto.EquipmentMaintenancePlanInfo"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/proto.CommonResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/mom/equipment/maintenrecord/detail": {
+            "get": {
+                "description": "获取详情",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "设备维保记录管理"
+                ],
+                "summary": "获取详情",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "jwt token",
+                        "name": "authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "ID",
+                        "name": "id",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/proto.GetEquipmentMaintenanceRecordDetailResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/mom/equipment/maintenrecord/query": {
+            "get": {
+                "description": "查询",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "设备维保记录管理"
+                ],
+                "summary": "查询",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "jwt token",
+                        "name": "authorization",
+                        "in": "header",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/proto.QueryEquipmentMaintenanceRecordResponse"
                         }
                     }
                 }
@@ -7529,6 +8454,275 @@ const docTemplate = `{
                 }
             }
         },
+        "/api/mom/material/wms/alert": {
+            "get": {
+                "description": "可用量低于补料规则最低库存量或已为负的记录",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "WMS作业"
+                ],
+                "summary": "库存预警",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "jwt token",
+                        "name": "authorization",
+                        "in": "header",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/proto.MaterialInventoryAlertResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/mom/material/wms/pickbill": {
+            "post": {
+                "description": "按工单BOM逐行锁定库存生成拣货单（缺料行跳过并提示）",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "WMS作业"
+                ],
+                "summary": "按工单生成拣货单",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "jwt token",
+                        "name": "authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "description": "CreatePickBillRequest",
+                        "name": "account",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/proto.CreatePickBillRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/proto.CreatePickBillResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/mom/material/wms/pickbill/cancel": {
+            "put": {
+                "description": "解除库存锁定",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "WMS作业"
+                ],
+                "summary": "取消拣货单",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "jwt token",
+                        "name": "authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "description": "CancelPickBillRequest",
+                        "name": "account",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/proto.CancelPickBillRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/proto.CommonResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/mom/material/wms/pickbill/complete": {
+            "put": {
+                "description": "扣减账面库存、解除锁定并联动工单发料数量",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "WMS作业"
+                ],
+                "summary": "完成拣货",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "jwt token",
+                        "name": "authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "description": "CompletePickBillRequest",
+                        "name": "account",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/proto.CompletePickBillRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/proto.CommonResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/mom/material/wms/receive": {
+            "post": {
+                "description": "收货入库：增加账面库存并写入事务流水",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "WMS作业"
+                ],
+                "summary": "收货入库",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "jwt token",
+                        "name": "authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "description": "ReceiveMaterialRequest",
+                        "name": "account",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/proto.ReceiveMaterialRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/proto.ReceiveMaterialResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/mom/material/wms/stocktake": {
+            "put": {
+                "description": "按实盘数量调整账面库存并记录差异流水",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "WMS作业"
+                ],
+                "summary": "库存盘点",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "jwt token",
+                        "name": "authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "description": "StocktakeInventoryRequest",
+                        "name": "account",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/proto.StocktakeInventoryRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/proto.StocktakeInventoryResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/mom/material/wms/transaction/query": {
+            "get": {
+                "description": "查询库存事务流水（入库/出库/锁定/解锁/盘点调整）",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "WMS作业"
+                ],
+                "summary": "查询库存事务流水",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "jwt token",
+                        "name": "authorization",
+                        "in": "header",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/proto.QueryMaterialInventoryTransactionResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/api/mom/material/wmsbillqueue/add": {
             "post": {
                 "description": "新增",
@@ -7795,6 +8989,155 @@ const docTemplate = `{
                         }
                     }
                 }
+            }
+        },
+        "/api/mom/monitoring/alarms": {
+            "get": {
+                "description": "大屏告警滚动列表（按时间倒序）",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "生产监控"
+                ],
+                "summary": "告警列表",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "jwt token",
+                        "name": "authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "状态（默认全部）",
+                        "name": "currentState",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "数量上限（默认50）",
+                        "name": "limit",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/proto.QueryMonitoringAlarmResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/mom/monitoring/line": {
+            "get": {
+                "description": "OEE、周期产量、工单达成率、在制数、未处理告警",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "生产监控"
+                ],
+                "summary": "产线监控",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "jwt token",
+                        "name": "authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "产线ID",
+                        "name": "productionLineID",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "开始时间 yyyy-MM-dd HH:mm:ss（默认近24小时）",
+                        "name": "startTime",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "结束时间 yyyy-MM-dd HH:mm:ss（默认当前）",
+                        "name": "endTime",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/proto.MonitoringLineResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/mom/monitoring/overview": {
+            "get": {
+                "description": "产线/工站规模、工单进度、告警与工站状态分布",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "生产监控"
+                ],
+                "summary": "厂级监控总览",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "jwt token",
+                        "name": "authorization",
+                        "in": "header",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/proto.MonitoringOverviewResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/mom/monitoring/stream": {
+            "get": {
+                "description": "每5秒推送一次厂级总览与未处理告警数（text/event-stream，EventSource 兼容）",
+                "produces": [
+                    "text/event-stream"
+                ],
+                "tags": [
+                    "生产监控"
+                ],
+                "summary": "实时监控推送（SSE）",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "jwt token",
+                        "name": "authorization",
+                        "in": "header",
+                        "required": true
+                    }
+                ],
+                "responses": {}
             }
         },
         "/api/mom/printserver/add": {
@@ -9176,6 +10519,53 @@ const docTemplate = `{
                         "description": "OK",
                         "schema": {
                             "$ref": "#/definitions/proto.GetProductOrderDetailResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/mom/product/productorder/dispatch": {
+            "put": {
+                "description": "将已核验的工单签派给生产班组（核验 → 签派 → 发放）",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "生产工单管理"
+                ],
+                "summary": "签派",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "jwt token",
+                        "name": "authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "生产班组",
+                        "name": "productionTeam",
+                        "in": "query"
+                    },
+                    {
+                        "description": "Dispatch ProductOrder",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/proto.GetByIDsRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/proto.CommonResponse"
                         }
                     }
                 }
@@ -23030,6 +24420,1291 @@ const docTemplate = `{
                 }
             }
         },
+        "/api/mom/quality/qualityinspectionorder/add": {
+            "post": {
+                "description": "按检验类型下的启用标准生成检验单（含GB/T 2828抽样数量）",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "检验单管理"
+                ],
+                "summary": "新增检验单",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "jwt token",
+                        "name": "authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "description": "Add QualityInspectionOrder",
+                        "name": "account",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/proto.QualityInspectionOrderInfo"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/proto.CommonResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/mom/quality/qualityinspectionorder/complete": {
+            "put": {
+                "description": "录入检测结果，按标准判定单项、按AQL判定整单，可选生成返工记录",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "检验单管理"
+                ],
+                "summary": "完成检验",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "jwt token",
+                        "name": "authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "description": "Complete QualityInspectionOrder",
+                        "name": "account",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/proto.CompleteQualityInspectionOrderRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/proto.CommonResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/mom/quality/qualityinspectionorder/delete": {
+            "delete": {
+                "description": "删除（已完成的检验单不可删除）",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "检验单管理"
+                ],
+                "summary": "删除",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "jwt token",
+                        "name": "authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "description": "Delete QualityInspectionOrder",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/proto.GetByIDsRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/proto.CommonResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/mom/quality/qualityinspectionorder/detail": {
+            "get": {
+                "description": "获取详情（含明细）",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "检验单管理"
+                ],
+                "summary": "获取详情",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "jwt token",
+                        "name": "authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "ID",
+                        "name": "id",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/proto.GetQualityInspectionOrderDetailResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/mom/quality/qualityinspectionorder/query": {
+            "get": {
+                "description": "查询",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "检验单管理"
+                ],
+                "summary": "查询",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "jwt token",
+                        "name": "authorization",
+                        "in": "header",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/proto.QueryQualityInspectionOrderResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/mom/quality/qualityinspectionorder/update": {
+            "put": {
+                "description": "更新（仅待检验状态）",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "检验单管理"
+                ],
+                "summary": "更新",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "jwt token",
+                        "name": "authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "description": "Update QualityInspectionOrder",
+                        "name": "account",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/proto.QualityInspectionOrderInfo"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/proto.CommonResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/mom/quality/qualityinspectionstandard/add": {
+            "post": {
+                "description": "新增",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "检验标准管理"
+                ],
+                "summary": "新增",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "jwt token",
+                        "name": "authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "description": "Add QualityInspectionStandard",
+                        "name": "account",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/proto.QualityInspectionStandardInfo"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/proto.CommonResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/mom/quality/qualityinspectionstandard/all": {
+            "get": {
+                "description": "获取所有",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "检验标准管理"
+                ],
+                "summary": "获取所有",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "jwt token",
+                        "name": "authorization",
+                        "in": "header",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/proto.GetAllQualityInspectionStandardResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/mom/quality/qualityinspectionstandard/delete": {
+            "delete": {
+                "description": "删除",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "检验标准管理"
+                ],
+                "summary": "删除",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "jwt token",
+                        "name": "authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "description": "Delete QualityInspectionStandard",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/proto.GetByIDsRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/proto.CommonResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/mom/quality/qualityinspectionstandard/detail": {
+            "get": {
+                "description": "获取详情",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "检验标准管理"
+                ],
+                "summary": "获取详情",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "jwt token",
+                        "name": "authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "ID",
+                        "name": "id",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/proto.GetQualityInspectionStandardDetailResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/mom/quality/qualityinspectionstandard/query": {
+            "get": {
+                "description": "查询",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "检验标准管理"
+                ],
+                "summary": "查询",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "jwt token",
+                        "name": "authorization",
+                        "in": "header",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/proto.QueryQualityInspectionStandardResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/mom/quality/qualityinspectionstandard/update": {
+            "put": {
+                "description": "更新",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "检验标准管理"
+                ],
+                "summary": "更新",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "jwt token",
+                        "name": "authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "description": "Update QualityInspectionStandard",
+                        "name": "account",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/proto.QualityInspectionStandardInfo"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/proto.CommonResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/mom/quality/qualityinspectiontype/add": {
+            "post": {
+                "description": "新增",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "检验类型管理"
+                ],
+                "summary": "新增",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "jwt token",
+                        "name": "authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "description": "Add QualityInspectionType",
+                        "name": "account",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/proto.QualityInspectionTypeInfo"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/proto.CommonResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/mom/quality/qualityinspectiontype/all": {
+            "get": {
+                "description": "获取所有",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "检验类型管理"
+                ],
+                "summary": "获取所有",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "jwt token",
+                        "name": "authorization",
+                        "in": "header",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/proto.GetAllQualityInspectionTypeResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/mom/quality/qualityinspectiontype/delete": {
+            "delete": {
+                "description": "删除",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "检验类型管理"
+                ],
+                "summary": "删除",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "jwt token",
+                        "name": "authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "description": "Delete QualityInspectionType",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/proto.GetByIDsRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/proto.CommonResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/mom/quality/qualityinspectiontype/detail": {
+            "get": {
+                "description": "获取详情",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "检验类型管理"
+                ],
+                "summary": "获取详情",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "jwt token",
+                        "name": "authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "ID",
+                        "name": "id",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/proto.GetQualityInspectionTypeDetailResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/mom/quality/qualityinspectiontype/query": {
+            "get": {
+                "description": "查询",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "检验类型管理"
+                ],
+                "summary": "查询",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "jwt token",
+                        "name": "authorization",
+                        "in": "header",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/proto.QueryQualityInspectionTypeResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/mom/quality/qualityinspectiontype/update": {
+            "put": {
+                "description": "更新",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "检验类型管理"
+                ],
+                "summary": "更新",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "jwt token",
+                        "name": "authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "description": "Update QualityInspectionType",
+                        "name": "account",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/proto.QualityInspectionTypeInfo"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/proto.CommonResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/mom/quality/spc/calc": {
+            "post": {
+                "description": "计算均值/标准差/CPK与休哈特控制图界限（可关联检验标准取规格限）",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "质量统计"
+                ],
+                "summary": "SPC过程能力计算",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "jwt token",
+                        "name": "authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "description": "SpcCalcRequest",
+                        "name": "account",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/proto.SpcCalcRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/proto.SpcCalcResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/mom/scada/device/add": {
+            "post": {
+                "description": "新增",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "采集设备"
+                ],
+                "summary": "新增",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "jwt token",
+                        "name": "authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "description": "Add ScadaDevice",
+                        "name": "account",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/proto.ScadaDeviceInfo"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/proto.CommonResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/mom/scada/device/all": {
+            "get": {
+                "description": "获取所有",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "采集设备"
+                ],
+                "summary": "获取所有",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "jwt token",
+                        "name": "authorization",
+                        "in": "header",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/proto.GetAllScadaDeviceResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/mom/scada/device/delete": {
+            "delete": {
+                "description": "删除",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "采集设备"
+                ],
+                "summary": "删除",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "jwt token",
+                        "name": "authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "description": "Delete ScadaDevice",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/proto.GetByIDsRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/proto.CommonResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/mom/scada/device/detail": {
+            "get": {
+                "description": "获取详情",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "采集设备"
+                ],
+                "summary": "获取详情",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "jwt token",
+                        "name": "authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "ID",
+                        "name": "id",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/proto.GetScadaDeviceDetailResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/mom/scada/device/query": {
+            "get": {
+                "description": "查询",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "采集设备"
+                ],
+                "summary": "查询",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "jwt token",
+                        "name": "authorization",
+                        "in": "header",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/proto.QueryScadaDeviceResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/mom/scada/device/test": {
+            "post": {
+                "description": "用给定地址与从站号测试 Modbus TCP 连通性",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "采集设备"
+                ],
+                "summary": "测试设备连接",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "jwt token",
+                        "name": "authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "description": "TestScadaDeviceRequest",
+                        "name": "account",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/proto.TestScadaDeviceRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/proto.CommonResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/mom/scada/device/update": {
+            "put": {
+                "description": "更新",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "采集设备"
+                ],
+                "summary": "更新",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "jwt token",
+                        "name": "authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "description": "Update ScadaDevice",
+                        "name": "account",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/proto.ScadaDeviceInfo"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/proto.CommonResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/mom/scada/tag/add": {
+            "post": {
+                "description": "新增",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "采集点位"
+                ],
+                "summary": "新增",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "jwt token",
+                        "name": "authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "description": "Add ScadaTag",
+                        "name": "account",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/proto.ScadaTagInfo"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/proto.CommonResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/mom/scada/tag/all": {
+            "get": {
+                "description": "获取所有",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "采集点位"
+                ],
+                "summary": "获取所有",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "jwt token",
+                        "name": "authorization",
+                        "in": "header",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/proto.GetAllScadaTagResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/mom/scada/tag/delete": {
+            "delete": {
+                "description": "删除",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "采集点位"
+                ],
+                "summary": "删除",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "jwt token",
+                        "name": "authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "description": "Delete ScadaTag",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/proto.GetByIDsRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/proto.CommonResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/mom/scada/tag/detail": {
+            "get": {
+                "description": "获取详情",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "采集点位"
+                ],
+                "summary": "获取详情",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "jwt token",
+                        "name": "authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "ID",
+                        "name": "id",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/proto.GetScadaTagDetailResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/mom/scada/tag/history": {
+            "get": {
+                "description": "按点位与时间区间查询历史值",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "采集点位"
+                ],
+                "summary": "点位历史值",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "jwt token",
+                        "name": "authorization",
+                        "in": "header",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/proto.QueryScadaTagHistoryResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/mom/scada/tag/query": {
+            "get": {
+                "description": "查询",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "采集点位"
+                ],
+                "summary": "查询",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "jwt token",
+                        "name": "authorization",
+                        "in": "header",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/proto.QueryScadaTagResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/mom/scada/tag/update": {
+            "put": {
+                "description": "更新",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "采集点位"
+                ],
+                "summary": "更新",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "jwt token",
+                        "name": "authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "description": "Update ScadaTag",
+                        "name": "account",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/proto.ScadaTagInfo"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/proto.CommonResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/mom/scada/tag/values": {
+            "get": {
+                "description": "全部（或指定设备的）点位实时值",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "采集点位"
+                ],
+                "summary": "点位实时值",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "jwt token",
+                        "name": "authorization",
+                        "in": "header",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/proto.QueryScadaTagValueResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/api/mom/system/datamapping/add": {
             "post": {
                 "description": "新增",
@@ -26710,6 +29385,530 @@ const docTemplate = `{
                 }
             }
         },
+        "/api/mom/user/personnelqualification/add": {
+            "post": {
+                "description": "新增",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "人员资质管理"
+                ],
+                "summary": "新增",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "jwt token",
+                        "name": "authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "description": "Add PersonnelQualification",
+                        "name": "account",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/proto.PersonnelQualificationInfo"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/proto.CommonResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/mom/user/personnelqualification/all": {
+            "get": {
+                "description": "查询所有",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "人员资质管理"
+                ],
+                "summary": "查询所有",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "jwt token",
+                        "name": "authorization",
+                        "in": "header",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/proto.GetAllPersonnelQualificationResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/mom/user/personnelqualification/delete": {
+            "delete": {
+                "description": "删除",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "人员资质管理"
+                ],
+                "summary": "删除",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "jwt token",
+                        "name": "authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "description": "Delete PersonnelQualification",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/proto.DelRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/proto.CommonResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/mom/user/personnelqualification/detail": {
+            "get": {
+                "description": "查询明细",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "人员资质管理"
+                ],
+                "summary": "查询明细",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "ID",
+                        "name": "id",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "jwt token",
+                        "name": "authorization",
+                        "in": "header",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/proto.GetPersonnelQualificationDetailResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/mom/user/personnelqualification/query": {
+            "get": {
+                "description": "分页查询",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/octet-stream"
+                ],
+                "tags": [
+                    "人员资质管理"
+                ],
+                "summary": "分页查询",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "jwt token",
+                        "name": "authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "从1开始",
+                        "name": "pageIndex",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "默认每页10条",
+                        "name": "pageSize",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "排序字段",
+                        "name": "orderField",
+                        "in": "query"
+                    },
+                    {
+                        "type": "boolean",
+                        "description": "是否倒序排序",
+                        "name": "desc",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "生产产线ID",
+                        "name": "productionLineID",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "认证人员信息",
+                        "name": "name",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/proto.QueryPersonnelQualificationResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/mom/user/personnelqualification/update": {
+            "put": {
+                "description": "更新",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "人员资质管理"
+                ],
+                "summary": "更新",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "jwt token",
+                        "name": "authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "description": "Update PersonnelQualification",
+                        "name": "account",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/proto.PersonnelQualificationInfo"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/proto.CommonResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/mom/user/personnelqualificationtype/add": {
+            "post": {
+                "description": "新增",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "人员资质类型"
+                ],
+                "summary": "新增",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "jwt token",
+                        "name": "authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "description": "Add PersonnelQualificationType",
+                        "name": "account",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/proto.PersonnelQualificationTypeInfo"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/proto.CommonResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/mom/user/personnelqualificationtype/all": {
+            "get": {
+                "description": "查询所有",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "人员资质类型"
+                ],
+                "summary": "查询所有",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "jwt token",
+                        "name": "authorization",
+                        "in": "header",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/proto.GetAllPersonnelQualificationTypeResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/mom/user/personnelqualificationtype/delete": {
+            "delete": {
+                "description": "删除",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "人员资质类型"
+                ],
+                "summary": "删除",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "jwt token",
+                        "name": "authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "description": "Delete PersonnelQualificationType",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/proto.DelRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/proto.CommonResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/mom/user/personnelqualificationtype/detail": {
+            "get": {
+                "description": "查询明细",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "人员资质类型"
+                ],
+                "summary": "查询明细",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "ID",
+                        "name": "id",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "jwt token",
+                        "name": "authorization",
+                        "in": "header",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/proto.GetPersonnelQualificationTypeDetailResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/mom/user/personnelqualificationtype/query": {
+            "get": {
+                "description": "分页查询",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/octet-stream"
+                ],
+                "tags": [
+                    "人员资质类型"
+                ],
+                "summary": "分页查询",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "jwt token",
+                        "name": "authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "从1开始",
+                        "name": "pageIndex",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "默认每页10条",
+                        "name": "pageSize",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "排序字段",
+                        "name": "orderField",
+                        "in": "query"
+                    },
+                    {
+                        "type": "boolean",
+                        "description": "是否倒序排序",
+                        "name": "desc",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "生产产线ID",
+                        "name": "productionLineID",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "认证人员信息",
+                        "name": "name",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/proto.QueryPersonnelQualificationTypeResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/mom/user/personnelqualificationtype/update": {
+            "put": {
+                "description": "更新",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "人员资质类型"
+                ],
+                "summary": "更新",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "jwt token",
+                        "name": "authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "description": "Update PersonnelQualificationType",
+                        "name": "account",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/proto.PersonnelQualificationTypeInfo"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/proto.CommonResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/api/mom/webapi/admin/login": {
             "post": {
                 "description": "登录",
@@ -27056,6 +30255,47 @@ const docTemplate = `{
                 }
             }
         },
+        "/api/mom/webapi/production/createproducttestrecord": {
+            "post": {
+                "description": "创建产品测试记录（测试设备上报）",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "WebAPI"
+                ],
+                "summary": "创建产品测试记录",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "jwt token",
+                        "name": "authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "description": "CreateProductTestRecordRequest",
+                        "name": "account",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/proto.CreateProductTestRecordRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/proto.CommonResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/api/mom/webapi/production/createproductworkrecord": {
             "post": {
                 "description": "创建产品作业记录",
@@ -27220,6 +30460,46 @@ const docTemplate = `{
                 }
             }
         },
+        "/api/mom/webapi/production/getproductionstationexhibition": {
+            "get": {
+                "description": "获取工站的当前生产工单工序信息（工位看板）",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "WebAPI"
+                ],
+                "summary": "获取工站的当前生产工单工序信息",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "生产工站代号",
+                        "name": "productionStation",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "jwt token",
+                        "name": "authorization",
+                        "in": "header",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    }
+                }
+            }
+        },
         "/api/mom/webapi/production/onlineproductinfo": {
             "post": {
                 "description": "设定产品信息状态为上线装配",
@@ -27338,6 +30618,47 @@ const docTemplate = `{
                         "description": "OK",
                         "schema": {
                             "$ref": "#/definitions/proto.CommonResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/mom/webapi/quality/gettestprojectwithparameter": {
+            "post": {
+                "description": "根据测试工位/托盘号/产品序列号匹配测试项及其输入输出参数",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "测试项管理"
+                ],
+                "summary": "获取测试项接口数据",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "jwt token",
+                        "name": "authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "description": "GetTestProjectWithParameterRequest",
+                        "name": "account",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/proto.GetTestProjectWithParameterRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/proto.GetTestProjectWithParameterResponse"
                         }
                     }
                 }
@@ -27624,6 +30945,15 @@ const docTemplate = `{
                 }
             }
         },
+        "proto.CancelPickBillRequest": {
+            "type": "object",
+            "properties": {
+                "billID": {
+                    "description": "拣货单ID",
+                    "type": "string"
+                }
+            }
+        },
         "proto.CheckProductProcessRouteFailureRequest": {
             "type": "object",
             "properties": {
@@ -27844,6 +31174,95 @@ const docTemplate = `{
                 }
             }
         },
+        "proto.CompletePickBillRequest": {
+            "type": "object",
+            "properties": {
+                "billID": {
+                    "description": "拣货单ID",
+                    "type": "string"
+                },
+                "createAGVTask": {
+                    "description": "完成后是否生成AGV搬运任务（待签派状态）",
+                    "type": "boolean"
+                }
+            }
+        },
+        "proto.CompleteQualityInspectionOrderRequest": {
+            "type": "object",
+            "properties": {
+                "concession": {
+                    "description": "让步接收：判定不合格但特采放行（结论记为让步接收，不改产品状态）",
+                    "type": "boolean"
+                },
+                "createRework": {
+                    "description": "不合格时是否生成返工记录",
+                    "type": "boolean"
+                },
+                "disposition": {
+                    "description": "不合格处理说明",
+                    "type": "string"
+                },
+                "id": {
+                    "description": "检验单ID",
+                    "type": "string"
+                },
+                "inspectionUserID": {
+                    "description": "检验人",
+                    "type": "string"
+                },
+                "items": {
+                    "description": "明细检测结果",
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/proto.QualityInspectionOrderItemInfo"
+                    }
+                }
+            }
+        },
+        "proto.CreatePickBillRequest": {
+            "type": "object",
+            "properties": {
+                "createAGVTask": {
+                    "description": "完成后是否生成AGV搬运任务",
+                    "type": "boolean"
+                },
+                "materialStoreID": {
+                    "description": "发货仓库ID（可选，缺省用工单BOM上的仓库）",
+                    "type": "string"
+                },
+                "productOrderID": {
+                    "description": "生产工单ID",
+                    "type": "string"
+                }
+            }
+        },
+        "proto.CreatePickBillResponse": {
+            "type": "object",
+            "properties": {
+                "billID": {
+                    "description": "拣货单ID",
+                    "type": "string"
+                },
+                "billNo": {
+                    "description": "拣货单号",
+                    "type": "string"
+                },
+                "code": {
+                    "$ref": "#/definitions/proto.Code"
+                },
+                "lockedLines": {
+                    "description": "锁定明细数",
+                    "type": "integer"
+                },
+                "lockedQTY": {
+                    "description": "锁定总量",
+                    "type": "integer"
+                },
+                "message": {
+                    "type": "string"
+                }
+            }
+        },
         "proto.CreateProductProcessRecordRequest": {
             "type": "object",
             "properties": {
@@ -27869,6 +31288,32 @@ const docTemplate = `{
                 },
                 "workResult": {
                     "description": "作业结果",
+                    "type": "string"
+                }
+            }
+        },
+        "proto.CreateProductTestRecordRequest": {
+            "type": "object",
+            "properties": {
+                "isQualified": {
+                    "type": "boolean"
+                },
+                "productSerialNo": {
+                    "type": "string"
+                },
+                "productionStation": {
+                    "type": "string"
+                },
+                "testData": {
+                    "type": "string"
+                },
+                "testEndTime": {
+                    "type": "string"
+                },
+                "testProject": {
+                    "type": "string"
+                },
+                "testStartTime": {
                     "type": "string"
                 }
             }
@@ -28064,6 +31509,238 @@ const docTemplate = `{
                 }
             }
         },
+        "proto.EquipmentInfo": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "description": "代号",
+                    "type": "string"
+                },
+                "commissionDate": {
+                    "description": "投运日期",
+                    "type": "string"
+                },
+                "currentState": {
+                    "description": "设备状态（在用/停用/维修中/报废）",
+                    "type": "string"
+                },
+                "enable": {
+                    "description": "是否启用",
+                    "type": "boolean"
+                },
+                "id": {
+                    "description": "ID",
+                    "type": "string"
+                },
+                "location": {
+                    "description": "安装位置",
+                    "type": "string"
+                },
+                "manufacturer": {
+                    "description": "生产厂家",
+                    "type": "string"
+                },
+                "model": {
+                    "description": "型号规格",
+                    "type": "string"
+                },
+                "name": {
+                    "description": "名称",
+                    "type": "string"
+                },
+                "productionStationCode": {
+                    "type": "string"
+                },
+                "productionStationID": {
+                    "description": "关联生产工站ID",
+                    "type": "string"
+                },
+                "remark": {
+                    "description": "备注",
+                    "type": "string"
+                },
+                "serialNo": {
+                    "description": "出厂编号",
+                    "type": "string"
+                },
+                "team": {
+                    "description": "责任班组",
+                    "type": "string"
+                }
+            }
+        },
+        "proto.EquipmentMaintenancePlanInfo": {
+            "type": "object",
+            "properties": {
+                "content": {
+                    "description": "维保内容",
+                    "type": "string"
+                },
+                "cycleDays": {
+                    "description": "周期（天）",
+                    "type": "integer"
+                },
+                "enable": {
+                    "description": "是否启用",
+                    "type": "boolean"
+                },
+                "equipmentCode": {
+                    "type": "string"
+                },
+                "equipmentID": {
+                    "description": "设备ID",
+                    "type": "string"
+                },
+                "id": {
+                    "description": "ID",
+                    "type": "string"
+                },
+                "lastExecutionDate": {
+                    "description": "上次执行日期",
+                    "type": "string"
+                },
+                "maintenanceType": {
+                    "description": "维保类型（保养/点检/大修）",
+                    "type": "string"
+                },
+                "nextExecutionDate": {
+                    "description": "下次执行日期",
+                    "type": "string"
+                },
+                "remark": {
+                    "description": "备注",
+                    "type": "string"
+                },
+                "remindDays": {
+                    "description": "提前提醒天数",
+                    "type": "integer"
+                }
+            }
+        },
+        "proto.EquipmentMaintenanceRecordInfo": {
+            "type": "object",
+            "properties": {
+                "abnormalDescription": {
+                    "description": "异常说明",
+                    "type": "string"
+                },
+                "content": {
+                    "description": "执行内容",
+                    "type": "string"
+                },
+                "durationMinutes": {
+                    "description": "耗时（分钟）",
+                    "type": "integer"
+                },
+                "equipmentCode": {
+                    "type": "string"
+                },
+                "equipmentID": {
+                    "description": "设备ID",
+                    "type": "string"
+                },
+                "equipmentMaintenancePlanID": {
+                    "description": "维保计划ID",
+                    "type": "string"
+                },
+                "executionDate": {
+                    "description": "执行日期",
+                    "type": "string"
+                },
+                "executorID": {
+                    "description": "执行人",
+                    "type": "string"
+                },
+                "id": {
+                    "description": "ID",
+                    "type": "string"
+                },
+                "maintenanceType": {
+                    "description": "维保类型",
+                    "type": "string"
+                },
+                "remark": {
+                    "description": "备注",
+                    "type": "string"
+                },
+                "result": {
+                    "description": "结果（正常/异常）",
+                    "type": "string"
+                }
+            }
+        },
+        "proto.EquipmentOeeRequest": {
+            "type": "object",
+            "properties": {
+                "endTime": {
+                    "description": "结束时间（yyyy-MM-dd HH:mm:ss）",
+                    "type": "string"
+                },
+                "equipmentID": {
+                    "description": "设备ID",
+                    "type": "string"
+                },
+                "plannedMinutes": {
+                    "description": "计划生产时间（分钟，缺省按时间范围计算）",
+                    "type": "integer"
+                },
+                "productionStationID": {
+                    "description": "生产工站ID（与设备二选一）",
+                    "type": "string"
+                },
+                "startTime": {
+                    "description": "开始时间（yyyy-MM-dd HH:mm:ss）",
+                    "type": "string"
+                }
+            }
+        },
+        "proto.EquipmentOeeResponse": {
+            "type": "object",
+            "properties": {
+                "availability": {
+                    "description": "时间稼动率",
+                    "type": "number"
+                },
+                "code": {
+                    "$ref": "#/definitions/proto.Code"
+                },
+                "downtimeMinutes": {
+                    "description": "停机时间（分钟，来自故障记录）",
+                    "type": "number"
+                },
+                "message": {
+                    "type": "string"
+                },
+                "oee": {
+                    "description": "OEE",
+                    "type": "number"
+                },
+                "performance": {
+                    "description": "性能稼动率",
+                    "type": "number"
+                },
+                "plannedMinutes": {
+                    "description": "计划时间（分钟）",
+                    "type": "number"
+                },
+                "qualifiedCount": {
+                    "description": "合格数量",
+                    "type": "integer"
+                },
+                "quality": {
+                    "description": "良品率",
+                    "type": "number"
+                },
+                "runMinutes": {
+                    "description": "实际运行时间（分钟）",
+                    "type": "number"
+                },
+                "totalCount": {
+                    "description": "加工数量",
+                    "type": "integer"
+                }
+            }
+        },
         "proto.ExceptionTraceInfo": {
             "type": "object",
             "properties": {
@@ -28108,6 +31785,35 @@ const docTemplate = `{
                 }
             }
         },
+        "proto.ExecuteEquipmentMaintenanceRequest": {
+            "type": "object",
+            "properties": {
+                "abnormalDescription": {
+                    "description": "异常说明",
+                    "type": "string"
+                },
+                "content": {
+                    "description": "执行内容",
+                    "type": "string"
+                },
+                "durationMinutes": {
+                    "description": "耗时（分钟）",
+                    "type": "integer"
+                },
+                "equipmentMaintenancePlanID": {
+                    "description": "维保计划ID",
+                    "type": "string"
+                },
+                "executorID": {
+                    "description": "执行人",
+                    "type": "string"
+                },
+                "result": {
+                    "description": "结果（正常/异常）",
+                    "type": "string"
+                }
+            }
+        },
         "proto.ExitProductionStationRequest": {
             "type": "object",
             "properties": {
@@ -28146,6 +31852,61 @@ const docTemplate = `{
                 "waitTime": {
                     "description": "等待时长",
                     "type": "integer"
+                }
+            }
+        },
+        "proto.GenerateScheduleRequest": {
+            "type": "object",
+            "properties": {
+                "changeoverSeconds": {
+                    "description": "换型时间（秒）：相邻工单产品型号不同时插入的换型间隔",
+                    "type": "integer"
+                },
+                "dailyWorkMinutes": {
+                    "description": "每日工作分钟数（\u003c=0 表示连续排程不跨天中断）",
+                    "type": "integer"
+                },
+                "productOrderIDs": {
+                    "description": "仅纳入这些工单（为空则自动取该产线全部已发放/已签派工单）",
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "productionLineID": {
+                    "description": "产线ID（为空则报错，当前按单产线排程）",
+                    "type": "string"
+                },
+                "startTime": {
+                    "description": "排程起始时间（yyyy-MM-dd HH:mm:ss，为空取当前时间）",
+                    "type": "string"
+                }
+            }
+        },
+        "proto.GenerateScheduleResponse": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "$ref": "#/definitions/proto.Code"
+                },
+                "endTime": {
+                    "description": "计划结束时间",
+                    "type": "string"
+                },
+                "message": {
+                    "type": "string"
+                },
+                "orderCount": {
+                    "description": "纳入工单数",
+                    "type": "integer"
+                },
+                "planID": {
+                    "description": "排程计划ID",
+                    "type": "string"
+                },
+                "planNo": {
+                    "description": "计划批次号",
+                    "type": "string"
                 }
             }
         },
@@ -28272,6 +32033,40 @@ const docTemplate = `{
                     "type": "array",
                     "items": {
                         "$ref": "#/definitions/proto.DataMappingInfo"
+                    }
+                },
+                "message": {
+                    "type": "string"
+                }
+            }
+        },
+        "proto.GetAllEquipmentMaintenancePlanResponse": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "$ref": "#/definitions/proto.Code"
+                },
+                "data": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/proto.EquipmentMaintenancePlanInfo"
+                    }
+                },
+                "message": {
+                    "type": "string"
+                }
+            }
+        },
+        "proto.GetAllEquipmentResponse": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "$ref": "#/definitions/proto.Code"
+                },
+                "data": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/proto.EquipmentInfo"
                     }
                 },
                 "message": {
@@ -29724,6 +33519,40 @@ const docTemplate = `{
                 }
             }
         },
+        "proto.GetAllQualityInspectionStandardResponse": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "$ref": "#/definitions/proto.Code"
+                },
+                "data": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/proto.QualityInspectionStandardInfo"
+                    }
+                },
+                "message": {
+                    "type": "string"
+                }
+            }
+        },
+        "proto.GetAllQualityInspectionTypeResponse": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "$ref": "#/definitions/proto.Code"
+                },
+                "data": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/proto.QualityInspectionTypeInfo"
+                    }
+                },
+                "message": {
+                    "type": "string"
+                }
+            }
+        },
         "proto.GetAllRemoteServiceResponse": {
             "type": "object",
             "properties": {
@@ -29768,6 +33597,40 @@ const docTemplate = `{
                     "type": "array",
                     "items": {
                         "$ref": "#/definitions/proto.RemoteServiceTaskInfo"
+                    }
+                },
+                "message": {
+                    "type": "string"
+                }
+            }
+        },
+        "proto.GetAllScadaDeviceResponse": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "$ref": "#/definitions/proto.Code"
+                },
+                "data": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/proto.ScadaDeviceInfo"
+                    }
+                },
+                "message": {
+                    "type": "string"
+                }
+            }
+        },
+        "proto.GetAllScadaTagResponse": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "$ref": "#/definitions/proto.Code"
+                },
+                "data": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/proto.ScadaTagInfo"
                     }
                 },
                 "message": {
@@ -29955,6 +33818,48 @@ const docTemplate = `{
                 },
                 "data": {
                     "$ref": "#/definitions/proto.DataMappingInfo"
+                },
+                "message": {
+                    "type": "string"
+                }
+            }
+        },
+        "proto.GetEquipmentDetailResponse": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "$ref": "#/definitions/proto.Code"
+                },
+                "data": {
+                    "$ref": "#/definitions/proto.EquipmentInfo"
+                },
+                "message": {
+                    "type": "string"
+                }
+            }
+        },
+        "proto.GetEquipmentMaintenancePlanDetailResponse": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "$ref": "#/definitions/proto.Code"
+                },
+                "data": {
+                    "$ref": "#/definitions/proto.EquipmentMaintenancePlanInfo"
+                },
+                "message": {
+                    "type": "string"
+                }
+            }
+        },
+        "proto.GetEquipmentMaintenanceRecordDetailResponse": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "$ref": "#/definitions/proto.Code"
+                },
+                "data": {
+                    "$ref": "#/definitions/proto.EquipmentMaintenanceRecordInfo"
                 },
                 "message": {
                     "type": "string"
@@ -31056,6 +34961,20 @@ const docTemplate = `{
                 }
             }
         },
+        "proto.GetProductionSchedulePlanDetailResponse": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "$ref": "#/definitions/proto.Code"
+                },
+                "data": {
+                    "$ref": "#/definitions/proto.ProductionSchedulePlanInfo"
+                },
+                "message": {
+                    "type": "string"
+                }
+            }
+        },
         "proto.GetProductionStationAlarmDetailResponse": {
             "type": "object",
             "properties": {
@@ -31165,6 +35084,48 @@ const docTemplate = `{
                 }
             }
         },
+        "proto.GetQualityInspectionOrderDetailResponse": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "$ref": "#/definitions/proto.Code"
+                },
+                "data": {
+                    "$ref": "#/definitions/proto.QualityInspectionOrderInfo"
+                },
+                "message": {
+                    "type": "string"
+                }
+            }
+        },
+        "proto.GetQualityInspectionStandardDetailResponse": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "$ref": "#/definitions/proto.Code"
+                },
+                "data": {
+                    "$ref": "#/definitions/proto.QualityInspectionStandardInfo"
+                },
+                "message": {
+                    "type": "string"
+                }
+            }
+        },
+        "proto.GetQualityInspectionTypeDetailResponse": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "$ref": "#/definitions/proto.Code"
+                },
+                "data": {
+                    "$ref": "#/definitions/proto.QualityInspectionTypeInfo"
+                },
+                "message": {
+                    "type": "string"
+                }
+            }
+        },
         "proto.GetRemoteServiceDetailResponse": {
             "type": "object",
             "properties": {
@@ -31201,6 +35162,34 @@ const docTemplate = `{
                 },
                 "data": {
                     "$ref": "#/definitions/proto.RemoteServiceTaskQueueInfo"
+                },
+                "message": {
+                    "type": "string"
+                }
+            }
+        },
+        "proto.GetScadaDeviceDetailResponse": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "$ref": "#/definitions/proto.Code"
+                },
+                "data": {
+                    "$ref": "#/definitions/proto.ScadaDeviceInfo"
+                },
+                "message": {
+                    "type": "string"
+                }
+            }
+        },
+        "proto.GetScadaTagDetailResponse": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "$ref": "#/definitions/proto.Code"
+                },
+                "data": {
+                    "$ref": "#/definitions/proto.ScadaTagInfo"
                 },
                 "message": {
                     "type": "string"
@@ -31291,6 +35280,37 @@ const docTemplate = `{
                 }
             }
         },
+        "proto.GetTestProjectWithParameterRequest": {
+            "type": "object",
+            "properties": {
+                "productSerialNo": {
+                    "description": "产品序列号",
+                    "type": "string"
+                },
+                "productionStation": {
+                    "description": "工位代号",
+                    "type": "string"
+                },
+                "trayNo": {
+                    "description": "载具号",
+                    "type": "string"
+                }
+            }
+        },
+        "proto.GetTestProjectWithParameterResponse": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "type": "integer"
+                },
+                "data": {
+                    "$ref": "#/definitions/proto.TestProjectWithParameterInfo"
+                },
+                "message": {
+                    "type": "string"
+                }
+            }
+        },
         "proto.GetWMSBillQueueDetailResponse": {
             "type": "object",
             "properties": {
@@ -31302,6 +35322,42 @@ const docTemplate = `{
                 },
                 "message": {
                     "type": "string"
+                }
+            }
+        },
+        "proto.InsertScheduleRequest": {
+            "type": "object",
+            "properties": {
+                "changeoverSeconds": {
+                    "description": "换型时间（秒）",
+                    "type": "integer"
+                },
+                "planID": {
+                    "description": "排程计划ID",
+                    "type": "string"
+                },
+                "productOrderID": {
+                    "description": "新插入的工单ID",
+                    "type": "string"
+                }
+            }
+        },
+        "proto.InsertScheduleResponse": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "$ref": "#/definitions/proto.Code"
+                },
+                "endTime": {
+                    "description": "重排后的计划结束时间",
+                    "type": "string"
+                },
+                "message": {
+                    "type": "string"
+                },
+                "sequence": {
+                    "description": "新工单所在顺序号（从1开始）",
+                    "type": "integer"
                 }
             }
         },
@@ -31972,6 +36028,65 @@ const docTemplate = `{
                 }
             }
         },
+        "proto.MaterialInventoryAlertInfo": {
+            "type": "object",
+            "properties": {
+                "availableQTY": {
+                    "description": "可用数量",
+                    "type": "integer"
+                },
+                "issuedQTY": {
+                    "description": "锁定数量",
+                    "type": "integer"
+                },
+                "materialDescription": {
+                    "type": "string"
+                },
+                "materialInfoID": {
+                    "description": "物料ID",
+                    "type": "string"
+                },
+                "materialInventoryID": {
+                    "description": "库存记录ID",
+                    "type": "string"
+                },
+                "materialNo": {
+                    "type": "string"
+                },
+                "materialStoreCode": {
+                    "type": "string"
+                },
+                "materialStoreID": {
+                    "description": "仓库ID",
+                    "type": "string"
+                },
+                "minimumQTY": {
+                    "description": "预警阈值（补料规则最低库存量，无规则时为0）",
+                    "type": "integer"
+                },
+                "storedQTY": {
+                    "description": "账面库存",
+                    "type": "integer"
+                }
+            }
+        },
+        "proto.MaterialInventoryAlertResponse": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "$ref": "#/definitions/proto.Code"
+                },
+                "data": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/proto.MaterialInventoryAlertInfo"
+                    }
+                },
+                "message": {
+                    "type": "string"
+                }
+            }
+        },
         "proto.MaterialInventoryInfo": {
             "type": "object",
             "properties": {
@@ -32030,6 +36145,61 @@ const docTemplate = `{
                 "storedQTY": {
                     "description": "库存数量",
                     "type": "integer"
+                }
+            }
+        },
+        "proto.MaterialInventoryTransactionInfo": {
+            "type": "object",
+            "properties": {
+                "afterQTY": {
+                    "description": "变更后库存",
+                    "type": "integer"
+                },
+                "beforeQTY": {
+                    "description": "变更前库存",
+                    "type": "integer"
+                },
+                "createTime": {
+                    "description": "操作时间",
+                    "type": "string"
+                },
+                "createUserID": {
+                    "description": "操作人",
+                    "type": "string"
+                },
+                "id": {
+                    "description": "ID",
+                    "type": "string"
+                },
+                "materialInfoID": {
+                    "description": "物料ID",
+                    "type": "string"
+                },
+                "materialNo": {
+                    "type": "string"
+                },
+                "materialStoreCode": {
+                    "type": "string"
+                },
+                "materialStoreID": {
+                    "description": "仓库ID",
+                    "type": "string"
+                },
+                "qty": {
+                    "description": "数量（带符号）",
+                    "type": "integer"
+                },
+                "refBillNo": {
+                    "description": "关联单号",
+                    "type": "string"
+                },
+                "remark": {
+                    "description": "备注",
+                    "type": "string"
+                },
+                "transactionType": {
+                    "description": "事务类型（入库/出库/锁定/解锁/盘点调整）",
+                    "type": "string"
                 }
             }
         },
@@ -32646,6 +36816,151 @@ const docTemplate = `{
                 }
             }
         },
+        "proto.MonitoringAlarmInfo": {
+            "type": "object",
+            "properties": {
+                "alarmMessage": {
+                    "description": "报警信息",
+                    "type": "string"
+                },
+                "alarmNo": {
+                    "description": "报警编号",
+                    "type": "string"
+                },
+                "createTime": {
+                    "description": "报警时间",
+                    "type": "string"
+                },
+                "currentState": {
+                    "description": "状态",
+                    "type": "string"
+                },
+                "handleMethod": {
+                    "description": "处理方式",
+                    "type": "string"
+                },
+                "id": {
+                    "description": "ID",
+                    "type": "string"
+                },
+                "productionStationCode": {
+                    "description": "工站代号",
+                    "type": "string"
+                }
+            }
+        },
+        "proto.MonitoringLineResponse": {
+            "type": "object",
+            "properties": {
+                "achievementRate": {
+                    "description": "工单达成率（完工/下单）",
+                    "type": "number"
+                },
+                "availability": {
+                    "description": "时间稼动率",
+                    "type": "number"
+                },
+                "code": {
+                    "$ref": "#/definitions/proto.Code"
+                },
+                "message": {
+                    "type": "string"
+                },
+                "oee": {
+                    "description": "OEE",
+                    "type": "number"
+                },
+                "outputCount": {
+                    "description": "周期产量（节拍记录数）",
+                    "type": "integer"
+                },
+                "performance": {
+                    "description": "性能稼动率",
+                    "type": "number"
+                },
+                "productionLineCode": {
+                    "type": "string"
+                },
+                "productionLineDescription": {
+                    "type": "string"
+                },
+                "productionLineID": {
+                    "description": "产线ID",
+                    "type": "string"
+                },
+                "quality": {
+                    "description": "良品率",
+                    "type": "number"
+                },
+                "stationCount": {
+                    "description": "工站数",
+                    "type": "integer"
+                },
+                "unhandledAlarmCount": {
+                    "description": "未处理告警数",
+                    "type": "integer"
+                },
+                "wipCount": {
+                    "description": "当前在制数",
+                    "type": "integer"
+                }
+            }
+        },
+        "proto.MonitoringOverviewResponse": {
+            "type": "object",
+            "properties": {
+                "breakdownStationCount": {
+                    "description": "故障工站数",
+                    "type": "integer"
+                },
+                "code": {
+                    "$ref": "#/definitions/proto.Code"
+                },
+                "idleStationCount": {
+                    "description": "正常工站数",
+                    "type": "integer"
+                },
+                "message": {
+                    "type": "string"
+                },
+                "producingOrderCount": {
+                    "description": "生产中工单数",
+                    "type": "integer"
+                },
+                "producingStationCount": {
+                    "description": "生产中工站数",
+                    "type": "integer"
+                },
+                "productionLineCount": {
+                    "description": "产线数",
+                    "type": "integer"
+                },
+                "productionStationCount": {
+                    "description": "工站数",
+                    "type": "integer"
+                },
+                "todayAlarmCount": {
+                    "description": "今日新增告警数",
+                    "type": "integer"
+                },
+                "totalFinishedQTY": {
+                    "description": "已完工数量合计",
+                    "type": "integer"
+                },
+                "totalOrderQTY": {
+                    "description": "工单总数量合计",
+                    "type": "integer"
+                },
+                "totalStartedQTY": {
+                    "description": "已开工数量合计",
+                    "type": "integer"
+                },
+                "unhandledAlarmCount": {
+                    "description": "未处理告警数",
+                    "type": "integer"
+                }
+            }
+        },
         "proto.OnlineProductInfoRequest": {
             "type": "object",
             "properties": {
@@ -32703,6 +37018,35 @@ const docTemplate = `{
                 },
                 "requestContent": {
                     "description": "提交内容",
+                    "type": "string"
+                }
+            }
+        },
+        "proto.ParameterInfo": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "type": "string"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "groupCode": {
+                    "type": "string"
+                },
+                "maximumValue": {
+                    "type": "string"
+                },
+                "minimumValue": {
+                    "type": "string"
+                },
+                "projectCode": {
+                    "type": "string"
+                },
+                "standardValue": {
+                    "type": "string"
+                },
+                "unit": {
                     "type": "string"
                 }
             }
@@ -36014,6 +40358,97 @@ const docTemplate = `{
                 }
             }
         },
+        "proto.ProductionScheduleItemInfo": {
+            "type": "object",
+            "properties": {
+                "deliveryDate": {
+                    "description": "交货期限",
+                    "type": "string"
+                },
+                "durationSeconds": {
+                    "description": "工时（秒）",
+                    "type": "integer"
+                },
+                "id": {
+                    "description": "ID",
+                    "type": "string"
+                },
+                "plannedEndTime": {
+                    "description": "计划完工时间",
+                    "type": "string"
+                },
+                "plannedStartTime": {
+                    "description": "计划开工时间",
+                    "type": "string"
+                },
+                "priorityLevel": {
+                    "description": "优先级",
+                    "type": "integer"
+                },
+                "productOrderID": {
+                    "description": "工单ID",
+                    "type": "string"
+                },
+                "productOrderNo": {
+                    "type": "string"
+                },
+                "productionSchedulePlanID": {
+                    "description": "排程计划ID",
+                    "type": "string"
+                },
+                "sequence": {
+                    "description": "顺序号",
+                    "type": "integer"
+                }
+            }
+        },
+        "proto.ProductionSchedulePlanInfo": {
+            "type": "object",
+            "properties": {
+                "currentState": {
+                    "description": "状态（已生成/已下发/已作废）",
+                    "type": "string"
+                },
+                "endTime": {
+                    "description": "计划结束时间",
+                    "type": "string"
+                },
+                "id": {
+                    "description": "ID",
+                    "type": "string"
+                },
+                "items": {
+                    "description": "明细",
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/proto.ProductionScheduleItemInfo"
+                    }
+                },
+                "orderCount": {
+                    "description": "纳入排程工单数",
+                    "type": "integer"
+                },
+                "planNo": {
+                    "description": "计划批次号",
+                    "type": "string"
+                },
+                "productionLineCode": {
+                    "type": "string"
+                },
+                "productionLineID": {
+                    "description": "产线ID",
+                    "type": "string"
+                },
+                "remark": {
+                    "description": "备注",
+                    "type": "string"
+                },
+                "startTime": {
+                    "description": "计划开始时间",
+                    "type": "string"
+                }
+            }
+        },
         "proto.ProductionStationAlarmInfo": {
             "type": "object",
             "properties": {
@@ -36468,6 +40903,204 @@ const docTemplate = `{
                 }
             }
         },
+        "proto.QualityInspectionOrderInfo": {
+            "type": "object",
+            "properties": {
+                "actualInspectionTime": {
+                    "description": "实际检验时间",
+                    "type": "string"
+                },
+                "conclusion": {
+                    "description": "整单结论（合格/不合格/让步接收）",
+                    "type": "string"
+                },
+                "currentState": {
+                    "description": "当前状态（待检验/检验中/已完成）",
+                    "type": "string"
+                },
+                "disposition": {
+                    "description": "不合格处理说明",
+                    "type": "string"
+                },
+                "id": {
+                    "description": "ID",
+                    "type": "string"
+                },
+                "inspectionOrderNo": {
+                    "description": "检验单号",
+                    "type": "string"
+                },
+                "inspectionUserID": {
+                    "description": "检验人",
+                    "type": "string"
+                },
+                "lotQTY": {
+                    "description": "批次数量",
+                    "type": "integer"
+                },
+                "planInspectionTime": {
+                    "description": "计划检验时间",
+                    "type": "string"
+                },
+                "productOrderID": {
+                    "description": "关联生产工单ID",
+                    "type": "string"
+                },
+                "productOrderNo": {
+                    "type": "string"
+                },
+                "productSerialNo": {
+                    "description": "关联产品序列号",
+                    "type": "string"
+                },
+                "qualityInspectionOrderItems": {
+                    "description": "明细",
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/proto.QualityInspectionOrderItemInfo"
+                    }
+                },
+                "qualityInspectionTypeCode": {
+                    "type": "string"
+                },
+                "qualityInspectionTypeID": {
+                    "description": "检验类型ID",
+                    "type": "string"
+                },
+                "remark": {
+                    "description": "备注",
+                    "type": "string"
+                },
+                "reworkCreated": {
+                    "description": "是否已生成返工记录",
+                    "type": "boolean"
+                },
+                "sampleQTY": {
+                    "description": "抽样数量",
+                    "type": "integer"
+                }
+            }
+        },
+        "proto.QualityInspectionOrderItemInfo": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "description": "ID",
+                    "type": "string"
+                },
+                "isQualified": {
+                    "description": "是否合格",
+                    "type": "boolean"
+                },
+                "measuredValue": {
+                    "description": "实测值",
+                    "type": "string"
+                },
+                "qualityInspectionOrderID": {
+                    "description": "检验单ID",
+                    "type": "string"
+                },
+                "qualityInspectionStandardCode": {
+                    "type": "string"
+                },
+                "qualityInspectionStandardDescription": {
+                    "type": "string"
+                },
+                "qualityInspectionStandardID": {
+                    "description": "检验标准ID",
+                    "type": "string"
+                },
+                "remark": {
+                    "description": "备注",
+                    "type": "string"
+                }
+            }
+        },
+        "proto.QualityInspectionStandardInfo": {
+            "type": "object",
+            "properties": {
+                "aql": {
+                    "description": "AQL接收质量限（0表示不启用抽样判定）",
+                    "type": "number"
+                },
+                "code": {
+                    "description": "代号",
+                    "type": "string"
+                },
+                "criterionMethod": {
+                    "description": "比较方式（等于/范围内/大于/小于）",
+                    "type": "string"
+                },
+                "description": {
+                    "description": "描述",
+                    "type": "string"
+                },
+                "enable": {
+                    "description": "是否启用",
+                    "type": "boolean"
+                },
+                "id": {
+                    "description": "ID",
+                    "type": "string"
+                },
+                "lowerLimit": {
+                    "description": "规格下限",
+                    "type": "string"
+                },
+                "qualityInspectionTypeCode": {
+                    "type": "string"
+                },
+                "qualityInspectionTypeID": {
+                    "description": "检验类型ID",
+                    "type": "string"
+                },
+                "remark": {
+                    "description": "备注",
+                    "type": "string"
+                },
+                "sampleLevel": {
+                    "description": "样本量字码（GB/T 2828 一般检验水平，默认II）",
+                    "type": "string"
+                },
+                "standardValue": {
+                    "description": "标准值",
+                    "type": "string"
+                },
+                "unit": {
+                    "description": "单位",
+                    "type": "string"
+                },
+                "upperLimit": {
+                    "description": "规格上限",
+                    "type": "string"
+                }
+            }
+        },
+        "proto.QualityInspectionTypeInfo": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "description": "代号",
+                    "type": "string"
+                },
+                "description": {
+                    "description": "描述",
+                    "type": "string"
+                },
+                "enable": {
+                    "description": "是否启用",
+                    "type": "boolean"
+                },
+                "id": {
+                    "description": "ID",
+                    "type": "string"
+                },
+                "remark": {
+                    "description": "备注",
+                    "type": "string"
+                }
+            }
+        },
         "proto.QueryAGVTaskQueueResponse": {
             "type": "object",
             "properties": {
@@ -36608,6 +41241,84 @@ const docTemplate = `{
                     "type": "array",
                     "items": {
                         "$ref": "#/definitions/proto.DataMappingInfo"
+                    }
+                },
+                "message": {
+                    "type": "string"
+                },
+                "pages": {
+                    "type": "integer"
+                },
+                "records": {
+                    "type": "integer"
+                },
+                "total": {
+                    "type": "integer"
+                }
+            }
+        },
+        "proto.QueryEquipmentMaintenancePlanResponse": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "$ref": "#/definitions/proto.Code"
+                },
+                "data": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/proto.EquipmentMaintenancePlanInfo"
+                    }
+                },
+                "message": {
+                    "type": "string"
+                },
+                "pages": {
+                    "type": "integer"
+                },
+                "records": {
+                    "type": "integer"
+                },
+                "total": {
+                    "type": "integer"
+                }
+            }
+        },
+        "proto.QueryEquipmentMaintenanceRecordResponse": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "$ref": "#/definitions/proto.Code"
+                },
+                "data": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/proto.EquipmentMaintenanceRecordInfo"
+                    }
+                },
+                "message": {
+                    "type": "string"
+                },
+                "pages": {
+                    "type": "integer"
+                },
+                "records": {
+                    "type": "integer"
+                },
+                "total": {
+                    "type": "integer"
+                }
+            }
+        },
+        "proto.QueryEquipmentResponse": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "$ref": "#/definitions/proto.Code"
+                },
+                "data": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/proto.EquipmentInfo"
                     }
                 },
                 "message": {
@@ -36988,6 +41699,32 @@ const docTemplate = `{
                 }
             }
         },
+        "proto.QueryMaterialInventoryTransactionResponse": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "$ref": "#/definitions/proto.Code"
+                },
+                "data": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/proto.MaterialInventoryTransactionInfo"
+                    }
+                },
+                "message": {
+                    "type": "string"
+                },
+                "pages": {
+                    "type": "integer"
+                },
+                "records": {
+                    "type": "integer"
+                },
+                "total": {
+                    "type": "integer"
+                }
+            }
+        },
         "proto.QueryMaterialReturnCauseResponse": {
             "type": "object",
             "properties": {
@@ -37268,6 +42005,26 @@ const docTemplate = `{
                 },
                 "records": {
                     "type": "integer"
+                },
+                "total": {
+                    "type": "integer"
+                }
+            }
+        },
+        "proto.QueryMonitoringAlarmResponse": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "$ref": "#/definitions/proto.Code"
+                },
+                "data": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/proto.MonitoringAlarmInfo"
+                    }
+                },
+                "message": {
+                    "type": "string"
                 },
                 "total": {
                     "type": "integer"
@@ -38626,6 +43383,32 @@ const docTemplate = `{
                 }
             }
         },
+        "proto.QueryProductionSchedulePlanResponse": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "$ref": "#/definitions/proto.Code"
+                },
+                "data": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/proto.ProductionSchedulePlanInfo"
+                    }
+                },
+                "message": {
+                    "type": "string"
+                },
+                "pages": {
+                    "type": "integer"
+                },
+                "records": {
+                    "type": "integer"
+                },
+                "total": {
+                    "type": "integer"
+                }
+            }
+        },
         "proto.QueryProductionStationAlarmResponse": {
             "type": "object",
             "properties": {
@@ -38808,6 +43591,84 @@ const docTemplate = `{
                 }
             }
         },
+        "proto.QueryQualityInspectionOrderResponse": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "$ref": "#/definitions/proto.Code"
+                },
+                "data": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/proto.QualityInspectionOrderInfo"
+                    }
+                },
+                "message": {
+                    "type": "string"
+                },
+                "pages": {
+                    "type": "integer"
+                },
+                "records": {
+                    "type": "integer"
+                },
+                "total": {
+                    "type": "integer"
+                }
+            }
+        },
+        "proto.QueryQualityInspectionStandardResponse": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "$ref": "#/definitions/proto.Code"
+                },
+                "data": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/proto.QualityInspectionStandardInfo"
+                    }
+                },
+                "message": {
+                    "type": "string"
+                },
+                "pages": {
+                    "type": "integer"
+                },
+                "records": {
+                    "type": "integer"
+                },
+                "total": {
+                    "type": "integer"
+                }
+            }
+        },
+        "proto.QueryQualityInspectionTypeResponse": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "$ref": "#/definitions/proto.Code"
+                },
+                "data": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/proto.QualityInspectionTypeInfo"
+                    }
+                },
+                "message": {
+                    "type": "string"
+                },
+                "pages": {
+                    "type": "integer"
+                },
+                "records": {
+                    "type": "integer"
+                },
+                "total": {
+                    "type": "integer"
+                }
+            }
+        },
         "proto.QueryRemoteServiceResponse": {
             "type": "object",
             "properties": {
@@ -38883,6 +43744,101 @@ const docTemplate = `{
                 },
                 "total": {
                     "type": "integer"
+                }
+            }
+        },
+        "proto.QueryScadaDeviceResponse": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "$ref": "#/definitions/proto.Code"
+                },
+                "data": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/proto.ScadaDeviceInfo"
+                    }
+                },
+                "message": {
+                    "type": "string"
+                },
+                "pages": {
+                    "type": "integer"
+                },
+                "records": {
+                    "type": "integer"
+                },
+                "total": {
+                    "type": "integer"
+                }
+            }
+        },
+        "proto.QueryScadaTagHistoryResponse": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "$ref": "#/definitions/proto.Code"
+                },
+                "data": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/proto.ScadaTagHistoryInfo"
+                    }
+                },
+                "message": {
+                    "type": "string"
+                },
+                "pages": {
+                    "type": "integer"
+                },
+                "records": {
+                    "type": "integer"
+                },
+                "total": {
+                    "type": "integer"
+                }
+            }
+        },
+        "proto.QueryScadaTagResponse": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "$ref": "#/definitions/proto.Code"
+                },
+                "data": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/proto.ScadaTagInfo"
+                    }
+                },
+                "message": {
+                    "type": "string"
+                },
+                "pages": {
+                    "type": "integer"
+                },
+                "records": {
+                    "type": "integer"
+                },
+                "total": {
+                    "type": "integer"
+                }
+            }
+        },
+        "proto.QueryScadaTagValueResponse": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "$ref": "#/definitions/proto.Code"
+                },
+                "data": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/proto.ScadaTagValueInfo"
+                    }
+                },
+                "message": {
+                    "type": "string"
                 }
             }
         },
@@ -39065,6 +44021,63 @@ const docTemplate = `{
                 },
                 "total": {
                     "type": "integer"
+                }
+            }
+        },
+        "proto.ReceiveMaterialRequest": {
+            "type": "object",
+            "properties": {
+                "batchNo": {
+                    "description": "批次号",
+                    "type": "string"
+                },
+                "materialInfoID": {
+                    "description": "物料ID",
+                    "type": "string"
+                },
+                "materialStoreID": {
+                    "description": "仓库ID",
+                    "type": "string"
+                },
+                "qty": {
+                    "description": "数量",
+                    "type": "integer"
+                },
+                "remark": {
+                    "description": "备注",
+                    "type": "string"
+                },
+                "shelfBinID": {
+                    "description": "库位ID（上架目标，可选）",
+                    "type": "string"
+                }
+            }
+        },
+        "proto.ReceiveMaterialResponse": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "$ref": "#/definitions/proto.Code"
+                },
+                "materialInventoryID": {
+                    "description": "库存记录ID",
+                    "type": "string"
+                },
+                "message": {
+                    "type": "string"
+                },
+                "storedQTY": {
+                    "description": "入库后库存数量",
+                    "type": "integer"
+                }
+            }
+        },
+        "proto.ReleaseScheduleRequest": {
+            "type": "object",
+            "properties": {
+                "planID": {
+                    "description": "排程计划ID",
+                    "type": "string"
                 }
             }
         },
@@ -39351,6 +44364,161 @@ const docTemplate = `{
                 }
             }
         },
+        "proto.ScadaDeviceInfo": {
+            "type": "object",
+            "properties": {
+                "address": {
+                    "description": "地址（host:port）",
+                    "type": "string"
+                },
+                "code": {
+                    "description": "代号",
+                    "type": "string"
+                },
+                "connectionState": {
+                    "description": "连接状态（正常/异常/未连接）",
+                    "type": "string"
+                },
+                "enable": {
+                    "description": "是否启用",
+                    "type": "boolean"
+                },
+                "id": {
+                    "description": "ID",
+                    "type": "string"
+                },
+                "intervalSeconds": {
+                    "description": "采集间隔（秒）",
+                    "type": "integer"
+                },
+                "lastCollectTime": {
+                    "description": "最近一次采集时间",
+                    "type": "string"
+                },
+                "lastError": {
+                    "description": "最近错误信息",
+                    "type": "string"
+                },
+                "name": {
+                    "description": "名称",
+                    "type": "string"
+                },
+                "protocol": {
+                    "description": "协议（modbus-tcp）",
+                    "type": "string"
+                },
+                "remark": {
+                    "description": "备注",
+                    "type": "string"
+                },
+                "slaveID": {
+                    "description": "从站号",
+                    "type": "integer"
+                }
+            }
+        },
+        "proto.ScadaTagHistoryInfo": {
+            "type": "object",
+            "properties": {
+                "collectTime": {
+                    "type": "string"
+                },
+                "id": {
+                    "description": "ID",
+                    "type": "string"
+                },
+                "scadaTagID": {
+                    "description": "点位ID",
+                    "type": "string"
+                },
+                "value": {
+                    "type": "string"
+                }
+            }
+        },
+        "proto.ScadaTagInfo": {
+            "type": "object",
+            "properties": {
+                "address": {
+                    "description": "寄存器地址（十进制，Modbus用）",
+                    "type": "integer"
+                },
+                "dataType": {
+                    "description": "数据类型（bool/uint16/int16/float32）",
+                    "type": "string"
+                },
+                "enable": {
+                    "description": "是否启用",
+                    "type": "boolean"
+                },
+                "functionCode": {
+                    "description": "功能码（0-线圈 1-离散输入 3-保持寄存器 4-输入寄存器）",
+                    "type": "integer"
+                },
+                "id": {
+                    "description": "ID",
+                    "type": "string"
+                },
+                "name": {
+                    "description": "点位名称",
+                    "type": "string"
+                },
+                "opcUANodeID": {
+                    "description": "OPC UA节点ID（如 ns=2;s=Channel1.Device1.Tag1，OPC UA协议用）",
+                    "type": "string"
+                },
+                "remark": {
+                    "description": "备注",
+                    "type": "string"
+                },
+                "saveHistory": {
+                    "description": "是否存历史",
+                    "type": "boolean"
+                },
+                "scadaDeviceCode": {
+                    "type": "string"
+                },
+                "scadaDeviceID": {
+                    "description": "设备ID",
+                    "type": "string"
+                },
+                "scale": {
+                    "description": "缩放系数",
+                    "type": "number"
+                },
+                "unit": {
+                    "description": "单位",
+                    "type": "string"
+                }
+            }
+        },
+        "proto.ScadaTagValueInfo": {
+            "type": "object",
+            "properties": {
+                "collectTime": {
+                    "description": "采集时间",
+                    "type": "string"
+                },
+                "quality": {
+                    "description": "质量（Good/Bad）",
+                    "type": "string"
+                },
+                "scadaTagID": {
+                    "description": "点位ID",
+                    "type": "string"
+                },
+                "tagName": {
+                    "type": "string"
+                },
+                "unit": {
+                    "type": "string"
+                },
+                "value": {
+                    "description": "值（字符串表示）",
+                    "type": "string"
+                }
+            }
+        },
         "proto.SerialNumberInfo": {
             "type": "object",
             "properties": {
@@ -39400,6 +44568,109 @@ const docTemplate = `{
                 },
                 "data": {
                     "$ref": "#/definitions/proto.Data"
+                },
+                "message": {
+                    "type": "string"
+                }
+            }
+        },
+        "proto.SpcCalcRequest": {
+            "type": "object",
+            "properties": {
+                "lowerSpec": {
+                    "description": "规格下限（覆盖标准中的配置）",
+                    "type": "string"
+                },
+                "qualityInspectionStandardID": {
+                    "description": "检验标准ID（取规格限）",
+                    "type": "string"
+                },
+                "upperSpec": {
+                    "description": "规格上限（覆盖标准中的配置）",
+                    "type": "string"
+                },
+                "values": {
+                    "description": "样本数据（字符串数值数组）",
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                }
+            }
+        },
+        "proto.SpcCalcResponse": {
+            "type": "object",
+            "properties": {
+                "cl": {
+                    "description": "控制中心线",
+                    "type": "number"
+                },
+                "code": {
+                    "$ref": "#/definitions/proto.Code"
+                },
+                "cpk": {
+                    "description": "过程能力指数",
+                    "type": "number"
+                },
+                "cpl": {
+                    "description": "下限规格指数",
+                    "type": "number"
+                },
+                "cpu": {
+                    "description": "上限规格指数",
+                    "type": "number"
+                },
+                "lcl": {
+                    "description": "控制下限",
+                    "type": "number"
+                },
+                "mean": {
+                    "description": "均值",
+                    "type": "number"
+                },
+                "message": {
+                    "type": "string"
+                },
+                "n": {
+                    "description": "样本数",
+                    "type": "integer"
+                },
+                "stdDev": {
+                    "description": "标准差",
+                    "type": "number"
+                },
+                "ucl": {
+                    "description": "控制上限",
+                    "type": "number"
+                }
+            }
+        },
+        "proto.StocktakeInventoryRequest": {
+            "type": "object",
+            "properties": {
+                "countedQTY": {
+                    "description": "实盘数量",
+                    "type": "integer"
+                },
+                "materialInventoryID": {
+                    "description": "库存记录ID",
+                    "type": "string"
+                },
+                "remark": {
+                    "description": "备注",
+                    "type": "string"
+                }
+            }
+        },
+        "proto.StocktakeInventoryResponse": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "$ref": "#/definitions/proto.Code"
+                },
+                "difference": {
+                    "description": "盘盈盘亏（实盘-账面）",
+                    "type": "integer"
                 },
                 "message": {
                     "type": "string"
@@ -39678,6 +44949,60 @@ const docTemplate = `{
                 "value": {
                     "description": "值",
                     "type": "string"
+                }
+            }
+        },
+        "proto.TestProjectInfo": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "type": "string"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                }
+            }
+        },
+        "proto.TestProjectWithParameterInfo": {
+            "type": "object",
+            "properties": {
+                "inputParameters": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/proto.ParameterInfo"
+                    }
+                },
+                "outputParameters": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/proto.ParameterInfo"
+                    }
+                },
+                "testProjects": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/proto.TestProjectInfo"
+                    }
+                }
+            }
+        },
+        "proto.TestScadaDeviceRequest": {
+            "type": "object",
+            "properties": {
+                "address": {
+                    "description": "地址 host:port（Modbus）或 opc.tcp://host:port（OPC UA）",
+                    "type": "string"
+                },
+                "protocol": {
+                    "description": "协议（modbus-tcp/opcua，默认 modbus-tcp）",
+                    "type": "string"
+                },
+                "slaveID": {
+                    "description": "从站号（Modbus）",
+                    "type": "integer"
                 }
             }
         },
