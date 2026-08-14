@@ -30,6 +30,7 @@ type ScadaTag struct {
 	ScadaDevice   *ScadaDevice `json:"scadaDevice" gorm:"constraint:OnDelete:CASCADE"`
 	Name          string      `json:"name" gorm:"size:100;comment:点位名称"`
 	Address       int32       `json:"address" gorm:"comment:寄存器地址"`
+	OpcUANodeID   string      `json:"opcUANodeID" gorm:"size:200;comment:OPC UA节点ID"`
 	FunctionCode  int32       `json:"functionCode" gorm:"comment:功能码"`
 	DataType      string      `json:"dataType" gorm:"size:20;comment:数据类型"`
 	Scale         float64     `json:"scale" gorm:"comment:缩放系数"`
@@ -132,6 +133,7 @@ func PBToScadaTag(in *proto.ScadaTagInfo) *ScadaTag {
 		ScadaDeviceID: in.ScadaDeviceID,
 		Name:         in.Name,
 		Address:      in.Address,
+		OpcUANodeID:  in.OpcUANodeID,
 		FunctionCode: in.FunctionCode,
 		DataType:     in.DataType,
 		Scale:        in.Scale,
@@ -159,6 +161,7 @@ func ScadaTagToPB(in *ScadaTag) *proto.ScadaTagInfo {
 		ScadaDeviceID: in.ScadaDeviceID,
 		Name:         in.Name,
 		Address:      in.Address,
+		OpcUANodeID:  in.OpcUANodeID,
 		FunctionCode:  in.FunctionCode,
 		DataType:     in.DataType,
 		Scale:        in.Scale,

@@ -75,8 +75,10 @@ message ScadaTagInfo {
 	string scadaDeviceCode=3;
 	//点位名称
 	string name=4;
-	//寄存器地址（十进制）
+	//寄存器地址（十进制，Modbus用）
 	int32 address=5;
+	//OPC UA节点ID（如 ns=2;s=Channel1.Device1.Tag1，OPC UA协议用）
+	string opcUANodeID=13;
 	//功能码（0-线圈 1-离散输入 3-保持寄存器 4-输入寄存器）
 	int32 functionCode=6;
 	//数据类型（bool/uint16/int16/float32）
@@ -194,8 +196,10 @@ message QueryScadaTagHistoryResponse{
 
 // 测试设备连接
 message TestScadaDeviceRequest{
-	//地址 host:port
+	//地址 host:port（Modbus）或 opc.tcp://host:port（OPC UA）
 	string address=1;
-	//从站号
+	//从站号（Modbus）
 	int32 slaveID=2;
+	//协议（modbus-tcp/opcua，默认 modbus-tcp）
+	string protocol=3;
 }

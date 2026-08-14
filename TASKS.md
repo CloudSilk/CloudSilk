@@ -146,7 +146,10 @@
   - 复用 `github.com/CloudSilk/pkg/modbus` 驱动
   - 查询接口：点位实时值（按设备过滤）、点位历史值（时间区间分页）
   - 路由：`/api/mom/scada/{device|tag}/*`
-- **后续增强**（不阻塞）：OPC UA 驱动、采集数据转发 MQTT/规则引擎、断线告警事件
+- **增强迭代（2026-08-14 已落地）**：
+  - ✅ **OPC UA 驱动**（gopcua）：设备协议 `opcua`（opc.tcp://endpoint），点位按节点ID（ns=2;s=...）采集，单连接顺序读取、数值/布尔/整型格式化、缩放系数；连通性测试读取 ServerStatus 节点；Modbus 与 OPC UA 双协议共存
+  - ✅ 断线告警事件：连接失败翻转为异常时写 ExceptionTrace
+  - 待迭代：采集数据转发 MQTT/规则引擎
 
 ### TASK-017 ✅ 生产监控大屏后端聚合接口已实现
 - **新增模块**：`pkg/servers/monitoring/` + `pkg/proto/monitoring.proto`

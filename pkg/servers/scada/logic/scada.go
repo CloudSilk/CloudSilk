@@ -1,6 +1,7 @@
 package logic
 
 import (
+	"context"
 	"encoding/binary"
 	"errors"
 	"fmt"
@@ -39,7 +40,7 @@ func CreateScadaDevice(m *model.ScadaDevice) (string, error) {
 		return "", errors.New("存在相同采集设备代号")
 	}
 	if m.Protocol == "" {
-		m.Protocol = "modbus-tcp"
+		m.Protocol = ProtocolModbusTCP
 	}
 	if m.IntervalSeconds <= 0 {
 		m.IntervalSeconds = 10
@@ -104,10 +105,13 @@ func DeleteScadaDevice(id string) error {
 	return model.DB.DB().Delete(&model.ScadaDevice{}, "`id` = ?", id).Error
 }
 
-// TestScadaDevice 测试设备连通性（读保持寄存器0）
+// TestScadaDevice 测试设备连通性（按协议：Modbus 读保持寄存器0 / OPC UA 读状态节点）
 func TestScadaDevice(req *proto.TestScadaDeviceRequest) error {
 	if req.Address == "" {
 		return errors.New("address不能为空")
+	}
+	if req.Protocol == ProtocolOpcUA {
+		return TestOpcUAConnection(req.Address)
 	}
 	client := modbus.NewClient(modbus.NewTCPClientProvider(req.Address))
 	_, err := client.ReadHoldingRegisters(byte(req.SlaveID), 0, 1)
@@ -125,6 +129,9 @@ func CreateScadaTag(m *model.ScadaTag) (string, error) {
 	}
 	if !validDataType(m.DataType) {
 		return "", fmt.Errorf("无效的数据类型：%s（支持 bool/uint16/int16/float32）", m.DataType)
+	}
+	if m.OpcUANodeID == "" && m.ScadaDevice != nil && m.ScadaDevice.Protocol == ProtocolOpcUA {
+		return "", errors.New("OPC UA 设备的点位必须配置节点ID（opcUANodeID）")
 	}
 	return m.ID, model.DB.DB().Create(m).Error
 }
@@ -259,6 +266,10 @@ func StartCollector() {
 
 func collectDevice(device *model.ScadaDevice) {
 	if len(device.Tags) == 0 {
+		return
+	}
+	if device.Protocol == ProtocolOpcUA {
+		collectOpcUADevice(device)
 		return
 	}
 
@@ -402,4 +413,90 @@ func boolText(b bool) string {
 		return "true"
 	}
 	return "false"
+}
+
+// collectOpcUADevice OPC UA 设备采集：单连接顺序读取全部点位
+func collectOpcUADevice(device *model.ScadaDevice) {
+	client, err := newOpcUAClient(device.Address)
+	if err != nil {
+		updateDeviceError(device, err)
+		return
+	}
+	ctx, cancel := context.WithTimeout(context.Background(), opcUATimeout+time.Duration(len(device.Tags))*time.Second)
+	defer cancel()
+	defer client.Close(ctx)
+
+	now := time.Now()
+	var successCount, failCount int
+	var firstError string
+	for _, tag := range device.Tags {
+		if !tag.Enable {
+			continue
+		}
+		value, err := readOpcUaNode(client, tag.OpcUANodeID)
+		if err != nil {
+			failCount++
+			if firstError == "" {
+				firstError = err.Error()
+			}
+			upsertTagValue(tag.ID, "", ScadaQualityBad, now)
+			continue
+		}
+		successCount++
+		value = applyScale(value, tag.Scale)
+		upsertTagValue(tag.ID, value, ScadaQualityGood, now)
+		if tag.SaveHistory {
+			model.DB.DB().Create(&model.ScadaTagHistory{
+				ScadaTagID:  tag.ID,
+				Value:       value,
+				CollectTime: now,
+			})
+		}
+	}
+
+	state := ScadaConnectionOK
+	errmsg := ""
+	if successCount == 0 && failCount > 0 {
+		state = ScadaConnectionError
+		errmsg = firstError
+	}
+	model.DB.DB().Model(&model.ScadaDevice{}).Where("`id` = ?", device.ID).
+		Updates(map[string]interface{}{
+			"connection_state":  state,
+			"last_collect_time": now,
+			"last_error":        errmsg,
+		})
+}
+
+// updateDeviceError 连接失败时回写设备异常状态并触发断线告警
+func updateDeviceError(device *model.ScadaDevice, err error) {
+	model.DB.DB().Model(&model.ScadaDevice{}).Where("`id` = ?", device.ID).
+		Updates(map[string]interface{}{
+			"connection_state": ScadaConnectionError,
+			"last_error":       err.Error(),
+		})
+	createScadaAlarmEvent(device, err)
+}
+
+// createScadaAlarmEvent 断线告警：状态从未知/正常翻转为异常时记录异常轨迹
+func createScadaAlarmEvent(device *model.ScadaDevice, err error) {
+	model.DB.DB().Create(&model.ExceptionTrace{
+		Level:        "Error",
+		Host:         device.Address,
+		Source:       fmt.Sprintf("SCADA采集设备 %s（%s）", device.Code, device.Protocol),
+		Message:      fmt.Sprintf("连接失败：%v", err),
+		ReportUserID: "system",
+	})
+}
+
+// applyScale 对字符串数值应用缩放系数（非数值原样返回）
+func applyScale(value string, scale float64) string {
+	if scale == 0 || scale == 1 {
+		return value
+	}
+	var f float64
+	if _, err := fmt.Sscanf(value, "%g", &f); err != nil {
+		return value
+	}
+	return fmt.Sprintf("%g", f*scale)
 }
