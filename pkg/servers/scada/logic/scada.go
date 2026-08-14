@@ -301,6 +301,8 @@ func collectDevice(device *model.ScadaDevice) {
 				CollectTime: now,
 			})
 		}
+		// MQTT 转发（SmartFlow 等订阅方；未配置 broker 时为空操作）
+		PublishTagValue(device.Code, tag.Name, value, ScadaQualityGood, now)
 	}
 
 	state := ScadaConnectionOK
@@ -452,6 +454,8 @@ func collectOpcUADevice(device *model.ScadaDevice) {
 				CollectTime: now,
 			})
 		}
+		// MQTT 转发（SmartFlow 等订阅方；未配置 broker 时为空操作）
+		PublishTagValue(device.Code, tag.Name, value, ScadaQualityGood, now)
 	}
 
 	state := ScadaConnectionOK

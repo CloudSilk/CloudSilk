@@ -37,3 +37,28 @@ v0.2.0 新增了 6 个后端模块。本文说明各模块的 API 入口，以�
 | APS | `/api/mom/aps/schedule` | `generate`（约束排程）、`insert`（插单重排）、`release`（下发回写）、`query/detail`（甘特数据）、`void` |
 | SCADA | `/api/mom/scada` | `device/*`（含 `test` 连通性测试）、`tag/*`（含 `values` 实时值、`history` 历史）；支持 modbus-tcp 与 opcua 双协议 |
 | 监控 | `/api/mom/monitoring` | `overview` 厂级总览、`line` 产线监控（加权 OEE）、`alarms` 告警、`stream` SSE 推送 |
+
+
+## 配置项（系统参数表 SystemParamsConfig）
+
+### 敏感操作授权（code=`permission`）
+
+| key | 控制的操作 | 值 |
+|-----|-----------|-----|
+| `aps.manage` | 排程生成/插单/下发/作废/删除 | 角色ID逗号分隔 |
+| `quality.judge` | 完成检验（判定/让步/返工） | 同上 |
+| `wms.operate` | 入库/拣货/取消/盘点 | 同上 |
+| `equipment.manage` | 设备状态流转/维保执行 | 同上 |
+| `scada.manage` | 采集设备/点位增删改 | 同上 |
+
+超管角色（`config.yaml superAdminRoleID`）始终放行；**参数未配置时默认拒绝**（安全缺省）；参数变更约 1 分钟内生效。
+
+### SCADA MQTT 转发（code=`scada`）
+
+| key | 说明 | 默认 |
+|-----|------|------|
+| `mqtt.broker` | MQTT 地址（如 `tcp://127.0.0.1:1883`），**空=禁用转发** | 空 |
+| `mqtt.username` / `mqtt.password` | 认证（可选） | 空 |
+| `mqtt.topicPrefix` | 主题前缀 | `cloudsilk/scada` |
+
+启用后每个采集成功的点位按 `{prefix}/{设备代号}/{点位名}` 发布 JSON：`{"value":"...","quality":"Good","collectTime":"..."}`。SmartFlow（RuleGo）等规则引擎订阅该主题即可实现"采集→规则→联动"闭环。
