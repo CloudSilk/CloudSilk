@@ -78,6 +78,16 @@ export default defineConfig({
       menuRender: false,
     },
     {
+      path: '/monitoring',
+      name: '生产监控',
+      component: './monitoring',
+    },
+    {
+      path: '/aps',
+      name: 'APS排程',
+      component: './aps',
+    },
+    {
       path:'/demo/resizable/panel',
       component:"ResizablePanel",
       menuRender: false,
