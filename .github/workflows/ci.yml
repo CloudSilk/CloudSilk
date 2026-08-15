@@ -34,12 +34,12 @@ jobs:
 
       - uses: actions/setup-node@v4
         with:
-          node-version: '18'
+          node-version: '20'
           cache: yarn
           cache-dependency-path: web/yarn.lock
 
       - name: Install dependencies
-        run: yarn install --frozen-lockfile --network-timeout 600000
+        run: yarn install --frozen-lockfile --network-timeout 600000 --ignore-engines
 
       # umi 生成的 Layout.tsx 含本机绝对路径的 /// <reference types>，
       # CI 环境下无法解析且 @ts-nocheck 不能抑制该解析错误，剔除后再检查
