@@ -35,6 +35,36 @@ message WMSBillQueueInfo {
     string lastUpdateTime=12;
 	//备注
  	string remark=13;
+	//行项目
+	repeated WMSBillItemInfo wMSBillItems=15;
+}
+
+// 拣货单行项目
+message WMSBillItemInfo {
+	//ID
+	string id=1;
+	//拣货单ID
+	string wMSBillQueueID=2;
+	//工单BOM行ID
+	string productOrderBomID=3;
+	//物料ID
+	string materialInfoID=4;
+	//物料号
+	string materialNo=5;
+	//物料描述
+	string materialDescription=6;
+	//仓库ID
+	string materialStoreID=7;
+	//仓库代号
+	string materialStoreCode=8;
+	//需求数量
+	int64 requiredQTY=9;
+	//锁定数量
+	int64 lockedQTY=10;
+	//当前状态（待拣货/已完成/已取消）
+	string currentState=11;
+	//备注
+	string remark=12;
 }
 
 message QueryWMSBillQueueRequest{

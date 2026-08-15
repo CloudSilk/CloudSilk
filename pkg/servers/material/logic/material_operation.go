@@ -181,6 +181,20 @@ func CreatePickBillFromOrder(req *proto.CreatePickBillRequest, userID string) (*
 				Update("issued_qty", gorm.Expr("issued_qty + ?", required)).Error; err != nil {
 				return err
 			}
+			//行项目落库（拣货明细的一等公民，完成/取消按行驱动）
+			if err := tx.Create(&model.WMSBillItem{
+				WMSBillQueueID:      bill.ID,
+				ProductOrderBomID:   bom.ID,
+				MaterialInfoID:      materialInfoID,
+				MaterialNo:          bom.MaterialNo,
+				MaterialDescription: bom.MaterialDescription,
+				MaterialStoreID:     inventory.MaterialStoreID,
+				RequiredQTY:         required,
+				LockedQTY:           required,
+				CurrentState:        WMSBillStateWaitPick,
+			}).Error; err != nil {
+				return err
+			}
 			//锁定不改变账面库存，流水记录数量为0、锁定明细体现在备注
 			if err := createInventoryTx(tx, inventory.MaterialInfoID, inventory.MaterialStoreID, InventoryTxLock, required, before, before, billNo, userID,
 				fmt.Sprintf("工单%s锁定，物料：%s", order.ProductOrderNo, bom.MaterialNo)); err != nil {
@@ -242,31 +256,60 @@ func CompletePickBill(req *proto.CompletePickBillRequest, userID string) error {
 			return fmt.Errorf("拣货单已被处理（当前状态%s），请刷新后重试", bill.CurrentState)
 		}
 
-		//按流水中该单的锁定记录逐行出库
-		locks := []*model.MaterialInventoryTransaction{}
-		if err := tx.Where("`ref_bill_no` = ? AND `transaction_type` = ?", bill.BillNo, InventoryTxLock).Find(&locks).Error; err != nil {
+		//优先按行项目出库（新数据）；无行项目的旧单据回退到流水反查
+		items := []*model.WMSBillItem{}
+		if err := tx.Where("`wms_bill_queue_id` = ? AND `current_state` = ?", bill.ID, WMSBillStateWaitPick).Find(&items).Error; err != nil {
 			return err
 		}
 
 		var totalIssued int64
-		for _, lock := range locks {
-			inventory := &model.MaterialInventory{}
-			//流水记录的是物料+仓库，据此定位库存记录（而非主键）
-			if err := tx.Where("`material_info_id` = ? AND `material_store_id` = ?", lock.MaterialInfoID, lock.MaterialStoreID).First(inventory).Error; err != nil {
-				return fmt.Errorf("读取库存记录失败：%w", err)
+		if len(items) > 0 {
+			for _, item := range items {
+				inventory := &model.MaterialInventory{}
+				if err := tx.Where("`material_info_id` = ? AND `material_store_id` = ?", item.MaterialInfoID, item.MaterialStoreID).First(inventory).Error; err != nil {
+					return fmt.Errorf("读取库存记录失败（物料%s）：%w", item.MaterialNo, err)
+				}
+				before := inventory.StoredQTY
+				if err := tx.Model(&model.MaterialInventory{}).Where("`id` = ?", inventory.ID).
+					Updates(map[string]interface{}{
+						"stored_qty": gorm.Expr("stored_qty - ?", item.LockedQTY),
+						"issued_qty": gorm.Expr("issued_qty - ?", item.LockedQTY),
+					}).Error; err != nil {
+					return err
+				}
+				if err := createInventoryTx(tx, item.MaterialInfoID, item.MaterialStoreID, InventoryTxIssue, -item.LockedQTY, before, before-item.LockedQTY, bill.BillNo, userID, fmt.Sprintf("拣货出库：%s", item.MaterialNo)); err != nil {
+					return err
+				}
+				if err := tx.Model(&model.WMSBillItem{}).Where("`id` = ?", item.ID).
+					Update("current_state", WMSBillStateCompleted).Error; err != nil {
+					return err
+				}
+				totalIssued += item.LockedQTY
 			}
-			before := inventory.StoredQTY
-			if err := tx.Model(&model.MaterialInventory{}).Where("`id` = ?", inventory.ID).
-				Updates(map[string]interface{}{
-					"stored_qty": gorm.Expr("stored_qty - ?", lock.Qty),
-					"issued_qty": gorm.Expr("issued_qty - ?", lock.Qty),
-				}).Error; err != nil {
+		} else {
+			//旧单据回退：按锁定流水反查
+			locks := []*model.MaterialInventoryTransaction{}
+			if err := tx.Where("`ref_bill_no` = ? AND `transaction_type` = ?", bill.BillNo, InventoryTxLock).Find(&locks).Error; err != nil {
 				return err
 			}
-			if err := createInventoryTx(tx, lock.MaterialInfoID, lock.MaterialStoreID, InventoryTxIssue, -lock.Qty, before, before-lock.Qty, bill.BillNo, userID, "拣货出库"); err != nil {
-				return err
+			for _, lock := range locks {
+				inventory := &model.MaterialInventory{}
+				if err := tx.Where("`material_info_id` = ? AND `material_store_id` = ?", lock.MaterialInfoID, lock.MaterialStoreID).First(inventory).Error; err != nil {
+					return fmt.Errorf("读取库存记录失败：%w", err)
+				}
+				before := inventory.StoredQTY
+				if err := tx.Model(&model.MaterialInventory{}).Where("`id` = ?", inventory.ID).
+					Updates(map[string]interface{}{
+						"stored_qty": gorm.Expr("stored_qty - ?", lock.Qty),
+						"issued_qty": gorm.Expr("issued_qty - ?", lock.Qty),
+					}).Error; err != nil {
+					return err
+				}
+				if err := createInventoryTx(tx, lock.MaterialInfoID, lock.MaterialStoreID, InventoryTxIssue, -lock.Qty, before, before-lock.Qty, bill.BillNo, userID, "拣货出库"); err != nil {
+					return err
+				}
+				totalIssued += lock.Qty
 			}
-			totalIssued += lock.Qty
 		}
 
 		//联动工单发料信息（product 域出口）
@@ -319,24 +362,48 @@ func CancelPickBill(req *proto.CancelPickBillRequest, userID string) error {
 			return fmt.Errorf("拣货单已被处理（当前状态%s），请刷新后重试", bill.CurrentState)
 		}
 
-		locks := []*model.MaterialInventoryTransaction{}
-		if err := tx.Where("`ref_bill_no` = ? AND `transaction_type` = ?", bill.BillNo, InventoryTxLock).Find(&locks).Error; err != nil {
+		//优先按行项目解锁（新数据）；旧单据回退流水反查
+		items := []*model.WMSBillItem{}
+		if err := tx.Where("`wms_bill_queue_id` = ? AND `current_state` = ?", bill.ID, WMSBillStateWaitPick).Find(&items).Error; err != nil {
 			return err
 		}
-
-		for _, lock := range locks {
-			inventory := &model.MaterialInventory{}
-			//流水记录的是物料+仓库，据此定位库存记录（而非主键）
-			if err := tx.Where("`material_info_id` = ? AND `material_store_id` = ?", lock.MaterialInfoID, lock.MaterialStoreID).First(inventory).Error; err != nil {
-				return fmt.Errorf("读取库存记录失败：%w", err)
+		if len(items) > 0 {
+			for _, item := range items {
+				inventory := &model.MaterialInventory{}
+				if err := tx.Where("`material_info_id` = ? AND `material_store_id` = ?", item.MaterialInfoID, item.MaterialStoreID).First(inventory).Error; err != nil {
+					return fmt.Errorf("读取库存记录失败（物料%s）：%w", item.MaterialNo, err)
+				}
+				before := inventory.StoredQTY
+				if err := tx.Model(&model.MaterialInventory{}).Where("`id` = ?", inventory.ID).
+					Update("issued_qty", gorm.Expr("issued_qty - ?", item.LockedQTY)).Error; err != nil {
+					return err
+				}
+				if err := createInventoryTx(tx, item.MaterialInfoID, item.MaterialStoreID, InventoryTxUnlock, item.LockedQTY, before, before, bill.BillNo, userID, fmt.Sprintf("取消拣货解锁：%s", item.MaterialNo)); err != nil {
+					return err
+				}
+				if err := tx.Model(&model.WMSBillItem{}).Where("`id` = ?", item.ID).
+					Update("current_state", WMSBillStateCancelled).Error; err != nil {
+					return err
+				}
 			}
-			before := inventory.StoredQTY
-			if err := tx.Model(&model.MaterialInventory{}).Where("`id` = ?", inventory.ID).
-				Update("issued_qty", gorm.Expr("issued_qty - ?", lock.Qty)).Error; err != nil {
+		} else {
+			locks := []*model.MaterialInventoryTransaction{}
+			if err := tx.Where("`ref_bill_no` = ? AND `transaction_type` = ?", bill.BillNo, InventoryTxLock).Find(&locks).Error; err != nil {
 				return err
 			}
-			if err := createInventoryTx(tx, lock.MaterialInfoID, lock.MaterialStoreID, InventoryTxUnlock, lock.Qty, before, before, bill.BillNo, userID, "取消拣货解锁"); err != nil {
-				return err
+			for _, lock := range locks {
+				inventory := &model.MaterialInventory{}
+				if err := tx.Where("`material_info_id` = ? AND `material_store_id` = ?", lock.MaterialInfoID, lock.MaterialStoreID).First(inventory).Error; err != nil {
+					return fmt.Errorf("读取库存记录失败：%w", err)
+				}
+				before := inventory.StoredQTY
+				if err := tx.Model(&model.MaterialInventory{}).Where("`id` = ?", inventory.ID).
+					Update("issued_qty", gorm.Expr("issued_qty - ?", lock.Qty)).Error; err != nil {
+					return err
+				}
+				if err := createInventoryTx(tx, lock.MaterialInfoID, lock.MaterialStoreID, InventoryTxUnlock, lock.Qty, before, before, bill.BillNo, userID, "取消拣货解锁"); err != nil {
+					return err
+				}
 			}
 		}
 

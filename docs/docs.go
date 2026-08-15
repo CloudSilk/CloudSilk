@@ -45229,6 +45229,59 @@ const docTemplate = `{
                 }
             }
         },
+        "proto.WMSBillItemInfo": {
+            "type": "object",
+            "properties": {
+                "currentState": {
+                    "description": "当前状态（待拣货/已完成/已取消）",
+                    "type": "string"
+                },
+                "id": {
+                    "description": "ID",
+                    "type": "string"
+                },
+                "lockedQTY": {
+                    "description": "锁定数量",
+                    "type": "integer"
+                },
+                "materialDescription": {
+                    "description": "物料描述",
+                    "type": "string"
+                },
+                "materialInfoID": {
+                    "description": "物料ID",
+                    "type": "string"
+                },
+                "materialNo": {
+                    "description": "物料号",
+                    "type": "string"
+                },
+                "materialStoreCode": {
+                    "description": "仓库代号",
+                    "type": "string"
+                },
+                "materialStoreID": {
+                    "description": "仓库ID",
+                    "type": "string"
+                },
+                "productOrderBomID": {
+                    "description": "工单BOM行ID",
+                    "type": "string"
+                },
+                "remark": {
+                    "description": "备注",
+                    "type": "string"
+                },
+                "requiredQTY": {
+                    "description": "需求数量",
+                    "type": "integer"
+                },
+                "wMSBillQueueID": {
+                    "description": "拣货单ID",
+                    "type": "string"
+                }
+            }
+        },
         "proto.WMSBillQueueInfo": {
             "type": "object",
             "properties": {
@@ -45294,6 +45347,13 @@ const docTemplate = `{
                 "transactionState": {
                     "description": "事务状态",
                     "type": "string"
+                },
+                "wMSBillItems": {
+                    "description": "行项目",
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/proto.WMSBillItemInfo"
+                    }
                 }
             }
         }
