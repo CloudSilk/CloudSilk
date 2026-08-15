@@ -26,9 +26,9 @@ type ScadaDevice struct {
 // 采集点位
 type ScadaTag struct {
 	ModelID
-	ScadaDeviceID string      `json:"scadaDeviceID" gorm:"index;size:36;comment:设备ID"`
+	ScadaDeviceID string      `json:"scadaDeviceID" gorm:"size:36;uniqueIndex:idx_scada_tag_device_name;comment:设备ID"`
 	ScadaDevice   *ScadaDevice `json:"scadaDevice" gorm:"constraint:OnDelete:CASCADE"`
-	Name          string      `json:"name" gorm:"size:100;comment:点位名称"`
+	Name          string      `json:"name" gorm:"size:100;uniqueIndex:idx_scada_tag_device_name;comment:点位名称"`
 	Address       int32       `json:"address" gorm:"comment:寄存器地址"`
 	OpcUANodeID   string      `json:"opcUANodeID" gorm:"size:200;comment:OPC UA节点ID"`
 	FunctionCode  int32       `json:"functionCode" gorm:"comment:功能码"`

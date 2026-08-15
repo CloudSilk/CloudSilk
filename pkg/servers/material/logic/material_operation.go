@@ -13,6 +13,7 @@ import (
 	"github.com/CloudSilk/CloudSilk/pkg/types"
 	"github.com/CloudSilk/pkg/utils"
 	"gorm.io/gorm"
+	"gorm.io/gorm/clause"
 )
 
 // 库存事务类型
@@ -39,10 +40,23 @@ func ReceiveMaterial(req *proto.ReceiveMaterialRequest, userID string) (*proto.R
 	if req.Qty <= 0 {
 		return nil, errors.New("入库数量必须大于0")
 	}
+	//收货库位（可选）：存在性校验
+	var shelfBinID *string
+	if req.ShelfBinID != "" {
+		bin := &model.MaterialShelfBin{}
+		if err := model.DB.DB().Preload("MaterialShelf").First(bin, "`id` = ?", req.ShelfBinID).Error; err != nil {
+			return nil, errors.New("无效的库位ID")
+		}
+		//库位经料架归属仓库，跨仓库上架直接拒绝
+		if bin.MaterialShelf != nil && bin.MaterialShelf.MaterialStoreID != "" && bin.MaterialShelf.MaterialStoreID != req.MaterialStoreID {
+			return nil, errors.New("库位不属于该仓库")
+		}
+		shelfBinID = &req.ShelfBinID
+	}
 
 	resp := &proto.ReceiveMaterialResponse{}
 	err := model.DB.DB().Transaction(func(tx *gorm.DB) error {
-		inventory, err := lockOrCreateInventory(tx, req.MaterialInfoID, req.MaterialStoreID, userID)
+		inventory, err := lockOrCreateInventoryWithBin(tx, req.MaterialInfoID, req.MaterialStoreID, shelfBinID, userID)
 		if err != nil {
 			return err
 		}
@@ -345,6 +359,9 @@ func StocktakeInventory(req *proto.StocktakeInventoryRequest, userID string) (*p
 			return errors.New("读取库存记录失败")
 		}
 
+		if req.CountedQTY < inventory.IssuedQTY {
+			return fmt.Errorf("实盘数量%d小于当前锁定量%d，请先处理在途拣货单再盘点", req.CountedQTY, inventory.IssuedQTY)
+		}
 		before := inventory.StoredQTY
 		difference := req.CountedQTY - before
 		if err := tx.Model(&model.MaterialInventory{}).Where("`id` = ?", inventory.ID).
@@ -455,21 +472,45 @@ func GetInventoryAlerts() (*proto.MaterialInventoryAlertResponse, error) {
 	return resp, nil
 }
 
-// lockOrCreateInventory 查找或创建库存记录（SELECT ... 行锁由事务保证）
+// lockOrCreateInventory 查找或创建库存记录；并发下唯一索引兜底（冲突即回查）
+func lockOrCreateInventoryWithBin(tx *gorm.DB, materialInfoID, materialStoreID string, shelfBinID *string, userID string) (*model.MaterialInventory, error) {
+	inv, err := lockOrCreateInventory(tx, materialInfoID, materialStoreID, userID)
+	if err != nil {
+		return nil, err
+	}
+	//首次建账时记录默认库位（已有库位仅在为空时补记，不覆盖人工调整）
+	if shelfBinID != nil && inv.ShelfBinID == nil {
+		if err := tx.Model(&model.MaterialInventory{}).Where("`id` = ?", inv.ID).
+			Update("shelf_bin_id", *shelfBinID).Error; err != nil {
+			return nil, err
+		}
+		inv.ShelfBinID = shelfBinID
+	}
+	return inv, nil
+}
+
 func lockOrCreateInventory(tx *gorm.DB, materialInfoID, materialStoreID, userID string) (*model.MaterialInventory, error) {
 	inventory := &model.MaterialInventory{}
 	err := tx.Where("`material_info_id` = ? AND `material_store_id` = ?", materialInfoID, materialStoreID).First(inventory).Error
 	if err == gorm.ErrRecordNotFound {
-		inventory = &model.MaterialInventory{
+		created := &model.MaterialInventory{
 			MaterialInfoID:  materialInfoID,
 			MaterialStoreID: materialStoreID,
 			CreateUserID:    userID,
 			CurrentState:    "正常",
 		}
-		if err := tx.Create(inventory).Error; err != nil {
-			return nil, err
+		res := tx.Clauses(clause.OnConflict{DoNothing: true}).Create(created)
+		if res.Error != nil {
+			return nil, res.Error
 		}
-		return inventory, nil
+		if res.RowsAffected == 0 {
+			// 并发对手已建账，回查
+			if err := tx.Where("`material_info_id` = ? AND `material_store_id` = ?", materialInfoID, materialStoreID).First(inventory).Error; err != nil {
+				return nil, err
+			}
+			return inventory, nil
+		}
+		return created, nil
 	}
 	if err != nil {
 		return nil, err

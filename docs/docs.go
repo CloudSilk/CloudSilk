@@ -15,6 +15,47 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
+        "/api/mom/aps/schedule/adjust": {
+            "put": {
+                "description": "甘特拖拽落库：平移指定明细到新开工时间，可选顺延后续工单",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "APS排程"
+                ],
+                "summary": "人工调整排程明细",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "jwt token",
+                        "name": "authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "description": "AdjustScheduleItemRequest",
+                        "name": "account",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/proto.AdjustScheduleItemRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/proto.CommonResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/api/mom/aps/schedule/delete": {
             "delete": {
                 "description": "删除未下发的排程计划",
@@ -24614,6 +24655,45 @@ const docTemplate = `{
                 }
             }
         },
+        "/api/mom/quality/qualityinspectionorder/start": {
+            "put": {
+                "description": "检验单置为检验中（可反复进入，配合草稿保存分批填报）",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "检验单管理"
+                ],
+                "summary": "开始检验",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "jwt token",
+                        "name": "authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "检验单ID",
+                        "name": "id",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/proto.CommonResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/api/mom/quality/qualityinspectionorder/update": {
             "put": {
                 "description": "更新（仅待检验状态）",
@@ -30850,6 +30930,27 @@ const docTemplate = `{
                 }
             }
         },
+        "proto.AdjustScheduleItemRequest": {
+            "type": "object",
+            "properties": {
+                "cascade": {
+                    "description": "是否顺延后续工单（保持相对间隔整体平移）",
+                    "type": "boolean"
+                },
+                "itemID": {
+                    "description": "排程明细ID",
+                    "type": "string"
+                },
+                "newStartTime": {
+                    "description": "新的计划开工时间（yyyy-MM-dd HH:mm:ss）",
+                    "type": "string"
+                },
+                "planID": {
+                    "description": "排程计划ID",
+                    "type": "string"
+                }
+            }
+        },
         "proto.AttributeExpressionInfo": {
             "type": "object",
             "properties": {
@@ -31216,6 +31317,10 @@ const docTemplate = `{
                     "items": {
                         "$ref": "#/definitions/proto.QualityInspectionOrderItemInfo"
                     }
+                },
+                "saveOnly": {
+                    "description": "草稿保存：仅写入已填报明细的实测值与单项判定，不出结论不改状态",
+                    "type": "boolean"
                 }
             }
         },
@@ -40984,6 +41089,10 @@ const docTemplate = `{
         "proto.QualityInspectionOrderItemInfo": {
             "type": "object",
             "properties": {
+                "bySample": {
+                    "description": "是否按抽检填报（true 时以 sampleDefectives 判定，忽略单值判定）",
+                    "type": "boolean"
+                },
                 "id": {
                     "description": "ID",
                     "type": "string"
@@ -41013,6 +41122,10 @@ const docTemplate = `{
                 "remark": {
                     "description": "备注",
                     "type": "string"
+                },
+                "sampleDefectives": {
+                    "description": "抽检不合格数（bySample=true 时按该项标准 AQL 的接收数判定）",
+                    "type": "integer"
                 }
             }
         },

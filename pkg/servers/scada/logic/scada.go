@@ -127,20 +127,40 @@ func CreateScadaTag(m *model.ScadaTag) (string, error) {
 	if m.ScadaDeviceID == "" {
 		return "", errors.New("采集设备不能为空")
 	}
-	if !validDataType(m.DataType) {
-		return "", fmt.Errorf("无效的数据类型：%s（支持 bool/uint16/int16/float32）", m.DataType)
-	}
-	if m.OpcUANodeID == "" && m.ScadaDevice != nil && m.ScadaDevice.Protocol == ProtocolOpcUA {
-		return "", errors.New("OPC UA 设备的点位必须配置节点ID（opcUANodeID）")
+	if err := validateTagForDevice(m); err != nil {
+		return "", err
 	}
 	return m.ID, model.DB.DB().Create(m).Error
 }
 
 func UpdateScadaTag(m *model.ScadaTag) error {
+	if err := validateTagForDevice(m); err != nil {
+		return err
+	}
+	return model.DB.DB().Omit("created_at").Save(m).Error
+}
+
+// validateTagForDevice 按所属设备协议校验点位必填项与功能码
+func validateTagForDevice(m *model.ScadaTag) error {
 	if !validDataType(m.DataType) {
 		return fmt.Errorf("无效的数据类型：%s（支持 bool/uint16/int16/float32）", m.DataType)
 	}
-	return model.DB.DB().Omit("created_at").Save(m).Error
+	device := &model.ScadaDevice{}
+	if err := model.DB.DB().Select("id", "protocol").First(device, "`id` = ?", m.ScadaDeviceID).Error; err != nil {
+		return errors.New("所属采集设备不存在")
+	}
+	if device.Protocol == ProtocolOpcUA {
+		if m.OpcUANodeID == "" {
+			return errors.New("OPC UA 设备的点位必须配置节点ID（opcUANodeID，如 ns=2;s=Channel1.Tag1）")
+		}
+		return nil
+	}
+	// Modbus：功能码必填且合法
+	switch m.FunctionCode {
+	case 0, 1, 3, 4:
+		return nil
+	}
+	return fmt.Errorf("Modbus 点位功能码无效：%d（支持 0-线圈 1-离散输入 3-保持寄存器 4-输入寄存器）", m.FunctionCode)
 }
 
 func QueryScadaTag(req *proto.QueryScadaTagRequest, resp *proto.QueryScadaTagResponse, preload bool) {
@@ -239,28 +259,90 @@ func QueryScadaTagHistory(req *proto.QueryScadaTagHistoryRequest, resp *proto.Qu
 
 // ---------- 采集器 ----------
 
-// StartCollector 启动后台采集器：按设备配置的间隔轮询启用设备的启用点位
-// 每个设备一个 goroutine，互不阻塞；连接错误回写设备状态
+// collectorSupervisor 设备热加载监督者：周期性重载启用设备清单，
+// 新增设备启动采集协程，停用/删除的设备停止；协程每次采集前重读点位，
+// 点位增删改无需重启服务即生效。
+var (
+	collectorMu      sync.Mutex
+	collectorRunning = map[string]context.CancelFunc{}
+)
+
+const collectorReloadInterval = 30 * time.Second
+
+// StartCollector 启动采集监督者（幂等，可重复调用）
 func StartCollector() {
-	devices := []*model.ScadaDevice{}
-	if err := model.DB.DB().Preload("Tags").Where("`enable` = ?", true).Find(&devices).Error; err != nil {
-		return
+	go superviseCollector()
+}
+
+func superviseCollector() {
+	reload := func() {
+		devices := []*model.ScadaDevice{}
+		if err := model.DB.DB().Where("`enable` = ?", true).Find(&devices).Error; err != nil {
+			return
+		}
+		active := map[string]bool{}
+		for _, d := range devices {
+			active[d.ID] = true
+		}
+
+		collectorMu.Lock()
+		for id, cancel := range collectorRunning {
+			if !active[id] {
+				cancel()
+				delete(collectorRunning, id)
+			}
+		}
+		for _, d := range devices {
+			if _, running := collectorRunning[d.ID]; running {
+				continue
+			}
+			ctx, cancel := context.WithCancel(context.Background())
+			collectorRunning[d.ID] = cancel
+			go collectDeviceLoop(ctx, d.ID)
+		}
+		collectorMu.Unlock()
 	}
-	var wg sync.WaitGroup
-	for _, device := range devices {
-		wg.Add(1)
-		go func(d *model.ScadaDevice) {
-			defer wg.Done()
-			interval := time.Duration(d.IntervalSeconds) * time.Second
-			if interval < time.Second {
-				interval = time.Second
-			}
-			ticker := time.NewTicker(interval)
-			defer ticker.Stop()
-			for range ticker.C {
-				collectDevice(d)
-			}
-		}(device)
+
+	reload()
+	ticker := time.NewTicker(collectorReloadInterval)
+	defer ticker.Stop()
+	for range ticker.C {
+		reload()
+	}
+}
+
+// StopCollector 停止全部采集协程（服务关闭时调用）
+func StopCollector() {
+	collectorMu.Lock()
+	defer collectorMu.Unlock()
+	for id, cancel := range collectorRunning {
+		cancel()
+		delete(collectorRunning, id)
+	}
+}
+
+// collectDeviceLoop 单设备采集循环：每轮重读设备与点位配置（热更新），
+// 设备被停用/删除时退出
+func collectDeviceLoop(ctx context.Context, deviceID string) {
+	var interval time.Duration
+	for {
+		device := &model.ScadaDevice{}
+		err := model.DB.DB().Preload("Tags").First(device, "`id` = ?", deviceID).Error
+		if err != nil || !device.Enable {
+			return // 已删除或停用
+		}
+		interval = time.Duration(device.IntervalSeconds) * time.Second
+		if interval < time.Second {
+			interval = time.Second
+		}
+
+		collectDevice(device)
+
+		select {
+		case <-ctx.Done():
+			return
+		case <-time.After(interval):
+		}
 	}
 }
 

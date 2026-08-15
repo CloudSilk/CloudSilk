@@ -16,6 +16,8 @@ type QualityInspectionOrderItem struct {
 	QualityInspectionStandard          *QualityInspectionStandard  `json:"qualityInspectionStandard" gorm:"constraint:OnDelete:SET NULL"`
 	MeasuredValue                      string                      `json:"measuredValue" gorm:"size:1000;comment:实测值"`
 	IsQualified                        bool                        `json:"isQualified" gorm:"comment:是否合格"`
+	SampleDefectives                   int32                       `json:"sampleDefectives" gorm:"comment:抽检不合格数"`
+	BySample                           bool                        `json:"bySample" gorm:"comment:是否按抽检填报"`
 	Remark                             string                      `json:"remark" gorm:"size:1000;comment:备注"`
 }
 
@@ -71,6 +73,8 @@ func PBToQualityInspectionOrder(in *proto.QualityInspectionOrderInfo) *QualityIn
 			QualityInspectionStandardID: item.QualityInspectionStandardID,
 			MeasuredValue:               item.MeasuredValue,
 			IsQualified:                 item.IsQualified,
+			SampleDefectives:            item.SampleDefectives,
+			BySample:                    item.BySample,
 			Remark:                      item.Remark,
 		})
 	}
@@ -156,6 +160,8 @@ func QualityInspectionOrderItemToPB(in *QualityInspectionOrderItem) *proto.Quali
 		QualityInspectionStandardID: in.QualityInspectionStandardID,
 		MeasuredValue:               in.MeasuredValue,
 		IsQualified:                 in.IsQualified,
+		SampleDefectives:            in.SampleDefectives,
+		BySample:                    in.BySample,
 		Remark:                      in.Remark,
 	}
 	if in.QualityInspectionStandard != nil {

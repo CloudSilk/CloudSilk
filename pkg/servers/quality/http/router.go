@@ -30,6 +30,7 @@ func RegisterRouter(r *gin.Engine) {
 	o.GET("query", QueryQualityInspectionOrder)
 	o.GET("detail", GetQualityInspectionOrderDetail)
 	o.DELETE("delete", DeleteQualityInspectionOrder)
+	o.PUT("start", StartQualityInspectionOrder)
 	// 判定/让步/返工联动属于质量裁决动作，需授权角色
 	o.PUT("complete", CompleteQualityInspectionOrder, mw.RequirePermissionParam("quality.judge"))
 

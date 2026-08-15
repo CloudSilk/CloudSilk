@@ -202,6 +202,32 @@ func CompleteQualityInspectionOrder(c *gin.Context) {
 	c.JSON(http.StatusOK, resp)
 }
 
+// StartQualityInspectionOrder godoc
+// @Summary 开始检验
+// @Description 检验单置为检验中（可反复进入，配合草稿保存分批填报）
+// @Tags 检验单管理
+// @Accept  json
+// @Produce  json
+// @Param authorization header string true "jwt token"
+// @Param id query string true "检验单ID"
+// @Success 200 {object} proto.CommonResponse
+// @Router /api/mom/quality/qualityinspectionorder/start [put]
+func StartQualityInspectionOrder(c *gin.Context) {
+	resp := &proto.CommonResponse{Code: proto.Code_Success}
+	id := c.Query("id")
+	if id == "" {
+		resp.Code = proto.Code_BadRequest
+		resp.Message = "id不能为空"
+		c.JSON(http.StatusOK, resp)
+		return
+	}
+	if err := logic.StartQualityInspectionOrder(id); err != nil {
+		resp.Code = proto.Code_InternalServerError
+		resp.Message = err.Error()
+	}
+	c.JSON(http.StatusOK, resp)
+}
+
 // CalcSpc godoc
 // @Summary SPC过程能力计算
 // @Description 计算均值/标准差/CPK与休哈特控制图界限（可关联检验标准取规格限）

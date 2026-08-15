@@ -150,7 +150,26 @@ func DeleteQualityInspectionOrder(id string) (err error) {
 	return model.DB.DB().Delete(&model.QualityInspectionOrder{}, "`id` = ?", id).Error
 }
 
-// CompleteQualityInspectionOrder 完成检验：录入实测值 → 按标准判定单项 → 按 AQL 判定整单 → 可选生成返工记录
+// StartQualityInspectionOrder 开始检验（待检验→检验中，可重复进入）
+func StartQualityInspectionOrder(id string) error {
+	order := &model.QualityInspectionOrder{}
+	if err := model.DB.DB().First(order, "`id` = ?", id).Error; err != nil {
+		return errors.New("读取检验单失败")
+	}
+	if order.CurrentState == QualityInspectionStateFinished {
+		return errors.New("检验单已完成，不能开始检验")
+	}
+	if order.CurrentState == QualityInspectionStateDoing {
+		return nil
+	}
+	return model.DB.DB().Model(&model.QualityInspectionOrder{}).Where("`id` = ?", id).
+		Update("current_state", QualityInspectionStateDoing).Error
+}
+
+// CompleteQualityInspectionOrder 完成检验：
+//   - saveOnly=true：草稿保存——仅写入已填报明细（实测值/单项判定/抽检数），缺项跳过，不出结论不改状态
+//   - 正式完成：全部明细必须填报；单项判定支持单值比较或抽检（bySample 时按该项标准 AQL 的接收数判定）；
+//     整单结论 = 全部单项合格 → 合格；不合格时可返工或让步接收
 func CompleteQualityInspectionOrder(req *proto.CompleteQualityInspectionOrderRequest) error {
 	return model.DB.DB().Transaction(func(tx *gorm.DB) error {
 		order := &model.QualityInspectionOrder{}
@@ -162,37 +181,69 @@ func CompleteQualityInspectionOrder(req *proto.CompleteQualityInspectionOrderReq
 			return errors.New("检验单已完成，不能重复提交")
 		}
 
-		measured := map[string]string{}
+		// 索引化请求明细：标准ID → 填报内容
+		type filled struct {
+			measured    string
+			bySample    bool
+			defectives  int32
+		}
+		submitted := map[string]*filled{}
 		for _, item := range req.Items {
-			measured[item.QualityInspectionStandardID] = item.MeasuredValue
+			submitted[item.QualityInspectionStandardID] = &filled{
+				measured:   item.MeasuredValue,
+				bySample:   item.BySample,
+				defectives: item.SampleDefectives,
+			}
 		}
 
-		var defectives int
+		var rejectCount int
 		for _, item := range order.QualityInspectionOrderItems {
-			value, ok := measured[item.QualityInspectionStandardID]
+			f, ok := submitted[item.QualityInspectionStandardID]
 			if !ok {
-				return fmt.Errorf("检验标准%s缺少检测结果", item.QualityInspectionStandardID)
+				if req.SaveOnly {
+					continue // 草稿：缺项跳过
+				}
+				return fmt.Errorf("检验项[%s]缺少检测结果", item.QualityInspectionStandard.Description)
 			}
-			item.MeasuredValue = value
-			qualified, err := judgeMeasuredValue(item.QualityInspectionStandard, value)
-			if err != nil {
-				return err
+
+			updates := map[string]interface{}{"measured_value": f.measured}
+			switch {
+			case f.bySample:
+				// 抽检模式：按该项标准 AQL 的接收数判定
+				var aql float64
+				if item.QualityInspectionStandard != nil {
+					aql = item.QualityInspectionStandard.Aql
+				}
+				item.SampleDefectives = f.defectives
+				item.BySample = true
+				item.IsQualified = int(f.defectives) <= AcceptNumber(order.SampleQTY, aql)
+				updates["sample_defectives"] = f.defectives
+				updates["by_sample"] = true
+			default:
+				qualified, err := judgeMeasuredValue(item.QualityInspectionStandard, f.measured)
+				if err != nil {
+					return fmt.Errorf("检验项[%s]：%w", item.QualityInspectionStandard.Description, err)
+				}
+				item.IsQualified = qualified
 			}
-			item.IsQualified = qualified
-			if !qualified {
-				defectives++
+			updates["is_qualified"] = item.IsQualified
+			if !item.IsQualified {
+				rejectCount++
 			}
-			if err := tx.Save(item).Error; err != nil {
+			if err := tx.Model(&model.QualityInspectionOrderItem{}).Where("`id` = ?", item.ID).
+				Updates(updates).Error; err != nil {
 				return err
 			}
 		}
 
-		//整单判定：以首个标准的AQL作为整单接收质量限（简化）
-		var aql float64
-		if len(order.QualityInspectionOrderItems) > 0 && order.QualityInspectionOrderItems[0].QualityInspectionStandard != nil {
-			aql = order.QualityInspectionOrderItems[0].QualityInspectionStandard.Aql
+		// 草稿：到此为止
+		if req.SaveOnly {
+			if order.CurrentState == QualityInspectionStateWait {
+				return tx.Model(&model.QualityInspectionOrder{}).Where("`id` = ?", order.ID).
+					Update("current_state", QualityInspectionStateDoing).Error
+			}
+			return nil
 		}
-		accepted := defectives <= AcceptNumber(order.SampleQTY, aql)
 
 		now := time.Now()
 		order.ActualInspectionTime.Valid = true
@@ -201,7 +252,7 @@ func CompleteQualityInspectionOrder(req *proto.CompleteQualityInspectionOrderReq
 		order.Disposition = req.Disposition
 		order.CurrentState = QualityInspectionStateFinished
 		switch {
-		case accepted:
+		case rejectCount == 0:
 			order.Conclusion = QualityConclusionQualified
 		case req.Concession:
 			//让步接收：判定不合格但特采放行
@@ -210,7 +261,7 @@ func CompleteQualityInspectionOrder(req *proto.CompleteQualityInspectionOrderReq
 			order.Conclusion = QualityConclusionUnqualified
 		}
 
-		//不合格且勾选生成返工：写入返工记录（复用现有返工模块）
+		//不合格且勾选生成返工：写入返工记录（复用现有返工模块；让步接收不生成）
 		if order.Conclusion == QualityConclusionUnqualified && req.CreateRework {
 			rework := &model.ProductReworkRecord{
 				ProductInfoID: deref(order.ProductInfoID),
@@ -236,8 +287,8 @@ func CompleteQualityInspectionOrder(req *proto.CompleteQualityInspectionOrderReq
 		return tx.Create(&model.OperationTrace{
 			OperateUserID:  req.InspectionUserID,
 			ControllerName: "质量管理",
-			ActionName:     "完成检验",
-			RequestContent: fmt.Sprintf("检验单:%s,结论:%s,不合格数:%d,让步:%v", order.InspectionOrderNo, order.Conclusion, defectives, req.Concession),
+			ActionName:     map[bool]string{true: "保存检验草稿", false: "完成检验"}[req.SaveOnly],
+			RequestContent: fmt.Sprintf("检验单:%s,结论:%s,不合格项:%d,让步:%v", order.InspectionOrderNo, order.Conclusion, rejectCount, req.Concession),
 		}).Error
 	})
 }

@@ -73,6 +73,21 @@ definitions:
         description: 货架类型
         type: integer
     type: object
+  proto.AdjustScheduleItemRequest:
+    properties:
+      cascade:
+        description: 是否顺延后续工单（保持相对间隔整体平移）
+        type: boolean
+      itemID:
+        description: 排程明细ID
+        type: string
+      newStartTime:
+        description: 新的计划开工时间（yyyy-MM-dd HH:mm:ss）
+        type: string
+      planID:
+        description: 排程计划ID
+        type: string
+    type: object
   proto.AttributeExpressionInfo:
     properties:
       attributeValue:
@@ -335,6 +350,9 @@ definitions:
         items:
           $ref: '#/definitions/proto.QualityInspectionOrderItemInfo'
         type: array
+      saveOnly:
+        description: 草稿保存：仅写入已填报明细的实测值与单项判定，不出结论不改状态
+        type: boolean
     type: object
   proto.CreatePickBillRequest:
     properties:
@@ -7073,6 +7091,9 @@ definitions:
     type: object
   proto.QualityInspectionOrderItemInfo:
     properties:
+      bySample:
+        description: 是否按抽检填报（true 时以 sampleDefectives 判定，忽略单值判定）
+        type: boolean
       id:
         description: ID
         type: string
@@ -7095,6 +7116,9 @@ definitions:
       remark:
         description: 备注
         type: string
+      sampleDefectives:
+        description: 抽检不合格数（bySample=true 时按该项标准 AQL 的接收数判定）
+        type: integer
     type: object
   proto.QualityInspectionStandardInfo:
     properties:
@@ -9893,6 +9917,33 @@ definitions:
 info:
   contact: {}
 paths:
+  /api/mom/aps/schedule/adjust:
+    put:
+      consumes:
+      - application/json
+      description: 甘特拖拽落库：平移指定明细到新开工时间，可选顺延后续工单
+      parameters:
+      - description: jwt token
+        in: header
+        name: authorization
+        required: true
+        type: string
+      - description: AdjustScheduleItemRequest
+        in: body
+        name: account
+        required: true
+        schema:
+          $ref: '#/definitions/proto.AdjustScheduleItemRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/proto.CommonResponse'
+      summary: 人工调整排程明细
+      tags:
+      - APS排程
   /api/mom/aps/schedule/delete:
     delete:
       consumes:
@@ -26135,6 +26186,32 @@ paths:
           schema:
             $ref: '#/definitions/proto.QueryQualityInspectionOrderResponse'
       summary: 查询
+      tags:
+      - 检验单管理
+  /api/mom/quality/qualityinspectionorder/start:
+    put:
+      consumes:
+      - application/json
+      description: 检验单置为检验中（可反复进入，配合草稿保存分批填报）
+      parameters:
+      - description: jwt token
+        in: header
+        name: authorization
+        required: true
+        type: string
+      - description: 检验单ID
+        in: query
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/proto.CommonResponse'
+      summary: 开始检验
       tags:
       - 检验单管理
   /api/mom/quality/qualityinspectionorder/update:

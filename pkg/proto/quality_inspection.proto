@@ -133,6 +133,10 @@ message QualityInspectionOrderItemInfo {
 	string measuredValue=6;
 	//是否合格
 	bool isQualified=7;
+	//抽检不合格数（bySample=true 时按该项标准 AQL 的接收数判定）
+	int32 sampleDefectives=9;
+	//是否按抽检填报（true 时以 sampleDefectives 判定，忽略单值判定）
+	bool bySample=10;
 	//备注
 	string remark=8;
 }
@@ -222,6 +226,8 @@ message CompleteQualityInspectionOrderRequest{
 	bool createRework=5;
 	//让步接收：判定不合格但特采放行（结论记为让步接收，不改产品状态）
 	bool concession=6;
+	//草稿保存：仅写入已填报明细的实测值与单项判定，不出结论不改状态
+	bool saveOnly=7;
 }
 
 // SPC 计算请求/响应

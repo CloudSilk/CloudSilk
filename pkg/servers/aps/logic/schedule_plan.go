@@ -145,6 +145,9 @@ func ReleaseSchedule(req *proto.ReleaseScheduleRequest, userID string) error {
 		if plan.CurrentState != ScheduleStateGenerated {
 			return fmt.Errorf("排程计划状态为%s，只有%s状态可以下发", plan.CurrentState, ScheduleStateGenerated)
 		}
+		if plan.OrderCount == 0 || len(plan.Items) == 0 {
+			return errors.New("排程计划无明细，不能下发")
+		}
 
 		for _, item := range plan.Items {
 			if err := tx.Model(&model.ProductOrder{}).Where("`id` = ?", item.ProductOrderID).

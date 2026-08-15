@@ -214,3 +214,69 @@ func TestCompleteInspection_Invalid(t *testing.T) {
 		t.Fatalf("已完成检验单不能重复提交")
 	}
 }
+
+// 草稿保存：部分填报不出结论、状态推进到检验中；随后补齐可完成
+func TestCompleteInspection_DraftThenFinish(t *testing.T) {
+	gdb := setupQMDB(t)
+	order := seedInspectionOrder(t, gdb, 100)
+	standardID := order.QualityInspectionOrderItems[0].QualityInspectionStandardID
+
+	// 草稿：saveOnly
+	if err := CompleteQualityInspectionOrder(&proto.CompleteQualityInspectionOrderRequest{
+		Id:        order.ID,
+		SaveOnly:  true,
+		Items:     []*proto.QualityInspectionOrderItemInfo{
+			{QualityInspectionStandardID: standardID, MeasuredValue: "9.8"},
+		},
+	}); err != nil {
+		t.Fatalf("草稿保存失败: %v", err)
+	}
+	after := &model.QualityInspectionOrder{}
+	gdb.Preload("QualityInspectionOrderItems").First(after, "`id` = ?", order.ID)
+	if after.Conclusion != "" || after.CurrentState != QualityInspectionStateDoing {
+		t.Fatalf("草稿不应出结论，状态应为检验中，实际 结论=%s 状态=%s", after.Conclusion, after.CurrentState)
+	}
+	if !after.QualityInspectionOrderItems[0].IsQualified || after.QualityInspectionOrderItems[0].MeasuredValue != "9.8" {
+		t.Fatalf("草稿应落库单项判定与实测值")
+	}
+
+	// 正式完成（复用同一数值）
+	if err := CompleteQualityInspectionOrder(&proto.CompleteQualityInspectionOrderRequest{
+		Id:    order.ID,
+		Items: []*proto.QualityInspectionOrderItemInfo{
+			{QualityInspectionStandardID: standardID, MeasuredValue: "9.8"},
+		},
+	}); err != nil {
+		t.Fatalf("完成失败: %v", err)
+	}
+	gdb.First(after, "`id` = ?", order.ID)
+	if after.Conclusion != QualityConclusionQualified {
+		t.Fatalf("最终结论应为合格，实际%s", after.Conclusion)
+	}
+}
+
+// 抽检模式：按该项标准 AQL 接收数判定（Ac=0 时 1 个不合格即整项不合格）
+func TestCompleteInspection_SampleAQL(t *testing.T) {
+	gdb := setupQMDB(t)
+	order := seedInspectionOrder(t, gdb, 5) // 样本量5 → Ac(5,1.0)=0
+	standardID := order.QualityInspectionOrderItems[0].QualityInspectionStandardID
+
+	// 1个不良 > Ac=0 → 不合格
+	if err := CompleteQualityInspectionOrder(&proto.CompleteQualityInspectionOrderRequest{
+		Id:    order.ID,
+		Items: []*proto.QualityInspectionOrderItemInfo{
+			{QualityInspectionStandardID: standardID, BySample: true, SampleDefectives: 1},
+		},
+	}); err != nil {
+		t.Fatalf("完成失败: %v", err)
+	}
+	after := &model.QualityInspectionOrder{}
+	gdb.Preload("QualityInspectionOrderItems").First(after, "`id` = ?", order.ID)
+	if after.Conclusion != QualityConclusionUnqualified {
+		t.Fatalf("1不良>Ac0 应不合格，实际%s", after.Conclusion)
+	}
+	item := after.QualityInspectionOrderItems[0]
+	if !item.BySample || item.SampleDefectives != 1 || item.IsQualified {
+		t.Fatalf("抽检字段应落库且单项不合格")
+	}
+}

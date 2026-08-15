@@ -98,6 +98,12 @@ func DeleteEquipment(id string) (err error) {
 	if count > 0 {
 		return errors.New("此设备存在维保计划，无法删除")
 	}
+	if err := model.DB.DB().Model(&model.EquipmentMaintenanceRecord{}).Where("`equipment_id` = ?", id).Count(&count).Error; err != nil {
+		return err
+	}
+	if count > 0 {
+		return errors.New("此设备存在维保历史记录，无法删除（可停用）")
+	}
 	return model.DB.DB().Delete(&model.Equipment{}, "`id` = ?", id).Error
 }
 
@@ -131,6 +137,22 @@ func UpdateEquipmentMaintenancePlan(m *model.EquipmentMaintenancePlan) error {
 	omits := []string{"created_at"}
 	if m.EquipmentID == nil || *m.EquipmentID == "" {
 		omits = append(omits, "EquipmentID")
+	}
+	if m.CycleDays <= 0 {
+		return errors.New("维保周期必须大于0天")
+	}
+	//周期变更时按新周期重算下次执行（基准：上次执行时间，未执行过则当前时间）
+	old := &model.EquipmentMaintenancePlan{}
+	if err := model.DB.DB().First(old, "`id` = ?", m.ID).Error; err != nil {
+		return errors.New("读取维保计划失败")
+	}
+	if old.CycleDays != m.CycleDays {
+		base := time.Now()
+		if old.LastExecution.Valid {
+			base = old.LastExecution.Time
+		}
+		m.NextExecution.Valid = true
+		m.NextExecution.Time = base.AddDate(0, 0, int(m.CycleDays))
 	}
 	return model.DB.DB().Omit(omits...).Save(m).Error
 }

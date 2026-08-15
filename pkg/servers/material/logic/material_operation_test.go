@@ -192,3 +192,20 @@ func TestStocktake(t *testing.T) {
 		t.Fatalf("盘点后账面应为77，实际%d", after.StoredQTY)
 	}
 }
+
+// 盘点：实盘小于锁定量应拒绝
+func TestStocktake_RejectBelowLocked(t *testing.T) {
+	gdb := setupWMSDB(t)
+	store, material, order := seedPickFixture(t, gdb, 100)
+	//锁定10
+	pickResp, err := CreatePickBillFromOrder(&proto.CreatePickBillRequest{ProductOrderID: order.ID}, "u")
+	if err != nil {
+		t.Fatalf("生成拣货单失败: %v", err)
+	}
+	_ = pickResp
+
+	inv := getInventory(t, gdb, material.ID, store.ID)
+	if _, err := StocktakeInventory(&proto.StocktakeInventoryRequest{MaterialInventoryID: inv.ID, CountedQTY: 5}, "u"); err == nil {
+		t.Fatalf("实盘5<锁定量10 应拒绝")
+	}
+}

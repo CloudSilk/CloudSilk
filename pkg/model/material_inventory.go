@@ -10,10 +10,12 @@ import (
 // 物料库存
 type MaterialInventory struct {
 	ModelID
-	MaterialInfoID  string         `gorm:"size:36;comment:物料信息ID"`
-	MaterialInfo    *MaterialInfo  `gorm:"constraint:OnDelete:CASCADE"` //物料信息
-	MaterialStoreID string         `gorm:"size:36;comment:物料仓库ID"`
-	MaterialStore   *MaterialStore `gorm:"constraint:OnDelete:CASCADE"` //物料仓库
+	MaterialInfoID  string          `gorm:"size:36;uniqueIndex:idx_inv_material_store;comment:物料信息ID"`
+	MaterialInfo    *MaterialInfo   `gorm:"constraint:OnDelete:CASCADE"` //物料信息
+	MaterialStoreID string          `gorm:"size:36;uniqueIndex:idx_inv_material_store;comment:物料仓库ID"`
+	MaterialStore   *MaterialStore  `gorm:"constraint:OnDelete:CASCADE"` //物料仓库
+	ShelfBinID      *string         `gorm:"size:36;comment:默认库位ID（收货上架）"`
+	ShelfBin        *MaterialShelfBin `gorm:"constraint:OnDelete:SET NULL"` //默认库位
 	StoredQTY       int64          `gorm:"comment:库存数量"`
 	IssuedQTY       int64          `gorm:"comment:锁定数量"`
 	FeedingQTY      int64          `gorm:"comment:正在补料数量"`
