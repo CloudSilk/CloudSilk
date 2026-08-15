@@ -1,8 +1,9 @@
-FROM node:18-alpine AS webbuilder
+FROM node:20-alpine AS webbuilder
 WORKDIR /web
 ENV NODE_OPTIONS=--max-old-space-size=4096
 COPY web/package.json web/yarn.lock ./
-RUN yarn install --frozen-lockfile --network-timeout 600000
+# --ignore-engines：传递依赖 @testing-library/jest-dom 声明 node>=22
+RUN yarn install --frozen-lockfile --network-timeout 600000 --ignore-engines
 COPY web/ .
 RUN WEB_BASE=/web yarn build
 

@@ -275,6 +275,7 @@
 |----|------|------|
 | dubbogo 升级专项 | v3.0.5→v3.1.1（v3.0线终点，triple 生成代码零改动；v3.3 因移除 config 包弃用）；nacos-sdk v1.1.4→**v2.2.5**、gost 1.14.3、grpc 1.64、protobuf 1.34；go directive 1.23；Dockerfile/CI 同步 golang 1.23；运行时 pb 重复注册按官方 FAQ 以 warn 缓解并固化到启动入口；单进程模式冒烟通过（HTTP 200） | b64caff |
 | APS 人工拖拽 | 后端 AdjustScheduleItem（平移+级联顺延+区间刷新+轨迹，仅已生成状态）+ adjust 端点（aps.manage 权限）+ 3 组单测；前端甘特条指针拖拽（像素→时间换算、乐观位移、松手落库刷新，已下发只读） | 583bbad |
+| web 依赖升级专项 | 同大版本升级（antd 5.29/umi 4.7/pro-components 2.8/TS 5.9 等 15 项）；移除 6 个死依赖含 3 个浮动版本标签（blocksuite-nightly/yjs-latest/toeverything-latest，不可复现构建风险源）；antd-style 经构建验证保留（pro-chat 运行时依赖）；yarn.lock 重锁 4817 行；tsc 0 错 + max build 生产构建通过；CI/Dockerfile 前端阶段 node 18→20 + --ignore-engines | 54d66cc |
 
 ---
 
