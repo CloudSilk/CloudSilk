@@ -4,6 +4,7 @@ package proto;
 option go_package = "./;proto";
 
 import "mom_common.proto";
+import "product_category_attribute.proto";
 
 message ProductCategoryInfo {
 	//ID 
@@ -20,9 +21,11 @@ message ProductCategoryInfo {
     string attributeExpression=7;
 	//备注 
     string remark=8;
-	//产品品牌ID 
+	//产品品牌 ID 
     string productBrandID=9;
     string productBrandName=10;
+	//产品类别特性列表
+    repeated ProductCategoryAttributeInfo productCategoryAttributes=11;
 }
 
 message QueryProductCategoryRequest{
@@ -35,7 +38,7 @@ message QueryProductCategoryRequest{
 	//代号或描述
     // @inject_tag: uri:"code" form:"code"
     string code=5;
-	//产品品牌ID 
+	//产品品牌 ID 
     // @inject_tag: uri:"productBrandID" form:"productBrandID"
     string productBrandID=11;
 }

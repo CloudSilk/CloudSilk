@@ -7,6 +7,7 @@ import (
 	"github.com/CloudSilk/CloudSilk/pkg/model"
 	"github.com/CloudSilk/CloudSilk/pkg/proto"
 	"github.com/CloudSilk/pkg/utils"
+	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
 )
 
@@ -18,6 +19,15 @@ func CreateProductCategory(m *model.ProductCategory) (string, error) {
 	if duplication {
 		return "", errors.New("存在相同产品类别")
 	}
+	
+	// 保存关联特性
+	for _, attr := range m.ProductCategoryAttributes {
+		attr.ProductCategoryID = m.ID
+		if err := model.DB.DB().Create(attr).Error; err != nil {
+			return "", err
+		}
+	}
+	
 	return m.ID, nil
 }
 
@@ -27,11 +37,31 @@ func UpdateProductCategory(m *model.ProductCategory) error {
 		return errors.New("存在相同产品类别")
 	}
 
-	return model.DB.DB().Omit("created_at").Save(m).Error
+	return model.DB.DB().Transaction(func(tx *gorm.DB) error {
+		// 先删除旧的关联特性
+		if err := tx.Where("product_category_id = ?", m.ID).Delete(&model.ProductCategoryAttribute{}).Error; err != nil {
+			return err
+		}
+		
+		// 保存产品类别基本信息
+		if err := tx.Omit("created_at").Save(m).Error; err != nil {
+			return err
+		}
+		
+		// 保存新的关联特性
+		for _, attr := range m.ProductCategoryAttributes {
+			attr.ProductCategoryID = m.ID
+			if err := tx.Create(attr).Error; err != nil {
+				return err
+			}
+		}
+		
+		return nil
+	})
 }
 
 func QueryProductCategory(req *proto.QueryProductCategoryRequest, resp *proto.QueryProductCategoryResponse, preload bool) {
-	db := model.DB.DB().Model(&model.ProductCategory{}).Preload("ProductBrand").Preload(clause.Associations)
+	db := model.DB.DB().Model(&model.ProductCategory{}).Preload("ProductBrand").Preload("ProductCategoryAttributes").Preload("ProductCategoryAttributes.ProductAttribute").Preload(clause.Associations)
 	if req.Code != "" {
 		db = db.Where("`code` LIKE ? OR `description` LIKE ?", "%"+req.Code+"%", "%"+req.Code+"%")
 	}
@@ -64,7 +94,7 @@ func GetAllProductCategorys() (list []*model.ProductCategory, err error) {
 
 func GetProductCategoryByID(id string) (*model.ProductCategory, error) {
 	m := &model.ProductCategory{}
-	err := model.DB.DB().Preload(clause.Associations).Where("`id` = ?", id).First(m).Error
+	err := model.DB.DB().Preload("ProductBrand").Preload("ProductCategoryAttributes").Preload("ProductCategoryAttributes.ProductAttribute").Preload("ProductCategoryAttributes.ProductCategoryAttributeValue").Preload(clause.Associations).Where("`id` = ?", id).First(m).Error
 	return m, err
 }
 
