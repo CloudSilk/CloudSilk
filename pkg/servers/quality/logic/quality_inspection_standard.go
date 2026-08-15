@@ -20,21 +20,41 @@ func CreateQualityInspectionStandard(m *model.QualityInspectionStandard) (string
 	return m.ID, nil
 }
 
+// UpdateQualityInspectionStandard 白名单更新（防全量 Save 清零漏传字段）
 func UpdateQualityInspectionStandard(m *model.QualityInspectionStandard) error {
-	// 空值不覆盖已有外键，避免更新时误清检验类型关联
-	omits := []string{"created_at"}
-	if m.QualityInspectionTypeID == nil || *m.QualityInspectionTypeID == "" {
-		omits = append(omits, "QualityInspectionTypeID")
+	if m.ID == "" {
+		return errors.New("id不能为空")
 	}
-	duplication, err := model.DB.UpdateWithCheckDuplicationAndOmit(model.DB.DB(), m, false, omits, "`id` != ? and  `code`  = ? ", m.ID, m.Code)
-	if err != nil {
-		return err
+	updates := map[string]interface{}{
+		"description":      m.Description,
+		"unit":             m.Unit,
+		"standard_value":   m.StandardValue,
+		"lower_limit":      m.LowerLimit,
+		"upper_limit":      m.UpperLimit,
+		"criterion_method": m.CriterionMethod,
+		"aql":              m.Aql,
+		"sample_level":     m.SampleLevel,
+		"enable":           m.Enable,
+		"remark":           m.Remark,
 	}
-	if duplication {
-		return errors.New("存在相同检验标准")
+	if m.Code != "" {
+		updates["code"] = m.Code
+	}
+	if m.QualityInspectionTypeID != nil && *m.QualityInspectionTypeID != "" {
+		updates["quality_inspection_type_id"] = *m.QualityInspectionTypeID
 	}
 
-	return nil
+	if m.Code != "" {
+		var count int64
+		if err := model.DB.DB().Model(&model.QualityInspectionStandard{}).
+			Where("`id` != ? AND `code` = ?", m.ID, m.Code).Count(&count).Error; err != nil {
+			return err
+		}
+		if count > 0 {
+			return errors.New("存在相同检验标准")
+		}
+	}
+	return model.DB.DB().Model(&model.QualityInspectionStandard{}).Where("`id` = ?", m.ID).Updates(updates).Error
 }
 
 func QueryQualityInspectionStandard(req *proto.QueryQualityInspectionStandardRequest, resp *proto.QueryQualityInspectionStandardResponse, preload bool) {

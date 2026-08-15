@@ -12,6 +12,7 @@ import (
 	"github.com/CloudSilk/CloudSilk/pkg/model"
 	"github.com/CloudSilk/CloudSilk/pkg/proto"
 	"github.com/CloudSilk/pkg/modbus"
+	"github.com/gopcua/opcua"
 	"github.com/CloudSilk/pkg/utils"
 	"gorm.io/gorm/clause"
 )
@@ -133,11 +134,26 @@ func CreateScadaTag(m *model.ScadaTag) (string, error) {
 	return m.ID, model.DB.DB().Create(m).Error
 }
 
+// UpdateScadaTag 白名单更新（防全量 Save 清零漏传字段；设备归属不允许改）
 func UpdateScadaTag(m *model.ScadaTag) error {
+	if m.ID == "" {
+		return errors.New("id不能为空")
+	}
 	if err := validateTagForDevice(m); err != nil {
 		return err
 	}
-	return model.DB.DB().Omit("created_at").Save(m).Error
+	return model.DB.DB().Model(&model.ScadaTag{}).Where("`id` = ?", m.ID).Updates(map[string]interface{}{
+		"name":          m.Name,
+		"address":       m.Address,
+		"opc_ua_node_id": m.OpcUANodeID,
+		"function_code": m.FunctionCode,
+		"data_type":     m.DataType,
+		"scale":         m.Scale,
+		"unit":          m.Unit,
+		"save_history":  m.SaveHistory,
+		"enable":        m.Enable,
+		"remark":        m.Remark,
+	}).Error
 }
 
 // validateTagForDevice 按所属设备协议校验点位必填项与功能码
@@ -322,21 +338,64 @@ func StopCollector() {
 }
 
 // collectDeviceLoop 单设备采集循环：每轮重读设备与点位配置（热更新），
-// 设备被停用/删除时退出
+// 连接循环内复用（不再每轮重连），采集出错时丢弃重建；设备停用/删除退出
 func collectDeviceLoop(ctx context.Context, deviceID string) {
-	var interval time.Duration
+	var (
+		modbusClient modbus.Client
+		opcuaClient  *opcua.Client
+	)
+	resetClients := func() {
+		if modbusClient != nil {
+			modbusClient = nil
+		}
+		if opcuaClient != nil {
+			cctx, cancel := context.WithTimeout(context.Background(), time.Second)
+			opcuaClient.Close(cctx)
+			cancel()
+			opcuaClient = nil
+		}
+	}
+	defer resetClients()
+
 	for {
 		device := &model.ScadaDevice{}
 		err := model.DB.DB().Preload("Tags").First(device, "`id` = ?", deviceID).Error
 		if err != nil || !device.Enable {
 			return // 已删除或停用
 		}
-		interval = time.Duration(device.IntervalSeconds) * time.Second
+		interval := time.Duration(device.IntervalSeconds) * time.Second
 		if interval < time.Second {
 			interval = time.Second
 		}
 
-		collectDevice(device)
+		switch {
+		case device.Protocol == ProtocolOpcUA:
+			if opcuaClient == nil {
+				c, err := newOpcUAClient(device.Address)
+				if err != nil {
+					updateDeviceError(device, err)
+				} else {
+					opcuaClient = c
+				}
+			}
+			if opcuaClient != nil {
+				if err := collectOpcUADevice(device, opcuaClient); err != nil {
+					updateDeviceError(device, err)
+					cctx, cancel := context.WithTimeout(context.Background(), time.Second)
+					opcuaClient.Close(cctx)
+					cancel()
+					opcuaClient = nil // 下轮重连
+				}
+			}
+		default:
+			if modbusClient == nil {
+				modbusClient = modbus.NewClient(modbus.NewTCPClientProvider(device.Address))
+			}
+			if err := collectModbusDevice(device, modbusClient); err != nil {
+				updateDeviceError(device, err)
+				modbusClient = nil // 下轮重连
+			}
+		}
 
 		select {
 		case <-ctx.Done():
@@ -346,16 +405,11 @@ func collectDeviceLoop(ctx context.Context, deviceID string) {
 	}
 }
 
-func collectDevice(device *model.ScadaDevice) {
+func collectModbusDevice(device *model.ScadaDevice, client modbus.Client) error {
 	if len(device.Tags) == 0 {
-		return
-	}
-	if device.Protocol == ProtocolOpcUA {
-		collectOpcUADevice(device)
-		return
+		return nil
 	}
 
-	client := modbus.NewClient(modbus.NewTCPClientProvider(device.Address))
 	slaveID := byte(device.SlaveID)
 
 	now := time.Now()
@@ -399,6 +453,12 @@ func collectDevice(device *model.ScadaDevice) {
 			"last_collect_time": now,
 			"last_error":        errmsg,
 		})
+
+	//全部失败视为连接级错误（触发上层重连）
+	if successCount == 0 && failCount > 0 {
+		return errors.New(errmsg)
+	}
+	return nil
 }
 
 func readTag(client modbus.Client, slaveID byte, tag *model.ScadaTag) (string, error) {
@@ -499,16 +559,12 @@ func boolText(b bool) string {
 	return "false"
 }
 
-// collectOpcUADevice OPC UA 设备采集：单连接顺序读取全部点位
-func collectOpcUADevice(device *model.ScadaDevice) {
-	client, err := newOpcUAClient(device.Address)
-	if err != nil {
-		updateDeviceError(device, err)
-		return
+// collectOpcUADevice OPC UA 设备采集：使用外部复用连接顺序读取全部点位，
+// 全部失败返回错误（由上层关闭并重建连接）
+func collectOpcUADevice(device *model.ScadaDevice, client *opcua.Client) error {
+	if client == nil {
+		return errors.New("OPC UA 连接未建立")
 	}
-	ctx, cancel := context.WithTimeout(context.Background(), opcUATimeout+time.Duration(len(device.Tags))*time.Second)
-	defer cancel()
-	defer client.Close(ctx)
 
 	now := time.Now()
 	var successCount, failCount int
@@ -552,6 +608,11 @@ func collectOpcUADevice(device *model.ScadaDevice) {
 			"last_collect_time": now,
 			"last_error":        errmsg,
 		})
+
+	if successCount == 0 && failCount > 0 {
+		return errors.New(errmsg)
+	}
+	return nil
 }
 
 // updateDeviceError 连接失败时回写设备异常状态并触发断线告警

@@ -252,3 +252,29 @@ func TestAdjustScheduleItem_NoCascadeAndStateGuard(t *testing.T) {
 		t.Fatalf("已下发计划应拒绝人工调整")
 	}
 }
+
+// 下发幂等：重复下发第二次被原子门拒绝
+func TestReleaseSchedule_TwiceRejected(t *testing.T) {
+	gdb, _ := testutil.SetupTestDB()
+	base := testBase()
+	line := &model.ProductionLine{Code: "L-REL"}
+	gdb.Create([]*model.ProductionLine{line})
+	rhythm := &model.ProductionRhythm{Priority: 1, Enable: true, StandardTime: 60, ProductionLineID: line.ID, InitialValue: true}
+	gdb.Create([]*model.ProductionRhythm{rhythm})
+	process := &model.ProductionProcess{Code: "P-REL", SortIndex: 1, Enable: true, InitialValue: true}
+	gdb.Create([]*model.ProductionProcess{process})
+	order := &model.ProductOrder{ProductOrderNo: "WO-REL2", OrderQTY: 2, CurrentState: "已签派", ProductionLineID: &line.ID, StandardWorkTime: 60}
+	gdb.Create(order)
+
+	resp, err := GenerateSchedule(&proto.GenerateScheduleRequest{ProductionLineID: line.ID, StartTime: base.Add(time.Hour).Format("2006-01-02 15:04:05")}, "u")
+	if err != nil {
+		t.Fatalf("生成失败: %v", err)
+	}
+	if err := ReleaseSchedule(&proto.ReleaseScheduleRequest{PlanID: resp.PlanID}, "u"); err != nil {
+		t.Fatalf("首次下发失败: %v", err)
+	}
+	err = ReleaseSchedule(&proto.ReleaseScheduleRequest{PlanID: resp.PlanID}, "u")
+	if err == nil {
+		t.Fatalf("重复下发应被拒绝")
+	}
+}

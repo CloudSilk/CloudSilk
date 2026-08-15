@@ -177,8 +177,17 @@ func CompleteQualityInspectionOrder(req *proto.CompleteQualityInspectionOrderReq
 			First(order, "`id` = ?", req.Id).Error; err != nil {
 			return errors.New("读取检验单失败")
 		}
-		if order.CurrentState == QualityInspectionStateFinished {
-			return errors.New("检验单已完成，不能重复提交")
+		//原子门：正式完成时先占终态（并发提交只有一次生效；草稿不占终态）
+		if !req.SaveOnly {
+			res := tx.Model(&model.QualityInspectionOrder{}).
+				Where("`id` = ? AND `current_state` <> ?", order.ID, QualityInspectionStateFinished).
+				Update("current_state", QualityInspectionStateFinished)
+			if res.Error != nil {
+				return res.Error
+			}
+			if res.RowsAffected == 0 {
+				return errors.New("检验单已被完成提交，请刷新")
+			}
 		}
 
 		// 索引化请求明细：标准ID → 填报内容

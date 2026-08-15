@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"github.com/CloudSilk/CloudSilk/pkg/model"
+	"github.com/CloudSilk/CloudSilk/pkg/proto"
 	"github.com/CloudSilk/CloudSilk/pkg/testutil"
 	"gorm.io/gorm"
 )
@@ -54,5 +55,36 @@ func TestUpdateMaintenancePlan_RecalcNextExecution(t *testing.T) {
 	after.CycleDays = 0
 	if err := UpdateEquipmentMaintenancePlan(after); err == nil {
 		t.Fatalf("周期0应拒绝")
+	}
+}
+
+// OEE：未完成故障按时限截断计入停机（防时间稼动率高估）
+func TestCalcOee_OpenBreakdownCounted(t *testing.T) {
+	gdb := setupEMDB(t)
+	station := &model.ProductionStation{Code: "ST-OEE"}
+	if err := gdb.Create(station).Error; err != nil {
+		t.Fatalf("造数失败: %v", err)
+	}
+	// 30分钟前开始、未完成的故障
+	openBD := &model.ProductionStationBreakdown{
+		ProductionStationID: station.ID,
+		CreateTime:          time.Now().Add(-30 * time.Minute),
+		Duration:            0, // 未完成无时长
+	}
+	if err := gdb.Create(openBD).Error; err != nil {
+		t.Fatalf("造数失败: %v", err)
+	}
+
+	start := time.Now().Add(-time.Hour).Format("2006-01-02 15:04:05")
+	end := time.Now().Format("2006-01-02 15:04:05")
+	resp, err := CalcOee(&proto.EquipmentOeeRequest{ProductionStationID: station.ID, StartTime: start, EndTime: end})
+	if err != nil {
+		t.Fatalf("OEE计算失败: %v", err)
+	}
+	if resp.DowntimeMinutes < 29 { // 截断计入≈30分钟（允许秒级误差）
+		t.Fatalf("未完成故障应计入停机（约30分钟），实际%v", resp.DowntimeMinutes)
+	}
+	if resp.Availability > 0.51 {
+		t.Fatalf("30/60分钟停机下时间稼动率应≤0.5，实际%v", resp.Availability)
 	}
 }

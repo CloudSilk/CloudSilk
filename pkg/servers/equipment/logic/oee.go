@@ -52,7 +52,8 @@ func CalcOee(req *proto.EquipmentOeeRequest) (*proto.EquipmentOeeResponse, error
 	}
 	resp.PlannedMinutes = float64(plannedMinutes)
 
-	//停机时间：工站故障记录（Duration 单位分钟），未完成的不计入
+	//停机时间（分钟）：已完成故障取登记时长；未完成故障按 [开始, 区间末] 截断计入
+	//（此前忽略未完成故障会高估时间稼动率）
 	var downtimeSum sql.NullFloat64
 	if err := model.DB.DB().Model(&model.ProductionStationBreakdown{}).
 		Select("COALESCE(SUM(duration),0)").
@@ -62,6 +63,23 @@ func CalcOee(req *proto.EquipmentOeeRequest) (*proto.EquipmentOeeResponse, error
 		return nil, err
 	}
 	downtime := downtimeSum.Float64
+
+	openBreakdowns := []*model.ProductionStationBreakdown{}
+	if err := model.DB.DB().
+		Where("`production_station_id` = ? AND `create_time` >= ? AND `create_time` <= ? AND `complete_time` IS NULL",
+			req.ProductionStationID, startTime, endTime).
+		Find(&openBreakdowns).Error; err != nil {
+		return nil, err
+	}
+	for _, b := range openBreakdowns {
+		until := time.Now()
+		if endTime.Before(until) {
+			until = endTime
+		}
+		if until.After(b.CreateTime) {
+			downtime += until.Sub(b.CreateTime).Minutes()
+		}
+	}
 	if downtime > float64(plannedMinutes) {
 		downtime = float64(plannedMinutes)
 	}

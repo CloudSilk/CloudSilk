@@ -127,3 +127,22 @@ func TestReleaseProductOrder_AcceptsDispatched(t *testing.T) {
 		t.Fatalf("发放后状态应为%s，实际%s", types.ProductOrderStateReleased, after.CurrentState)
 	}
 }
+
+// 并发签派幂等：已签派工单再次签派被原子门拒绝
+func TestDispatchProductOrder_TwiceRejected(t *testing.T) {
+	gdb := setupOrderDB(t)
+	order := seedOrder(t, gdb, types.ProductOrderStateVerified)
+
+	if err := DispatchProductOrder(gdb, order.ID, "u1", "甲班"); err != nil {
+		t.Fatalf("首次签派失败: %v", err)
+	}
+	err := DispatchProductOrder(gdb, order.ID, "u2", "乙班")
+	if err == nil {
+		t.Fatalf("重复签派应被拒绝")
+	}
+	after := &model.ProductOrder{}
+	gdb.First(after, "`id` = ?", order.ID)
+	if after.ProductionTeam != "甲班" {
+		t.Fatalf("重复签派不应覆盖班组，实际%s", after.ProductionTeam)
+	}
+}

@@ -231,8 +231,15 @@ func CompletePickBill(req *proto.CompletePickBillRequest, userID string) error {
 		if err := tx.First(bill, "`id` = ?", req.BillID).Error; err != nil {
 			return errors.New("读取拣货单失败")
 		}
-		if bill.CurrentState != WMSBillStateWaitPick {
-			return fmt.Errorf("拣货单状态为%s，只有%s状态可以完成", bill.CurrentState, WMSBillStateWaitPick)
+		//原子状态门：并发完成/取消只有一个能通过（先占状态再干活）
+		res := tx.Model(&model.WMSBillQueue{}).
+			Where("`id` = ? AND `current_state` = ?", bill.ID, WMSBillStateWaitPick).
+			Update("current_state", WMSBillStateCompleted)
+		if res.Error != nil {
+			return res.Error
+		}
+		if res.RowsAffected == 0 {
+			return fmt.Errorf("拣货单已被处理（当前状态%s），请刷新后重试", bill.CurrentState)
 		}
 
 		//按流水中该单的锁定记录逐行出库
@@ -281,10 +288,6 @@ func CompletePickBill(req *proto.CompletePickBillRequest, userID string) error {
 			}
 		}
 
-		if err := tx.Model(&model.WMSBillQueue{}).Where("`id` = ?", bill.ID).
-			Update("current_state", WMSBillStateCompleted).Error; err != nil {
-			return err
-		}
 		return tx.Create(&model.OperationTrace{
 			OperateUserID:  userID,
 			ControllerName: "WMS作业",
@@ -305,8 +308,15 @@ func CancelPickBill(req *proto.CancelPickBillRequest, userID string) error {
 		if err := tx.First(bill, "`id` = ?", req.BillID).Error; err != nil {
 			return errors.New("读取拣货单失败")
 		}
-		if bill.CurrentState != WMSBillStateWaitPick {
-			return fmt.Errorf("拣货单状态为%s，只有%s状态可以取消", bill.CurrentState, WMSBillStateWaitPick)
+		//原子状态门（与完成互斥）
+		res := tx.Model(&model.WMSBillQueue{}).
+			Where("`id` = ? AND `current_state` = ?", bill.ID, WMSBillStateWaitPick).
+			Update("current_state", WMSBillStateCancelled)
+		if res.Error != nil {
+			return res.Error
+		}
+		if res.RowsAffected == 0 {
+			return fmt.Errorf("拣货单已被处理（当前状态%s），请刷新后重试", bill.CurrentState)
 		}
 
 		locks := []*model.MaterialInventoryTransaction{}
@@ -330,10 +340,6 @@ func CancelPickBill(req *proto.CancelPickBillRequest, userID string) error {
 			}
 		}
 
-		if err := tx.Model(&model.WMSBillQueue{}).Where("`id` = ?", bill.ID).
-			Update("current_state", WMSBillStateCancelled).Error; err != nil {
-			return err
-		}
 		return tx.Create(&model.OperationTrace{
 			OperateUserID:  userID,
 			ControllerName: "WMS作业",
@@ -364,9 +370,15 @@ func StocktakeInventory(req *proto.StocktakeInventoryRequest, userID string) (*p
 		}
 		before := inventory.StoredQTY
 		difference := req.CountedQTY - before
-		if err := tx.Model(&model.MaterialInventory{}).Where("`id` = ?", inventory.ID).
-			Update("stored_qty", req.CountedQTY).Error; err != nil {
-			return err
+		//乐观锁：账面自读取以来未变才允许写（并发盘点/收发互斥）
+		res := tx.Model(&model.MaterialInventory{}).
+			Where("`id` = ? AND `stored_qty` = ?", inventory.ID, before).
+			Update("stored_qty", req.CountedQTY)
+		if res.Error != nil {
+			return res.Error
+		}
+		if res.RowsAffected == 0 {
+			return errors.New("库存账面已发生变化（并发收发/盘点），请刷新后重新盘点")
 		}
 
 		if err := createInventoryTx(tx, inventory.MaterialInfoID, inventory.MaterialStoreID, InventoryTxStocktake, difference, before, req.CountedQTY, "", userID,

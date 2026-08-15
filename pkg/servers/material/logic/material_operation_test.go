@@ -1,6 +1,7 @@
 package logic
 
 import (
+	"strings"
 	"testing"
 
 	"github.com/CloudSilk/CloudSilk/pkg/model"
@@ -207,5 +208,22 @@ func TestStocktake_RejectBelowLocked(t *testing.T) {
 	inv := getInventory(t, gdb, material.ID, store.ID)
 	if _, err := StocktakeInventory(&proto.StocktakeInventoryRequest{MaterialInventoryID: inv.ID, CountedQTY: 5}, "u"); err == nil {
 		t.Fatalf("实盘5<锁定量10 应拒绝")
+	}
+}
+
+// 完成与取消互斥：已完成的拣货单取消被原子门拒绝
+func TestPickFlow_CancelAfterCompleteRejected(t *testing.T) {
+	gdb := setupWMSDB(t)
+	_, _, order := seedPickFixture(t, gdb, 100)
+	pickResp, err := CreatePickBillFromOrder(&proto.CreatePickBillRequest{ProductOrderID: order.ID}, "u")
+	if err != nil {
+		t.Fatalf("生成拣货单失败: %v", err)
+	}
+	if err := CompletePickBill(&proto.CompletePickBillRequest{BillID: pickResp.BillID}, "u"); err != nil {
+		t.Fatalf("完成失败: %v", err)
+	}
+	err = CancelPickBill(&proto.CancelPickBillRequest{BillID: pickResp.BillID}, "u")
+	if err == nil || !strings.Contains(err.Error(), "已被处理") {
+		t.Fatalf("已完成单取消应报'已被处理'，实际: %v", err)
 	}
 }

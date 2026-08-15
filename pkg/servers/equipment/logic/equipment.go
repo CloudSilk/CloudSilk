@@ -34,19 +34,57 @@ func CreateEquipment(m *model.Equipment) (string, error) {
 	return m.ID, nil
 }
 
+// UpdateEquipment 白名单更新：仅写显式提供的字段，避免全量 Save 把漏传字段清零
+//（设备状态走独立的 changestate 接口，此处不接受状态修改）
 func UpdateEquipment(m *model.Equipment) error {
-	omits := []string{"created_at"}
-	if m.ProductionStationID == nil || *m.ProductionStationID == "" {
-		omits = append(omits, "ProductionStationID")
+	if m.ID == "" {
+		return errors.New("id不能为空")
 	}
-	duplication, err := model.DB.UpdateWithCheckDuplicationAndOmit(model.DB.DB(), m, false, omits, "`id` != ? and  `code`  = ? ", m.ID, m.Code)
-	if err != nil {
-		return err
+	updates := map[string]interface{}{}
+	if m.Code != "" {
+		updates["code"] = m.Code
 	}
-	if duplication {
-		return errors.New("存在相同设备代号")
+	if m.Name != "" {
+		updates["name"] = m.Name
 	}
-	return nil
+	if m.Model != "" {
+		updates["model"] = m.Model
+	}
+	if m.Manufacturer != "" {
+		updates["manufacturer"] = m.Manufacturer
+	}
+	if m.SerialNo != "" {
+		updates["serial_no"] = m.SerialNo
+	}
+	if m.Location != "" {
+		updates["location"] = m.Location
+	}
+	if m.Team != "" {
+		updates["team"] = m.Team
+	}
+	if m.CommissionDate.Valid {
+		updates["commission_date"] = m.CommissionDate
+	}
+	if m.ProductionStationID != nil && *m.ProductionStationID != "" {
+		updates["production_station_id"] = *m.ProductionStationID
+	}
+	updates["enable"] = m.Enable
+	updates["remark"] = m.Remark
+
+	if m.Code != "" {
+		var count int64
+		if err := model.DB.DB().Model(&model.Equipment{}).
+			Where("`id` != ? AND `code` = ?", m.ID, m.Code).Count(&count).Error; err != nil {
+			return err
+		}
+		if count > 0 {
+			return errors.New("存在相同设备代号")
+		}
+	}
+	if len(updates) <= 2 { // 仅 enable/remark 默认项
+		updates["enable"] = m.Enable
+	}
+	return model.DB.DB().Model(&model.Equipment{}).Where("`id` = ?", m.ID).Updates(updates).Error
 }
 
 func QueryEquipment(req *proto.QueryEquipmentRequest, resp *proto.QueryEquipmentResponse, preload bool) {
